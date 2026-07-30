@@ -119,7 +119,7 @@ export default function Sidebar({ onClose }) {
           </div>
           
           <div className="mt-3 text-center">
-            <p className="text-[9px] text-gray-500 font-medium tracking-wide lowercase first-letter:uppercase">{updateText}</p>
+            <p className="text-[11px] text-gray-500 font-medium tracking-wide lowercase first-letter:uppercase">{updateText}</p>
           </div>
         </div>
       </div>
