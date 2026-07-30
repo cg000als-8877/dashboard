@@ -84,7 +84,7 @@ export default function Dashboard() {
         />
         <MetricCard 
           title={stats.averageDailyProfit >= 0 ? "Avg Daily Profit" : "Avg Daily Loss"} 
-          value={`${stats.averageDailyProfit > 0 ? '+BDT ' : 'BDT '}${Math.round(stats.averageDailyProfit).toLocaleString()} / day`}
+          value={`${stats.averageDailyProfit > 0 ? '+' : ''}${Math.round(stats.averageDailyProfit).toLocaleString()} / day`}
           color={stats.averageDailyProfit >= 0 ? 'success' : 'danger'}
         />
       </div>
@@ -125,22 +125,22 @@ export default function Dashboard() {
                 <div className="flex flex-row flex-wrap md:flex-nowrap w-full gap-3 md:gap-4 justify-between">
                   <div className="bg-[rgba(0,0,0,0.2)] backdrop-blur-md p-4 rounded-2xl border border-[rgba(255,255,255,0.03)] flex-1 min-w-[130px] shadow-inner transition-transform hover:-translate-y-1 duration-300">
                     <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mb-1">Production</p>
-                    <p className="text-lg md:text-xl font-black text-gray-200">{line.totalProduction} <span className="text-xs text-gray-600">PCS</span></p>
+                    <p className="text-lg md:text-xl font-extrabold md:font-black text-gray-200">{line.totalProduction} <span className="text-xs text-gray-600">PCS</span></p>
                   </div>
                   
                   <div className="bg-[rgba(0,0,0,0.2)] backdrop-blur-md p-4 rounded-2xl border border-[rgba(255,255,255,0.03)] flex-1 min-w-[130px] shadow-inner transition-transform hover:-translate-y-1 duration-300">
                     <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mb-1">Income</p>
-                    <p className="text-lg md:text-xl font-black text-[var(--color-primary)]">BDT {Math.round(line.totalIncome).toLocaleString()}</p>
+                    <p className="text-lg md:text-xl font-extrabold md:font-black text-[var(--color-primary)]">BDT {Math.round(line.totalIncome).toLocaleString()}</p>
                   </div>
 
                   <div className="bg-[rgba(0,0,0,0.2)] backdrop-blur-md p-4 rounded-2xl border border-[rgba(255,255,255,0.03)] flex-1 min-w-[130px] shadow-inner transition-transform hover:-translate-y-1 duration-300">
                     <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mb-1">Cost</p>
-                    <p className="text-lg md:text-xl font-black text-amber-500">BDT {Math.round(line.totalCost).toLocaleString()}</p>
+                    <p className="text-lg md:text-xl font-extrabold md:font-black text-amber-500">BDT {Math.round(line.totalCost).toLocaleString()}</p>
                   </div>
 
                   <div className={`bg-[rgba(0,0,0,0.2)] backdrop-blur-md p-4 rounded-2xl border flex-1 min-w-[130px] shadow-inner transition-transform hover:-translate-y-1 duration-300 ${line.netProfit >= 0 ? 'border-[rgba(16,185,129,0.15)] bg-gradient-to-b from-[rgba(16,185,129,0.05)] to-transparent' : 'border-[rgba(255,59,48,0.15)] bg-gradient-to-b from-[rgba(255,59,48,0.05)] to-transparent'}`}>
                     <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mb-1">{line.netProfit >= 0 ? 'Net Profit' : 'Net Loss'}</p>
-                    <p className={`text-lg md:text-xl font-black drop-shadow-md ${line.netProfit >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                    <p className={`text-lg md:text-xl font-extrabold md:font-black drop-shadow-md ${line.netProfit >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
                       BDT {Math.round(line.netProfit).toLocaleString()}
                     </p>
                   </div>

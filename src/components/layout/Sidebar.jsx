@@ -6,6 +6,8 @@ import { LayoutDashboard, Factory, BarChart3, FileText, Settings, Ship } from 'l
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { RealTimeClock } from '@/components/ui/RealTimeClock';
+import { useKpiData } from '@/utils/useKpiData';
+import { format, parseISO } from 'date-fns';
 
 export function cn(...inputs) {
   return twMerge(clsx(inputs));
@@ -20,6 +22,14 @@ const navItems = [
 
 export default function Sidebar({ onClose }) {
   const pathname = usePathname();
+  const { dailyTrends } = useKpiData();
+
+  let updateText = "Loading...";
+  if (dailyTrends && dailyTrends.length > 0) {
+    const endDate = dailyTrends[dailyTrends.length - 1].date;
+    const formattedDate = format(parseISO(endDate), 'do MMMM, yyyy');
+    updateText = `Last updated data ${formattedDate}`;
+  }
 
   return (
     <aside className={cn(
@@ -109,7 +119,7 @@ export default function Sidebar({ onClose }) {
           </div>
           
           <div className="mt-3 text-center">
-            <p className="text-[9px] text-gray-500 font-medium tracking-wide">Last updated data 25 july, 2026</p>
+            <p className="text-[9px] text-gray-500 font-medium tracking-wide lowercase first-letter:uppercase">{updateText}</p>
           </div>
         </div>
       </div>

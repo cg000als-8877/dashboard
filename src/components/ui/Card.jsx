@@ -29,10 +29,10 @@ export function MetricCard({ title, value, subtitle, trend, trendValue, color = 
   return (
     <Card hover className="flex flex-col p-3 md:p-6 animate-[fade-up_0.5s_ease-out_both]">
       <div className="flex justify-between items-start mb-1 md:mb-2">
-        <h3 className="text-[10px] md:text-xs font-bold text-gray-400 uppercase tracking-widest leading-tight">{title}</h3>
+        <h3 className="text-[10px] md:text-xs font-semibold md:font-bold text-gray-400 uppercase tracking-widest leading-tight">{title}</h3>
       </div>
       <div className="min-w-0">
-        <p className={cn("font-extrabold tracking-tight whitespace-nowrap drop-shadow-md text-xl sm:text-2xl md:text-3xl lg:text-4xl", colors[color])}>
+        <p className={cn("font-bold md:font-extrabold tracking-tight whitespace-nowrap drop-shadow-md text-xl sm:text-2xl md:text-3xl lg:text-4xl", colors[color])}>
           {value}
         </p>
         {(subtitle || trendValue) && (
