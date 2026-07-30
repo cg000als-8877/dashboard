@@ -71,7 +71,7 @@ export default function Dashboard() {
         />
         <MetricCard 
           title={stats.netProfit >= 0 ? "Net Profit" : "Net Loss"} 
-          value={`${stats.netProfit > 0 ? '+' : ''}${Math.round(stats.netProfit).toLocaleString()}`}
+          value={`${stats.netProfit > 0 ? '+BDT ' : 'BDT '}${Math.round(stats.netProfit).toLocaleString()}`}
           color={stats.netProfit >= 0 ? 'success' : 'danger'}
         />
         <MetricCard 
@@ -84,7 +84,7 @@ export default function Dashboard() {
         />
         <MetricCard 
           title={stats.averageDailyProfit >= 0 ? "Avg Daily Profit" : "Avg Daily Loss"} 
-          value={`${Math.round(stats.averageDailyProfit).toLocaleString()} / day`}
+          value={`${stats.averageDailyProfit > 0 ? '+BDT ' : 'BDT '}${Math.round(stats.averageDailyProfit).toLocaleString()} / day`}
           color={stats.averageDailyProfit >= 0 ? 'success' : 'danger'}
         />
       </div>
