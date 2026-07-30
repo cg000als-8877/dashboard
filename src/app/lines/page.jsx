@@ -43,7 +43,7 @@ export default function ProductionLines() {
           >
             <div className="flex justify-between items-start mb-6">
               <div>
-                <h2 className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400 drop-shadow-md">{line.name}</h2>
+                <h2 className="text-2xl font-extrabold md:font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400 drop-shadow-md">{line.name}</h2>
                 <p className="text-xs text-[var(--color-primary)] font-bold tracking-[0.2em] uppercase mt-1">
                   {
                     line.name.includes('A') ? 'Flannel Shirt' :
@@ -65,21 +65,21 @@ export default function ProductionLines() {
             <div className="grid grid-cols-2 gap-4 mb-6">
               <div className="bg-[rgba(0,0,0,0.2)] backdrop-blur-md p-4 rounded-2xl border border-[rgba(255,255,255,0.03)] shadow-inner transition-transform hover:-translate-y-1 duration-300">
                 <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mb-1">Total Production</p>
-                <p className="text-xl font-black text-gray-200">{line.totalProduction} <span className="text-xs text-gray-600">PCS</span></p>
+                <p className="text-lg md:text-xl font-extrabold md:font-black text-gray-200">{line.totalProduction} <span className="text-xs text-gray-600">PCS</span></p>
               </div>
               <div className={`bg-[rgba(0,0,0,0.2)] backdrop-blur-md p-4 rounded-2xl border shadow-inner transition-transform hover:-translate-y-1 duration-300 ${line.netProfit >= 0 ? 'border-[rgba(16,185,129,0.15)] bg-gradient-to-b from-[rgba(16,185,129,0.05)] to-transparent' : 'border-[rgba(255,59,48,0.15)] bg-gradient-to-b from-[rgba(255,59,48,0.05)] to-transparent'}`}>
                 <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mb-1">{line.netProfit >= 0 ? 'Net Profit' : 'Net Loss'}</p>
-                <p className={`text-xl font-black drop-shadow-md ${line.netProfit >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                <p className={`text-lg md:text-xl font-extrabold md:font-black drop-shadow-md ${line.netProfit >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
                   BDT {Math.round(line.netProfit).toLocaleString()}
                 </p>
               </div>
-              <div className="bg-[var(--color-bg-main)] p-4 rounded-xl border border-[var(--color-border)]">
-                <p className="text-xs text-[var(--color-text-muted)] mb-1">Total Income</p>
-                <p className="text-lg font-semibold text-[var(--color-primary)]">BDT {Math.round(line.totalIncome).toLocaleString()}</p>
+              <div className="bg-[rgba(0,0,0,0.2)] backdrop-blur-md p-4 rounded-2xl border border-[rgba(255,255,255,0.03)] shadow-inner transition-transform hover:-translate-y-1 duration-300">
+                <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mb-1">Total Income</p>
+                <p className="text-lg md:text-xl font-extrabold md:font-black text-[var(--color-primary)]">BDT {Math.round(line.totalIncome).toLocaleString()}</p>
               </div>
-              <div className="bg-[var(--color-bg-main)] p-4 rounded-xl border border-[var(--color-border)]">
-                <p className="text-xs text-[var(--color-text-muted)] mb-1">Total Cost</p>
-                <p className="text-lg font-semibold text-[var(--color-warning)]">BDT {Math.round(line.totalCost).toLocaleString()}</p>
+              <div className="bg-[rgba(0,0,0,0.2)] backdrop-blur-md p-4 rounded-2xl border border-[rgba(255,255,255,0.03)] shadow-inner transition-transform hover:-translate-y-1 duration-300">
+                <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mb-1">Total Cost</p>
+                <p className="text-lg md:text-xl font-extrabold md:font-black text-amber-500">BDT {Math.round(line.totalCost).toLocaleString()}</p>
               </div>
             </div>
 

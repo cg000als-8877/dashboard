@@ -111,7 +111,7 @@ export default async function LineDetailsPage({ params }) {
           <ArrowLeft size={20} />
         </Link>
         <div>
-          <h1 className="text-3xl font-black tracking-tighter uppercase bg-clip-text text-transparent bg-gradient-to-r from-white via-gray-200 to-gray-500">
+          <h1 className="text-3xl font-extrabold md:font-black tracking-tighter uppercase bg-clip-text text-transparent bg-gradient-to-r from-white via-gray-200 to-gray-500">
             Line {id.toUpperCase()} Telemetry
           </h1>
           <p className="text-[var(--color-primary)] font-bold tracking-widest uppercase text-xs mt-1">Detailed breakdown synced from source records.</p>
@@ -121,35 +121,35 @@ export default async function LineDetailsPage({ params }) {
       {/* Beautiful Summary Card */}
       <div className="relative bg-[rgba(10,13,20,0.4)] backdrop-blur-3xl p-5 md:p-8 rounded-3xl border border-[rgba(255,255,255,0.05)] shadow-[0_20px_50px_rgba(0,0,0,0.5)] mb-10 overflow-hidden">
         <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--color-primary)] opacity-[0.03] rounded-full blur-3xl pointer-events-none"></div>
-        <h3 className="text-xs md:text-sm font-black text-gray-500 uppercase tracking-widest mb-6 flex items-center gap-2">
+        <h3 className="text-xs md:text-sm font-extrabold md:font-black text-gray-500 uppercase tracking-widest mb-6 flex items-center gap-2">
           Operations Summary <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-primary)] shadow-[0_0_8px_var(--color-primary)] animate-pulse"></span>
         </h3>
         <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-3 lg:gap-5 relative z-10">
           <div className="bg-[rgba(0,0,0,0.2)] p-4 lg:p-5 rounded-2xl border border-[rgba(255,255,255,0.03)] shadow-inner transition-transform hover:-translate-y-1 duration-300">
             <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mb-1">Date Range</p>
-            <p className="text-sm md:text-lg font-black text-gray-200 leading-tight">{dateRange}</p>
+            <p className="text-sm md:text-lg font-extrabold md:font-black text-gray-200 leading-tight">{dateRange}</p>
           </div>
           <div className="bg-[rgba(0,0,0,0.2)] p-4 lg:p-5 rounded-2xl border border-[rgba(255,255,255,0.03)] shadow-inner transition-transform hover:-translate-y-1 duration-300">
             <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mb-1">Item</p>
-            <p className="text-sm md:text-lg font-black text-[var(--color-primary)] leading-tight">{itemName}</p>
+            <p className="text-sm md:text-lg font-extrabold md:font-black text-[var(--color-primary)] leading-tight">{itemName}</p>
           </div>
           <div className="bg-[rgba(0,0,0,0.2)] p-4 lg:p-5 rounded-2xl border border-[rgba(255,255,255,0.03)] shadow-inner transition-transform hover:-translate-y-1 duration-300">
             <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mb-1">Production</p>
-            <p className="text-lg md:text-2xl font-black text-white leading-tight">{Math.round(parseFloat(totalProduction)).toLocaleString()}</p>
+            <p className="text-lg md:text-2xl font-extrabold md:font-black text-white leading-tight">{Math.round(parseFloat(totalProduction)).toLocaleString()}</p>
           </div>
           <div className="bg-[rgba(0,0,0,0.2)] p-4 lg:p-5 rounded-2xl border border-[rgba(255,255,255,0.03)] shadow-inner transition-transform hover:-translate-y-1 duration-300">
             <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mb-1">Total Cost</p>
-            <p className="text-lg md:text-2xl font-black text-amber-500 leading-tight">{Math.round(parseFloat(totalCost)).toLocaleString()}</p>
+            <p className="text-lg md:text-2xl font-extrabold md:font-black text-amber-500 leading-tight">{Math.round(parseFloat(totalCost)).toLocaleString()}</p>
           </div>
           <div className="bg-[rgba(0,0,0,0.2)] p-4 lg:p-5 rounded-2xl border border-[rgba(255,255,255,0.03)] shadow-inner transition-transform hover:-translate-y-1 duration-300">
             <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mb-1">Total Income</p>
-            <p className="text-lg md:text-2xl font-black text-white leading-tight">{Math.round(parseFloat(totalIncome)).toLocaleString()}</p>
+            <p className="text-lg md:text-2xl font-extrabold md:font-black text-white leading-tight">{Math.round(parseFloat(totalIncome)).toLocaleString()}</p>
           </div>
           <div className={`bg-[rgba(0,0,0,0.2)] p-4 lg:p-5 rounded-2xl border shadow-inner transition-transform hover:-translate-y-1 duration-300 ${parseFloat(totalNetProfitLoss) >= 0 ? 'border-[rgba(16,185,129,0.15)] bg-gradient-to-b from-[rgba(16,185,129,0.05)] to-transparent' : 'border-[rgba(255,59,48,0.15)] bg-gradient-to-b from-[rgba(255,59,48,0.05)] to-transparent'}`}>
             <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mb-1">
               {parseFloat(totalNetProfitLoss) >= 0 ? 'Net Profit' : 'Net Loss'}
             </p>
-            <p className={`text-lg md:text-2xl font-black leading-tight drop-shadow-md ${parseFloat(totalNetProfitLoss) >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+            <p className={`text-lg md:text-2xl font-extrabold md:font-black leading-tight drop-shadow-md ${parseFloat(totalNetProfitLoss) >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
               {Math.round(parseFloat(totalNetProfitLoss)).toLocaleString()}
             </p>
           </div>
@@ -172,7 +172,7 @@ export default async function LineDetailsPage({ params }) {
                   <th 
                     key={colIndex} 
                     className={`
-                      px-5 py-4 text-[10px] md:text-[11px] uppercase tracking-widest font-black text-transparent bg-clip-text bg-gradient-to-br from-[var(--color-primary)] to-indigo-300 leading-tight drop-shadow-sm
+                      px-5 py-4 text-[10px] md:text-[11px] uppercase tracking-widest font-extrabold md:font-black text-transparent bg-clip-text bg-gradient-to-br from-[var(--color-primary)] to-indigo-300 leading-tight drop-shadow-sm
                       ${isNumericCol ? 'text-center' : 'text-left'}
                       ${isTightCol ? 'w-[1%] whitespace-nowrap' : 'whitespace-nowrap md:whitespace-normal break-words'}
                     `}
