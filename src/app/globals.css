@@ -1,0 +1,104 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg-main: #0B0F17;
+  --color-bg-card: #131A24;
+  --color-bg-card-hover: #18212E;
+  
+  --color-border: rgba(255,255,255,0.06);
+  
+  --color-primary: #4F8CFF;
+  --color-success: #2ECC71;
+  --color-danger: #FF5A5F;
+  --color-warning: #F5A623;
+  
+  --color-text-main: #FFFFFF;
+  --color-text-secondary: #9BA7B4;
+  --color-text-muted: #6D7684;
+
+  --font-sans: 'Barlow', sans-serif;
+}
+
+:root {
+  background-color: var(--color-bg-main);
+  color: var(--color-text-main);
+}
+
+body {
+  font-family: var(--font-sans);
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Glassmorphism utilities */
+@utility glass {
+  background: var(--color-bg-card);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+@utility glass-hover {
+  background: var(--color-bg-card-hover);
+}
+
+/* Hide scrollbar for cleaner look */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-bg-main);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-bg-card-hover);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-border);
+}
+
+@keyframes fade-up {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes ship-bobbing {
+  0%, 100% { transform: translate(200px, 100px); }
+  50% { transform: translate(200px, 96px); }
+}
+
+@keyframes wave-move {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-800px); }
+}
+
+@keyframes propeller-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes splash-anim {
+  0% { opacity: 0; transform: scale(0.5) translate(0, 0); }
+  20% { opacity: 1; }
+  100% { opacity: 0; transform: scale(2) translate(30px, -20px); }
+}
+
+@keyframes smoke-anim {
+  0% { opacity: 0.7; transform: translate(0, 0) scale(1); }
+  100% { opacity: 0; transform: translate(-60px, -40px) scale(3); }
+}
+
+@keyframes twinkle-star {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 1; }
+}
+

@@ -1,0 +1,1111 @@
+{
+  "lines": [
+    {
+      "id": "A",
+      "name": "LINE A",
+      "active": true
+    },
+    {
+      "id": "B",
+      "name": "LINE B",
+      "active": true
+    },
+    {
+      "id": "C",
+      "name": "LINE C",
+      "active": true
+    },
+    {
+      "id": "D",
+      "name": "LINE D",
+      "active": true
+    }
+  ],
+  "dailyProduction": [
+    {
+      "date": "2026-06-30",
+      "line_id": "A",
+      "style": "FLANNEL SHIRT",
+      "item": "SHIRT",
+      "worker_count": 50,
+      "per_head_cost": 1730,
+      "total_cost": 86500,
+      "production_qty": 600,
+      "production_dzn": 50,
+      "cm_per_dzn": 1200,
+      "total_income": 60000,
+      "net_profit": -26500,
+      "status": "ACTIVE"
+    },
+    {
+      "date": "2026-07-01",
+      "line_id": "A",
+      "style": "FLANNEL SHIRT",
+      "item": "SHIRT",
+      "worker_count": 50,
+      "per_head_cost": 1730,
+      "total_cost": 86500,
+      "production_qty": 650,
+      "production_dzn": 54.1666666666667,
+      "cm_per_dzn": 1200,
+      "total_income": 65000,
+      "net_profit": -21500,
+      "status": "ACTIVE"
+    },
+    {
+      "date": "2026-07-02",
+      "line_id": "A",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-07-03",
+      "line_id": "A",
+      "style": "FLANNEL SHIRT",
+      "item": "SHIRT",
+      "worker_count": 50,
+      "per_head_cost": 1730,
+      "total_cost": 86500,
+      "production_qty": 550,
+      "production_dzn": 45.8333333333333,
+      "cm_per_dzn": 1200,
+      "total_income": 55000,
+      "net_profit": -31500,
+      "status": "ACTIVE"
+    },
+    {
+      "date": "2026-07-04",
+      "line_id": "A",
+      "style": "FLANNEL SHIRT",
+      "item": "SHIRT",
+      "worker_count": 50,
+      "per_head_cost": 1730,
+      "total_cost": 86500,
+      "production_qty": 750,
+      "production_dzn": 62.5,
+      "cm_per_dzn": 1200,
+      "total_income": 75000,
+      "net_profit": -11500,
+      "status": "ACTIVE"
+    },
+    {
+      "date": "2026-07-05",
+      "line_id": "A",
+      "style": "FLANNEL SHIRT",
+      "item": "SHIRT",
+      "worker_count": 50,
+      "per_head_cost": 1730,
+      "total_cost": 86500,
+      "production_qty": 390,
+      "production_dzn": 32.5,
+      "cm_per_dzn": 1200,
+      "total_income": 39000,
+      "net_profit": -47500,
+      "status": "ACTIVE"
+    },
+    {
+      "date": "2026-07-06",
+      "line_id": "A",
+      "style": "FLANNEL SHIRT",
+      "item": "SHIRT",
+      "worker_count": 50,
+      "per_head_cost": 1730,
+      "total_cost": 86500,
+      "production_qty": 760,
+      "production_dzn": 63.3333333333333,
+      "cm_per_dzn": 1200,
+      "total_income": 76000,
+      "net_profit": -10500,
+      "status": "ACTIVE"
+    },
+    {
+      "date": "2026-07-07",
+      "line_id": "A",
+      "style": "FLANNEL SHIRT",
+      "item": "SHIRT",
+      "worker_count": 50,
+      "per_head_cost": 1730,
+      "total_cost": 640100,
+      "production_qty": 490,
+      "production_dzn": 40.8333333333333,
+      "cm_per_dzn": 1200,
+      "total_income": 49000,
+      "net_profit": -591100,
+      "status": "ACTIVE"
+    },
+    {
+      "date": "2026-07-08",
+      "line_id": "A",
+      "style": "FLANNEL SHIRT",
+      "item": "SHIRT",
+      "worker_count": 50,
+      "per_head_cost": 1730,
+      "total_cost": 86500,
+      "production_qty": 0,
+      "production_dzn": 0,
+      "cm_per_dzn": 1200,
+      "total_income": 0,
+      "net_profit": -86500,
+      "status": "NO_PRODUCTION"
+    },
+    {
+      "date": "2026-07-09",
+      "line_id": "A",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-07-10",
+      "line_id": "A",
+      "style": "FLANNEL SHIRT",
+      "item": "SHIRT",
+      "worker_count": 50,
+      "per_head_cost": 1730,
+      "total_cost": 86500,
+      "production_qty": 0,
+      "production_dzn": 0,
+      "cm_per_dzn": 1200,
+      "total_income": 0,
+      "net_profit": -86500,
+      "status": "NO_PRODUCTION"
+    },
+    {
+      "date": "2026-07-11",
+      "line_id": "A",
+      "style": "FLANNEL SHIRT",
+      "item": "SHIRT",
+      "worker_count": 50,
+      "per_head_cost": 1730,
+      "total_cost": 86500,
+      "production_qty": 0,
+      "production_dzn": 0,
+      "cm_per_dzn": 1200,
+      "total_income": 0,
+      "net_profit": -86500,
+      "status": "NO_PRODUCTION"
+    },
+    {
+      "date": "2026-07-12",
+      "line_id": "A",
+      "style": "FLANNEL SHIRT",
+      "item": "SHIRT",
+      "worker_count": 50,
+      "per_head_cost": 1730,
+      "total_cost": 86500,
+      "production_qty": 0,
+      "production_dzn": 0,
+      "cm_per_dzn": 1200,
+      "total_income": 0,
+      "net_profit": -86500,
+      "status": "NO_PRODUCTION"
+    },
+    {
+      "date": "2026-07-13",
+      "line_id": "A",
+      "style": "FLANNEL SHIRT",
+      "item": "SHIRT",
+      "worker_count": 24,
+      "per_head_cost": 1730,
+      "total_cost": 41520,
+      "production_qty": 0,
+      "production_dzn": 0,
+      "cm_per_dzn": 1200,
+      "total_income": 0,
+      "net_profit": -41520,
+      "status": "NO_PRODUCTION"
+    },
+    {
+      "date": "2026-07-14",
+      "line_id": "A",
+      "style": "FLANNEL SHIRT",
+      "item": "SHIRT",
+      "worker_count": 24,
+      "per_head_cost": 1730,
+      "total_cost": 41520,
+      "production_qty": 0,
+      "production_dzn": 0,
+      "cm_per_dzn": 1200,
+      "total_income": 0,
+      "net_profit": -41520,
+      "status": "NO_PRODUCTION"
+    },
+    {
+      "date": "2026-07-15",
+      "line_id": "A",
+      "style": "FLANNEL SHIRT",
+      "item": "SHIRT",
+      "worker_count": 24,
+      "per_head_cost": 1730,
+      "total_cost": 41520,
+      "production_qty": 0,
+      "production_dzn": 0,
+      "cm_per_dzn": 1200,
+      "total_income": 0,
+      "net_profit": -41520,
+      "status": "NO_PRODUCTION"
+    },
+    {
+      "date": "2026-07-16",
+      "line_id": "A",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-07-17",
+      "line_id": "A",
+      "style": "FLANNEL SHIRT",
+      "item": "SHIRT",
+      "worker_count": 24,
+      "per_head_cost": 1730,
+      "total_cost": 41520,
+      "production_qty": 0,
+      "production_dzn": 0,
+      "cm_per_dzn": 1200,
+      "total_income": 0,
+      "net_profit": -41520,
+      "status": "NO_PRODUCTION"
+    },
+    {
+      "date": "2026-07-18",
+      "line_id": "A",
+      "style": "FLANNEL SHIRT",
+      "item": "SHIRT",
+      "worker_count": 24,
+      "per_head_cost": 1730,
+      "total_cost": 41520,
+      "production_qty": 0,
+      "production_dzn": 0,
+      "cm_per_dzn": 1200,
+      "total_income": 0,
+      "net_profit": -41520,
+      "status": "NO_PRODUCTION"
+    },
+    {
+      "date": "2026-07-19",
+      "line_id": "A",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-07-20",
+      "line_id": "A",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-07-21",
+      "line_id": "A",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-07-22",
+      "line_id": "A",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-07-23",
+      "line_id": "A",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-07-24",
+      "line_id": "A",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-07-25",
+      "line_id": "A",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-07-26",
+      "line_id": "A",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-07-27",
+      "line_id": "A",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-07-28",
+      "line_id": "A",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-07-29",
+      "line_id": "A",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-07-30",
+      "line_id": "A",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-06-30",
+      "line_id": "B",
+      "style": "BD2625",
+      "item": "LADIES TOPS",
+      "worker_count": 44,
+      "per_head_cost": 1730,
+      "total_cost": 76120,
+      "production_qty": 650,
+      "production_dzn": 54.1666666666667,
+      "cm_per_dzn": 750,
+      "total_income": 40625,
+      "net_profit": -35495,
+      "status": "ACTIVE"
+    },
+    {
+      "date": "2026-07-01",
+      "line_id": "B",
+      "style": "BD2625",
+      "item": "LADIES TOPS",
+      "worker_count": 44,
+      "per_head_cost": 1730,
+      "total_cost": 76120,
+      "production_qty": 720,
+      "production_dzn": 60,
+      "cm_per_dzn": 750,
+      "total_income": 45000,
+      "net_profit": -31120,
+      "status": "ACTIVE"
+    },
+    {
+      "date": "2026-07-02",
+      "line_id": "B",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-07-03",
+      "line_id": "B",
+      "style": "BD2625",
+      "item": "LADIES TOPS",
+      "worker_count": 44,
+      "per_head_cost": 1730,
+      "total_cost": 76120,
+      "production_qty": 720,
+      "production_dzn": 60,
+      "cm_per_dzn": 750,
+      "total_income": 45000,
+      "net_profit": -31120,
+      "status": "ACTIVE"
+    },
+    {
+      "date": "2026-07-04",
+      "line_id": "B",
+      "style": "BD2625",
+      "item": "LADIES TOPS",
+      "worker_count": 44,
+      "per_head_cost": 1730,
+      "total_cost": 76120,
+      "production_qty": 520,
+      "production_dzn": 43.3333333333333,
+      "cm_per_dzn": 750,
+      "total_income": 32500,
+      "net_profit": -43620,
+      "status": "ACTIVE"
+    },
+    {
+      "date": "2026-07-05",
+      "line_id": "B",
+      "style": "BD2625",
+      "item": "LADIES TOPS",
+      "worker_count": 44,
+      "per_head_cost": 1730,
+      "total_cost": 76120,
+      "production_qty": 800,
+      "production_dzn": 66.6666666666667,
+      "cm_per_dzn": 750,
+      "total_income": 50000,
+      "net_profit": -26120,
+      "status": "ACTIVE"
+    },
+    {
+      "date": "2026-07-06",
+      "line_id": "B",
+      "style": "BD2625",
+      "item": "LADIES TOPS",
+      "worker_count": 44,
+      "per_head_cost": 1730,
+      "total_cost": 76120,
+      "production_qty": 330,
+      "production_dzn": 27.5,
+      "cm_per_dzn": 750,
+      "total_income": 20625,
+      "net_profit": -55495,
+      "status": "ACTIVE"
+    },
+    {
+      "date": "2026-07-07",
+      "line_id": "B",
+      "style": "BD2625",
+      "item": "LADIES TOPS",
+      "worker_count": 44,
+      "per_head_cost": 1730,
+      "total_cost": 76120,
+      "production_qty": 900,
+      "production_dzn": 75,
+      "cm_per_dzn": 750,
+      "total_income": 56250,
+      "net_profit": -19870,
+      "status": "ACTIVE"
+    },
+    {
+      "date": "2026-07-08",
+      "line_id": "B",
+      "style": "BD2625",
+      "item": "LADIES TOPS",
+      "worker_count": 44,
+      "per_head_cost": 1730,
+      "total_cost": 76120,
+      "production_qty": 845,
+      "production_dzn": 70.4166666666667,
+      "cm_per_dzn": 750,
+      "total_income": 52813,
+      "net_profit": -23307,
+      "status": "ACTIVE"
+    },
+    {
+      "date": "2026-07-09",
+      "line_id": "B",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-07-10",
+      "line_id": "B",
+      "style": "BD2625",
+      "item": "LADIES TOPS",
+      "worker_count": 44,
+      "per_head_cost": 1730,
+      "total_cost": 76120,
+      "production_qty": 1000,
+      "production_dzn": 83.3333333333333,
+      "cm_per_dzn": 750,
+      "total_income": 62500,
+      "net_profit": -13620,
+      "status": "ACTIVE"
+    },
+    {
+      "date": "2026-07-11",
+      "line_id": "B",
+      "style": "BD2625",
+      "item": "LADIES TOPS",
+      "worker_count": 44,
+      "per_head_cost": 1730,
+      "total_cost": 76120,
+      "production_qty": 800,
+      "production_dzn": 66.6666666666667,
+      "cm_per_dzn": 750,
+      "total_income": 50000,
+      "net_profit": -26120,
+      "status": "ACTIVE"
+    },
+    {
+      "date": "2026-07-12",
+      "line_id": "B",
+      "style": "BD2625",
+      "item": "LADIES TOPS",
+      "worker_count": 44,
+      "per_head_cost": 1730,
+      "total_cost": 76120,
+      "production_qty": 800,
+      "production_dzn": 66.6666666666667,
+      "cm_per_dzn": 750,
+      "total_income": 50000,
+      "net_profit": -26120,
+      "status": "ACTIVE"
+    },
+    {
+      "date": "2026-07-13",
+      "line_id": "B",
+      "style": "BD2625",
+      "item": "LADIES TOPS",
+      "worker_count": 44,
+      "per_head_cost": 1730,
+      "total_cost": 76120,
+      "production_qty": 1100,
+      "production_dzn": 91.6666666666667,
+      "cm_per_dzn": 750,
+      "total_income": 68750,
+      "net_profit": -7370,
+      "status": "ACTIVE"
+    },
+    {
+      "date": "2026-07-14",
+      "line_id": "B",
+      "style": "BD2625",
+      "item": "LADIES TOPS",
+      "worker_count": 44,
+      "per_head_cost": 1730,
+      "total_cost": 76120,
+      "production_qty": 1100,
+      "production_dzn": 91.6666666666667,
+      "cm_per_dzn": 750,
+      "total_income": 68750,
+      "net_profit": -7370,
+      "status": "ACTIVE"
+    },
+    {
+      "date": "2026-07-15",
+      "line_id": "B",
+      "style": "BD2625",
+      "item": "LADIES TOPS",
+      "worker_count": 44,
+      "per_head_cost": 1730,
+      "total_cost": 76120,
+      "production_qty": 650,
+      "production_dzn": 54.1666666666667,
+      "cm_per_dzn": 750,
+      "total_income": 40625,
+      "net_profit": -35495,
+      "status": "ACTIVE"
+    },
+    {
+      "date": "2026-07-16",
+      "line_id": "B",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-07-17",
+      "line_id": "B",
+      "style": "BD2625",
+      "item": "LADIES TOPS",
+      "worker_count": 44,
+      "per_head_cost": 1730,
+      "total_cost": 76120,
+      "production_qty": 1100,
+      "production_dzn": 91.6666666666667,
+      "cm_per_dzn": 750,
+      "total_income": 68750,
+      "net_profit": -7370,
+      "status": "ACTIVE"
+    },
+    {
+      "date": "2026-07-18",
+      "line_id": "B",
+      "style": "BD2625",
+      "item": "LADIES TOPS",
+      "worker_count": 44,
+      "per_head_cost": 1730,
+      "total_cost": 76120,
+      "production_qty": 1125,
+      "production_dzn": 93.75,
+      "cm_per_dzn": 750,
+      "total_income": 70313,
+      "net_profit": -5807,
+      "status": "ACTIVE"
+    },
+    {
+      "date": "2026-07-19",
+      "line_id": "B",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-07-20",
+      "line_id": "B",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-07-21",
+      "line_id": "B",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-07-22",
+      "line_id": "B",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-07-23",
+      "line_id": "B",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-07-24",
+      "line_id": "B",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-07-25",
+      "line_id": "B",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-07-26",
+      "line_id": "B",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-07-27",
+      "line_id": "B",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-07-28",
+      "line_id": "B",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-07-29",
+      "line_id": "B",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-07-30",
+      "line_id": "B",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-06-30",
+      "line_id": "C",
+      "style": "BD2625",
+      "item": "LADIES BOTTOM",
+      "worker_count": 31,
+      "per_head_cost": 1730,
+      "total_cost": 53630,
+      "production_qty": 820,
+      "production_dzn": 68.3333333333333,
+      "cm_per_dzn": 550,
+      "total_income": 37583,
+      "net_profit": -16047,
+      "status": "ACTIVE"
+    },
+    {
+      "date": "2026-07-01",
+      "line_id": "C",
+      "style": "BD2625",
+      "item": "LADIES BOTTOM",
+      "worker_count": 31,
+      "per_head_cost": 1730,
+      "total_cost": 53630,
+      "production_qty": 850,
+      "production_dzn": 70.8333333333333,
+      "cm_per_dzn": 550,
+      "total_income": 38958,
+      "net_profit": -14672,
+      "status": "ACTIVE"
+    },
+    {
+      "date": "2026-07-02",
+      "line_id": "C",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-07-03",
+      "line_id": "C",
+      "style": "BD2625",
+      "item": "LADIES BOTTOM",
+      "worker_count": 31,
+      "per_head_cost": 1730,
+      "total_cost": 53630,
+      "production_qty": 800,
+      "production_dzn": 66.6666666666667,
+      "cm_per_dzn": 550,
+      "total_income": 36667,
+      "net_profit": -16963,
+      "status": "ACTIVE"
+    },
+    {
+      "date": "2026-07-04",
+      "line_id": "C",
+      "style": "BD2625",
+      "item": "LADIES BOTTOM",
+      "worker_count": 31,
+      "per_head_cost": 1730,
+      "total_cost": 53630,
+      "production_qty": 600,
+      "production_dzn": 50,
+      "cm_per_dzn": 550,
+      "total_income": 27500,
+      "net_profit": -26130,
+      "status": "ACTIVE"
+    },
+    {
+      "date": "2026-07-05",
+      "line_id": "C",
+      "style": "BD2625",
+      "item": "LADIES BOTTOM",
+      "worker_count": 31,
+      "per_head_cost": 1730,
+      "total_cost": 53630,
+      "production_qty": 900,
+      "production_dzn": 75,
+      "cm_per_dzn": 550,
+      "total_income": 41250,
+      "net_profit": -12380,
+      "status": "ACTIVE"
+    },
+    {
+      "date": "2026-07-06",
+      "line_id": "C",
+      "style": "BD2625",
+      "item": "LADIES BOTTOM",
+      "worker_count": 31,
+      "per_head_cost": 1730,
+      "total_cost": 53630,
+      "production_qty": 400,
+      "production_dzn": 33.3333333333333,
+      "cm_per_dzn": 550,
+      "total_income": 18333,
+      "net_profit": -35297,
+      "status": "ACTIVE"
+    },
+    {
+      "date": "2026-07-07",
+      "line_id": "C",
+      "style": "BD2625",
+      "item": "LADIES BOTTOM",
+      "worker_count": 31,
+      "per_head_cost": 1730,
+      "total_cost": 53630,
+      "production_qty": 1000,
+      "production_dzn": 83.3333333333333,
+      "cm_per_dzn": 550,
+      "total_income": 45833,
+      "net_profit": -7797,
+      "status": "ACTIVE"
+    },
+    {
+      "date": "2026-07-08",
+      "line_id": "C",
+      "style": "BD2625",
+      "item": "LADIES BOTTOM",
+      "worker_count": 31,
+      "per_head_cost": 1730,
+      "total_cost": 53630,
+      "production_qty": 880,
+      "production_dzn": 73.3333333333333,
+      "cm_per_dzn": 550,
+      "total_income": 40333,
+      "net_profit": -13297,
+      "status": "ACTIVE"
+    },
+    {
+      "date": "2026-07-09",
+      "line_id": "C",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-07-10",
+      "line_id": "C",
+      "style": "BD2625",
+      "item": "LADIES BOTTOM",
+      "worker_count": 31,
+      "per_head_cost": 1730,
+      "total_cost": 53630,
+      "production_qty": 1050,
+      "production_dzn": 87.5,
+      "cm_per_dzn": 550,
+      "total_income": 48125,
+      "net_profit": -5505,
+      "status": "ACTIVE"
+    },
+    {
+      "date": "2026-07-11",
+      "line_id": "C",
+      "style": "BD2625",
+      "item": "LADIES BOTTOM",
+      "worker_count": 31,
+      "per_head_cost": 1730,
+      "total_cost": 53630,
+      "production_qty": 830,
+      "production_dzn": 69.1666666666667,
+      "cm_per_dzn": 550,
+      "total_income": 38042,
+      "net_profit": -15588,
+      "status": "ACTIVE"
+    },
+    {
+      "date": "2026-07-12",
+      "line_id": "C",
+      "style": "BD2625",
+      "item": "LADIES BOTTOM",
+      "worker_count": 31,
+      "per_head_cost": 1730,
+      "total_cost": 53630,
+      "production_qty": 880,
+      "production_dzn": 73.3333333333333,
+      "cm_per_dzn": 550,
+      "total_income": 40333,
+      "net_profit": -13297,
+      "status": "ACTIVE"
+    },
+    {
+      "date": "2026-07-13",
+      "line_id": "C",
+      "style": "BD2625",
+      "item": "LADIES BOTTOM",
+      "worker_count": 31,
+      "per_head_cost": 1730,
+      "total_cost": 53630,
+      "production_qty": 1200,
+      "production_dzn": 100,
+      "cm_per_dzn": 550,
+      "total_income": 55000,
+      "net_profit": 1370,
+      "status": "ACTIVE"
+    },
+    {
+      "date": "2026-07-14",
+      "line_id": "C",
+      "style": "BD2625",
+      "item": "LADIES BOTTOM",
+      "worker_count": 31,
+      "per_head_cost": 1730,
+      "total_cost": 53630,
+      "production_qty": 1200,
+      "production_dzn": 100,
+      "cm_per_dzn": 550,
+      "total_income": 55000,
+      "net_profit": 1370,
+      "status": "ACTIVE"
+    },
+    {
+      "date": "2026-07-15",
+      "line_id": "C",
+      "style": "BD2625",
+      "item": "LADIES BOTTOM",
+      "worker_count": 31,
+      "per_head_cost": 1730,
+      "total_cost": 53630,
+      "production_qty": 700,
+      "production_dzn": 58.3333333333333,
+      "cm_per_dzn": 550,
+      "total_income": 32083,
+      "net_profit": -21547,
+      "status": "ACTIVE"
+    },
+    {
+      "date": "2026-07-16",
+      "line_id": "C",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-07-17",
+      "line_id": "C",
+      "style": "BD2625",
+      "item": "LADIES BOTTOM",
+      "worker_count": 31,
+      "per_head_cost": 1730,
+      "total_cost": 53630,
+      "production_qty": 1000,
+      "production_dzn": 83.3333333333333,
+      "cm_per_dzn": 550,
+      "total_income": 45833,
+      "net_profit": -7797,
+      "status": "ACTIVE"
+    },
+    {
+      "date": "2026-07-18",
+      "line_id": "C",
+      "style": "BD2625",
+      "item": "LADIES BOTTOM",
+      "worker_count": 31,
+      "per_head_cost": 1730,
+      "total_cost": 53630,
+      "production_qty": 1200,
+      "production_dzn": 100,
+      "cm_per_dzn": 550,
+      "total_income": 55000,
+      "net_profit": 1370,
+      "status": "ACTIVE"
+    },
+    {
+      "date": "2026-07-19",
+      "line_id": "C",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-07-20",
+      "line_id": "C",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-07-21",
+      "line_id": "C",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-07-22",
+      "line_id": "C",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-07-23",
+      "line_id": "C",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-07-24",
+      "line_id": "C",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-07-25",
+      "line_id": "C",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-07-26",
+      "line_id": "C",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-07-27",
+      "line_id": "C",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-07-28",
+      "line_id": "C",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-07-29",
+      "line_id": "C",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-07-30",
+      "line_id": "C",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-07-13",
+      "line_id": "D",
+      "style": "ROV-26",
+      "item": "MENS TEE SHIRT",
+      "worker_count": 26,
+      "per_head_cost": 1730,
+      "total_cost": 44980,
+      "production_qty": 0,
+      "production_dzn": 0,
+      "cm_per_dzn": 250,
+      "total_income": 0,
+      "net_profit": -44980,
+      "status": "NO_PRODUCTION"
+    },
+    {
+      "date": "2026-07-14",
+      "line_id": "D",
+      "style": "ROV-26",
+      "item": "MENS TEE SHIRT",
+      "worker_count": 26,
+      "per_head_cost": 1730,
+      "total_cost": 44980,
+      "production_qty": 350,
+      "production_dzn": 29.1666666666667,
+      "cm_per_dzn": 250,
+      "total_income": 7292,
+      "net_profit": -37688,
+      "status": "ACTIVE"
+    },
+    {
+      "date": "2026-07-15",
+      "line_id": "D",
+      "style": "ROV-26",
+      "item": "MENS TEE SHIRT",
+      "worker_count": 26,
+      "per_head_cost": 1730,
+      "total_cost": 44980,
+      "production_qty": 400,
+      "production_dzn": 33.3333333333333,
+      "cm_per_dzn": 250,
+      "total_income": 8333,
+      "net_profit": -36647,
+      "status": "ACTIVE"
+    },
+    {
+      "date": "2026-07-16",
+      "line_id": "D",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-07-17",
+      "line_id": "D",
+      "style": "ROV-26",
+      "item": "MENS TEE SHIRT",
+      "worker_count": 26,
+      "per_head_cost": 1730,
+      "total_cost": 44980,
+      "production_qty": 780,
+      "production_dzn": 65,
+      "cm_per_dzn": 250,
+      "total_income": 16250,
+      "net_profit": -28730,
+      "status": "ACTIVE"
+    },
+    {
+      "date": "2026-07-18",
+      "line_id": "D",
+      "style": "ROV-26",
+      "item": "MENS TEE SHIRT",
+      "worker_count": 26,
+      "per_head_cost": 1730,
+      "total_cost": 89960,
+      "production_qty": 800,
+      "production_dzn": 66.6666666666667,
+      "cm_per_dzn": 250,
+      "total_income": 16667,
+      "net_profit": -73293,
+      "status": "ACTIVE"
+    },
+    {
+      "date": "2026-07-19",
+      "line_id": "D",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-07-20",
+      "line_id": "D",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-07-21",
+      "line_id": "D",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-07-22",
+      "line_id": "D",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-07-23",
+      "line_id": "D",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-07-24",
+      "line_id": "D",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-07-25",
+      "line_id": "D",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-07-26",
+      "line_id": "D",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-07-27",
+      "line_id": "D",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-07-28",
+      "line_id": "D",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-07-29",
+      "line_id": "D",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-07-30",
+      "line_id": "D",
+      "status": "HOLIDAY"
+    }
+  ]
+}
