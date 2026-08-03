@@ -74,13 +74,23 @@ export default function DashboardLayout({ children }) {
                   <Link
                     href={item.href}
                     className={cn(
-                      "text-[9px] sm:text-[10px] font-bold uppercase tracking-widest transition-all duration-300 text-center flex-1",
+                      "relative text-[9px] sm:text-[10px] font-bold uppercase tracking-widest transition-all duration-300 text-center flex-1 py-1.5 sm:py-2 rounded-lg flex items-center justify-center overflow-hidden",
                       isActive 
-                        ? "text-[var(--color-primary)] drop-shadow-[0_0_6px_var(--color-primary)] scale-110" 
+                        ? "text-[var(--color-primary)] drop-shadow-[0_0_6px_var(--color-primary)]" 
                         : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)]"
                     )}
                   >
-                    {item.name}
+                    {isActive && (
+                      <>
+                        <div className="absolute inset-0 rounded-lg overflow-hidden border border-transparent">
+                          <div className="absolute inset-[-100%] animate-[spin_3s_linear_infinite] opacity-70"
+                               style={{ background: 'conic-gradient(from 0deg, transparent 70%, var(--color-primary) 100%)' }}>
+                          </div>
+                        </div>
+                        <div className="absolute inset-[1px] rounded-[7px] bg-[var(--color-bg-card)] backdrop-blur-xl"></div>
+                      </>
+                    )}
+                    <span className="relative z-10">{item.name}</span>
                   </Link>
                   {index < navItems.length - 1 && (
                     <div className="w-[1px] h-4 sm:h-5 bg-gradient-to-b from-transparent via-[var(--color-text-muted)] to-transparent opacity-40 mx-1 sm:mx-2 flex-shrink-0"></div>
