@@ -1,17 +1,47 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { format, parseISO } from 'date-fns';
 import { useKpiData } from '@/utils/useKpiData';
 import { MetricCard, Card } from '@/components/ui/Card';
 import { DailyPerformanceChart, IncomeVsCostChart } from '@/components/dashboard/DashboardCharts';
 import { TitanicAnimation } from '@/components/ui/TitanicAnimation';
-import { Sparkles, ArrowRight } from 'lucide-react';
+import { Sparkles, ArrowRight, Download } from 'lucide-react';
 import Link from 'next/link';
 import { RealTimeClock } from '@/components/ui/RealTimeClock';
+import { PrintableArchiveReport } from '@/components/report/PrintableArchiveReport';
 
 export function DashboardContent({ month, isArchive = false }) {
   const { stats, dailyTrends, insights, lines, loading, error } = useKpiData(month);
   const [interactiveDay, setInteractiveDay] = useState(null);
   const [showAnimation, setShowAnimation] = useState(true);
+  const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
+  const pdfRef = useRef(null);
+
+  const generatePdf = async () => {
+    if (!pdfRef.current) return;
+    setIsGeneratingPdf(true);
+    
+    try {
+      const html2pdf = (await import('html2pdf.js')).default;
+      const element = pdfRef.current;
+      
+      const opt = {
+        margin:       [10, 0, 10, 0],
+        filename:     `${month.toUpperCase()}_Archive_Report.pdf`,
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2, useCORS: true, logging: false, windowWidth: 1200 },
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
+        pagebreak:    { mode: 'css', class: 'html2pdf__page-break' }
+      };
+
+      await html2pdf().set(opt).from(element).save();
+      
+    } catch (error) {
+      console.error("PDF generation failed:", error);
+      alert("Failed to generate PDF. Please try again.");
+    } finally {
+      setIsGeneratingPdf(false);
+    }
+  };
 
   useEffect(() => {
     setInteractiveDay(null);
@@ -113,6 +143,29 @@ export function DashboardContent({ month, isArchive = false }) {
       </div>
 
 
+
+      {/* PDF Download Action (Archive Only) */}
+      {isArchive && (
+        <div className="flex justify-center md:justify-end mt-10 relative z-10">
+          <button 
+            onClick={generatePdf}
+            disabled={isGeneratingPdf}
+            className="flex items-center gap-2 px-6 py-3 bg-[var(--color-primary)] hover:bg-blue-600 text-white rounded-xl font-black uppercase tracking-widest transition-all shadow-[0_0_20px_rgba(79,140,255,0.4)] hover:shadow-[0_0_30px_rgba(79,140,255,0.6)] disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isGeneratingPdf ? (
+              <>
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                GENERATING PDF...
+              </>
+            ) : (
+              <>
+                <Download className="w-4 h-4" />
+                DOWNLOAD {month.toUpperCase()}
+              </>
+            )}
+          </button>
+        </div>
+      )}
 
       {/* Production Lines Horizontal Dashboard */}
       <div className="mt-12 mb-10 relative z-10">
@@ -229,6 +282,11 @@ export function DashboardContent({ month, isArchive = false }) {
         <div className="md:hidden mt-8 pb-4 text-center">
           <p className="text-[10px] text-gray-500 font-medium tracking-wide">Last updated data 25 july, 2026</p>
         </div>
+      )}
+
+      {/* Hidden Printable PDF Component */}
+      {isArchive && (
+        <PrintableArchiveReport month={month} ref={pdfRef} />
       )}
     </div>
   );
