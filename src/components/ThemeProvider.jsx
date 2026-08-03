@@ -44,12 +44,15 @@ export function ThemeProvider({ children }) {
       } else {
         document.documentElement.classList.remove('light-mode');
       }
-      localStorage.setItem('theme', theme);
     }
   }, [theme, mounted]);
 
   const toggleTheme = () => {
-    setTheme(prev => prev === 'dark' ? 'light' : 'dark');
+    setTheme(prev => {
+      const newTheme = prev === 'dark' ? 'light' : 'dark';
+      localStorage.setItem('theme', newTheme);
+      return newTheme;
+    });
   };
 
   return (
