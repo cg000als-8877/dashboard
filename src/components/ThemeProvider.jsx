@@ -11,8 +11,29 @@ export function ThemeProvider({ children }) {
   useEffect(() => {
     setMounted(true);
     const storedTheme = localStorage.getItem('theme');
+    
+    const getSystemTheme = () => window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+
     if (storedTheme) {
       setTheme(storedTheme);
+    } else {
+      setTheme(getSystemTheme());
+    }
+
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: light)');
+    const handleChange = (e) => {
+      // Only auto-update if the user hasn't explicitly set a preference
+      if (!localStorage.getItem('theme')) {
+        setTheme(e.matches ? 'light' : 'dark');
+      }
+    };
+
+    if (mediaQuery.addEventListener) {
+      mediaQuery.addEventListener('change', handleChange);
+      return () => mediaQuery.removeEventListener('change', handleChange);
+    } else if (mediaQuery.addListener) {
+      mediaQuery.addListener(handleChange);
+      return () => mediaQuery.removeListener(handleChange);
     }
   }, []);
 
