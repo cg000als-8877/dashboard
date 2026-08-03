@@ -17,30 +17,14 @@ export function DashboardContent({ month, isArchive = false }) {
   const pdfRef = useRef(null);
 
   const generatePdf = async () => {
-    if (!pdfRef.current) return;
+    // We use the browser's native print engine for perfect color rendering (supports LAB/OKLCH colors natively)
     setIsGeneratingPdf(true);
     
-    try {
-      const html2pdf = (await import('html2pdf.js')).default;
-      const element = pdfRef.current;
-      
-      const opt = {
-        margin:       [10, 0, 10, 0],
-        filename:     `${month.toUpperCase()}_Archive_Report.pdf`,
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2, useCORS: true, logging: false, windowWidth: 1200 },
-        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
-        pagebreak:    { mode: 'css', class: 'html2pdf__page-break' }
-      };
-
-      await html2pdf().set(opt).from(element).save();
-      
-    } catch (error) {
-      console.error("PDF generation failed:", error);
-      alert("Failed to generate PDF. Please try again.");
-    } finally {
+    // Give React a tiny moment to ensure the PrintableArchiveReport is fully in the DOM
+    setTimeout(() => {
+      window.print();
       setIsGeneratingPdf(false);
-    }
+    }, 500);
   };
 
   useEffect(() => {
@@ -75,11 +59,12 @@ export function DashboardContent({ month, isArchive = false }) {
   const currentDayData = dailyTrends && dailyTrends.length >= displayDay ? dailyTrends[displayDay - 1] : null;
 
   return (
-    <div className="space-y-8 animate-[fade-up_0.4s_ease-out_both] pb-10">
+    <>
+      <div className="space-y-8 animate-[fade-up_0.4s_ease-out_both] pb-10 no-print">
       {/* Titanic Animation (Live Dashboard Only) */}
       {!isArchive && (
         <div className="flex flex-col gap-2 relative z-10 -mt-10 md:mt-6 -mx-4 md:mx-0">
-          <div className={`w-full transition-all duration-700 ease-in-out origin-top overflow-hidden border-none md:border md:rounded-2xl ${showAnimation ? 'max-h-[800px] opacity-100 mb-2 md:border-[rgba(255,255,255,0.05)] md:shadow-2xl' : 'max-h-0 opacity-0 mb-0 md:border-transparent md:shadow-none'}`}>
+          <div className={`w-full transition-all duration-700 ease-in-out origin-top overflow-hidden border-none md:border md:rounded-2xl ${showAnimation ? 'max-h-[800px] opacity-100 mb-2 md:border-[var(--color-border)] md:shadow-2xl' : 'max-h-0 opacity-0 mb-0 md:border-transparent md:shadow-none'}`}>
             <TitanicAnimation netProfit={stats.netProfit} simDay={displayDay} />
           </div>
         </div>
@@ -91,11 +76,11 @@ export function DashboardContent({ month, isArchive = false }) {
           <div className="mb-8 md:mb-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
             <div className="flex flex-col items-start relative z-10">
               <div className="absolute -top-10 -left-10 w-40 h-40 bg-[var(--color-primary)] opacity-10 rounded-full blur-3xl pointer-events-none"></div>
-              <h2 className="text-2xl md:text-4xl font-black tracking-tighter uppercase bg-clip-text text-transparent bg-gradient-to-r from-white via-gray-200 to-gray-500">
+              <h2 className="text-2xl md:text-4xl font-black tracking-tighter uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] via-[var(--color-text-secondary)] to-[var(--color-text-muted)]">
                 System Overview
               </h2>
               {dateText && (
-                <span className="block mt-2 px-3 py-1 bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.1)] rounded-full text-xs font-bold tracking-widest text-[var(--color-primary)] uppercase">
+                <span className="block mt-2 px-3 py-1 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-full text-xs font-bold tracking-widest text-[var(--color-primary)] uppercase">
                   {dateText}
                 </span>
               )}
@@ -103,7 +88,7 @@ export function DashboardContent({ month, isArchive = false }) {
             
             <button 
               onClick={() => setShowAnimation(!showAnimation)}
-              className="hidden md:flex items-center gap-2 px-4 py-2 bg-[rgba(255,255,255,0.05)] hover:bg-[rgba(255,255,255,0.1)] border border-[rgba(255,255,255,0.1)] rounded-xl text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-all active:scale-95"
+              className="hidden md:flex items-center gap-2 px-4 py-2 bg-[var(--color-surface)] hover:bg-[var(--color-surface-hover)] border border-[var(--color-border)] rounded-xl text-xs font-bold uppercase tracking-widest text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)] transition-all active:scale-95"
             >
               {showAnimation ? 'Hide Visualizer' : 'Show Visualizer'}
             </button>
@@ -144,13 +129,13 @@ export function DashboardContent({ month, isArchive = false }) {
 
 
 
-      {/* PDF Download Action (Archive Only) */}
+      {/* PDF Download Action (Archive Only) - HIDDEN FOR NOW */}
       {isArchive && (
-        <div className="flex justify-center md:justify-end mt-10 relative z-10">
+        <div className="hidden justify-center md:justify-end mt-10 relative z-10">
           <button 
             onClick={generatePdf}
             disabled={isGeneratingPdf}
-            className="flex items-center gap-2 px-6 py-3 bg-[var(--color-primary)] hover:bg-blue-600 text-white rounded-xl font-black uppercase tracking-widest transition-all shadow-[0_0_20px_rgba(79,140,255,0.4)] hover:shadow-[0_0_30px_rgba(79,140,255,0.6)] disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center gap-2 px-6 py-3 bg-[var(--color-primary)] text-[var(--color-on-primary)] rounded-xl font-black uppercase tracking-widest transition-all [box-shadow:0_0_20px_var(--color-primary-glow)] hover:[box-shadow:0_0_30px_var(--color-primary-glow-hover)] disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isGeneratingPdf ? (
               <>
@@ -171,28 +156,29 @@ export function DashboardContent({ month, isArchive = false }) {
       <div className="mt-12 mb-10 relative z-10">
         <div className="flex items-center gap-3 mb-6">
           <div className="h-4 w-1 bg-[var(--color-primary)] rounded-full shadow-[0_0_10px_var(--color-primary)]"></div>
-          <h2 className="text-xl font-black tracking-widest uppercase text-white">Line Diagnostics</h2>
+          <h2 className="text-xl font-black tracking-widest uppercase text-[var(--color-text-main)]">Line Diagnostics</h2>
         </div>
         <div className="flex flex-col gap-5">
           {lines.sort((a,b) => a.id.localeCompare(b.id)).map((line) => {
-            // Compute the correct link based on live or archive
-            const lineLink = isArchive ? `/archive/${month}/lines/${line.id}` : `/lines/${line.id}`;
-            
             return (
               <Card key={line.id} className="relative overflow-hidden w-full p-0">
-                <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-[rgba(255,255,255,0.02)] to-transparent pointer-events-none"></div>
+                <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-[var(--color-surface)] to-transparent pointer-events-none"></div>
                 <div className="flex flex-col xl:flex-row items-center gap-6 justify-between w-full p-5 relative z-10">
                   
-                  <div className="flex-shrink-0 w-full xl:w-56 xl:border-r xl:border-[rgba(255,255,255,0.05)] xl:pr-6">
-                    <div className="flex items-center justify-between mb-2">
-                      <h2 className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400 drop-shadow-md">{line.name}</h2>
-                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-widest ${
-                            line.netProfit >= 0 ? 'bg-[rgba(16,185,129,0.1)] text-emerald-400 border border-[rgba(16,185,129,0.2)]' : 'bg-[rgba(255,59,48,0.1)] text-red-400 border border-[rgba(255,59,48,0.2)]'
-                          }`}>
-                            <span className={`w-1 h-1 rounded-full animate-pulse ${line.netProfit >= 0 ? 'bg-emerald-400 shadow-[0_0_5px_#10b981]' : 'bg-red-400 shadow-[0_0_5px_#ff3b30]'}`}></span>
-                            {line.netProfit >= 0 ? 'Optimal' : 'Critical'}
-                      </span>
+                  <div className="flex-shrink-0 w-full xl:w-56 xl:border-r xl:border-[var(--color-border)] xl:pr-6">
+                  <div className="flex justify-between items-start mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="flex items-center justify-between mb-2">
+                        <h2 className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[var(--color-text-main)] to-[var(--color-text-secondary)] [filter:var(--shadow-text)]">{line.name}</h2>
+                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-widest ${
+                              line.netProfit >= 0 ? 'bg-[var(--color-success-glow)] text-[var(--color-success-text)] border border-[rgba(16,185,129,0.2)]' : 'bg-[var(--color-danger-glow)] text-[var(--color-danger-text)] border border-[rgba(255,59,48,0.2)]'
+                            }`}>
+                              <span className={`w-1 h-1 rounded-full animate-pulse ${line.netProfit >= 0 ? 'bg-emerald-400 shadow-[0_0_5px_#10b981]' : 'bg-red-400 shadow-[0_0_5px_#ff3b30]'}`}></span>
+                              {line.netProfit >= 0 ? 'Optimal' : 'Critical'}
+                        </span>
+                      </div>
                     </div>
+                  </div>
                     <p className="text-xs text-[var(--color-primary)] font-bold tracking-[0.2em] uppercase">
                       {line.today?.item || (
                         line.name.includes('A') ? 'Flannel Shirt' :
@@ -204,24 +190,24 @@ export function DashboardContent({ month, isArchive = false }) {
                   </div>
 
                   <div className="flex flex-row flex-wrap md:flex-nowrap w-full gap-3 md:gap-4 justify-between">
-                    <div className="bg-[rgba(0,0,0,0.2)] backdrop-blur-md p-4 rounded-2xl border border-[rgba(255,255,255,0.03)] flex-1 min-w-[130px] shadow-inner transition-transform hover:-translate-y-1 duration-300">
-                      <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mb-1">Production</p>
-                      <p className="text-lg md:text-xl font-extrabold md:font-black text-gray-200">{line.totalProduction} <span className="text-xs text-gray-600">PCS</span></p>
+                    <div className="bg-[var(--color-surface)] backdrop-blur-md p-4 rounded-2xl border border-[var(--color-border)] flex-1 min-w-[130px] shadow-inner transition-transform hover:-translate-y-1 duration-300">
+                      <p className="text-[10px] text-[var(--color-text-muted)] font-bold uppercase tracking-widest mb-1">Production</p>
+                      <p className="text-lg md:text-xl font-extrabold md:font-black text-[var(--color-text-main)]">{line.totalProduction} <span className="text-xs text-[var(--color-text-muted)]">PCS</span></p>
                     </div>
                     
-                    <div className="bg-[rgba(0,0,0,0.2)] backdrop-blur-md p-4 rounded-2xl border border-[rgba(255,255,255,0.03)] flex-1 min-w-[130px] shadow-inner transition-transform hover:-translate-y-1 duration-300">
-                      <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mb-1">Income</p>
+                    <div className="bg-[var(--color-surface)] backdrop-blur-md p-4 rounded-2xl border border-[var(--color-border)] flex-1 min-w-[130px] shadow-inner transition-transform hover:-translate-y-1 duration-300">
+                      <p className="text-[10px] text-[var(--color-text-muted)] font-bold uppercase tracking-widest mb-1">Income</p>
                       <p className="text-lg md:text-xl font-extrabold md:font-black text-[var(--color-primary)]">BDT {Math.round(line.totalIncome).toLocaleString()}</p>
                     </div>
 
-                    <div className="bg-[rgba(0,0,0,0.2)] backdrop-blur-md p-4 rounded-2xl border border-[rgba(255,255,255,0.03)] flex-1 min-w-[130px] shadow-inner transition-transform hover:-translate-y-1 duration-300">
-                      <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mb-1">Cost</p>
+                    <div className="bg-[var(--color-surface)] backdrop-blur-md p-4 rounded-2xl border border-[var(--color-border)] flex-1 min-w-[130px] shadow-inner transition-transform hover:-translate-y-1 duration-300">
+                      <p className="text-[10px] text-[var(--color-text-muted)] font-bold uppercase tracking-widest mb-1">Cost</p>
                       <p className="text-lg md:text-xl font-extrabold md:font-black text-amber-500">BDT {Math.round(line.totalCost).toLocaleString()}</p>
                     </div>
 
-                    <div className={`bg-[rgba(0,0,0,0.2)] backdrop-blur-md p-4 rounded-2xl border flex-1 min-w-[130px] shadow-inner transition-transform hover:-translate-y-1 duration-300 ${line.netProfit >= 0 ? 'border-[rgba(16,185,129,0.15)] bg-gradient-to-b from-[rgba(16,185,129,0.05)] to-transparent' : 'border-[rgba(255,59,48,0.15)] bg-gradient-to-b from-[rgba(255,59,48,0.05)] to-transparent'}`}>
-                      <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mb-1">{line.netProfit >= 0 ? 'Net Profit' : 'Net Loss'}</p>
-                      <p className={`text-lg md:text-xl font-extrabold md:font-black drop-shadow-md ${line.netProfit >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                    <div className={`bg-[var(--color-surface)] backdrop-blur-md p-4 rounded-2xl border flex-1 min-w-[130px] shadow-inner transition-transform hover:-translate-y-1 duration-300 ${line.netProfit >= 0 ? 'border-[rgba(16,185,129,0.15)] bg-[var(--color-success-glow)]' : 'border-[rgba(255,59,48,0.15)] bg-[var(--color-danger-glow)]'}`}>
+                      <p className="text-[10px] text-[var(--color-text-muted)] font-bold uppercase tracking-widest mb-1">{line.netProfit >= 0 ? 'Net Profit' : 'Net Loss'}</p>
+                      <p className={`text-lg md:text-xl font-extrabold md:font-black [filter:var(--shadow-text)] ${line.netProfit >= 0 ? 'text-[var(--color-success-text)]' : 'text-[var(--color-danger-text)]'}`}>
                         BDT {Math.round(line.netProfit).toLocaleString()}
                       </p>
                     </div>
@@ -242,20 +228,20 @@ export function DashboardContent({ month, isArchive = false }) {
       {!isArchive && (
         <div className="relative group">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-[var(--color-primary)] to-purple-600 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
-          <Card className="relative bg-[rgba(10,13,20,0.8)] backdrop-blur-2xl border-[rgba(255,255,255,0.05)] shadow-2xl overflow-hidden p-6">
+          <Card className="relative bg-[var(--color-bg-card)]/80 backdrop-blur-2xl border-[var(--color-border)] shadow-2xl overflow-hidden p-6">
             <div className="flex items-start gap-5">
-              <div className="hidden md:flex bg-[rgba(79,140,255,0.1)] p-3 rounded-xl border border-[rgba(79,140,255,0.2)] text-[var(--color-primary)] shrink-0 shadow-[0_0_15px_rgba(79,140,255,0.2)]">
+              <div className="hidden md:flex bg-[var(--color-primary)]/10 p-3 rounded-xl border border-[var(--color-primary)]/20 text-[var(--color-primary)] shrink-0 shadow-[0_0_15px_rgba(79,140,255,0.2)]">
                 <Sparkles className="w-6 h-6 animate-pulse" />
               </div>
               <div className="w-full">
-                <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                <h3 className="text-xs font-black text-[var(--color-text-secondary)] uppercase tracking-widest mb-4 flex items-center gap-2">
                   System Intelligence
                 </h3>
                 <ul className="space-y-3 w-full">
                   {insights.map((insight, i) => (
-                    <li key={i} className="flex items-start gap-3 bg-[rgba(255,255,255,0.02)] p-3 rounded-xl border border-[rgba(255,255,255,0.03)]">
+                    <li key={i} className="flex items-start gap-3 bg-[var(--color-surface)] p-3 rounded-xl border border-[var(--color-border)]">
                       <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-primary)] mt-1.5 shrink-0 shadow-[0_0_5px_var(--color-primary)]"></span>
-                      <span className="text-sm font-medium text-gray-300 leading-relaxed">{insight}</span>
+                      <span className="text-sm font-medium text-[var(--color-text-main)] leading-relaxed">{insight}</span>
                     </li>
                   ))}
                 </ul>
@@ -269,7 +255,7 @@ export function DashboardContent({ month, isArchive = false }) {
       <div className="mt-14 relative z-10">
         <div className="flex items-center gap-3 mb-6">
           <div className="h-4 w-1 bg-purple-500 rounded-full shadow-[0_0_10px_purple]"></div>
-          <h2 className="text-xl font-black tracking-widest uppercase text-white">Performance Telemetry</h2>
+          <h2 className="text-xl font-black tracking-widest uppercase text-[var(--color-text-main)]">Performance Telemetry</h2>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <DailyPerformanceChart data={dailyTrends} />
@@ -280,14 +266,16 @@ export function DashboardContent({ month, isArchive = false }) {
       {/* Mobile only update status */}
       {!isArchive && (
         <div className="md:hidden mt-8 pb-4 text-center">
-          <p className="text-[10px] text-gray-500 font-medium tracking-wide">Last updated data 25 july, 2026</p>
+          <p className="text-[10px] text-[var(--color-text-muted)] font-medium tracking-wide">Last updated data 25 july, 2026</p>
         </div>
       )}
 
+      </div>
+
       {/* Hidden Printable PDF Component */}
       {isArchive && (
-        <PrintableArchiveReport month={month} ref={pdfRef} />
+        <PrintableArchiveReport month={month} />
       )}
-    </div>
+    </>
   );
 }

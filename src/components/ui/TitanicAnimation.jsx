@@ -1,8 +1,12 @@
 "use client";
 
 import React, { useMemo } from "react";
+import { useTheme } from '@/components/ThemeProvider';
 
 export function TitanicAnimation({ netProfit, isSimulation = false, simState = 'profit', simDay = 1 }) {
+  const { theme } = useTheme();
+  const isDay = theme === 'light';
+
   const isLoss = isSimulation ? simState === 'loss' : netProfit < 0;
   const isProfit = isSimulation ? simState === 'profit' : netProfit > 0;
   const isNeutral = isSimulation ? simState === 'neutral' : netProfit === 0;
@@ -278,7 +282,7 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
 
   return (
     <div className="w-full flex flex-col gap-3">
-      <div className="w-full relative bg-[#050A15] aspect-[5/4] md:aspect-auto md:h-[550px] md:rounded-2xl shadow-none md:shadow-[0_10px_40px_rgba(0,0,0,0.5)] border-none md:border border-[var(--color-border)] overflow-hidden">
+      <div className={`w-full relative aspect-[5/4] md:aspect-auto md:h-[550px] md:rounded-2xl shadow-none md:shadow-[0_10px_40px_var(--shadow-color)] border-none md:border border-[var(--color-border)] overflow-hidden ${isDay ? 'bg-[#e0f7fa]' : 'bg-[#050A15]'}`}>
       
       <style>{`
         @keyframes ship-bob {
@@ -334,13 +338,13 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
       `}</style>
 
       {/* Background Gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#02050A] via-[#050A15] to-[#121B2A] z-0" />
+      <div className={`absolute inset-0 bg-gradient-to-b ${isDay ? 'from-[#4fc3f7] via-[#29b6f6] to-[#0288d1]' : 'from-[#02050A] via-[#050A15] to-[#121B2A]'} z-0`} />
 
       {/* Desktop Status Text Overlay (Hidden on Mobile) */}
       <div className="hidden md:block absolute bottom-6 left-6 z-20 right-6">
         <h2 
-          className="text-white drop-shadow-lg tracking-wide font-bold whitespace-nowrap"
-          style={{ fontSize: '1.25rem' }}
+          className="drop-shadow-lg tracking-wide font-bold whitespace-nowrap"
+          style={{ fontSize: '1.25rem', color: isDay ? '#01579b' : 'white' }}
         >
           {isProfit && "🔥 Full Steam Ahead!"}
           {isNeutral && "⚓ Anchored in Calm Waters."}
@@ -362,10 +366,26 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
           </clipPath>
         </defs>
         
-        {/* Night Sky Stars - Now moving backwards in Profit mode! */}
-        <g className="origin-center scale-[0.75] md:scale-100 transition-transform duration-500" style={{ transformOrigin: '600px 600px' }}>
-          <g style={{ animation: isProfit ? 'star-move 20s infinite linear' : 'none' }}>
-          <g>
+        {/* Night Sky Stars / Day Sky Sun */}
+        <g className="origin-center scale-[1.1] md:scale-100 transition-transform duration-500" style={{ transformOrigin: '600px 600px' }}>
+          {isDay ? (
+            <g style={{ animation: isProfit ? 'star-move 40s infinite linear' : 'none' }}>
+              <g>
+                <circle cx="-100" cy="150" r="40" fill="#fbc531" />
+                {Array.from({length: 15}).map((_, i) => (
+                  <path key={`cloud-${i}`} d={`M ${i * 400 - 500} ${100 + (i % 3) * 50} Q ${i * 400 - 450} ${80 + (i % 3) * 50} ${i * 400 - 400} ${100 + (i % 3) * 50} Q ${i * 400 - 350} ${90 + (i % 3) * 50} ${i * 400 - 300} ${110 + (i % 3) * 50} L ${i * 400 - 500} ${110 + (i % 3) * 50} Z`} fill="rgba(255,255,255,0.7)" />
+                ))}
+              </g>
+              <g transform="translate(4000, 0)">
+                <circle cx="-100" cy="150" r="40" fill="#fbc531" />
+                {Array.from({length: 15}).map((_, i) => (
+                  <path key={`cloud2-${i}`} d={`M ${i * 400 - 500} ${100 + (i % 3) * 50} Q ${i * 400 - 450} ${80 + (i % 3) * 50} ${i * 400 - 400} ${100 + (i % 3) * 50} Q ${i * 400 - 350} ${90 + (i % 3) * 50} ${i * 400 - 300} ${110 + (i % 3) * 50} L ${i * 400 - 500} ${110 + (i % 3) * 50} Z`} fill="rgba(255,255,255,0.7)" />
+                ))}
+              </g>
+            </g>
+          ) : (
+            <g style={{ animation: isProfit ? 'star-move 20s infinite linear' : 'none' }}>
+            <g>
             {stars.map((star, i) => (
               <circle 
                 key={`s1-${i}`} 
@@ -391,16 +411,17 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
             ))}
           </g>
         </g>
+        )}
 
         {/* Global Shift to center the scene */}
         <g transform="translate(0, 360)">
           
-          <rect x="-4000" y="210" width="8000" height="1200" fill="#0c1627" />
+          <rect x="-4000" y="210" width="8000" height="1200" fill={isDay ? "#01579b" : "#0c1627"} />
 
           {/* Back Wave details - Speeds up in Profit mode! */}
           <g transform="translate(0, 200)">
             <g style={{ animation: `wave-flow ${isProfit ? '1.5s' : '4s'} infinite linear` }}>
-              <path d={wavePath} fill="#13243f" />
+              <path d={wavePath} fill={isDay ? "#0277bd" : "#13243f"} />
             </g>
           </g>
 
@@ -475,8 +496,8 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
 
           {/* Muddy Ocean Floor */}
           <g>
-            <path d="M -4000 760 Q -2000 730 0 770 T 2000 760 T 4000 770 L 4000 1400 L -4000 1400 Z" fill="#151710" />
-            <path d="M -4000 790 Q -2000 750 0 800 T 2000 780 T 4000 790 L 4000 1400 L -4000 1400 Z" fill="#0d0f0a" />
+            <path d="M -4000 760 Q -2000 730 0 770 T 2000 760 T 4000 770 L 4000 1400 L -4000 1400 Z" fill={isDay ? "#d7ccc8" : "#151710"} />
+            <path d="M -4000 790 Q -2000 750 0 800 T 2000 780 T 4000 790 L 4000 1400 L -4000 1400 Z" fill={isDay ? "#bcaaa4" : "#0d0f0a"} />
             
             {/* Seaweed / Grass */}
             {Array.from({length: 45}).map((_, i) => {
@@ -487,7 +508,7 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
                   <path 
                     d={`M ${xPos} ${yPos} Q ${xPos + 15} ${yPos - 40} ${xPos - 5} ${yPos - 80} T ${xPos + 10} ${yPos - 120}`} 
                     fill="none" 
-                    stroke="#1e2e18" 
+                    stroke={isDay ? "#4caf50" : "#1e2e18"} 
                     strokeWidth={Math.random() * 3 + 2} 
                     strokeLinecap="round"
                   />
@@ -510,11 +531,11 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
                 >
                   <g transform={`translate(0, ${y}) scale(${isRight ? -scale : scale}, ${scale})`}>
                     {/* Fish Body */}
-                    <path d="M 0 0 C -15 -15, -30 -10, -40 0 C -30 10, -15 15, 0 0" fill="#2a3f4c" />
+                    <path d="M 0 0 C -15 -15, -30 -10, -40 0 C -30 10, -15 15, 0 0" fill={isDay ? "#ff9800" : "#2a3f4c"} />
                     {/* Tail */}
-                    <path d="M -35 0 L -50 -12 L -45 0 L -50 12 Z" fill="#2a3f4c" />
+                    <path d="M -35 0 L -50 -12 L -45 0 L -50 12 Z" fill={isDay ? "#ff9800" : "#2a3f4c"} />
                     {/* Fin */}
-                    <path d="M -20 -8 L -15 -15 L -10 -5 Z" fill="#21323d" />
+                    <path d="M -20 -8 L -15 -15 L -10 -5 Z" fill={isDay ? "#e65100" : "#21323d"} />
                     {/* Eye */}
                     <circle cx="-12" cy="-3" r="1.5" fill="#000" />
                   </g>
@@ -542,7 +563,7 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
           {/* Front Wave - Speeds up in Profit mode! */}
           <g transform="translate(0, 240)">
             <g style={{ animation: `wave-flow ${isProfit ? '1s' : '3s'} infinite linear` }}>
-              <path d={frontWavePath} fill="rgba(28, 54, 94, 0.7)" />
+              <path d={frontWavePath} fill={isDay ? "rgba(3, 169, 244, 0.8)" : "rgba(28, 54, 94, 0.7)"} />
             </g>
           </g>
 

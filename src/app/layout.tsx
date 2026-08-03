@@ -2,6 +2,7 @@ import { Barlow } from "next/font/google";
 import "./globals.css";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { MonthProvider } from "@/components/providers/MonthProvider";
+import { ThemeProvider } from "@/components/ThemeProvider";
 import { Suspense } from "react";
 
 const barlow = Barlow({ 
@@ -22,11 +23,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body className={`${barlow.className} bg-[var(--color-bg-main)] text-[var(--color-text-main)]`}>
         <Suspense fallback={<div>Loading...</div>}>
-          <MonthProvider>
-            <DashboardLayout>
-              {children}
-            </DashboardLayout>
-          </MonthProvider>
+          <ThemeProvider>
+            <MonthProvider>
+              <DashboardLayout>
+                {children}
+              </DashboardLayout>
+            </MonthProvider>
+          </ThemeProvider>
         </Suspense>
       </body>
     </html>

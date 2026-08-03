@@ -16,11 +16,10 @@ export const PrintableArchiveReport = forwardRef(({ month }, ref) => {
   const endDate = dailyTrends?.length > 0 ? dailyTrends[dailyTrends.length - 1].date : null;
   
   return (
-    // The wrapper has fixed width (1200px) so charts render predictably for PDF.
+    // The wrapper uses the print-only-report class which is hidden on screen and visible during native print.
     <div 
-      ref={ref} 
-      className="bg-[#050A15] text-white p-10" 
-      style={{ width: '1200px', minHeight: '1697px', position: 'absolute', top: '-9999px', left: '-9999px', fontFamily: "'Inter', sans-serif" }}
+      className="print-only-report bg-[#050A15] text-white p-10" 
+      style={{ fontFamily: "'Inter', sans-serif" }}
     >
       
       {/* ---------------- SECTION 1: SYSTEM OVERVIEW ---------------- */}
@@ -35,7 +34,7 @@ export const PrintableArchiveReport = forwardRef(({ month }, ref) => {
             </p>
           </div>
           <div className="text-right">
-            <p className="text-gray-400 text-sm font-bold uppercase tracking-widest">{startDate} to {endDate}</p>
+            <p className="text-[var(--color-text-secondary)] text-sm font-bold uppercase tracking-widest">{startDate} to {endDate}</p>
           </div>
         </div>
 
@@ -68,7 +67,6 @@ export const PrintableArchiveReport = forwardRef(({ month }, ref) => {
       {lines.sort((a,b) => a.id.localeCompare(b.id)).map((line, index) => (
         <div 
           key={line.id} 
-          className="html2pdf__page-break" 
           style={{ pageBreakBefore: 'always', paddingTop: '40px', paddingBottom: '40px' }}
         >
           {/* We reuse LineDetailsContent with isEmbed=true so it hides the back button and uses embedded styling */}

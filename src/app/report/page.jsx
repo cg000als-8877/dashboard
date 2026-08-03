@@ -35,8 +35,8 @@ export default function ReportPage() {
   if (loading) {
     return (
       <div className="flex flex-col justify-center items-center h-screen bg-[var(--color-bg-main)]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mb-4"></div>
-        <p className="text-white font-bold tracking-widest uppercase">Generating Report...</p>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--color-text-main)] mb-4"></div>
+        <p className="text-[var(--color-text-main)] font-bold tracking-widest uppercase">Generating Report...</p>
       </div>
     );
   }
@@ -44,17 +44,17 @@ export default function ReportPage() {
   const monthLabel = selectedMonth === 'live' ? 'August 2026 (Live)' : 'July 2026 (Archive)';
 
   return (
-    <div className="bg-[var(--color-bg-main)] min-h-screen text-white pb-20">
+    <div className="bg-[var(--color-bg-main)] min-h-screen text-[var(--color-text-main)] pb-20">
       
       {/* Print Controls (hidden on print) */}
       <div className="hide-on-print p-6 flex justify-between items-center bg-[rgba(0,0,0,0.5)] border-b border-[rgba(255,255,255,0.05)] sticky top-0 z-50 backdrop-blur-xl">
         <div>
-          <h1 className="text-xl font-black uppercase tracking-widest text-white">Full System Report</h1>
+          <h1 className="text-xl font-black uppercase tracking-widest text-[var(--color-text-main)]">Full System Report</h1>
           <p className="text-[var(--color-primary)] text-xs font-bold">{monthLabel}</p>
         </div>
         <button 
           onClick={() => window.print()}
-          className="flex items-center gap-2 bg-[var(--color-primary)] hover:bg-blue-600 text-white px-4 py-2 rounded-xl font-bold transition-colors shadow-[0_0_15px_rgba(79,140,255,0.4)]"
+          className="flex items-center gap-2 bg-[var(--color-primary)] text-[var(--color-on-primary)] px-4 py-2 rounded-xl font-bold transition-colors [box-shadow:0_0_15px_var(--color-primary-glow)]"
         >
           <Printer size={18} /> Print PDF Now
         </button>

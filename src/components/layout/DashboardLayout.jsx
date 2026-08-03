@@ -10,8 +10,9 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { useKpiData } from '@/utils/useKpiData';
 import { format, parseISO } from 'date-fns';
-import { Clock, LayoutDashboard, Factory, BarChart3, Ship, Download, Calendar, FileText, History } from 'lucide-react';
+import { Clock, LayoutDashboard, Factory, BarChart3, Ship, Download, Calendar, FileText, History, Sun, Moon } from 'lucide-react';
 import { useMonth } from '@/components/providers/MonthProvider';
+import { useTheme } from '@/components/ThemeProvider';
 
 const navItems = [
   { name: 'Dashboard', href: '/', icon: LayoutDashboard },
@@ -26,6 +27,7 @@ export default function DashboardLayout({ children }) {
   const [showDates, setShowDates] = useState(false);
   const { dailyTrends } = useKpiData();
   const { selectedMonth, setSelectedMonth } = useMonth();
+  const { theme, toggleTheme } = useTheme();
 
   let datePart = "Loading...";
   if (dailyTrends && dailyTrends.length > 0) {
@@ -43,36 +45,42 @@ export default function DashboardLayout({ children }) {
 
       <div className="flex flex-col flex-1 overflow-hidden relative w-full">
         {/* Mobile Header & Sticky Nav (Hidden on Desktop) */}
-        <header className="md:hidden fixed top-0 left-0 right-0 bg-[rgba(10,13,20,0.8)] backdrop-blur-2xl z-40 flex flex-col border-b border-[rgba(255,255,255,0.05)] shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
+        <header className="md:hidden fixed top-0 left-0 right-0 bg-[var(--color-bg-card)]/90 backdrop-blur-2xl z-40 flex flex-col border-b border-[var(--color-border)] shadow-[0_10px_30px_rgba(0,0,0,0.1)]">
           {/* Top Logo Section */}
-          <div className="py-3 px-4 sm:px-6 flex items-center justify-between border-b border-[rgba(255,255,255,0.02)] w-full relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-[rgba(255,255,255,0.03)] to-transparent pointer-events-none"></div>
+          <div className="py-3 px-4 sm:px-6 flex items-center justify-between border-b border-[var(--color-border)] w-full relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-surface)] to-transparent pointer-events-none"></div>
             <Link href="/" className="flex items-center gap-2 relative z-10 cursor-pointer">
               <div className="flex flex-col">
-                <span className="font-black text-[13px] sm:text-[15px] tracking-widest uppercase bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400 leading-tight whitespace-nowrap drop-shadow-md">BYZID APPARELS PVT LTD.</span>
-                <span className="text-[9px] italic text-gray-500 mt-1 flex items-center gap-1">
+                <span className="font-black text-[13px] sm:text-[15px] tracking-widest uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] to-[var(--color-text-muted)] leading-tight whitespace-nowrap [filter:var(--shadow-text)]">BYZID APPARELS PVT LTD.</span>
+                <span className="text-[9px] italic text-[var(--color-text-muted)] mt-1 flex items-center gap-1">
                   <span>Last updated data</span>
                   <span className="text-[var(--color-primary)] font-bold">{datePart}</span>
                 </span>
               </div>
             </Link>
-            <button 
-              onClick={() => setShowDates(!showDates)}
-              className="flex flex-col justify-center items-center w-8 h-8 transition-all duration-300 z-50 active:scale-95 group ml-auto"
-            >
-              <span className={cn(
-                "block transition-all duration-300 ease-out h-[2px] w-4 rounded-full",
-                showDates ? "rotate-45 translate-y-[3.5px] bg-[var(--color-primary)] shadow-[0_0_8px_rgba(79,140,255,0.6)]" : "bg-gray-300 group-hover:bg-white -translate-y-1"
-              )}></span>
-              <span className={cn(
-                "block transition-all duration-300 ease-out h-[2px] w-4 rounded-full",
-                showDates ? "opacity-0 translate-x-2" : "opacity-100 bg-gray-300 group-hover:bg-white"
-              )}></span>
-              <span className={cn(
-                "block transition-all duration-300 ease-out h-[2px] w-4 rounded-full",
-                showDates ? "-rotate-45 -translate-y-[3.5px] bg-[var(--color-primary)] shadow-[0_0_8px_rgba(79,140,255,0.6)]" : "bg-gray-300 group-hover:bg-white translate-y-1"
-              )}></span>
-            </button>
+            
+            <div className="flex items-center gap-4 ml-auto relative z-10">
+              <button onClick={toggleTheme} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)] transition-colors">
+                {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+              </button>
+              <button 
+                onClick={() => setShowDates(!showDates)}
+                className="flex flex-col justify-center items-center w-8 h-8 transition-all duration-300 z-50 active:scale-95 group"
+              >
+                <span className={cn(
+                  "block transition-all duration-300 ease-out h-[2px] w-4 rounded-full",
+                  showDates ? "rotate-45 translate-y-[3.5px] bg-[var(--color-primary)] shadow-[0_0_8px_rgba(79,140,255,0.6)]" : "bg-[var(--color-text-secondary)] group-hover:bg-[var(--color-text-main)] -translate-y-1"
+                )}></span>
+                <span className={cn(
+                  "block transition-all duration-300 ease-out h-[2px] w-4 rounded-full",
+                  showDates ? "opacity-0 translate-x-2" : "opacity-100 bg-[var(--color-text-secondary)] group-hover:bg-[var(--color-text-main)]"
+                )}></span>
+                <span className={cn(
+                  "block transition-all duration-300 ease-out h-[2px] w-4 rounded-full",
+                  showDates ? "-rotate-45 -translate-y-[3.5px] bg-[var(--color-primary)] shadow-[0_0_8px_rgba(79,140,255,0.6)]" : "bg-[var(--color-text-secondary)] group-hover:bg-[var(--color-text-main)] translate-y-1"
+                )}></span>
+              </button>
+            </div>
           </div>
 
           {/* Sticky Horizontal Nav Bar */}
@@ -86,8 +94,8 @@ export default function DashboardLayout({ children }) {
                   className={cn(
                     "flex-1 text-center whitespace-nowrap px-2 sm:px-3 py-1.5 rounded-full text-[10px] sm:text-[11px] font-bold uppercase tracking-widest transition-all",
                     isActive 
-                      ? "bg-[rgba(79,140,255,0.15)] text-[var(--color-primary)] border border-[rgba(79,140,255,0.3)] shadow-[0_0_15px_rgba(79,140,255,0.2)]" 
-                      : "bg-transparent text-gray-400 hover:text-white"
+                      ? "bg-[var(--color-primary)] text-[var(--color-on-primary)] shadow-[0_4px_14px_var(--color-primary-glow)]" 
+                      : "bg-transparent text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)]"
                   )}
                 >
                   {item.name}
@@ -99,7 +107,7 @@ export default function DashboardLayout({ children }) {
           {/* Slide-down RealTimeClock & Controls (Mobile Only) */}
           <div className="relative flex flex-col items-center w-full z-10 md:hidden">
             <div 
-              className={`w-full overflow-hidden transition-all duration-500 ease-out bg-[rgba(10,13,20,0.95)] backdrop-blur-3xl shadow-2xl flex flex-col items-center rounded-b-3xl border-b border-[rgba(255,255,255,0.05)] ${showDates ? 'max-h-64 py-4 opacity-100 translate-y-0' : 'max-h-0 py-0 opacity-0 -translate-y-4'}`}
+              className={`w-full overflow-hidden transition-all duration-500 ease-out bg-[var(--color-bg-card)]/95 backdrop-blur-3xl shadow-2xl flex flex-col items-center rounded-b-3xl border-b border-[var(--color-border)] ${showDates ? 'max-h-64 py-4 opacity-100 translate-y-0' : 'max-h-0 py-0 opacity-0 -translate-y-4'}`}
             >
               <div className="flex justify-center w-full mb-4">
                 <RealTimeClock />

@@ -18,7 +18,7 @@ export default function ArchiveMonthPage({ params }) {
       <div className="flex items-center justify-between gap-4 mb-6 md:mt-0 relative z-20">
         <Link 
           href="/archive"
-          className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors bg-[rgba(255,255,255,0.05)] px-3 sm:px-4 py-2 rounded-xl border border-[rgba(255,255,255,0.05)] text-xs font-bold uppercase tracking-widest"
+          className="flex items-center gap-2 text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)] transition-colors bg-[var(--color-surface)] hover:bg-[var(--color-surface-hover)] px-3 sm:px-4 py-2 rounded-xl border border-[var(--color-border)] text-xs font-bold uppercase tracking-widest"
         >
           <ArrowLeft size={16} /> 
           <span className="hidden sm:inline">Back to Archives</span>
@@ -27,7 +27,7 @@ export default function ArchiveMonthPage({ params }) {
         {month === '2026-07' && (
           <button 
             onClick={() => window.open('https://drive.google.com/file/d/1GWGOeDtG3mvxW7T8y0w64UHg75jBR-Bv/view?usp=sharing', '_blank')}
-            className="flex items-center gap-2 bg-red-600 hover:bg-red-500 text-white font-black py-2 px-4 rounded-xl transition-all shadow-[0_0_15px_rgba(239,68,68,0.4)] hover:shadow-[0_0_25px_rgba(239,68,68,0.6)] text-xs uppercase tracking-widest active:scale-95"
+            className="flex items-center gap-2 bg-[var(--color-danger)] hover:bg-red-500 text-white font-black py-2 px-4 rounded-xl transition-all [box-shadow:0_0_15px_var(--color-danger-glow)] hover:[box-shadow:0_0_25px_var(--color-danger-glow)] text-xs uppercase tracking-widest active:scale-95"
           >
             <FileText size={16} /> July Pdf
           </button>
@@ -44,8 +44,8 @@ export default function ArchiveMonthPage({ params }) {
             <div className="p-4 rounded-2xl bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.05)] inline-block mb-3">
               <Database className="text-gray-400" size={32} />
             </div>
-            <h2 className="text-2xl font-black text-gray-300 uppercase tracking-[0.3em]">Comprehensive Data Sheets</h2>
-            <p className="text-sm text-gray-500 mt-2 font-medium tracking-widest uppercase">Deep dive metrics for all active lines</p>
+            <h2 className="text-2xl font-black text-[var(--color-text-main)] uppercase tracking-[0.3em]">Comprehensive Data Sheets</h2>
+            <p className="text-sm text-[var(--color-text-muted)] mt-2 font-medium tracking-widest uppercase">Deep dive metrics for all active lines</p>
           </div>
         </div>
 

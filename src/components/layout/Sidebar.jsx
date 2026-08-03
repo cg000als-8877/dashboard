@@ -2,13 +2,14 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Factory, BarChart3, FileText, Settings, Ship, Download, Calendar, History } from 'lucide-react';
+import { LayoutDashboard, Factory, BarChart3, FileText, Settings, Ship, Download, Calendar, History, Sun, Moon } from 'lucide-react';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { useMonth } from '@/components/providers/MonthProvider';
 import { RealTimeClock } from '@/components/ui/RealTimeClock';
 import { useKpiData } from '@/utils/useKpiData';
 import { format, parseISO } from 'date-fns';
+import { useTheme } from '@/components/ThemeProvider';
 
 export function cn(...inputs) {
   return twMerge(clsx(inputs));
@@ -26,6 +27,7 @@ export default function Sidebar({ onClose }) {
   const pathname = usePathname();
   const { dailyTrends } = useKpiData();
   const { selectedMonth, setSelectedMonth } = useMonth();
+  const { theme, toggleTheme } = useTheme();
 
   let updateText = "Loading...";
   if (dailyTrends && dailyTrends.length > 0) {
@@ -36,32 +38,30 @@ export default function Sidebar({ onClose }) {
 
   return (
     <aside className={cn(
-      "relative bg-[rgba(10,13,20,0.4)] backdrop-blur-3xl transition-all duration-300",
-      "w-72 border-r border-[rgba(255,255,255,0.05)] h-full flex flex-col pt-8 pb-6 shadow-[10px_0_30px_rgba(0,0,0,0.5)]"
+      "relative bg-[var(--color-bg-card)]/80 backdrop-blur-3xl transition-all duration-300",
+      "w-72 border-r border-[var(--color-border)] h-full flex flex-col pt-8 pb-6 shadow-[10px_0_30px_rgba(0,0,0,0.1)]"
     )}>
       {/* Subtle background glow */}
       <div className="absolute top-0 left-0 w-full h-48 bg-[var(--color-primary)] opacity-[0.03] blur-3xl pointer-events-none"></div>
 
       <div className="px-6 mb-10 flex flex-col gap-8 relative z-10">
-        <Link href="/" className="flex items-center gap-4 group cursor-pointer">
-          <div className="relative">
-            <div className="absolute -inset-1 bg-[var(--color-primary)] opacity-30 rounded-lg blur group-hover:opacity-60 transition duration-500"></div>
-            <img src="/logo.png" alt="BAPL Logo" className="relative w-10 h-10 rounded-xl object-cover border border-[rgba(255,255,255,0.1)]" />
-          </div>
-          <div className="flex flex-col">
-            <span className="font-black text-sm tracking-widest text-white uppercase bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">Byzid Apparels</span>
-            <span className="text-[10px] text-[var(--color-primary)] font-semibold tracking-[0.2em] uppercase mt-0.5">PVT LTD</span>
-          </div>
+        <Link href="/" className="flex flex-col gap-1 group cursor-pointer mt-2 relative">
+          <span className="font-black text-[18px] tracking-widest uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] to-[var(--color-text-muted)] leading-tight whitespace-nowrap [filter:var(--shadow-text)] transition-all duration-300 group-hover:drop-shadow-[0_0_15px_var(--color-primary-glow)]">
+            BYZID APPARELS
+          </span>
+          <span className="text-[11px] text-[var(--color-primary)] font-black tracking-[0.35em] uppercase">
+            PVT LTD
+          </span>
         </Link>
         
-        <div className="flex md:hidden flex-col gap-2 w-full p-3 rounded-2xl bg-[rgba(0,0,0,0.2)] border border-[rgba(255,255,255,0.03)] shadow-inner">
+        <div className="flex md:hidden flex-col gap-2 w-full p-3 rounded-2xl bg-[var(--color-surface)] border border-[var(--color-border)] shadow-inner">
           <RealTimeClock />
         </div>
       </div>
 
       <nav className="flex-1 px-4 space-y-1 relative z-10">
         <div className="px-4 mb-4">
-          <p className="text-[10px] font-bold text-gray-500 tracking-widest uppercase">Overview</p>
+          <p className="text-[10px] font-bold text-[var(--color-text-muted)] tracking-widest uppercase">Overview</p>
         </div>
         {navItems.map((item) => {
           const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
@@ -73,8 +73,8 @@ export default function Sidebar({ onClose }) {
               className={cn(
                 "group flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-300 font-medium relative overflow-hidden",
                 isActive 
-                  ? "text-white bg-gradient-to-r from-[rgba(79,140,255,0.15)] to-transparent" 
-                  : "text-gray-400 hover:text-white hover:bg-[rgba(255,255,255,0.03)]"
+                  ? "text-[var(--color-text-main)] bg-[var(--color-surface-hover)]" 
+                  : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface)]"
               )}
             >
               {isActive && (
@@ -83,7 +83,7 @@ export default function Sidebar({ onClose }) {
               
               <div className={cn(
                 "flex items-center justify-center transition-transform duration-300 group-hover:scale-110",
-                isActive ? "text-[var(--color-primary)] drop-shadow-[0_0_8px_rgba(79,140,255,0.8)]" : "text-gray-500 group-hover:text-gray-300"
+                isActive ? "text-[var(--color-primary)] drop-shadow-[0_0_8px_var(--color-primary-glow)]" : "text-[var(--color-text-muted)] group-hover:text-[var(--color-text-main)]"
               )}>
                 <item.icon size={20} strokeWidth={isActive ? 2.5 : 2} />
               </div>
@@ -99,30 +99,40 @@ export default function Sidebar({ onClose }) {
         })}
       </nav>
 
-      <div className="p-6 mt-auto relative z-10">
-        <div className="relative p-5 rounded-2xl bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.05)] overflow-hidden group hover:bg-[rgba(255,255,255,0.04)] transition-colors duration-300 cursor-default">
+      <div className="p-6 mt-auto relative z-10 flex flex-col gap-4">
+        
+        {/* Theme Toggle Button */}
+        <button 
+          onClick={toggleTheme}
+          className="flex items-center justify-between p-3 rounded-xl bg-[var(--color-surface)] border border-[var(--color-border)] hover:bg-[var(--color-surface-hover)] transition-colors text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)]"
+        >
+          <span className="text-sm font-medium">{theme === 'dark' ? 'Day Mode' : 'Night Mode'}</span>
+          {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+        </button>
+
+        <div className="relative p-5 rounded-2xl bg-[var(--color-surface)] border border-[var(--color-border)] overflow-hidden group hover:bg-[var(--color-surface-hover)] transition-colors duration-300 cursor-default">
           <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--color-primary)] opacity-[0.05] rounded-full blur-2xl -translate-y-1/2 translate-x-1/2 group-hover:opacity-10 transition-opacity duration-300"></div>
           
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-8 h-8 rounded-full bg-[rgba(79,140,255,0.1)] flex items-center justify-center">
+            <div className="w-8 h-8 rounded-full bg-[var(--color-primary)]/10 flex items-center justify-center">
               <Ship size={14} className="text-[var(--color-primary)]" />
             </div>
             <div>
-              <p className="text-sm font-bold text-white tracking-wide">Bapl OS</p>
-              <p className="text-[10px] text-gray-400 font-medium tracking-wider uppercase mt-0.5">v2.0.4</p>
+              <p className="text-sm font-bold text-[var(--color-text-main)] tracking-wide">Bapl OS</p>
+              <p className="text-[10px] text-[var(--color-text-muted)] font-medium tracking-wider uppercase mt-0.5">v2.0.4</p>
             </div>
           </div>
           
-          <div className="mt-4 pt-4 border-t border-[rgba(255,255,255,0.05)] flex items-center justify-between">
-            <span className="text-xs text-gray-400 font-medium">System Status</span>
+          <div className="mt-4 pt-4 border-t border-[var(--color-border)] flex items-center justify-between">
+            <span className="text-xs text-[var(--color-text-secondary)] font-medium">System Status</span>
             <div className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-[rgba(16,185,129,0.1)] border border-[rgba(16,185,129,0.2)]">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.8)]"></span>
-              <span className="text-[10px] font-bold text-emerald-400 tracking-wider uppercase">Online</span>
+              <span className="text-[10px] font-bold text-[var(--color-success-text)] tracking-wider uppercase">Online</span>
             </div>
           </div>
           
           <div className="mt-3 text-center">
-            <p className="text-[11px] text-gray-500 font-medium tracking-wide lowercase first-letter:uppercase">{updateText}</p>
+            <p className="text-[11px] text-[var(--color-text-muted)] font-medium tracking-wide lowercase first-letter:uppercase">{updateText}</p>
           </div>
         </div>
       </div>

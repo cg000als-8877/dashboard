@@ -24,7 +24,7 @@ export default function ProductionLines() {
     <div className="space-y-8 animate-[fade-up_0.4s_ease-out_both]">
       <header className="mb-10 relative z-10">
         <div className="absolute -top-10 -left-10 w-40 h-40 bg-[var(--color-primary)] opacity-10 rounded-full blur-3xl pointer-events-none"></div>
-        <h1 className="text-2xl md:text-4xl font-black tracking-tighter uppercase bg-clip-text text-transparent bg-gradient-to-r from-white via-gray-200 to-gray-500">
+        <h1 className="text-2xl md:text-4xl font-black tracking-tighter uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] via-[var(--color-text-secondary)] to-[var(--color-text-muted)]">
           Production Lines
         </h1>
         <p className="text-[var(--color-primary)] font-bold tracking-widest uppercase text-xs mt-2">Detailed overview of all active manufacturing lines.</p>
@@ -43,7 +43,7 @@ export default function ProductionLines() {
           >
             <div className="flex justify-between items-start mb-6">
               <div>
-                <h2 className="text-2xl font-extrabold md:font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400 drop-shadow-md">{line.name}</h2>
+                <h2 className="text-2xl font-extrabold md:font-black text-transparent bg-clip-text bg-gradient-to-r from-[var(--color-text-main)] to-[var(--color-text-secondary)] [filter:var(--shadow-text)]">{line.name}</h2>
                 <p className="text-xs text-[var(--color-primary)] font-bold tracking-[0.2em] uppercase mt-1">
                   {
                     line.name.includes('A') ? 'Flannel Shirt' :
@@ -52,45 +52,45 @@ export default function ProductionLines() {
                     line.name.includes('D') ? "Men's Tshirt" : 'Unknown'
                   }
                 </p>
-                <p className="text-xs text-gray-500 font-bold uppercase tracking-widest mt-2">Avg Workers: <span className="text-gray-300">{line.averageWorkers}</span></p>
+                <p className="text-xs text-[var(--color-text-muted)] font-bold uppercase tracking-widest mt-2">Avg Workers: <span className="text-[var(--color-text-main)]">{line.averageWorkers}</span></p>
               </div>
               <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-inner ${
-                line.netProfit >= 0 ? 'bg-[rgba(16,185,129,0.1)] text-emerald-400 border border-[rgba(16,185,129,0.2)]' : 'bg-[rgba(255,59,48,0.1)] text-red-400 border border-[rgba(255,59,48,0.2)]'
+                line.netProfit >= 0 ? 'bg-[var(--color-success-glow)] text-[var(--color-success-text)] border border-[rgba(16,185,129,0.2)]' : 'bg-[var(--color-danger-glow)] text-[var(--color-danger-text)] border border-[rgba(255,59,48,0.2)]'
               }`}>
-                <span className={`w-1.5 h-1.5 rounded-full animate-pulse ${line.netProfit >= 0 ? 'bg-emerald-400 shadow-[0_0_5px_#10b981]' : 'bg-red-400 shadow-[0_0_5px_#ff3b30]'}`}></span>
+                <span className={`w-1.5 h-1.5 rounded-full animate-pulse ${line.netProfit >= 0 ? 'bg-[#10b981] shadow-[0_0_5px_#10b981]' : 'bg-[#ff3b30] shadow-[0_0_5px_#ff3b30]'}`}></span>
                 {line.netProfit >= 0 ? 'Optimal' : 'Critical'}
               </span>
             </div>
 
             <div className="grid grid-cols-2 gap-4 mb-6">
-              <div className="bg-[rgba(0,0,0,0.2)] backdrop-blur-md p-4 rounded-2xl border border-[rgba(255,255,255,0.03)] shadow-inner transition-transform hover:-translate-y-1 duration-300">
-                <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mb-1">Total Production</p>
-                <p className="text-lg md:text-xl font-extrabold md:font-black text-gray-200">{line.totalProduction} <span className="text-xs text-gray-600">PCS</span></p>
+              <div className="bg-[var(--color-surface)] backdrop-blur-md p-4 rounded-2xl border border-[var(--color-border)] shadow-inner transition-transform hover:-translate-y-1 duration-300">
+                <p className="text-[10px] text-[var(--color-text-muted)] font-bold uppercase tracking-widest mb-1">Total Production</p>
+                <p className="text-lg md:text-xl font-extrabold md:font-black text-[var(--color-text-main)]">{line.totalProduction} <span className="text-xs text-[var(--color-text-muted)]">PCS</span></p>
               </div>
-              <div className={`bg-[rgba(0,0,0,0.2)] backdrop-blur-md p-4 rounded-2xl border shadow-inner transition-transform hover:-translate-y-1 duration-300 ${line.netProfit >= 0 ? 'border-[rgba(16,185,129,0.15)] bg-gradient-to-b from-[rgba(16,185,129,0.05)] to-transparent' : 'border-[rgba(255,59,48,0.15)] bg-gradient-to-b from-[rgba(255,59,48,0.05)] to-transparent'}`}>
-                <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mb-1">{line.netProfit >= 0 ? 'Net Profit' : 'Net Loss'}</p>
-                <p className={`text-lg md:text-xl font-extrabold md:font-black drop-shadow-md ${line.netProfit >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+              <div className={`bg-[var(--color-surface)] backdrop-blur-md p-4 rounded-2xl border shadow-inner transition-transform hover:-translate-y-1 duration-300 ${line.netProfit >= 0 ? 'border-[rgba(16,185,129,0.15)] bg-[var(--color-success-glow)]' : 'border-[rgba(255,59,48,0.15)] bg-[var(--color-danger-glow)]'}`}>
+                <p className="text-[10px] text-[var(--color-text-muted)] font-bold uppercase tracking-widest mb-1">{line.netProfit >= 0 ? 'Net Profit' : 'Net Loss'}</p>
+                <p className={`text-lg md:text-xl font-extrabold md:font-black [filter:var(--shadow-text)] ${line.netProfit >= 0 ? 'text-[var(--color-success-text)]' : 'text-[var(--color-danger-text)]'}`}>
                   BDT {Math.round(line.netProfit).toLocaleString()}
                 </p>
               </div>
-              <div className="bg-[rgba(0,0,0,0.2)] backdrop-blur-md p-4 rounded-2xl border border-[rgba(255,255,255,0.03)] shadow-inner transition-transform hover:-translate-y-1 duration-300">
-                <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mb-1">Total Income</p>
+              <div className="bg-[var(--color-surface)] backdrop-blur-md p-4 rounded-2xl border border-[var(--color-border)] shadow-inner transition-transform hover:-translate-y-1 duration-300">
+                <p className="text-[10px] text-[var(--color-text-muted)] font-bold uppercase tracking-widest mb-1">Total Income</p>
                 <p className="text-lg md:text-xl font-extrabold md:font-black text-[var(--color-primary)]">BDT {Math.round(line.totalIncome).toLocaleString()}</p>
               </div>
-              <div className="bg-[rgba(0,0,0,0.2)] backdrop-blur-md p-4 rounded-2xl border border-[rgba(255,255,255,0.03)] shadow-inner transition-transform hover:-translate-y-1 duration-300">
-                <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mb-1">Total Cost</p>
+              <div className="bg-[var(--color-surface)] backdrop-blur-md p-4 rounded-2xl border border-[var(--color-border)] shadow-inner transition-transform hover:-translate-y-1 duration-300">
+                <p className="text-[10px] text-[var(--color-text-muted)] font-bold uppercase tracking-widest mb-1">Total Cost</p>
                 <p className="text-lg md:text-xl font-extrabold md:font-black text-amber-500">BDT {Math.round(line.totalCost).toLocaleString()}</p>
               </div>
             </div>
 
             <Link 
               href={`/lines/${line.id}`}
-              className="mt-auto group flex items-center justify-center gap-2 w-full py-4 rounded-xl bg-[rgba(255,255,255,0.03)] hover:bg-[rgba(255,255,255,0.08)] border border-[rgba(255,255,255,0.05)] transition-all duration-300"
+              className="mt-auto group flex items-center justify-center gap-2 w-full py-4 rounded-xl bg-[var(--color-surface)] hover:bg-[var(--color-surface-hover)] border border-[var(--color-border)] transition-all duration-300"
             >
-              <span className="text-sm font-bold tracking-widest uppercase text-white group-hover:text-[var(--color-primary)] transition-colors">View Details</span>
-              <ArrowRight size={16} className="text-white group-hover:text-[var(--color-primary)] group-hover:translate-x-1 transition-transform" />
+              <span className="text-sm font-bold tracking-widest uppercase text-[var(--color-text-main)] group-hover:text-[var(--color-primary)] transition-colors">View Details</span>
+              <ArrowRight size={16} className="text-[var(--color-text-main)] group-hover:text-[var(--color-primary)] group-hover:translate-x-1 transition-transform" />
             </Link>
-            <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-[rgba(255,255,255,0.02)] to-transparent pointer-events-none"></div>
+            <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-[var(--color-surface)] to-transparent pointer-events-none"></div>
           </Card>
         ))}
       </div>
