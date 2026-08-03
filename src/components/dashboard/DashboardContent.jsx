@@ -47,10 +47,17 @@ export function DashboardContent({ month, isArchive = false }) {
   const endDate = dailyTrends?.length > 0 ? dailyTrends[dailyTrends.length - 1].date : null;
   
   let dateText = '';
+  let dateComponents = null;
   let currentCalendarDay = 1;
   if (startDate && endDate) {
     const formatStr = 'do MMMM, yyyy';
     dateText = `from ${format(parseISO(startDate), 'do')} to ${format(parseISO(endDate), formatStr)}`;
+    dateComponents = {
+      startDay: format(parseISO(startDate), 'do'),
+      endDay: format(parseISO(endDate), 'do'),
+      month: format(parseISO(endDate), 'MMMM'),
+      year: format(parseISO(endDate), 'yyyy')
+    };
     currentCalendarDay = parseInt(endDate.split('-')[2], 10);
   }
 
@@ -79,11 +86,6 @@ export function DashboardContent({ month, isArchive = false }) {
               <h2 className="text-2xl md:text-4xl font-bold tracking-tighter uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] via-[var(--color-text-secondary)] to-[var(--color-text-muted)]">
                 System Overview
               </h2>
-              {dateText && (
-                <span className="block mt-2 px-3 py-1 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-full text-xs font-medium tracking-widest text-[var(--color-primary)] uppercase">
-                  {dateText}
-                </span>
-              )}
             </div>
             
             <button 
@@ -95,6 +97,14 @@ export function DashboardContent({ month, isArchive = false }) {
           </div>
         )}
         
+        {dateComponents && (
+          <div className="flex justify-center mb-5 md:mb-6 w-full relative z-10">
+            <span className="inline-flex items-baseline gap-1.5 text-xs md:text-sm font-medium tracking-widest text-[var(--color-text-secondary)] uppercase">
+              from {dateComponents.startDay} to {dateComponents.endDay} <span className="text-[110%] font-bold text-[var(--color-primary)] drop-shadow-[0_0_8px_var(--color-primary-glow)]">{dateComponents.month}</span>, {dateComponents.year}
+            </span>
+          </div>
+        )}
+
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
           <MetricCard 
             title="Total Cost" 
