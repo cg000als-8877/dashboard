@@ -7,19 +7,20 @@ import { useMonth } from '@/components/providers/MonthProvider';
 const dataCache = {};
 const fetchPromises = {};
 
-export function useKpiData() {
+export function useKpiData(monthOverride) {
   const { selectedMonth } = useMonth();
-  const [data, setData] = useState(dataCache[selectedMonth] || null);
-  const [loading, setLoading] = useState(!dataCache[selectedMonth]);
+  const targetMonth = monthOverride || selectedMonth;
+  const [data, setData] = useState(dataCache[targetMonth] || null);
+  const [loading, setLoading] = useState(!dataCache[targetMonth]);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     let isMounted = true;
 
     async function fetchData() {
-      if (dataCache[selectedMonth]) {
+      if (dataCache[targetMonth]) {
         if (isMounted) {
-          setData(dataCache[selectedMonth]);
+          setData(dataCache[targetMonth]);
           setLoading(false);
         }
         return;
@@ -27,14 +28,14 @@ export function useKpiData() {
 
       setLoading(true);
       try {
-        if (!fetchPromises[selectedMonth]) {
-          fetchPromises[selectedMonth] = fetch(`/api/data?month=${selectedMonth}`).then(res => {
+        if (!fetchPromises[targetMonth]) {
+          fetchPromises[targetMonth] = fetch(`/api/data?month=${targetMonth}`).then(res => {
             if (!res.ok) throw new Error('Failed to fetch data');
             return res.json();
           });
         }
         
-        const rawData = await fetchPromises[selectedMonth];
+        const rawData = await fetchPromises[targetMonth];
         
         if (!rawData.dailyProduction || !rawData.lines) {
           throw new Error('Invalid data format received from API');
@@ -49,7 +50,7 @@ export function useKpiData() {
           rawEngine: engine
         };
 
-        dataCache[selectedMonth] = processedData;
+        dataCache[targetMonth] = processedData;
 
         if (isMounted) {
           setData(processedData);
@@ -67,7 +68,7 @@ export function useKpiData() {
     return () => {
       isMounted = false;
     };
-  }, [selectedMonth]);
+  }, [targetMonth]);
 
   return { ...data, loading, error };
 }

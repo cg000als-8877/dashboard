@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Factory, BarChart3, FileText, Settings, Ship, Download, Calendar } from 'lucide-react';
+import { LayoutDashboard, Factory, BarChart3, FileText, Settings, Ship, Download, Calendar, History } from 'lucide-react';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { useMonth } from '@/components/providers/MonthProvider';
@@ -19,6 +19,7 @@ const navItems = [
   { name: 'Lines', href: '/lines', icon: Factory },
   { name: 'Analytics', href: '/analytics', icon: BarChart3 },
   { name: 'Simulator', href: '/simulator', icon: Ship },
+  { name: 'Archive', href: '/archive', icon: History },
 ];
 
 export default function Sidebar({ onClose }) {
@@ -96,50 +97,6 @@ export default function Sidebar({ onClose }) {
             </Link>
           );
         })}
-        
-        <div className="px-4 mt-8">
-          <p className="text-[10px] font-bold text-gray-500 tracking-widest uppercase mb-3">Data & Reports</p>
-          <div className="flex flex-col gap-3">
-            <div className="flex flex-col gap-1.5">
-              <div className="flex items-center gap-1.5 w-full">
-                <button
-                  onClick={() => setSelectedMonth('live')}
-                  className={cn(
-                    "flex-1 flex items-center gap-3 px-3 py-2.5 rounded-xl text-[11px] uppercase tracking-wider font-bold transition-all duration-300 text-left",
-                    selectedMonth === 'live' 
-                      ? "bg-[rgba(79,140,255,0.15)] text-[var(--color-primary)] border border-[rgba(79,140,255,0.3)] shadow-[0_0_15px_rgba(79,140,255,0.15)]" 
-                      : "bg-[rgba(0,0,0,0.2)] text-gray-500 border border-[rgba(255,255,255,0.03)] hover:bg-[rgba(255,255,255,0.05)] hover:text-gray-300"
-                  )}
-                >
-                  <Calendar size={14} className={selectedMonth === 'live' ? "text-[var(--color-primary)]" : "text-gray-600"} />
-                  August 2026 (Live)
-                </button>
-              </div>
-              
-              <div className="flex items-center gap-1.5 w-full">
-                <button
-                  onClick={() => setSelectedMonth('2026-07')}
-                  className={cn(
-                    "flex-1 flex items-center gap-3 px-3 py-2.5 rounded-xl text-[11px] uppercase tracking-wider font-bold transition-all duration-300 text-left",
-                    selectedMonth === '2026-07' 
-                      ? "bg-[rgba(79,140,255,0.15)] text-[var(--color-primary)] border border-[rgba(79,140,255,0.3)] shadow-[0_0_15px_rgba(79,140,255,0.15)]" 
-                      : "bg-[rgba(0,0,0,0.2)] text-gray-500 border border-[rgba(255,255,255,0.03)] hover:bg-[rgba(255,255,255,0.05)] hover:text-gray-300"
-                  )}
-                >
-                  <Calendar size={14} className={selectedMonth === '2026-07' ? "text-[var(--color-primary)]" : "text-gray-600"} />
-                  July 2026 (Archive)
-                </button>
-                <button 
-                  onClick={() => window.open('https://drive.google.com/file/d/1GWGOeDtG3mvxW7T8y0w64UHg75jBR-Bv/view?usp=sharing', '_blank')}
-                  title="Download Archive PDF"
-                  className="flex items-center justify-center p-2.5 rounded-xl transition-all duration-300 bg-[rgba(239,68,68,0.1)] text-red-400 border border-[rgba(239,68,68,0.2)] hover:bg-[rgba(239,68,68,0.2)] hover:text-red-300 shadow-[0_0_10px_rgba(239,68,68,0.1)] group"
-                >
-                  <FileText size={14} className="group-hover:scale-110 transition-transform" />
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
       </nav>
 
       <div className="p-6 mt-auto relative z-10">

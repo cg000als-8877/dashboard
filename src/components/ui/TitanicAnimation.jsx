@@ -278,7 +278,7 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
 
   return (
     <div className="w-full flex flex-col gap-3">
-      <div className="w-full relative bg-[#050A15] aspect-[4/3] md:aspect-auto md:h-[550px] rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.5)] border border-[var(--color-border)] overflow-hidden">
+      <div className="w-full relative bg-[#050A15] aspect-[5/4] md:aspect-auto md:h-[550px] md:rounded-2xl shadow-none md:shadow-[0_10px_40px_rgba(0,0,0,0.5)] border-none md:border border-[var(--color-border)] overflow-hidden">
       
       <style>{`
         @keyframes ship-bob {
@@ -363,7 +363,8 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
         </defs>
         
         {/* Night Sky Stars - Now moving backwards in Profit mode! */}
-        <g style={{ animation: isProfit ? 'star-move 20s infinite linear' : 'none' }}>
+        <g className="origin-center scale-[0.75] md:scale-100 transition-transform duration-500" style={{ transformOrigin: '600px 600px' }}>
+          <g style={{ animation: isProfit ? 'star-move 20s infinite linear' : 'none' }}>
           <g>
             {stars.map((star, i) => (
               <circle 
@@ -545,6 +546,7 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
             </g>
           </g>
 
+        </g>
         </g>
       </svg>
     </div>

@@ -3,6 +3,7 @@ export function createKpiEngine(rawData) {
   const activeProduction = rawData.dailyProduction.filter(d => d.status === 'ACTIVE');
 
   return {
+    kpiData: rawData,
     // Aggregate everything
     getOverallStats() {
       let totalCost = 0;
