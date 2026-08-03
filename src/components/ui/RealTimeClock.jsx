@@ -87,35 +87,6 @@ export function RealTimeClock({ className = "" }) {
         <p className="text-white text-[11px] font-medium">{banglaStr}</p>
       </div>
 
-      {/* Desktop View: Interactive Dropdown Tile */}
-      <div className="hidden md:flex flex-col w-full relative">
-        <button 
-          onClick={() => setIsExpanded(!isExpanded)}
-          className="w-full flex items-center gap-2 cursor-pointer group py-1"
-        >
-          <div className="w-1.5 h-1.5 rounded-full bg-[var(--color-primary)]"></div>
-          <p className="text-[var(--color-text-secondary)] group-hover:text-white text-xs font-semibold tracking-wide transition-colors">{dateStr}</p>
-          <svg 
-            className={`w-3.5 h-3.5 text-[var(--color-text-secondary)] group-hover:text-white transition-transform duration-300 ml-auto ${isExpanded ? 'rotate-180' : ''}`} 
-            fill="none" viewBox="0 0 24 24" stroke="currentColor"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-          </svg>
-        </button>
-
-        {isExpanded && (
-          <div className="absolute top-[calc(100%+8px)] left-0 w-full bg-black border border-[rgba(255,255,255,0.1)] rounded-lg p-3 shadow-[0_8px_32px_rgba(0,0,0,0.8)] z-50 flex flex-col gap-2.5 origin-top animate-in fade-in zoom-in-95 duration-200">
-            <div className="flex flex-col">
-              <span className="text-[9px] font-bold text-[var(--color-primary)] uppercase tracking-wider mb-0.5">Hijri</span>
-              <p className="text-[var(--color-text-secondary)] text-[11px] font-medium leading-tight">{hijriStr}</p>
-            </div>
-            <div className="flex flex-col mt-0.5">
-              <span className="text-[9px] font-bold text-emerald-500 uppercase tracking-wider mb-0.5">Bengali</span>
-              <p className="text-[var(--color-text-secondary)] text-[11px] font-medium leading-tight">{banglaStr}</p>
-            </div>
-          </div>
-        )}
-      </div>
     </div>
   );
 }

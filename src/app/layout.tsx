@@ -1,6 +1,8 @@
 import { Barlow } from "next/font/google";
 import "./globals.css";
 import DashboardLayout from "@/components/layout/DashboardLayout";
+import { MonthProvider } from "@/components/providers/MonthProvider";
+import { Suspense } from "react";
 
 const barlow = Barlow({ 
   weight: ["300", "400", "500", "600", "700", "800", "900"],
@@ -19,9 +21,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className={`${barlow.className} bg-[var(--color-bg-main)] text-[var(--color-text-main)]`}>
-        <DashboardLayout>
-          {children}
-        </DashboardLayout>
+        <Suspense fallback={<div>Loading...</div>}>
+          <MonthProvider>
+            <DashboardLayout>
+              {children}
+            </DashboardLayout>
+          </MonthProvider>
+        </Suspense>
       </body>
     </html>
   );

@@ -2,45 +2,72 @@
 
 import { useState, useEffect } from 'react';
 import { createKpiEngine } from './kpiEngine';
+import { useMonth } from '@/components/providers/MonthProvider';
+
+const dataCache = {};
+const fetchPromises = {};
 
 export function useKpiData() {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const { selectedMonth } = useMonth();
+  const [data, setData] = useState(dataCache[selectedMonth] || null);
+  const [loading, setLoading] = useState(!dataCache[selectedMonth]);
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    let isMounted = true;
+
     async function fetchData() {
-      try {
-        const res = await fetch('/api/data');
-        if (!res.ok) {
-          throw new Error('Failed to fetch data');
+      if (dataCache[selectedMonth]) {
+        if (isMounted) {
+          setData(dataCache[selectedMonth]);
+          setLoading(false);
         }
-        const rawData = await res.json();
+        return;
+      }
+
+      setLoading(true);
+      try {
+        if (!fetchPromises[selectedMonth]) {
+          fetchPromises[selectedMonth] = fetch(`/api/data?month=${selectedMonth}`).then(res => {
+            if (!res.ok) throw new Error('Failed to fetch data');
+            return res.json();
+          });
+        }
         
-        // Ensure rawData matches the expected structure
+        const rawData = await fetchPromises[selectedMonth];
+        
         if (!rawData.dailyProduction || !rawData.lines) {
           throw new Error('Invalid data format received from API');
         }
 
         const engine = createKpiEngine(rawData);
-        
-        setData({
+        const processedData = {
           stats: engine.getOverallStats(),
           dailyTrends: engine.getDailyTrends(),
           insights: engine.getInsights(),
           lines: engine.getLinePerformance(),
           rawEngine: engine
-        });
+        };
+
+        dataCache[selectedMonth] = processedData;
+
+        if (isMounted) {
+          setData(processedData);
+        }
       } catch (err) {
         console.error(err);
-        setError(err.message);
+        if (isMounted) setError(err.message);
       } finally {
-        setLoading(false);
+        if (isMounted) setLoading(false);
       }
     }
 
     fetchData();
-  }, []);
+
+    return () => {
+      isMounted = false;
+    };
+  }, [selectedMonth]);
 
   return { ...data, loading, error };
 }

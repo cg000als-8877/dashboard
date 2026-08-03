@@ -1,10 +1,21 @@
 import { NextResponse } from 'next/server';
 import * as XLSX from 'xlsx';
+import fs from 'fs/promises';
+import path from 'path';
 
 export const dynamic = 'force-dynamic'; // Ensure it always fetches fresh data
 
-export async function GET() {
+export async function GET(request) {
   try {
+    const { searchParams } = new URL(request.url);
+    const month = searchParams.get('month');
+
+    // Serve historical data if requested
+    if (month === '2026-07') {
+      const filePath = path.join(process.cwd(), 'src', 'data', 'archive-2026-07.json');
+      const fileData = await fs.readFile(filePath, 'utf-8');
+      return NextResponse.json(JSON.parse(fileData));
+    }
     // Live Google Sheets export URL
     const url = 'https://docs.google.com/spreadsheets/d/1sk_chMraCOx2frbK4RqUoU9M1XkGMAkjP2VgClhPJKo/export?format=xlsx';
     

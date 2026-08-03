@@ -1,40 +1,31 @@
-import fs from 'fs';
-import path from 'path';
+"use client";
+
+import React, { use } from 'react';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
+import { useKpiData } from '@/utils/useKpiData';
 
-import * as XLSX from 'xlsx';
+export default function LineDetailsPage({ params }) {
+  const { id } = use(params); // 'a', 'b', 'c', or 'd'
+  
+  const { dailyTrends, lines, rawEngine, loading, error } = useKpiData();
 
-export default async function LineDetailsPage({ params }) {
-  const { id } = await params; // 'a', 'b', 'c', or 'd'
-  
-  // Fetch live data directly from Google Sheets
-  const url = 'https://docs.google.com/spreadsheets/d/1sk_chMraCOx2frbK4RqUoU9M1XkGMAkjP2VgClhPJKo/export?format=xlsx';
-  let sheetData = null;
-  
-  try {
-    const response = await fetch(url, { cache: 'no-store' });
-    if (response.ok) {
-      const arrayBuffer = await response.arrayBuffer();
-      const fileBuffer = Buffer.from(arrayBuffer);
-      const workbook = XLSX.read(fileBuffer, { type: 'buffer' });
-      
-      // Find the matching sheet name (handle both "LINE-A" and "LINE A")
-      const targetSheetName = workbook.SheetNames.find(s => {
-        const normalized = s.trim().toLowerCase().replace(/\s+/g, '-');
-        return normalized === `line-${id.toLowerCase()}`;
-      });
-      
-      if (targetSheetName) {
-        const sheet = workbook.Sheets[targetSheetName];
-        sheetData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-      }
-    }
-  } catch (error) {
-    console.error("Could not load excel data", error);
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-96">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
+      </div>
+    );
   }
 
-  if (!sheetData || sheetData.length < 4) {
+  if (error) {
+    return <div className="text-red-500 text-center mt-20">Error loading data: {error}</div>;
+  }
+
+  // Get raw daily production for this line
+  const lineData = rawEngine.kpiData.dailyProduction.filter(d => d.line_id.toLowerCase() === id.toLowerCase());
+
+  if (!lineData || lineData.length === 0) {
     return (
       <div className="p-8">
         <h1 className="text-2xl text-white">Line data not found for ID: {id}</h1>
@@ -43,62 +34,31 @@ export default async function LineDetailsPage({ params }) {
     );
   }
 
-  const headerRow = sheetData[3];
-  const dataRows = sheetData.slice(4);
+  const activeRows = lineData.filter(d => d.status === 'ACTIVE');
+  
+  // Calculate totals
+  const totalProduction = activeRows.reduce((sum, d) => sum + (d.production_qty || 0), 0);
+  const totalCost = activeRows.reduce((sum, d) => sum + (d.total_cost || 0), 0);
+  const totalIncome = activeRows.reduce((sum, d) => sum + (d.total_income || 0), 0);
+  const totalNetProfitLoss = activeRows.reduce((sum, d) => sum + (d.net_profit || 0), 0);
 
-  // Find max columns to ensure all rows have same number of td
-  const maxCols = Math.max(...sheetData.map(r => r.length), headerRow.length);
-
-  // Find the last row with actual data to treat as the TOTAL row
-  const lastNonEmptyRowIndex = dataRows.findLastIndex(row => !row.every(cell => cell === undefined || cell === ''));
-  const totalRow = dataRows[lastNonEmptyRowIndex] || [];
-  
-  // Truncate the dataRows to remove trailing blank rows
-  const cleanDataRows = lastNonEmptyRowIndex !== -1 ? dataRows.slice(0, lastNonEmptyRowIndex + 1) : dataRows;
-  
-  // Columns: DATE(0), LINE(1), STYLE(2), ITEM(3), ManPower(4), PerHeadCost(5), TotalCost(6), Prod(7), ProdCostDzn(8), CMCostDzn(9), TotalIncome(10), LossProfit(11)
-  const totalProduction = totalRow[7] || 0;
-  const totalCost = totalRow[6] || 0;
-  const totalIncome = totalRow[10] || 0;
-  const totalNetProfitLoss = totalRow[11] || 0;
-
-  // Extract date range and style dynamically from the data rows (excluding the total row itself)
-  const dataOnlyRows = cleanDataRows.slice(0, -1);
-  
-  // Find rows that actually have data (e.g. Total Cost or Production values)
-  const validDataRows = dataOnlyRows.filter(r => (r[6] && r[6] !== '') || (r[7] && r[7] !== ''));
-  
-  const parseExcelDate = (val) => {
-    if (typeof val === 'number') {
-      const d = XLSX.SSF.parse_date_code(val);
-      if (d) {
-        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        return `${d.d}-${monthNames[d.m - 1]}-${String(d.y).slice(-2)}`;
-      }
-    }
-    return val;
-  };
-  
-  const allDates = validDataRows.map(r => parseExcelDate(r[0])).filter(d => d && String(d).trim() !== '');
-  const firstDateStr = allDates[0] || '';
-  const lastDateStr = allDates[allDates.length - 1] || '';
+  // Extract date range and style
+  const firstDateStr = lineData[0]?.date || '';
+  const lastDateStr = lineData[lineData.length - 1]?.date || '';
   
   let dateRange = 'N/A';
   if (firstDateStr && lastDateStr) {
-    const startParts = String(firstDateStr).split('-');
-    const endParts = String(lastDateStr).split('-');
-    
-    if (startParts.length === 3 && endParts.length === 3 && startParts[1] === endParts[1] && startParts[2] === endParts[2]) {
-      const monthNames = { 'Jan': 'January', 'Feb': 'February', 'Mar': 'March', 'Apr': 'April', 'May': 'May', 'Jun': 'June', 'Jul': 'July', 'Aug': 'August', 'Sep': 'September', 'Oct': 'October', 'Nov': 'November', 'Dec': 'December' };
-      const month = monthNames[startParts[1]] || startParts[1];
-      const year = '20' + startParts[2];
-      dateRange = `${startParts[0]} - ${endParts[0]} ${month}, ${year}`;
+    const startParts = firstDateStr.split('-');
+    const endParts = lastDateStr.split('-');
+    if (startParts[1] === endParts[1] && startParts[0] === endParts[0]) {
+      const monthNames = [null, 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+      dateRange = `${startParts[2]} - ${endParts[2]} ${monthNames[parseInt(startParts[1])]}, ${startParts[0]}`;
     } else {
       dateRange = `${firstDateStr} to ${lastDateStr}`;
     }
   }
   
-  const itemName = validDataRows.find(r => r[3] && String(r[3]).trim() !== '')?.[3] || 'N/A';
+  const itemName = activeRows.find(r => r.item)?.item || 'N/A';
 
   return (
     <div className="space-y-6 animate-[fade-up_0.4s_ease-out_both] p-2 md:p-0">
@@ -157,17 +117,13 @@ export default async function LineDetailsPage({ params }) {
       </div>
 
       {/* Modern Dark-Themed Table */}
-      {/* Modern Dark-Themed Table */}
       <div className="w-full max-h-[70vh] overflow-auto bg-[rgba(10,13,20,0.6)] backdrop-blur-2xl rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-[rgba(255,255,255,0.05)] hide-scrollbar relative">
         <table className="w-full text-sm text-left border-collapse table-auto relative">
           <thead className="sticky top-0 z-20">
             <tr className="bg-[rgba(20,25,35,0.95)] backdrop-blur-xl shadow-lg border-b border-[rgba(255,255,255,0.1)]">
-              {Array.from({ length: maxCols }).map((_, colIndex) => {
-                let headerText = headerRow[colIndex] || '';
-                headerText = headerText.replace('(CM = Cut & Make)', '').trim();
-                
+              {['Date', 'Line', 'Style', 'Item', 'Workers', 'Per Head Cost', 'Total Cost', 'Prod Qty', 'Prod DZN', 'CM/DZN', 'Total Income', 'Net Profit'].map((headerText, colIndex) => {
                 const isNumericCol = colIndex > 3;
-                const isTightCol = colIndex <= 3; // DATE, LINE, STYLE, ITEM
+                const isTightCol = colIndex <= 3;
                 return (
                   <th 
                     key={colIndex} 
@@ -184,45 +140,35 @@ export default async function LineDetailsPage({ params }) {
             </tr>
           </thead>
           <tbody className="divide-y divide-[rgba(255,255,255,0.02)]">
-            {cleanDataRows.map((row, rowIndex) => {
-              // Check if the entire row is empty (spacing row from excel)
-              const isEmptyRow = row.every(cell => cell === undefined || cell === '');
-              
-              if (isEmptyRow) {
+            {lineData.map((row, rowIndex) => {
+              if (row.status === 'HOLIDAY') {
                 return (
                   <tr key={rowIndex} className="h-8 bg-[rgba(0,0,0,0.1)]">
-                    <td colSpan={maxCols}></td>
+                    <td colSpan={12} className="px-5 py-2 text-center text-[10px] tracking-widest uppercase text-gray-600 font-bold">
+                      {row.date} - NO PRODUCTION / HOLIDAY
+                    </td>
                   </tr>
                 );
               }
 
-              const isTotalRow = rowIndex === lastNonEmptyRowIndex;
+              const cells = [
+                row.date, row.line_id, row.style, row.item,
+                row.worker_count, row.per_head_cost, row.total_cost,
+                row.production_qty, row.production_dzn, row.cm_per_dzn,
+                row.total_income, row.net_profit
+              ];
 
               return (
                 <tr 
                   key={rowIndex} 
-                  className={`hover:bg-[rgba(255,255,255,0.03)] transition-colors group ${isTotalRow ? 'bg-[rgba(255,255,255,0.05)] backdrop-blur-md' : ''}`}
+                  className={`hover:bg-[rgba(255,255,255,0.03)] transition-colors group`}
                 >
-                  {Array.from({ length: maxCols }).map((_, cellIndex) => {
-                    let cell = row[cellIndex] !== undefined ? row[cellIndex] : '';
+                  {cells.map((cell, cellIndex) => {
+                    const isNegative = String(cell).startsWith('-');
+                    const isNumber = typeof cell === 'number';
+                    const isDate = cellIndex === 0;
+                    const isTightCol = cellIndex <= 3;
                     
-                    // Format Excel Date serial (cellIndex 0)
-                    if (cellIndex === 0 && !isTotalRow && typeof cell === 'number') {
-                      const d = XLSX.SSF.parse_date_code(cell);
-                      if (d) {
-                        cell = `${d.y}-${String(d.m).padStart(2, '0')}-${String(d.d).padStart(2, '0')}`;
-                      }
-                    }
-
-                    // Logic to make values pop
-                    const isNegative = String(cell).startsWith('-') && !String(cell).includes('Jul');
-                    const isNumber = !isNaN(cell) && cell !== '';
-                    const isDate = String(cell).includes('-'); // Simple heuristic for our parsed dates
-
-                    const isTightCol = cellIndex <= 3; // DATE, LINE, STYLE, ITEM
-
-                    const isTotalLossCol = isTotalRow && cellIndex === maxCols - 1;
-
                     return (
                       <td 
                         key={cellIndex} 
@@ -231,19 +177,28 @@ export default async function LineDetailsPage({ params }) {
                           ${isTightCol ? 'w-[1%] whitespace-nowrap' : 'whitespace-nowrap md:whitespace-normal break-words'}
                           ${isNumber ? "text-center font-mono tracking-wide" : ""}
                           ${isNegative ? "!text-red-400 font-bold" : ""} 
-                          ${isDate && !isNegative && !isTotalRow ? "text-[var(--color-primary)] font-bold tracking-widest text-left uppercase text-[10px]" : ""}
-                          ${isTotalRow ? "font-sans font-black text-white text-[16px] tracking-wide" : ""}
-                          ${isTotalLossCol && String(cell).startsWith('-') ? "text-red-400 bg-[rgba(255,0,0,0.1)] shadow-[inset_0_0_10px_rgba(255,0,0,0.2)]" : ""}
-                          ${isTotalLossCol && !String(cell).startsWith('-') ? "text-emerald-400 bg-[rgba(16,185,129,0.1)] shadow-[inset_0_0_10px_rgba(16,185,129,0.2)]" : ""}
+                          ${isDate ? "text-[var(--color-primary)] font-bold tracking-widest text-left uppercase text-[10px]" : ""}
                         `}
                       >
-                        {isNumber && cellIndex > 3 ? Math.round(parseFloat(cell)).toLocaleString() : cell}
+                        {isNumber && cellIndex > 3 ? Math.round(cell).toLocaleString() : cell || '-'}
                       </td>
                     );
                   })}
                 </tr>
               )
             })}
+            
+            {/* Total Row */}
+            <tr className="bg-[rgba(255,255,255,0.05)] backdrop-blur-md">
+              <td colSpan={6} className="px-5 py-3.5 text-right font-black text-white text-[16px] tracking-wide">TOTAL</td>
+              <td className="px-5 py-3.5 text-center font-mono font-black text-amber-500 text-[16px] tracking-wide">{Math.round(totalCost).toLocaleString()}</td>
+              <td className="px-5 py-3.5 text-center font-mono font-black text-white text-[16px] tracking-wide">{Math.round(totalProduction).toLocaleString()}</td>
+              <td colSpan={2}></td>
+              <td className="px-5 py-3.5 text-center font-mono font-black text-white text-[16px] tracking-wide">{Math.round(totalIncome).toLocaleString()}</td>
+              <td className={`px-5 py-3.5 text-center font-mono font-black text-[16px] tracking-wide ${totalNetProfitLoss >= 0 ? "text-emerald-400 bg-[rgba(16,185,129,0.1)] shadow-[inset_0_0_10px_rgba(16,185,129,0.2)]" : "text-red-400 bg-[rgba(255,0,0,0.1)] shadow-[inset_0_0_10px_rgba(255,0,0,0.2)]"}`}>
+                {Math.round(totalNetProfitLoss).toLocaleString()}
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
