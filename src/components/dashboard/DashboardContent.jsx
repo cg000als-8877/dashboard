@@ -239,22 +239,21 @@ export function DashboardContent({ month, isArchive = false }) {
 
       {/* AI Insights Panel (Live Dashboard Only) */}
       {!isArchive && (
-        <div className="relative group">
-          <div className="absolute -inset-0.5 bg-gradient-to-r from-[var(--color-primary)] to-purple-600 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
-          <Card className="relative bg-[var(--color-bg-card)]/80 backdrop-blur-2xl border-[var(--color-border)] shadow-2xl overflow-hidden p-6">
-            <div className="flex items-start gap-5">
-              <div className="hidden md:flex bg-[var(--color-primary)]/10 p-3 rounded-xl border border-[var(--color-primary)]/20 text-[var(--color-primary)] shrink-0 shadow-[0_0_15px_rgba(79,140,255,0.2)]">
-                <Sparkles className="w-6 h-6 animate-pulse" />
+        <div className="mt-4">
+          <Card className="bg-[var(--color-bg-card)] border border-[var(--color-border)] shadow-sm overflow-hidden p-6 rounded-2xl">
+            <div className="flex items-start gap-4">
+              <div className="hidden md:flex bg-[var(--color-surface)] p-2.5 rounded-lg border border-[var(--color-border)] text-[var(--color-text-secondary)] shrink-0">
+                <Sparkles className="w-5 h-5" />
               </div>
               <div className="w-full">
-                <h3 className="text-xs font-bold text-[var(--color-text-secondary)] uppercase tracking-widest mb-4 flex items-center gap-2">
+                <h3 className="text-[11px] font-bold text-[var(--color-text-secondary)] uppercase tracking-[0.2em] mb-4">
                   System Intelligence
                 </h3>
-                <ul className="space-y-3 w-full">
+                <ul className="space-y-2.5 w-full">
                   {insights.map((insight, i) => (
-                    <li key={i} className="flex items-start gap-3 bg-[var(--color-surface)] p-3 rounded-xl border border-[var(--color-border)]">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-primary)] mt-1.5 shrink-0 shadow-[0_0_5px_var(--color-primary)]"></span>
-                      <span className="text-sm font-light text-[var(--color-text-main)] leading-relaxed">{insight}</span>
+                    <li key={i} className="flex items-start gap-3 bg-[var(--color-surface)] p-3 rounded-lg border border-[var(--color-border)]">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-primary)] mt-1.5 shrink-0"></span>
+                      <span className="text-sm font-medium text-[var(--color-text-main)] leading-relaxed">{insight}</span>
                     </li>
                   ))}
                 </ul>
@@ -276,12 +275,7 @@ export function DashboardContent({ month, isArchive = false }) {
         </div>
       </div>
       
-      {/* Mobile only update status */}
-      {!isArchive && (
-        <div className="md:hidden mt-8 pb-4 text-center">
-          <p className="text-[10px] text-[var(--color-text-muted)] font-light tracking-wide">Last updated data 25 july, 2026</p>
-        </div>
-      )}
+
 
       </div>
 

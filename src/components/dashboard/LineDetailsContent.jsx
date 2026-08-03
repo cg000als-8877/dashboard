@@ -31,6 +31,20 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false }) {
   }
 
   const activeRows = lineData.filter(d => d.status === 'ACTIVE');
+
+  // Filter lineData to only show rows between the first and last active production dates
+  let firstActiveIndex = -1;
+  let lastActiveIndex = -1;
+  lineData.forEach((row, idx) => {
+    if (row.status !== 'HOLIDAY') {
+      if (firstActiveIndex === -1) firstActiveIndex = idx;
+      lastActiveIndex = idx;
+    }
+  });
+
+  const filteredLineData = firstActiveIndex !== -1 
+    ? lineData.slice(firstActiveIndex, lastActiveIndex + 1) 
+    : [];
   
   // Calculate totals
   const totalProduction = activeRows.reduce((sum, d) => sum + (d.production_qty || 0), 0);
@@ -146,12 +160,14 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false }) {
             </tr>
           </thead>
           <tbody className="divide-y divide-[var(--color-border)]">
-            {lineData.map((row, rowIndex) => {
+            {filteredLineData.map((row, rowIndex) => {
               if (row.status === 'HOLIDAY') {
+                const dateObj = new Date(row.date);
+                const isFriday = dateObj.getDay() === 5;
                 return (
                   <tr key={rowIndex} className="h-8 bg-[var(--color-surface)]">
                     <td colSpan={12} className="px-5 py-2 text-center text-[10px] tracking-widest uppercase text-[var(--color-text-muted)] font-medium">
-                      {row.date} - NO PRODUCTION / HOLIDAY
+                      {row.date} - {isFriday ? 'FRIDAY / HOLIDAY' : 'NO PRODUCTION / HOLIDAY'}
                     </td>
                   </tr>
                 );
