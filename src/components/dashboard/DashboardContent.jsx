@@ -4,7 +4,7 @@ import { useKpiData } from '@/utils/useKpiData';
 import { MetricCard, Card } from '@/components/ui/Card';
 import { DailyPerformanceChart, IncomeVsCostChart } from '@/components/dashboard/DashboardCharts';
 import { TitanicAnimation } from '@/components/ui/TitanicAnimation';
-import { Sparkles, ArrowRight, Download } from 'lucide-react';
+import { Sparkles, ArrowRight, Download, FileText } from 'lucide-react';
 import Link from 'next/link';
 import { RealTimeClock } from '@/components/ui/RealTimeClock';
 import { PrintableArchiveReport } from '@/components/report/PrintableArchiveReport';
@@ -148,6 +148,20 @@ export function DashboardContent({ month, isArchive = false }) {
                 DOWNLOAD {month.toUpperCase()}
               </>
             )}
+          </button>
+        </div>
+      )}
+
+      {/* July PDF Download Button (Archive Only) */}
+      {month === '2026-07' && (
+        <div className="flex justify-center mt-10 mb-2 relative z-10">
+          <button 
+            onClick={() => window.open('https://drive.google.com/file/d/1GWGOeDtG3mvxW7T8y0w64UHg75jBR-Bv/view?usp=sharing', '_blank')}
+            className="flex items-center gap-3 bg-[var(--color-danger)] hover:bg-red-500 text-white font-bold py-3 px-6 rounded-2xl transition-all [box-shadow:0_0_20px_var(--color-danger-glow)] hover:[box-shadow:0_0_30px_var(--color-danger-glow)] text-[10px] sm:text-xs uppercase tracking-widest active:scale-95"
+          >
+            <span>Download PDF of July Sheets</span>
+            <div className="w-[1px] h-5 bg-white/40 rounded-full mx-1"></div>
+            <FileText size={18} />
           </button>
         </div>
       )}

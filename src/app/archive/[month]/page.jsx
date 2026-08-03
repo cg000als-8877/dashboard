@@ -24,14 +24,7 @@ export default function ArchiveMonthPage({ params }) {
           <span className="hidden sm:inline">Back to Archives</span>
         </Link>
         
-        {month === '2026-07' && (
-          <button 
-            onClick={() => window.open('https://drive.google.com/file/d/1GWGOeDtG3mvxW7T8y0w64UHg75jBR-Bv/view?usp=sharing', '_blank')}
-            className="flex items-center gap-2 bg-[var(--color-danger)] hover:bg-red-500 text-white font-bold py-2 px-4 rounded-xl transition-all [box-shadow:0_0_15px_var(--color-danger-glow)] hover:[box-shadow:0_0_25px_var(--color-danger-glow)] text-xs uppercase tracking-widest active:scale-95"
-          >
-            <FileText size={16} /> July Pdf
-          </button>
-        )}
+
       </div>
 
       <DashboardContent month={month} isArchive={true} />
