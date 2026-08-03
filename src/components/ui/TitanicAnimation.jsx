@@ -563,7 +563,7 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
           {/* Front Wave - Speeds up in Profit mode! */}
           <g transform="translate(0, 240)">
             <g style={{ animation: `wave-flow ${isProfit ? '1s' : '3s'} infinite linear` }}>
-              <path d={frontWavePath} fill={isDay ? "rgba(3, 169, 244, 0.8)" : "rgba(28, 54, 94, 0.7)"} />
+              <path d={frontWavePath} fill={isDay ? "rgba(3, 169, 244, 0.4)" : "rgba(28, 54, 94, 0.7)"} />
             </g>
           </g>
 
