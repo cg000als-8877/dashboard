@@ -34,8 +34,8 @@
 :root {
   background-color: var(--color-bg-main);
   color: var(--color-text-main);
-  --color-surface: rgba(255, 255, 255, 0.05);
-  --color-surface-hover: rgba(255, 255, 255, 0.1);
+  --color-surface: rgba(0, 0, 0, 0.25);
+  --color-surface-hover: rgba(0, 0, 0, 0.4);
   --color-on-primary: #FFFFFF;
   --shadow-color: rgba(0, 0, 0, 0.5);
 }
