@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, Fragment } from 'react';
 import Sidebar from './Sidebar';
 import { Menu, X } from 'lucide-react';
 import { cn } from './Sidebar';
@@ -66,15 +66,15 @@ export default function DashboardLayout({ children }) {
           </div>
 
           {/* Minimal Fit-to-Frame Top Nav Bar */}
-          <nav className="flex items-center justify-between w-full px-3 sm:px-6 py-2.5 border-t border-[var(--color-border)] bg-[var(--color-bg-card)]/90 backdrop-blur-2xl overflow-hidden">
+          <nav className="flex items-center justify-between w-full px-2 sm:px-4 py-2.5 border-t border-[var(--color-border)] bg-[var(--color-bg-card)]/90 backdrop-blur-2xl overflow-hidden">
             {navItems.map((item, index) => {
               const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
               return (
-                <div key={item.name} className="flex items-center gap-2 sm:gap-3">
+                <Fragment key={item.name}>
                   <Link
                     href={item.href}
                     className={cn(
-                      "text-[9px] sm:text-[10px] font-bold uppercase tracking-widest transition-all duration-300",
+                      "text-[9px] sm:text-[10px] font-bold uppercase tracking-widest transition-all duration-300 text-center flex-1",
                       isActive 
                         ? "text-[var(--color-primary)] drop-shadow-[0_0_6px_var(--color-primary)] scale-110" 
                         : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)]"
@@ -83,9 +83,9 @@ export default function DashboardLayout({ children }) {
                     {item.name}
                   </Link>
                   {index < navItems.length - 1 && (
-                    <div className="w-[1px] h-5 sm:h-6 bg-gradient-to-b from-transparent via-[var(--color-text-muted)] to-transparent opacity-40"></div>
+                    <div className="w-[1px] h-4 sm:h-5 bg-gradient-to-b from-transparent via-[var(--color-text-muted)] to-transparent opacity-40 mx-1 sm:mx-2 flex-shrink-0"></div>
                   )}
-                </div>
+                </Fragment>
               );
             })}
           </nav>
