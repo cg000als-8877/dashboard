@@ -80,11 +80,11 @@ export function RealTimeClock({ className = "" }) {
     <div className={`w-full ${className}`}>
       {/* Mobile View: Inline side-by-side */}
       <div className="flex md:hidden flex-row flex-wrap justify-center items-center gap-2 text-center w-full">
-        <p className="text-[var(--color-text-main)] text-[11px] font-medium">{dateStr}</p>
+        <p className="text-[var(--color-text-main)] text-[11px] font-light">{dateStr}</p>
         <span className="text-[var(--color-text-secondary)] text-[10px]">|</span>
-        <p className="text-[var(--color-text-main)] text-[11px] font-medium">{hijriStr}</p>
+        <p className="text-[var(--color-text-main)] text-[11px] font-light">{hijriStr}</p>
         <span className="text-[var(--color-text-secondary)] text-[10px]">|</span>
-        <p className="text-[var(--color-text-main)] text-[11px] font-medium">{banglaStr}</p>
+        <p className="text-[var(--color-text-main)] text-[11px] font-light">{banglaStr}</p>
       </div>
 
     </div>

@@ -69,10 +69,10 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false }) {
             <ArrowLeft size={20} />
           </Link>
           <div>
-            <h1 className="text-3xl font-extrabold md:font-black tracking-tighter uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] via-[var(--color-text-secondary)] to-[var(--color-text-muted)]">
+            <h1 className="text-3xl font-semibold md:font-bold tracking-tighter uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] via-[var(--color-text-secondary)] to-[var(--color-text-muted)]">
               Line {id.toUpperCase()} Telemetry
             </h1>
-            <p className="text-[var(--color-primary)] font-bold tracking-widest uppercase text-xs mt-1">Detailed breakdown synced from source records.</p>
+            <p className="text-[var(--color-primary)] font-medium tracking-widest uppercase text-xs mt-1">Detailed breakdown synced from source records.</p>
           </div>
         </header>
       )}
@@ -80,42 +80,42 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false }) {
       {isEmbed && (
         <div className="flex items-center gap-3 mb-6 mt-12 pt-12 border-t border-[var(--color-border)]">
           <div className="h-6 w-2 bg-[var(--color-primary)] rounded-full shadow-[0_0_10px_var(--color-primary)]"></div>
-          <h2 className="text-3xl font-black tracking-widest uppercase text-[var(--color-text-main)]">Line {id.toUpperCase()} Telemetry Details</h2>
+          <h2 className="text-3xl font-bold tracking-widest uppercase text-[var(--color-text-main)]">Line {id.toUpperCase()} Telemetry Details</h2>
         </div>
       )}
 
       {/* Beautiful Summary Card */}
       <div className="relative bg-[var(--color-bg-card)]/40 backdrop-blur-3xl p-5 md:p-8 rounded-3xl border border-[var(--color-border)] shadow-[0_20px_50px_rgba(0,0,0,0.1)] mb-10 overflow-hidden">
         <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--color-primary)] opacity-[0.03] rounded-full blur-3xl pointer-events-none"></div>
-        <h3 className="text-xs md:text-sm font-extrabold md:font-black text-[var(--color-text-secondary)] uppercase tracking-widest mb-6 flex items-center gap-2">
+        <h3 className="text-xs md:text-sm font-semibold md:font-bold text-[var(--color-text-secondary)] uppercase tracking-widest mb-6 flex items-center gap-2">
           Operations Summary <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-primary)] shadow-[0_0_8px_var(--color-primary)] animate-pulse"></span>
         </h3>
         <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-3 lg:gap-5 relative z-10">
           <div className="bg-[var(--color-surface)] p-4 lg:p-5 rounded-2xl border border-[var(--color-border)] shadow-inner transition-transform hover:-translate-y-1 duration-300">
-            <p className="text-[10px] text-[var(--color-text-muted)] font-bold uppercase tracking-widest mb-1">Date Range</p>
-            <p className="text-sm md:text-lg font-extrabold md:font-black text-[var(--color-text-main)] leading-tight">{dateRange}</p>
+            <p className="text-[10px] text-[var(--color-text-muted)] font-medium uppercase tracking-widest mb-1">Date Range</p>
+            <p className="text-sm md:text-lg font-semibold md:font-bold text-[var(--color-text-main)] leading-tight">{dateRange}</p>
           </div>
           <div className="bg-[var(--color-surface)] p-4 lg:p-5 rounded-2xl border border-[var(--color-border)] shadow-inner transition-transform hover:-translate-y-1 duration-300">
-            <p className="text-[10px] text-[var(--color-text-muted)] font-bold uppercase tracking-widest mb-1">Item</p>
-            <p className="text-sm md:text-lg font-extrabold md:font-black text-[var(--color-primary)] leading-tight">{itemName}</p>
+            <p className="text-[10px] text-[var(--color-text-muted)] font-medium uppercase tracking-widest mb-1">Item</p>
+            <p className="text-sm md:text-lg font-semibold md:font-bold text-[var(--color-primary)] leading-tight">{itemName}</p>
           </div>
           <div className="bg-[var(--color-surface)] p-4 lg:p-5 rounded-2xl border border-[var(--color-border)] shadow-inner transition-transform hover:-translate-y-1 duration-300">
-            <p className="text-[10px] text-[var(--color-text-muted)] font-bold uppercase tracking-widest mb-1">Production</p>
-            <p className="text-lg md:text-2xl font-extrabold md:font-black text-[var(--color-text-main)] leading-tight">{Math.round(parseFloat(totalProduction)).toLocaleString()}</p>
+            <p className="text-[10px] text-[var(--color-text-muted)] font-medium uppercase tracking-widest mb-1">Production</p>
+            <p className="text-lg md:text-2xl font-semibold md:font-bold text-[var(--color-text-main)] leading-tight">{Math.round(parseFloat(totalProduction)).toLocaleString()}</p>
           </div>
           <div className="bg-[var(--color-surface)] p-4 lg:p-5 rounded-2xl border border-[var(--color-border)] shadow-inner transition-transform hover:-translate-y-1 duration-300">
-            <p className="text-[10px] text-[var(--color-text-muted)] font-bold uppercase tracking-widest mb-1">Total Cost</p>
-            <p className="text-lg md:text-2xl font-extrabold md:font-black text-amber-500 leading-tight">{Math.round(parseFloat(totalCost)).toLocaleString()}</p>
+            <p className="text-[10px] text-[var(--color-text-muted)] font-medium uppercase tracking-widest mb-1">Total Cost</p>
+            <p className="text-lg md:text-2xl font-semibold md:font-bold text-amber-500 leading-tight">{Math.round(parseFloat(totalCost)).toLocaleString()}</p>
           </div>
           <div className="bg-[var(--color-surface)] p-4 lg:p-5 rounded-2xl border border-[var(--color-border)] shadow-inner transition-transform hover:-translate-y-1 duration-300">
-            <p className="text-[10px] text-[var(--color-text-muted)] font-bold uppercase tracking-widest mb-1">Total Income</p>
-            <p className="text-lg md:text-2xl font-extrabold md:font-black text-[var(--color-text-main)] leading-tight">{Math.round(parseFloat(totalIncome)).toLocaleString()}</p>
+            <p className="text-[10px] text-[var(--color-text-muted)] font-medium uppercase tracking-widest mb-1">Total Income</p>
+            <p className="text-lg md:text-2xl font-semibold md:font-bold text-[var(--color-text-main)] leading-tight">{Math.round(parseFloat(totalIncome)).toLocaleString()}</p>
           </div>
           <div className={`bg-[var(--color-surface)] p-4 lg:p-5 rounded-2xl border shadow-inner transition-transform hover:-translate-y-1 duration-300 ${parseFloat(totalNetProfitLoss) >= 0 ? 'border-[rgba(16,185,129,0.15)] bg-gradient-to-b from-[rgba(16,185,129,0.05)] to-transparent' : 'border-[rgba(255,59,48,0.15)] bg-gradient-to-b from-[rgba(255,59,48,0.05)] to-transparent'}`}>
-            <p className="text-[10px] text-[var(--color-text-muted)] font-bold uppercase tracking-widest mb-1">
+            <p className="text-[10px] text-[var(--color-text-muted)] font-medium uppercase tracking-widest mb-1">
               {parseFloat(totalNetProfitLoss) >= 0 ? 'Net Profit' : 'Net Loss'}
             </p>
-            <p className={`text-lg md:text-2xl font-extrabold md:font-black leading-tight [filter:var(--shadow-text)] ${parseFloat(totalNetProfitLoss) >= 0 ? 'text-[var(--color-success-text)]' : 'text-[var(--color-danger-text)]'}`}>
+            <p className={`text-lg md:text-2xl font-semibold md:font-bold leading-tight [filter:var(--shadow-text)] ${parseFloat(totalNetProfitLoss) >= 0 ? 'text-[var(--color-success-text)]' : 'text-[var(--color-danger-text)]'}`}>
               {Math.round(parseFloat(totalNetProfitLoss)).toLocaleString()}
             </p>
           </div>
@@ -134,7 +134,7 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false }) {
                   <th 
                     key={colIndex} 
                     className={`
-                      px-5 py-4 text-[10px] md:text-[11px] uppercase tracking-widest font-extrabold md:font-black text-transparent bg-clip-text bg-gradient-to-br from-[var(--color-primary)] to-indigo-300 leading-tight drop-shadow-sm
+                      px-5 py-4 text-[10px] md:text-[11px] uppercase tracking-widest font-semibold md:font-bold text-transparent bg-clip-text bg-gradient-to-br from-[var(--color-primary)] to-indigo-300 leading-tight drop-shadow-sm
                       ${isNumericCol ? 'text-center' : 'text-left'}
                       ${isTightCol ? 'w-[1%] whitespace-nowrap' : 'whitespace-nowrap md:whitespace-normal break-words'}
                     `}
@@ -150,7 +150,7 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false }) {
               if (row.status === 'HOLIDAY') {
                 return (
                   <tr key={rowIndex} className="h-8 bg-[var(--color-surface)]">
-                    <td colSpan={12} className="px-5 py-2 text-center text-[10px] tracking-widest uppercase text-[var(--color-text-muted)] font-bold">
+                    <td colSpan={12} className="px-5 py-2 text-center text-[10px] tracking-widest uppercase text-[var(--color-text-muted)] font-medium">
                       {row.date} - NO PRODUCTION / HOLIDAY
                     </td>
                   </tr>
@@ -179,11 +179,11 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false }) {
                       <td 
                         key={cellIndex} 
                         className={`
-                          px-5 py-3.5 text-[var(--color-text-main)] font-medium
+                          px-5 py-3.5 text-[var(--color-text-main)] font-light
                           ${isTightCol ? 'w-[1%] whitespace-nowrap' : 'whitespace-nowrap md:whitespace-normal break-words'}
                           ${isNumber ? "text-center font-mono tracking-wide" : ""}
-                          ${isNegative ? "!text-red-400 font-bold" : ""} 
-                          ${isDate ? "text-[var(--color-primary)] font-bold tracking-widest text-left uppercase text-[10px]" : ""}
+                          ${isNegative ? "!text-red-400 font-medium" : ""} 
+                          ${isDate ? "text-[var(--color-primary)] font-medium tracking-widest text-left uppercase text-[10px]" : ""}
                         `}
                       >
                         {isNumber && cellIndex > 3 ? Math.round(cell).toLocaleString() : cell || '-'}
@@ -196,12 +196,12 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false }) {
             
             {/* Total Row */}
             <tr className="bg-[var(--color-surface)] backdrop-blur-md">
-              <td colSpan={6} className="px-5 py-3.5 text-right font-black text-[var(--color-text-main)] text-[16px] tracking-wide">TOTAL</td>
-              <td className="px-5 py-3.5 text-center font-mono font-black text-amber-500 text-[16px] tracking-wide">{Math.round(totalCost).toLocaleString()}</td>
-              <td className="px-5 py-3.5 text-center font-mono font-black text-[var(--color-text-main)] text-[16px] tracking-wide">{Math.round(totalProduction).toLocaleString()}</td>
+              <td colSpan={6} className="px-5 py-3.5 text-right font-bold text-[var(--color-text-main)] text-[16px] tracking-wide">TOTAL</td>
+              <td className="px-5 py-3.5 text-center font-mono font-bold text-amber-500 text-[16px] tracking-wide">{Math.round(totalCost).toLocaleString()}</td>
+              <td className="px-5 py-3.5 text-center font-mono font-bold text-[var(--color-text-main)] text-[16px] tracking-wide">{Math.round(totalProduction).toLocaleString()}</td>
               <td colSpan={2}></td>
-              <td className="px-5 py-3.5 text-center font-mono font-black text-[var(--color-text-main)] text-[16px] tracking-wide">{Math.round(totalIncome).toLocaleString()}</td>
-              <td className={`px-5 py-3.5 text-center font-mono font-black text-[16px] tracking-wide ${totalNetProfitLoss >= 0 ? "text-[var(--color-success-text)] bg-[var(--color-success-glow)] [box-shadow:inset_0_0_10px_var(--color-success-glow)]" : "text-[var(--color-danger-text)] bg-[var(--color-danger-glow)] [box-shadow:inset_0_0_10px_var(--color-danger-glow)]"}`}>
+              <td className="px-5 py-3.5 text-center font-mono font-bold text-[var(--color-text-main)] text-[16px] tracking-wide">{Math.round(totalIncome).toLocaleString()}</td>
+              <td className={`px-5 py-3.5 text-center font-mono font-bold text-[16px] tracking-wide ${totalNetProfitLoss >= 0 ? "text-[var(--color-success-text)] bg-[var(--color-success-glow)] [box-shadow:inset_0_0_10px_var(--color-success-glow)]" : "text-[var(--color-danger-text)] bg-[var(--color-danger-glow)] [box-shadow:inset_0_0_10px_var(--color-danger-glow)]"}`}>
                 {Math.round(totalNetProfitLoss).toLocaleString()}
               </td>
             </tr>

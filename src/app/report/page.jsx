@@ -36,7 +36,7 @@ export default function ReportPage() {
     return (
       <div className="flex flex-col justify-center items-center h-screen bg-[var(--color-bg-main)]">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--color-text-main)] mb-4"></div>
-        <p className="text-[var(--color-text-main)] font-bold tracking-widest uppercase">Generating Report...</p>
+        <p className="text-[var(--color-text-main)] font-medium tracking-widest uppercase">Generating Report...</p>
       </div>
     );
   }
@@ -49,12 +49,12 @@ export default function ReportPage() {
       {/* Print Controls (hidden on print) */}
       <div className="hide-on-print p-6 flex justify-between items-center bg-[rgba(0,0,0,0.5)] border-b border-[rgba(255,255,255,0.05)] sticky top-0 z-50 backdrop-blur-xl">
         <div>
-          <h1 className="text-xl font-black uppercase tracking-widest text-[var(--color-text-main)]">Full System Report</h1>
-          <p className="text-[var(--color-primary)] text-xs font-bold">{monthLabel}</p>
+          <h1 className="text-xl font-bold uppercase tracking-widest text-[var(--color-text-main)]">Full System Report</h1>
+          <p className="text-[var(--color-primary)] text-xs font-medium">{monthLabel}</p>
         </div>
         <button 
           onClick={() => window.print()}
-          className="flex items-center gap-2 bg-[var(--color-primary)] text-[var(--color-on-primary)] px-4 py-2 rounded-xl font-bold transition-colors [box-shadow:0_0_15px_var(--color-primary-glow)]"
+          className="flex items-center gap-2 bg-[var(--color-primary)] text-[var(--color-on-primary)] px-4 py-2 rounded-xl font-medium transition-colors [box-shadow:0_0_15px_var(--color-primary-glow)]"
         >
           <Printer size={18} /> Print PDF Now
         </button>
@@ -65,7 +65,7 @@ export default function ReportPage() {
         {/* Section 1: Dashboard */}
         <div className="report-section">
           <div className="print-header hidden text-center mb-10 border-b border-gray-800 pb-4">
-            <h1 className="text-3xl font-black text-black">BAPL System Report - {monthLabel}</h1>
+            <h1 className="text-3xl font-bold text-black">BAPL System Report - {monthLabel}</h1>
             <p className="text-gray-500">Executive Summary</p>
           </div>
           <Dashboard />

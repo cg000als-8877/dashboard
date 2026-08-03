@@ -24,7 +24,6 @@ const navItems = [
 
 export default function DashboardLayout({ children }) {
   const pathname = usePathname();
-  const [showDates, setShowDates] = useState(false);
   const { dailyTrends } = useKpiData();
   const { selectedMonth, setSelectedMonth } = useMonth();
   const { theme, toggleTheme } = useTheme();
@@ -51,10 +50,10 @@ export default function DashboardLayout({ children }) {
             <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-surface)] to-transparent pointer-events-none"></div>
             <Link href="/" className="flex items-center gap-2 relative z-10 cursor-pointer">
               <div className="flex flex-col">
-                <span className="font-black text-[13px] sm:text-[15px] tracking-widest uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] to-[var(--color-text-muted)] leading-tight whitespace-nowrap [filter:var(--shadow-text)]">BYZID APPARELS PVT LTD.</span>
+                <span className="font-bold text-[13px] sm:text-[15px] tracking-widest uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] to-[var(--color-text-muted)] leading-tight whitespace-nowrap [filter:var(--shadow-text)]">BYZID APPARELS PVT LTD.</span>
                 <span className="text-[9px] italic text-[var(--color-text-muted)] mt-1 flex items-center gap-1">
                   <span>Last updated data</span>
-                  <span className="text-[var(--color-primary)] font-bold">{datePart}</span>
+                  <span className="text-[var(--color-primary)] font-medium">{datePart}</span>
                 </span>
               </div>
             </Link>
@@ -63,57 +62,33 @@ export default function DashboardLayout({ children }) {
               <button onClick={toggleTheme} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)] transition-colors">
                 {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
               </button>
-              <button 
-                onClick={() => setShowDates(!showDates)}
-                className="flex flex-col justify-center items-center w-8 h-8 transition-all duration-300 z-50 active:scale-95 group"
-              >
-                <span className={cn(
-                  "block transition-all duration-300 ease-out h-[2px] w-4 rounded-full",
-                  showDates ? "rotate-45 translate-y-[3.5px] bg-[var(--color-primary)] shadow-[0_0_8px_rgba(79,140,255,0.6)]" : "bg-[var(--color-text-secondary)] group-hover:bg-[var(--color-text-main)] -translate-y-1"
-                )}></span>
-                <span className={cn(
-                  "block transition-all duration-300 ease-out h-[2px] w-4 rounded-full",
-                  showDates ? "opacity-0 translate-x-2" : "opacity-100 bg-[var(--color-text-secondary)] group-hover:bg-[var(--color-text-main)]"
-                )}></span>
-                <span className={cn(
-                  "block transition-all duration-300 ease-out h-[2px] w-4 rounded-full",
-                  showDates ? "-rotate-45 -translate-y-[3.5px] bg-[var(--color-primary)] shadow-[0_0_8px_rgba(79,140,255,0.6)]" : "bg-[var(--color-text-secondary)] group-hover:bg-[var(--color-text-main)] translate-y-1"
-                )}></span>
-              </button>
             </div>
           </div>
 
-          {/* Sticky Horizontal Nav Bar */}
-          <nav className="flex items-center justify-between gap-1 sm:gap-2 px-3 sm:px-4 py-2 overflow-x-auto hide-scrollbar w-full">
-            {navItems.map((item) => {
+          {/* Minimal Fit-to-Frame Top Nav Bar */}
+          <nav className="flex items-center justify-between w-full px-3 sm:px-6 py-2.5 border-t border-[var(--color-border)] bg-[var(--color-bg-card)]/90 backdrop-blur-2xl overflow-hidden">
+            {navItems.map((item, index) => {
               const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
               return (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className={cn(
-                    "flex-1 text-center whitespace-nowrap px-2 sm:px-3 py-1.5 rounded-full text-[10px] sm:text-[11px] font-bold uppercase tracking-widest transition-all",
-                    isActive 
-                      ? "bg-[var(--color-primary)] text-[var(--color-on-primary)] shadow-[0_4px_14px_var(--color-primary-glow)]" 
-                      : "bg-transparent text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)]"
+                <div key={item.name} className="flex items-center gap-2 sm:gap-3">
+                  <Link
+                    href={item.href}
+                    className={cn(
+                      "text-[9px] sm:text-[10px] font-bold uppercase tracking-widest transition-all duration-300",
+                      isActive 
+                        ? "text-[var(--color-primary)] drop-shadow-[0_0_6px_var(--color-primary)] scale-110" 
+                        : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)]"
+                    )}
+                  >
+                    {item.name}
+                  </Link>
+                  {index < navItems.length - 1 && (
+                    <div className="w-[1px] h-5 sm:h-6 bg-gradient-to-b from-transparent via-[var(--color-text-muted)] to-transparent opacity-40"></div>
                   )}
-                >
-                  {item.name}
-                </Link>
+                </div>
               );
             })}
           </nav>
-
-          {/* Slide-down RealTimeClock & Controls (Mobile Only) */}
-          <div className="relative flex flex-col items-center w-full z-10 md:hidden">
-            <div 
-              className={`w-full overflow-hidden transition-all duration-500 ease-out bg-[var(--color-bg-card)]/95 backdrop-blur-3xl shadow-2xl flex flex-col items-center rounded-b-3xl border-b border-[var(--color-border)] ${showDates ? 'max-h-64 py-4 opacity-100 translate-y-0' : 'max-h-0 py-0 opacity-0 -translate-y-4'}`}
-            >
-              <div className="flex justify-center w-full mb-4">
-                <RealTimeClock />
-              </div>
-            </div>
-          </div>
         </header>
 
         {/* Main Content */}

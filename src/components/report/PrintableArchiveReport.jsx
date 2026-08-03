@@ -26,19 +26,19 @@ export const PrintableArchiveReport = forwardRef(({ month }, ref) => {
       <div className="mb-12">
         <div className="flex justify-between items-end border-b border-[rgba(255,255,255,0.1)] pb-6 mb-8">
           <div>
-            <h1 className="text-5xl font-black uppercase tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-500">
+            <h1 className="text-5xl font-bold uppercase tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-500">
               {month.toUpperCase()} ARCHIVE
             </h1>
-            <p className="text-[var(--color-primary)] font-bold tracking-widest uppercase mt-2">
+            <p className="text-[var(--color-primary)] font-medium tracking-widest uppercase mt-2">
               Byzid Apparels Pvt. Ltd. Official Report
             </p>
           </div>
           <div className="text-right">
-            <p className="text-[var(--color-text-secondary)] text-sm font-bold uppercase tracking-widest">{startDate} to {endDate}</p>
+            <p className="text-[var(--color-text-secondary)] text-sm font-medium uppercase tracking-widest">{startDate} to {endDate}</p>
           </div>
         </div>
 
-        <h2 className="text-2xl font-black mb-6 uppercase tracking-widest">System Overview</h2>
+        <h2 className="text-2xl font-bold mb-6 uppercase tracking-widest">System Overview</h2>
         <div className="grid grid-cols-3 gap-6 mb-12">
           <MetricCard title="Total Cost" value={`BDT ${Math.round(stats.totalCost).toLocaleString()}`} color="warning" />
           <MetricCard title="Total Income" value={`BDT ${Math.round(stats.totalIncome).toLocaleString()}`} color="primary" />
@@ -50,7 +50,7 @@ export const PrintableArchiveReport = forwardRef(({ month }, ref) => {
 
         {/* ---------------- SECTION 2: TELEMETRY CHARTS ---------------- */}
         <div className="page-break-after" style={{ pageBreakAfter: 'always', marginBottom: '100px' }}>
-          <h2 className="text-xl font-black mb-6 uppercase tracking-widest border-b border-[rgba(255,255,255,0.1)] pb-2">Performance Telemetry</h2>
+          <h2 className="text-xl font-bold mb-6 uppercase tracking-widest border-b border-[rgba(255,255,255,0.1)] pb-2">Performance Telemetry</h2>
           <div className="flex flex-col gap-10">
             {/* Set fixed height for charts to render perfectly off-screen */}
             <div style={{ height: '400px' }}>

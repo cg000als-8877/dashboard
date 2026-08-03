@@ -17,7 +17,7 @@ export function DailyPerformanceChart({ data }) {
 
   return (
     <Card className="h-96 flex flex-col relative z-20">
-      <h3 className="text-xs font-bold text-[var(--color-text-secondary)] uppercase tracking-widest mb-6">
+      <h3 className="text-xs font-medium text-[var(--color-text-secondary)] uppercase tracking-widest mb-6">
         {isLoss ? "Daily Net Loss" : "Daily Net Profit"}
       </h3>
       <div className="flex-1 w-full h-full min-h-[300px]">
@@ -55,7 +55,7 @@ export function IncomeVsCostChart({ data }) {
 
   return (
     <Card className="h-96 flex flex-col relative z-20">
-      <h3 className="text-xs font-bold text-[var(--color-text-secondary)] uppercase tracking-widest mb-6">Income vs Cost</h3>
+      <h3 className="text-xs font-medium text-[var(--color-text-secondary)] uppercase tracking-widest mb-6">Income vs Cost</h3>
       <div className="flex-1 w-full h-full min-h-[300px]">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={formattedData} margin={{ top: 10, right: 10, left: 20, bottom: 20 }}>
@@ -85,7 +85,7 @@ export function MonthlyProfitBarChart({ data }) {
 
   return (
     <Card className="h-96 flex flex-col">
-      <h3 className="text-lg font-semibold mb-6">Monthly Profit Trend</h3>
+      <h3 className="text-lg font-normal mb-6">Monthly Profit Trend</h3>
       <div className="flex-1 w-full h-full min-h-[300px]">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={formattedData} margin={{ top: 10, right: 10, left: 20, bottom: 10 }}>

@@ -282,7 +282,7 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
 
   return (
     <div className="w-full flex flex-col gap-3">
-      <div className={`w-full relative aspect-[5/4] md:aspect-auto md:h-[550px] md:rounded-2xl shadow-none md:shadow-[0_10px_40px_var(--shadow-color)] border-none md:border border-[var(--color-border)] overflow-hidden ${isDay ? 'bg-[#e0f7fa]' : 'bg-[#050A15]'}`}>
+      <div className={`w-full relative aspect-[4/3] md:aspect-auto md:h-[550px] md:rounded-2xl shadow-none md:shadow-[0_10px_40px_var(--shadow-color)] border-none md:border border-[var(--color-border)] overflow-hidden ${isDay ? 'bg-[#e0f7fa]' : 'bg-[#050A15]'}`}>
       
       <style>{`
         @keyframes ship-bob {
@@ -343,7 +343,7 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
       {/* Desktop Status Text Overlay (Hidden on Mobile) */}
       <div className="hidden md:block absolute bottom-6 left-6 z-20 right-6">
         <h2 
-          className="drop-shadow-lg tracking-wide font-bold whitespace-nowrap"
+          className="drop-shadow-lg tracking-wide font-medium whitespace-nowrap"
           style={{ fontSize: '1.25rem', color: isDay ? '#01579b' : 'white' }}
         >
           {isProfit && "🔥 Full Steam Ahead!"}
@@ -353,7 +353,7 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
       </div>
 
       {/* SVG Container */}
-      {/* Restored original 0 0 1200 1200 viewBox to maintain perfect aspect ratio */}
+      {/* 1200x1200 viewBox. Uses 'meet' to scale correctly on desktop, and makes the ship look farther away on mobile widescreen */}
       <svg width="100%" height="100%" viewBox="0 0 1200 1200" preserveAspectRatio="xMidYMid meet" className="absolute inset-0 z-10 overflow-visible">
         
         {/* SVG Clip Paths for Shattering */}
@@ -574,7 +574,7 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
 
     {/* Mobile Status Text Overlay (Hidden on Desktop) */}
     <div className="block md:hidden w-full text-center px-2">
-      <h2 className="text-[var(--color-text-secondary)] tracking-wide font-medium italic text-xs">
+      <h2 className="text-[var(--color-text-secondary)] tracking-wide font-light italic text-xs">
         {isProfit && "🔥 Full Steam Ahead!"}
         {isNeutral && "⚓ Anchored in Calm Waters."}
         {isLoss && "⚠️ Mayday! We are sinking! We need profits to float."}
