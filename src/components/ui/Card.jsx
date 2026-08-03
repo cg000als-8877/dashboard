@@ -3,13 +3,13 @@ import { cn } from "@/components/layout/Sidebar";
 export function Card({ children, className, hover = false, ...props }) {
   return (
     <div className={cn(
-      "relative bg-[var(--color-bg-card)]/50 backdrop-blur-2xl border border-[var(--color-border)] rounded-2xl p-4 md:p-6 transition-all duration-500 overflow-hidden shadow-[inset_0_1px_1px_rgba(255,255,255,0.05),0_8px_32px_var(--shadow-color)]",
+      "relative bg-[var(--color-bg-card)]/90 border border-[var(--color-border)] rounded-2xl p-4 md:p-6 transition-all duration-500 overflow-hidden shadow-sm",
       hover && "hover:bg-[var(--color-surface-hover)] hover:-translate-y-1 hover:border-[var(--color-border)] hover:shadow-[0_12px_40px_rgba(79,140,255,0.15)] group",
       className
     )}
     {...props}
     >
-      <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--color-primary)] opacity-0 group-hover:opacity-[0.03] rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 transition-opacity duration-500 pointer-events-none"></div>
+
       <div className="relative z-10">
         {children}
       </div>
@@ -32,7 +32,7 @@ export function MetricCard({ title, value, subtitle, trend, trendValue, color = 
         <h3 className="text-[10px] md:text-xs font-normal md:font-medium text-[var(--color-text-secondary)] uppercase tracking-widest leading-tight">{title}</h3>
       </div>
       <div className="min-w-0">
-        <p className={cn("font-medium md:font-semibold tracking-tight whitespace-nowrap drop-shadow-md text-xl sm:text-2xl md:text-3xl lg:text-4xl", colors[color])}>
+        <p className={cn("font-medium md:font-semibold tracking-tight whitespace-nowrap text-xl sm:text-2xl md:text-3xl lg:text-4xl", colors[color])}>
           {value}
         </p>
         {(subtitle || trendValue) && (

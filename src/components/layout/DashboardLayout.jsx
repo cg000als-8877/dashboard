@@ -45,7 +45,7 @@ export default function DashboardLayout({ children }) {
 
       <div className="flex flex-col flex-1 overflow-hidden relative w-full">
         {/* Mobile Header & Sticky Nav (Hidden on Desktop) */}
-        <header className="md:hidden fixed top-0 left-0 right-0 bg-[var(--color-bg-card)]/90 backdrop-blur-2xl z-40 flex flex-col border-b border-[var(--color-border)] shadow-[0_10px_30px_rgba(0,0,0,0.1)]">
+        <header className="md:hidden fixed top-0 left-0 right-0 bg-[var(--color-bg-card)] z-40 flex flex-col border-b border-[var(--color-border)] shadow-sm">
           {/* Top Logo Section */}
           <div className="py-3 px-4 sm:px-6 flex items-center justify-between border-b border-[var(--color-border)] w-full relative">
             <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-surface)] to-transparent pointer-events-none"></div>
@@ -68,7 +68,7 @@ export default function DashboardLayout({ children }) {
               {isMobileMenuOpen && (
                 <>
                   <div className="fixed inset-0 z-40" onClick={() => setIsMobileMenuOpen(false)}></div>
-                  <div className="absolute top-full right-0 mt-1 w-44 bg-[var(--color-bg-card)]/95 backdrop-blur-3xl border border-[var(--color-border)] rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.3)] flex flex-col p-1.5 animate-[fade-down_0.2s_ease-out_both] z-50 origin-top-right">
+                  <div className="absolute top-full right-0 mt-1 w-44 bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-xl shadow-lg flex flex-col p-1.5 animate-[fade-down_0.2s_ease-out_both] z-50 origin-top-right">
                     <div className="flex flex-col gap-0.5">
                       {navItems.filter(item => ['Analytics', 'Simulator'].includes(item.name)).map(item => (
                         <Link
@@ -103,7 +103,7 @@ export default function DashboardLayout({ children }) {
           </div>
 
           {/* Minimal Fit-to-Frame Top Nav Bar */}
-          <nav className="flex items-center justify-between w-full px-2 sm:px-4 py-2.5 border-t border-[var(--color-border)] bg-[var(--color-bg-card)]/90 backdrop-blur-2xl overflow-hidden">
+          <nav className="flex items-center justify-between w-full px-2 sm:px-4 py-2.5 border-t border-[var(--color-border)] bg-[var(--color-bg-card)] overflow-hidden">
             {navItems.filter(item => ['Dashboard', 'Lines', 'Archive'].includes(item.name)).map((item, index, arr) => {
               const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
               return (
@@ -113,7 +113,7 @@ export default function DashboardLayout({ children }) {
                     className={cn(
                       "relative text-[10px] sm:text-[11px] font-bold uppercase tracking-widest transition-all duration-300 text-center flex-1 py-1.5 sm:py-2 rounded-lg flex items-center justify-center overflow-hidden",
                       isActive 
-                        ? "text-[var(--color-primary)] drop-shadow-[0_0_3px_rgba(37,99,235,0.3)]" 
+                        ? "text-[var(--color-primary)] drop-shadow-[0_0_2px_rgba(37,99,235,0.2)]" 
                         : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)]"
                     )}
                   >
@@ -124,7 +124,7 @@ export default function DashboardLayout({ children }) {
                                style={{ background: 'conic-gradient(from 0deg, transparent 70%, var(--color-primary) 100%)' }}>
                           </div>
                         </div>
-                        <div className="absolute inset-[1px] rounded-[7px] bg-[var(--color-bg-card)] backdrop-blur-xl"></div>
+                        <div className="absolute inset-[1px] rounded-[7px] bg-[var(--color-bg-card)]"></div>
                       </>
                     )}
                     <span className="relative z-10">{item.name}</span>

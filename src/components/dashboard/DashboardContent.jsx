@@ -82,7 +82,7 @@ export function DashboardContent({ month, isArchive = false }) {
         {!isArchive && (
           <div className="mb-3 md:mb-10 flex flex-col items-center justify-center relative z-10">
             <div className="flex flex-col items-center relative z-10 text-center">
-              <div className="absolute -top-10 left-1/2 -translate-x-1/2 w-40 h-40 bg-[var(--color-primary)] opacity-10 rounded-full blur-3xl pointer-events-none"></div>
+
               <h2 className="text-2xl md:text-4xl font-bold tracking-tighter uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] via-[var(--color-text-secondary)] to-[var(--color-text-muted)]">
                 Factory System Overview
               </h2>
@@ -100,7 +100,7 @@ export function DashboardContent({ month, isArchive = false }) {
         {dateComponents && (
           <div className="flex justify-center mb-4 md:mb-6 mt-2 md:mt-0 w-full relative z-10">
             <span className="inline-flex items-baseline gap-1.5 text-xs md:text-sm font-medium tracking-widest text-[var(--color-text-secondary)] uppercase">
-              from {dateComponents.startDay} to {dateComponents.endDay} <span className="text-[110%] font-bold text-[var(--color-primary)] drop-shadow-[0_0_8px_var(--color-primary-glow)]">{dateComponents.month}</span>, {dateComponents.year}
+              from {dateComponents.startDay} to {dateComponents.endDay} <span className="text-[110%] font-bold text-[var(--color-primary)]">{dateComponents.month}</span>, {dateComponents.year}
             </span>
           </div>
         )}
@@ -213,22 +213,22 @@ export function DashboardContent({ month, isArchive = false }) {
                   </div>
 
                   <div className="flex flex-row flex-wrap md:flex-nowrap w-full gap-2 md:gap-4 justify-between">
-                    <div className="bg-[var(--color-surface)] backdrop-blur-md p-2.5 md:p-4 rounded-xl md:rounded-2xl border border-[var(--color-border)] flex-1 basis-[45%] md:basis-auto md:min-w-[130px] shadow-inner transition-transform hover:-translate-y-1 duration-300">
+                    <div className="bg-[var(--color-surface)] p-2.5 md:p-4 rounded-xl md:rounded-2xl border border-[var(--color-border)] flex-1 basis-[45%] md:basis-auto md:min-w-[130px] shadow-sm transition-transform hover:-translate-y-1 duration-300">
                       <p className="text-[9px] md:text-[10px] text-[var(--color-text-muted)] font-medium uppercase tracking-widest mb-1">Production</p>
                       <p className="text-base md:text-xl font-semibold md:font-bold text-[var(--color-text-main)]">{line.totalProduction} <span className="text-[10px] md:text-xs text-[var(--color-text-muted)]">PCS</span></p>
                     </div>
                     
-                    <div className="bg-[var(--color-surface)] backdrop-blur-md p-2.5 md:p-4 rounded-xl md:rounded-2xl border border-[var(--color-border)] flex-1 basis-[45%] md:basis-auto md:min-w-[130px] shadow-inner transition-transform hover:-translate-y-1 duration-300">
+                    <div className="bg-[var(--color-surface)] p-2.5 md:p-4 rounded-xl md:rounded-2xl border border-[var(--color-border)] flex-1 basis-[45%] md:basis-auto md:min-w-[130px] shadow-sm transition-transform hover:-translate-y-1 duration-300">
                       <p className="text-[9px] md:text-[10px] text-[var(--color-text-muted)] font-medium uppercase tracking-widest mb-1">Income</p>
                       <p className="text-base md:text-xl font-semibold md:font-bold text-[var(--color-primary)]">BDT {Math.round(line.totalIncome).toLocaleString()}</p>
                     </div>
 
-                    <div className="bg-[var(--color-surface)] backdrop-blur-md p-2.5 md:p-4 rounded-xl md:rounded-2xl border border-[var(--color-border)] flex-1 basis-[45%] md:basis-auto md:min-w-[130px] shadow-inner transition-transform hover:-translate-y-1 duration-300">
+                    <div className="bg-[var(--color-surface)] p-2.5 md:p-4 rounded-xl md:rounded-2xl border border-[var(--color-border)] flex-1 basis-[45%] md:basis-auto md:min-w-[130px] shadow-sm transition-transform hover:-translate-y-1 duration-300">
                       <p className="text-[9px] md:text-[10px] text-[var(--color-text-muted)] font-medium uppercase tracking-widest mb-1">Cost</p>
                       <p className="text-base md:text-xl font-semibold md:font-bold text-amber-500">BDT {Math.round(line.totalCost).toLocaleString()}</p>
                     </div>
 
-                    <div className={`bg-[var(--color-surface)] backdrop-blur-md p-2.5 md:p-4 rounded-xl md:rounded-2xl border flex-1 basis-[45%] md:basis-auto md:min-w-[130px] shadow-inner transition-transform hover:-translate-y-1 duration-300 ${line.netProfit >= 0 ? 'border-[rgba(16,185,129,0.15)] bg-[var(--color-success-glow)]' : 'border-[rgba(255,59,48,0.15)] bg-[var(--color-danger-glow)]'}`}>
+                    <div className={`bg-[var(--color-surface)] p-2.5 md:p-4 rounded-xl md:rounded-2xl border flex-1 basis-[45%] md:basis-auto md:min-w-[130px] shadow-sm transition-transform hover:-translate-y-1 duration-300 ${line.netProfit >= 0 ? 'border-[rgba(16,185,129,0.15)] bg-[var(--color-success-glow)]' : 'border-[rgba(255,59,48,0.15)] bg-[var(--color-danger-glow)]'}`}>
                       <p className="text-[9px] md:text-[10px] text-[var(--color-text-muted)] font-medium uppercase tracking-widest mb-1">{line.netProfit >= 0 ? 'Net Profit' : 'Net Loss'}</p>
                       <p className={`text-base md:text-xl font-semibold md:font-bold [filter:var(--shadow-text)] ${line.netProfit >= 0 ? 'text-[var(--color-success-text)]' : 'text-[var(--color-danger-text)]'}`}>
                         BDT {Math.round(line.netProfit).toLocaleString()}

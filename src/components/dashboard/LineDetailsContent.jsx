@@ -75,7 +75,7 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false }) {
       
       {!isEmbed && (
         <header className="flex items-center gap-5 mb-8 relative z-10">
-          <div className="absolute -top-10 -left-10 w-40 h-40 bg-[var(--color-primary)] opacity-10 rounded-full blur-3xl pointer-events-none"></div>
+
           <Link 
             href={backUrl} 
             className="p-3 rounded-xl bg-[var(--color-surface)] hover:bg-[var(--color-surface-hover)] border border-[var(--color-border)] text-[var(--color-text-main)] transition-all hover:scale-105 active:scale-95 shadow-[0_0_15px_rgba(0,0,0,0.5)]"
@@ -99,8 +99,7 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false }) {
       )}
 
       {/* Beautiful Summary Card */}
-      <div className="relative bg-[var(--color-bg-card)]/40 backdrop-blur-3xl p-5 md:p-8 rounded-3xl border border-[var(--color-border)] shadow-[0_20px_50px_rgba(0,0,0,0.1)] mb-10 overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--color-primary)] opacity-[0.03] rounded-full blur-3xl pointer-events-none"></div>
+      <div className="relative bg-[var(--color-bg-card)] p-5 md:p-8 rounded-3xl border border-[var(--color-border)] shadow-sm mb-10 overflow-hidden">
         <h3 className="text-xs md:text-sm font-semibold md:font-bold text-[var(--color-text-secondary)] uppercase tracking-widest mb-6 flex items-center gap-2">
           Operations Summary <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-primary)] shadow-[0_0_8px_var(--color-primary)] animate-pulse"></span>
         </h3>
@@ -137,10 +136,10 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false }) {
       </div>
 
       {/* Modern Dark-Themed Table */}
-      <div className="w-full max-h-[70vh] overflow-auto bg-[var(--color-bg-card)]/60 backdrop-blur-2xl rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-[var(--color-border)] hide-scrollbar relative">
+      <div className="w-full max-h-[70vh] overflow-auto bg-[var(--color-bg-card)] rounded-3xl shadow-sm border border-[var(--color-border)] hide-scrollbar relative">
         <table className="w-full text-sm text-left border-collapse table-auto relative">
           <thead className="sticky top-0 z-20">
-            <tr className="bg-[var(--color-bg-card)]/95 backdrop-blur-xl shadow-lg border-b border-[var(--color-border)]">
+            <tr className="bg-[var(--color-bg-card)] shadow-sm border-b border-[var(--color-border)]">
               {['Date', 'Line', 'Style', 'Item', 'Workers', 'Per Head Cost', 'Total Cost', 'Prod Qty', 'Prod DZN', 'CM/DZN', 'Total Income', 'Net Profit'].map((headerText, colIndex) => {
                 const isNumericCol = colIndex > 3;
                 const isTightCol = colIndex <= 3;
@@ -148,7 +147,7 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false }) {
                   <th 
                     key={colIndex} 
                     className={`
-                      px-5 py-4 text-[10px] md:text-[11px] uppercase tracking-widest font-semibold md:font-bold text-transparent bg-clip-text bg-gradient-to-br from-[var(--color-primary)] to-indigo-300 leading-tight drop-shadow-sm
+                      px-5 py-4 text-[10px] md:text-[11px] uppercase tracking-widest font-semibold md:font-bold text-transparent bg-clip-text bg-gradient-to-br from-[var(--color-primary)] to-indigo-300 leading-tight
                       ${isNumericCol ? 'text-center' : 'text-left'}
                       ${isTightCol ? 'w-[1%] whitespace-nowrap' : 'whitespace-nowrap md:whitespace-normal break-words'}
                     `}
@@ -211,7 +210,7 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false }) {
             })}
             
             {/* Total Row */}
-            <tr className="bg-[var(--color-surface)] backdrop-blur-md">
+            <tr className="bg-[var(--color-surface)]">
               <td colSpan={6} className="px-5 py-3.5 text-right font-bold text-[var(--color-text-main)] text-[16px] tracking-wide">TOTAL</td>
               <td className="px-5 py-3.5 text-center font-mono font-bold text-amber-500 text-[16px] tracking-wide">{Math.round(totalCost).toLocaleString()}</td>
               <td className="px-5 py-3.5 text-center font-mono font-bold text-[var(--color-text-main)] text-[16px] tracking-wide">{Math.round(totalProduction).toLocaleString()}</td>
