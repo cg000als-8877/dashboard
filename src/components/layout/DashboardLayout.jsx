@@ -27,6 +27,7 @@ export default function DashboardLayout({ children }) {
   const { dailyTrends } = useKpiData();
   const { selectedMonth, setSelectedMonth } = useMonth();
   const { theme, toggleTheme } = useTheme();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   let datePart = "Loading...";
   if (dailyTrends && dailyTrends.length > 0) {
@@ -58,16 +59,52 @@ export default function DashboardLayout({ children }) {
               </div>
             </Link>
             
-            <div className="flex items-center gap-4 ml-auto relative z-10">
-              <button onClick={toggleTheme} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)] transition-colors">
-                {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+            <div className="flex items-center gap-4 ml-auto relative z-50">
+              <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)] transition-colors p-2 relative z-50">
+                {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
               </button>
+
+              {/* Compressed Dropdown Menu */}
+              {isMobileMenuOpen && (
+                <>
+                  <div className="fixed inset-0 z-40" onClick={() => setIsMobileMenuOpen(false)}></div>
+                  <div className="absolute top-full right-0 mt-1 w-44 bg-[var(--color-bg-card)]/95 backdrop-blur-3xl border border-[var(--color-border)] rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.3)] flex flex-col p-1.5 animate-[fade-down_0.2s_ease-out_both] z-50 origin-top-right">
+                    <div className="flex flex-col gap-0.5">
+                      {navItems.filter(item => ['Analytics', 'Simulator'].includes(item.name)).map(item => (
+                        <Link
+                          key={item.name}
+                          href={item.href}
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className={cn(
+                            "flex items-center gap-2 px-3 py-2 rounded-lg font-bold text-[10px] tracking-widest uppercase transition-all",
+                            pathname.startsWith(item.href)
+                              ? "bg-[var(--color-primary)]/15 text-[var(--color-primary)]"
+                              : "text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-main)]"
+                          )}
+                        >
+                          <item.icon size={14} />
+                          {item.name}
+                        </Link>
+                      ))}
+                    </div>
+                    <div className="mt-1 pt-1 border-t border-[var(--color-border)] flex justify-between items-center px-2 py-1.5">
+                      <span className="text-[9px] font-bold tracking-widest text-[var(--color-text-muted)] uppercase">Theme</span>
+                      <button 
+                        onClick={toggleTheme}
+                        className="p-1.5 rounded-md hover:bg-[var(--color-surface-hover)] transition-colors text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)] border border-transparent hover:border-[var(--color-border)]"
+                      >
+                        {theme === 'dark' ? <Sun size={14} className="text-yellow-400" /> : <Moon size={14} className="text-blue-500" />}
+                      </button>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           </div>
 
           {/* Minimal Fit-to-Frame Top Nav Bar */}
           <nav className="flex items-center justify-between w-full px-2 sm:px-4 py-2.5 border-t border-[var(--color-border)] bg-[var(--color-bg-card)]/90 backdrop-blur-2xl overflow-hidden">
-            {navItems.map((item, index) => {
+            {navItems.filter(item => ['Dashboard', 'Lines', 'Archive'].includes(item.name)).map((item, index, arr) => {
               const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
               return (
                 <Fragment key={item.name}>
@@ -92,7 +129,7 @@ export default function DashboardLayout({ children }) {
                     )}
                     <span className="relative z-10">{item.name}</span>
                   </Link>
-                  {index < navItems.length - 1 && (
+                  {index < arr.length - 1 && (
                     <div className="w-[1px] h-4 sm:h-5 bg-gradient-to-b from-transparent via-[var(--color-text-muted)] to-transparent opacity-40 mx-1 sm:mx-2 flex-shrink-0"></div>
                   )}
                 </Fragment>
