@@ -111,16 +111,16 @@ export default function DashboardLayout({ children }) {
                   <Link
                     href={item.href}
                     className={cn(
-                      "relative text-[9px] sm:text-[10px] font-bold uppercase tracking-widest transition-all duration-300 text-center flex-1 py-1.5 sm:py-2 rounded-lg flex items-center justify-center overflow-hidden",
+                      "relative text-[10px] sm:text-[11px] font-bold uppercase tracking-widest transition-all duration-300 text-center flex-1 py-1.5 sm:py-2 rounded-lg flex items-center justify-center overflow-hidden",
                       isActive 
-                        ? "text-[var(--color-primary)] drop-shadow-[0_0_6px_var(--color-primary)]" 
+                        ? "text-[var(--color-primary)] drop-shadow-[0_0_3px_rgba(37,99,235,0.3)]" 
                         : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)]"
                     )}
                   >
                     {isActive && (
                       <>
                         <div className="absolute inset-0 rounded-lg overflow-hidden border border-transparent">
-                          <div className="absolute inset-[-100%] animate-[spin_3s_linear_infinite] opacity-70"
+                          <div className="absolute inset-[-100%] animate-[spin_3s_linear_infinite] opacity-40"
                                style={{ background: 'conic-gradient(from 0deg, transparent 70%, var(--color-primary) 100%)' }}>
                           </div>
                         </div>

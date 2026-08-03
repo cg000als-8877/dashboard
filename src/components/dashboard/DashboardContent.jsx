@@ -78,19 +78,19 @@ export function DashboardContent({ month, isArchive = false }) {
       )}
 
       {/* Hero Statistics */}
-      <div className={isArchive ? "mt-4" : "mt-2 md:mt-4"}>
+      <div className={isArchive ? "mt-4" : "mt-0 md:mt-4"}>
         {!isArchive && (
-          <div className="mb-8 md:mb-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
-            <div className="flex flex-col items-start relative z-10">
-              <div className="absolute -top-10 -left-10 w-40 h-40 bg-[var(--color-primary)] opacity-10 rounded-full blur-3xl pointer-events-none"></div>
+          <div className="mb-3 md:mb-10 flex flex-col items-center justify-center relative z-10">
+            <div className="flex flex-col items-center relative z-10 text-center">
+              <div className="absolute -top-10 left-1/2 -translate-x-1/2 w-40 h-40 bg-[var(--color-primary)] opacity-10 rounded-full blur-3xl pointer-events-none"></div>
               <h2 className="text-2xl md:text-4xl font-bold tracking-tighter uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] via-[var(--color-text-secondary)] to-[var(--color-text-muted)]">
-                System Overview
+                Factory System Overview
               </h2>
             </div>
             
             <button 
               onClick={() => setShowAnimation(!showAnimation)}
-              className="hidden md:flex items-center gap-2 px-4 py-2 bg-[var(--color-surface)] hover:bg-[var(--color-surface-hover)] border border-[var(--color-border)] rounded-xl text-xs font-medium uppercase tracking-widest text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)] transition-all active:scale-95"
+              className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 items-center gap-2 px-4 py-2 bg-[var(--color-surface)] hover:bg-[var(--color-surface-hover)] border border-[var(--color-border)] rounded-xl text-xs font-medium uppercase tracking-widest text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)] transition-all active:scale-95"
             >
               {showAnimation ? 'Hide Visualizer' : 'Show Visualizer'}
             </button>
@@ -98,7 +98,7 @@ export function DashboardContent({ month, isArchive = false }) {
         )}
         
         {dateComponents && (
-          <div className="flex justify-center mb-5 md:mb-6 w-full relative z-10">
+          <div className="flex justify-center mb-4 md:mb-6 mt-2 md:mt-0 w-full relative z-10">
             <span className="inline-flex items-baseline gap-1.5 text-xs md:text-sm font-medium tracking-widest text-[var(--color-text-secondary)] uppercase">
               from {dateComponents.startDay} to {dateComponents.endDay} <span className="text-[110%] font-bold text-[var(--color-primary)] drop-shadow-[0_0_8px_var(--color-primary-glow)]">{dateComponents.month}</span>, {dateComponents.year}
             </span>
