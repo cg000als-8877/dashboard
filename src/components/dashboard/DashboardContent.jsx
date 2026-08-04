@@ -70,8 +70,8 @@ export function DashboardContent({ month, isArchive = false }) {
       <div className="space-y-8 animate-[fade-up_0.4s_ease-out_both] pb-10 no-print">
       {/* Titanic Animation (Live Dashboard Only) */}
       {!isArchive && (
-        <div className="flex flex-col gap-2 relative z-10 -mt-10 md:mt-6 -mx-4 md:mx-0">
-          <div className={`w-full transition-all duration-700 ease-in-out origin-top overflow-hidden border-none md:border md:rounded-2xl ${showAnimation ? 'max-h-[800px] opacity-100 mb-2 md:border-[var(--color-border)] md:shadow-2xl' : 'max-h-0 opacity-0 mb-0 md:border-transparent md:shadow-none'}`}>
+        <div className="flex flex-col gap-2 relative z-10 -mt-10 md:-mt-8 -mx-4 md:-mx-8 md:w-[calc(100%+4rem)]">
+          <div className={`w-full transition-all duration-700 ease-in-out origin-top overflow-hidden border-none rounded-none ${showAnimation ? 'max-h-[800px] opacity-100 mb-2' : 'max-h-0 opacity-0 mb-0'}`}>
             <TitanicAnimation netProfit={stats.netProfit} simDay={displayDay} />
           </div>
         </div>
@@ -79,6 +79,14 @@ export function DashboardContent({ month, isArchive = false }) {
 
       {/* Hero Statistics */}
       <div className={isArchive ? "mt-4" : "mt-0 md:mt-4"}>
+        {dateComponents && (
+          <div className="flex justify-center mb-1 md:mb-2 w-full relative z-10">
+            <span className="inline-flex items-baseline gap-1.5 text-xs md:text-sm font-medium tracking-widest text-[var(--color-text-secondary)] uppercase">
+              from {dateComponents.startDay} to {dateComponents.endDay} <span className="text-[110%] font-bold text-[var(--color-primary)]">{dateComponents.month}</span>, {dateComponents.year}
+            </span>
+          </div>
+        )}
+
         {!isArchive && (
           <div className="mb-3 md:mb-10 flex flex-col items-center justify-center relative z-10">
             <div className="flex flex-col items-center relative z-10 text-center">
@@ -94,14 +102,6 @@ export function DashboardContent({ month, isArchive = false }) {
             >
               {showAnimation ? 'Hide Visualizer' : 'Show Visualizer'}
             </button>
-          </div>
-        )}
-        
-        {dateComponents && (
-          <div className="flex justify-center mb-4 md:mb-6 mt-2 md:mt-0 w-full relative z-10">
-            <span className="inline-flex items-baseline gap-1.5 text-xs md:text-sm font-medium tracking-widest text-[var(--color-text-secondary)] uppercase">
-              from {dateComponents.startDay} to {dateComponents.endDay} <span className="text-[110%] font-bold text-[var(--color-primary)]">{dateComponents.month}</span>, {dateComponents.year}
-            </span>
           </div>
         )}
 
@@ -192,14 +192,16 @@ export function DashboardContent({ month, isArchive = false }) {
                   <div className="flex-shrink-0 w-full xl:w-56 xl:border-r xl:border-[var(--color-border)] xl:pr-6">
                     <div className="flex items-center justify-between mb-2 md:mb-4 w-full">
                       <h2 className="text-xl md:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[var(--color-text-main)] to-[var(--color-text-secondary)] [filter:var(--shadow-text)]">{line.name}</h2>
-                      <span className={`inline-flex items-center gap-1.5 px-2 md:px-2.5 py-0.5 md:py-1 rounded text-[8px] md:text-[9px] font-bold uppercase tracking-widest ${
-                            line.netProfit >= 0 ? 'bg-[var(--color-success-glow)] text-[var(--color-success-text)] border border-[rgba(16,185,129,0.2)]' : 'bg-[var(--color-danger-glow)] text-[var(--color-danger-text)] border border-[rgba(255,59,48,0.2)]'
+                      <span className={`inline-flex items-center gap-1.5 px-2 md:px-2.5 py-0.5 md:py-1 rounded text-[8px] md:text-[9px] font-bold uppercase tracking-widest transition-all ${
+                            line.netProfit >= 0 
+                            ? 'bg-[var(--color-success-glow)] text-[var(--color-success-text)] border border-[rgba(16,185,129,0.2)]' 
+                            : 'bg-[var(--color-danger-glow)] text-[var(--color-danger-text)] border border-[rgba(255,59,48,0.4)] shadow-[0_0_10px_rgba(255,59,48,0.3)] animate-[pulse_0.6s_ease-in-out_infinite]'
                           }`}>
-                            <span className={`w-1.5 h-1.5 rounded-full animate-pulse ${line.netProfit >= 0 ? 'bg-emerald-400 shadow-[0_0_5px_#10b981]' : 'bg-red-400 shadow-[0_0_5px_#ff3b30]'}`}></span>
+                            <span className={`w-1.5 h-1.5 rounded-full ${line.netProfit >= 0 ? 'bg-emerald-400 shadow-[0_0_5px_#10b981] animate-pulse' : 'bg-red-500 shadow-[0_0_8px_#ff3b30]'}`}></span>
                             {line.netProfit >= 0 ? 'Optimal' : 'Critical'}
                       </span>
                     </div>
-                    <div className="text-[10px] md:text-xs font-medium tracking-normal uppercase flex items-center gap-1.5">
+                    <div className="text-[10px] md:text-xs font-semibold tracking-tight uppercase flex items-center gap-1.5">
                       <span className="text-[var(--color-text-muted)]">ITEM &mdash;</span>
                       <span className="text-[var(--color-primary)]">
                         {line.today?.item || (

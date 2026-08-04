@@ -42,8 +42,8 @@
 
 .light-mode {
   --color-bg-main: #F1F5F9; /* Slate 100 - Cool, premium off-white */
-  --color-bg-card: rgba(255, 255, 255, 0.85); /* Frosted pure white */
-  --color-bg-card-hover: rgba(255, 255, 255, 1); /* Solid white on hover */
+  --color-bg-card: #FFFFFF; /* Solid pure white */
+  --color-bg-card-hover: #F8FAFC; /* Slightly off-white on hover */
   
   --color-border: rgba(15, 23, 42, 0.06); /* Very subtle slate border */
   

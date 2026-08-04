@@ -16,6 +16,7 @@ import { useTheme } from '@/components/ThemeProvider';
 
 const navItems = [
   { name: 'Dashboard', href: '/', icon: LayoutDashboard },
+  { name: 'Hourly', href: '/hourly', icon: Clock },
   { name: 'Lines', href: '/lines', icon: Factory },
   { name: 'Analytics', href: '/analytics', icon: BarChart3 },
   { name: 'Simulator', href: '/simulator', icon: Ship },
@@ -59,7 +60,15 @@ export default function DashboardLayout({ children }) {
               </div>
             </Link>
             
-            <div className="flex items-center gap-4 ml-auto relative z-50">
+            <div className="flex items-center gap-2 sm:gap-4 ml-auto relative z-50">
+              <button 
+                onClick={toggleTheme}
+                className="p-1.5 rounded-md hover:bg-[var(--color-surface-hover)] transition-colors text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)]"
+                aria-label="Toggle theme"
+              >
+                {theme === 'dark' ? <Sun size={18} className="text-yellow-400" /> : <Moon size={18} className="text-blue-500" />}
+              </button>
+              
               <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)] transition-colors p-2 relative z-50">
                 {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
               </button>
@@ -87,24 +96,14 @@ export default function DashboardLayout({ children }) {
                         </Link>
                       ))}
                     </div>
-                    <div className="mt-1 pt-1 border-t border-[var(--color-border)] flex justify-between items-center px-2 py-1.5">
-                      <span className="text-[9px] font-bold tracking-widest text-[var(--color-text-muted)] uppercase">Theme</span>
-                      <button 
-                        onClick={toggleTheme}
-                        className="p-1.5 rounded-md hover:bg-[var(--color-surface-hover)] transition-colors text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)] border border-transparent hover:border-[var(--color-border)]"
-                      >
-                        {theme === 'dark' ? <Sun size={14} className="text-yellow-400" /> : <Moon size={14} className="text-blue-500" />}
-                      </button>
-                    </div>
                   </div>
                 </>
               )}
             </div>
           </div>
-
           {/* Minimal Fit-to-Frame Top Nav Bar */}
           <nav className="flex items-center justify-between w-full px-2 sm:px-4 py-2.5 border-t border-[var(--color-border)] bg-[var(--color-bg-card)] overflow-hidden">
-            {navItems.filter(item => ['Dashboard', 'Lines', 'Archive'].includes(item.name)).map((item, index, arr) => {
+            {navItems.filter(item => ['Dashboard', 'Hourly', 'Lines', 'Archive'].includes(item.name)).map((item, index, arr) => {
               const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
               return (
                 <Fragment key={item.name}>
@@ -113,18 +112,18 @@ export default function DashboardLayout({ children }) {
                     className={cn(
                       "relative text-[10px] sm:text-[11px] font-bold uppercase tracking-widest transition-all duration-300 text-center flex-1 py-1.5 sm:py-2 rounded-lg flex items-center justify-center overflow-hidden",
                       isActive 
-                        ? "text-[var(--color-primary)] drop-shadow-[0_0_2px_rgba(37,99,235,0.2)]" 
+                        ? "text-[var(--color-primary)] drop-shadow-[0_0_8px_rgba(37,99,235,0.8)]" 
                         : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)]"
                     )}
                   >
                     {isActive && (
                       <>
-                        <div className="absolute inset-0 rounded-lg overflow-hidden border border-transparent">
-                          <div className="absolute inset-[-100%] animate-[spin_3s_linear_infinite] opacity-40"
-                               style={{ background: 'conic-gradient(from 0deg, transparent 70%, var(--color-primary) 100%)' }}>
+                        <div className="absolute inset-0 rounded-lg overflow-hidden">
+                          <div className="absolute inset-[-150%] animate-[spin_3s_linear_infinite] opacity-90"
+                               style={{ background: 'conic-gradient(from 0deg, transparent 60%, var(--color-primary) 100%)' }}>
                           </div>
                         </div>
-                        <div className="absolute inset-[1px] rounded-[7px] bg-[var(--color-bg-card)]"></div>
+                        <div className="absolute inset-[2px] rounded-[6px] bg-[var(--color-bg-card)] shadow-[0_0_15px_rgba(37,99,235,0.2)_inset]"></div>
                       </>
                     )}
                     <span className="relative z-10">{item.name}</span>

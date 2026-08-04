@@ -1,12 +1,12 @@
-import { Barlow } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { MonthProvider } from "@/components/providers/MonthProvider";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { Suspense } from "react";
 
-const barlow = Barlow({ 
-  weight: ["300", "400", "500", "600", "700", "800", "900"],
+const inter = Inter({ 
+  weight: ["300", "400", "500", "600", "700"],
   subsets: ["latin"] 
 });
 
@@ -21,7 +21,7 @@ export const metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={`${barlow.className} bg-[var(--color-bg-main)] text-[var(--color-text-main)]`}>
+      <body className={`${inter.className} bg-[var(--color-bg-main)] text-[var(--color-text-main)]`}>
         <Suspense fallback={<div>Loading...</div>}>
           <ThemeProvider>
             <MonthProvider>

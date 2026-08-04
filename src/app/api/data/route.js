@@ -89,6 +89,94 @@ export async function GET(request) {
       }
     });
 
+    // Parse and auto-archive Hourly Report
+    try {
+      const hourlySheet = workbook.Sheets['HOURLY P. Report'];
+      if (hourlySheet) {
+        const hData = XLSX.utils.sheet_to_json(hourlySheet, { header: 1 });
+        let reportDateStr = null;
+        
+        for (let r = 0; r < Math.min(10, hData.length); r++) {
+          if (!hData[r]) continue;
+          for (let c = 0; c < hData[r].length; c++) {
+            const cellValue = String(hData[r][c] || '').trim().toLowerCase();
+            if (cellValue === 'date :' || cellValue === 'date:') {
+              for(let k = 1; k < 5; k++) {
+                 const maybeDate = hData[r][c+k];
+                 if (maybeDate && !isNaN(maybeDate) && typeof maybeDate === 'number') {
+                   const parsedHDate = XLSX.SSF.parse_date_code(maybeDate);
+                   reportDateStr = `${parsedHDate.y}-${String(parsedHDate.m).padStart(2, '0')}-${String(parsedHDate.d).padStart(2, '0')}`;
+                   break;
+                 }
+              }
+            }
+          }
+          if (reportDateStr) break;
+        }
+
+        if (reportDateStr) {
+          let timeLabels = [];
+          for (let r = 0; r < Math.min(10, hData.length); r++) {
+              if (hData[r] && hData[r].includes('8-9 AM')) {
+                  const startIndex = hData[r].indexOf('8-9 AM');
+                  timeLabels = hData[r].slice(startIndex, startIndex + 11).map(String);
+                  break;
+              }
+          }
+
+          const hourlyParsed = {
+              date: reportDateStr,
+              timeLabels: timeLabels,
+              lines: []
+          };
+          
+          for (let i = 0; i < hData.length; i++) {
+              if (hData[i] && hData[i][0] === "LINE NO" && i + 3 < hData.length) {
+                const targetRow = hData[i+1] || [];
+                const actualRow = hData[i+2] || [];
+                
+                if (targetRow[0]) {
+                  let dataStartIndex = 6;
+                  for(let c=0; c < targetRow.length; c++) {
+                      if (String(targetRow[c]).includes('TARGET')) {
+                          dataStartIndex = c + 1;
+                          break;
+                      }
+                  }
+
+                  let actualStartIndex = 6;
+                  for(let c=0; c < actualRow.length; c++) {
+                      if (String(actualRow[c]).includes('ACTUAL')) {
+                          actualStartIndex = c + 1;
+                          break;
+                      }
+                  }
+
+                  hourlyParsed.lines.push({
+                    line_id: targetRow[0],
+                    buyer: targetRow[1] || 'N/A',
+                    style: targetRow[2] || 'N/A',
+                    item: targetRow[3] || 'N/A',
+                    mp: targetRow[4] || 0,
+                    target: targetRow.slice(dataStartIndex, dataStartIndex + 11).map(v => Number(v) || 0),
+                    actual: actualRow.slice(actualStartIndex, actualStartIndex + 11).map(v => Number(v) || 0)
+                  });
+                }
+              }
+          }
+
+          // Ensure directory exists
+          const archiveDir = path.join(process.cwd(), 'src', 'data', 'hourly-archives');
+          try { await fs.mkdir(archiveDir, { recursive: true }); } catch (e) {}
+
+          const archivePath = path.join(archiveDir, `${reportDateStr}.json`);
+          await fs.writeFile(archivePath, JSON.stringify(hourlyParsed, null, 2));
+        }
+      }
+    } catch (archiveError) {
+      console.error('Error auto-archiving hourly report:', archiveError);
+    }
+
     return NextResponse.json({
       lines,
       dailyProduction

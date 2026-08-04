@@ -282,7 +282,7 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
 
   return (
     <div className="w-full flex flex-col gap-3">
-      <div className={`w-full relative aspect-[4/3] md:aspect-auto md:h-[550px] md:rounded-2xl shadow-none md:shadow-[0_10px_40px_var(--shadow-color)] border-none md:border border-[var(--color-border)] overflow-hidden ${isDay ? 'bg-[#e0f7fa]' : 'bg-[#050A15]'}`}>
+      <div className={`w-full relative aspect-[4/3] md:aspect-auto md:h-[500px] shadow-none border-none overflow-hidden ${isDay ? 'bg-[#e0f7fa]' : 'bg-[#050A15]'}`}>
       
       <style>{`
         @keyframes ship-bob {
