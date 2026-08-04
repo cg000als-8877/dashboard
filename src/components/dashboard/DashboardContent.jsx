@@ -185,14 +185,25 @@ export function DashboardContent({ month, isArchive = false }) {
         <div className="flex flex-col gap-5">
           {lines.sort((a,b) => a.id.localeCompare(b.id)).map((line) => {
             return (
-              <Card key={line.id} className="relative overflow-hidden w-full p-0">
-                <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-[var(--color-surface)] to-transparent pointer-events-none"></div>
-                <div className="flex flex-col xl:flex-row items-center gap-4 md:gap-6 justify-between w-full p-3 md:p-5 relative z-10">
+              <Card key={line.id} className="relative overflow-hidden w-full p-0 mt-2">
+                <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-surface)] to-transparent pointer-events-none rounded-[inherit]"></div>
+                <div className="flex flex-col lg:flex-row items-start lg:items-center gap-4 lg:gap-6 justify-between w-full p-3 md:p-5 relative z-10">
                   
-                  <div className="flex-shrink-0 w-full xl:w-56 xl:border-r xl:border-[var(--color-border)] xl:pr-6">
-                    <div className="flex items-center justify-between mb-2 md:mb-4 w-full">
-                      <h2 className="text-xl md:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[var(--color-text-main)] to-[var(--color-text-secondary)] [filter:var(--shadow-text)]">{line.name}</h2>
-                      <span className={`inline-flex items-center gap-1.5 px-2 md:px-2.5 py-0.5 md:py-1 rounded text-[8px] md:text-[9px] font-bold uppercase tracking-widest transition-all ${
+                  <div className="flex-shrink-0 w-full lg:w-56 xl:w-64 lg:border-r lg:border-[var(--color-border)] lg:pr-6 flex flex-col justify-center">
+                    
+                    <div className="flex items-center justify-between mb-1.5 md:mb-2 w-full">
+                      <div className="flex items-center gap-3">
+                        <h2 className="text-xl md:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[var(--color-text-main)] to-[var(--color-text-secondary)] [filter:var(--shadow-text)]">{line.name}</h2>
+                        {/* Desktop Warning Light */}
+                        <div className={`hidden lg:flex w-2.5 h-2.5 rounded-full shadow-lg ${
+                          line.netProfit >= 0 
+                          ? 'bg-emerald-400 shadow-[0_0_8px_#10b981]' 
+                          : 'bg-red-500 shadow-[0_0_12px_#ff3b30] animate-pulse'
+                        }`} title={line.netProfit >= 0 ? "Optimal" : "Critical"} />
+                      </div>
+                      
+                      {/* Mobile Badge */}
+                      <span className={`lg:hidden inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[8px] font-bold uppercase tracking-widest transition-all ${
                             line.netProfit >= 0 
                             ? 'bg-[var(--color-success-glow)] text-[var(--color-success-text)] border border-[rgba(16,185,129,0.2)]' 
                             : 'bg-[var(--color-danger-glow)] text-[var(--color-danger-text)] border border-[rgba(255,59,48,0.4)] shadow-[0_0_10px_rgba(255,59,48,0.3)] animate-[pulse_0.6s_ease-in-out_infinite]'
@@ -201,8 +212,9 @@ export function DashboardContent({ month, isArchive = false }) {
                             {line.netProfit >= 0 ? 'Optimal' : 'Critical'}
                       </span>
                     </div>
-                    <div className="text-[10px] md:text-xs font-semibold tracking-tight uppercase flex items-center gap-1.5">
-                      <span className="text-[var(--color-text-muted)]">ITEM &mdash;</span>
+                    
+                    <div className="text-[10px] md:text-xs font-semibold tracking-tight uppercase flex items-center gap-1.5 mb-1 md:mb-1">
+                      <span className="text-[var(--color-text-muted)]">ITEM :</span>
                       <span className="text-[var(--color-primary)]">
                         {line.today?.item || (
                           line.name.includes('A') ? 'Flannel Shirt' :
