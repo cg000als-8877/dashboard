@@ -3,6 +3,7 @@ import "./globals.css";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { MonthProvider } from "@/components/providers/MonthProvider";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { ClientAutoRefresh } from "@/components/providers/ClientAutoRefresh";
 import { Suspense } from "react";
 
 const inter = Inter({ 
@@ -25,6 +26,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Suspense fallback={<div>Loading...</div>}>
           <ThemeProvider>
             <MonthProvider>
+              <ClientAutoRefresh />
               <DashboardLayout>
                 {children}
               </DashboardLayout>
