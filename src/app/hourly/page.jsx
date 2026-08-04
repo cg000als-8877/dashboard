@@ -89,7 +89,7 @@ export default function HourlyPage() {
             </p>
           </div>
           
-          <div className="relative group w-full md:w-auto z-50">
+          <div className="relative group w-full md:w-auto z-30">
             <button
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               className="w-full md:w-auto flex items-center justify-center md:justify-start gap-2 bg-[var(--color-bg-card)] border border-[var(--color-border)] text-[var(--color-text-main)] py-2.5 md:py-3 px-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/50 transition-all duration-200 hover:bg-[var(--color-surface)] hover:border-[var(--color-primary)]/30 font-semibold cursor-pointer shadow-sm active:scale-[0.98]"
