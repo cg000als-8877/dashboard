@@ -102,7 +102,7 @@ export default function HourlyPage() {
               Hourly Tracking {selectedDate && <span className="opacity-80">- {format(parseISO(selectedDate), 'dd MMM, yy')}</span>}
             </h1>
             <p className="text-[var(--color-text-secondary)] text-[10px] md:text-base tracking-wide font-medium flex items-center justify-center md:justify-start gap-1.5 md:gap-2">
-              <Clock className="w-3.5 h-3.5 md:w-4 md:h-4 text-[var(--color-primary)]" />
+              <Clock className="hidden md:block md:w-4 md:h-4 text-[var(--color-primary)]" />
               Intraday production breakdown
             </p>
           </div>
