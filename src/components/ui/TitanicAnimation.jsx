@@ -484,29 +484,44 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
           {/* SHIP RENDERING LOGIC */}
           <g>
             {/* Render Exhaust Smoke ONCE globally behind the ship so it isn't clipped/duplicated by the structural split */}
-            {isProfit && (
-              <g style={backStyle}>
-                {[465, 585, 705, 825].map((cx, funnelIdx) => (
+            <g style={backStyle}>
+              {[
+                { cx: 465, broken: funnel4Broken },
+                { cx: 585, broken: funnel3Broken },
+                { cx: 705, broken: funnel2Broken },
+                { cx: 825, broken: funnel1Broken }
+              ].map(({ cx, broken }, funnelIdx) => {
+                if (broken) return null;
+                
+                // Determine smoke intensity
+                const particleCount = isProfit ? 8 : 4;
+                const driftX = isProfit ? -250 : -80;
+                const driftY = isProfit ? -30 : -50;
+                const scaleTo = isProfit ? 4 : 1.5;
+                const baseOpacity = isProfit ? 0.6 : 0.3;
+                const durationBase = isProfit ? 2 : 3;
+                
+                return (
                   <g key={`smoke-plume-${funnelIdx}`} transform={`translate(${cx}, 30)`}>
-                    {Array.from({length: 8}).map((_, i) => (
+                    {Array.from({length: particleCount}).map((_, i) => (
                       <circle 
                         key={`sm-${i}`}
-                        cx={(Math.random() - 0.5) * 15} 
-                        cy={(Math.random() - 0.5) * 15} 
-                        r={Math.random() * 6 + 8}
-                        fill={`rgba(${200 + Math.random()*55}, ${200 + Math.random()*55}, ${200 + Math.random()*55}, 0.6)`}
+                        cx={(Math.random() - 0.5) * 10} 
+                        cy={(Math.random() - 0.5) * 10} 
+                        r={Math.random() * 4 + 6}
+                        fill={`rgba(${180 + Math.random()*75}, ${180 + Math.random()*75}, ${180 + Math.random()*75}, ${baseOpacity})`}
                         style={{ 
-                          '--drift-x': `${-250 - Math.random() * 100}px`,
-                          '--drift-y': `${-30 - Math.random() * 60}px`,
-                          '--scale-to': 4 + Math.random() * 3,
-                          animation: `funnel-smoke ${2 + Math.random() * 1.5}s infinite ease-out ${Math.random() * -4}s` 
+                          '--drift-x': `${driftX - Math.random() * 30}px`,
+                          '--drift-y': `${driftY - Math.random() * 20}px`,
+                          '--scale-to': scaleTo + Math.random() * 1.5,
+                          animation: `funnel-smoke ${durationBase + Math.random() * 1.5}s infinite ease-out ${Math.random() * -4}s` 
                         }} 
                       />
                     ))}
                   </g>
-                ))}
-              </g>
-            )}
+                );
+              })}
+            </g>
 
             {/* Back Half */}
             <g style={backStyle} clipPath="url(#clip-stern)">
