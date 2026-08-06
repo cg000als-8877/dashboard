@@ -373,22 +373,6 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
           0%, 100% { transform: scale(1, 1); }
           50% { transform: scale(1.1, 0.9); }
         }
-        @keyframes whale-swim {
-          0% { transform: translateX(5000px); }
-          100% { transform: translateX(-4000px); }
-        }
-        @keyframes whale-breach {
-          0%, 42% { transform: translateY(100px) rotate(0deg); }
-          47% { transform: translateY(-300px) rotate(-35deg); }
-          50% { transform: translateY(-650px) rotate(-10deg); }
-          53% { transform: translateY(-300px) rotate(30deg); }
-          58%, 100% { transform: translateY(100px) rotate(0deg); }
-        }
-        @keyframes whale-splash {
-          0%, 51% { opacity: 0; transform: scale(0); }
-          53% { opacity: 1; transform: scale(1.5) translateY(-50px); }
-          56%, 100% { opacity: 0; transform: scale(3) translateY(50px); }
-        }
         @keyframes shooting-star {
           0% { opacity: 0; transform: translate(200px, -200px); }
           10% { opacity: 1; }
@@ -671,34 +655,6 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
                 </g>
               );
             })}
-
-            {/* The Breach Whale */}
-            <g style={{ animation: 'whale-swim 55s infinite linear' }}>
-              <g transform="translate(0, 800)">
-                <g style={{ animation: 'whale-breach 55s infinite ease-in-out' }}>
-                  <g transform="scale(2)">
-                    {/* Whale Body */}
-                    <path d="M -120 0 C -80 -60, 80 -40, 120 0 C 160 30, 200 10, 220 -10 C 200 30, 160 50, 120 30 C 80 50, -40 60, -120 0 Z" fill={isDay ? "#2c3e50" : "#1a252f"} />
-                    {/* Belly */}
-                    <path d="M -120 0 C -40 60, 80 50, 120 30 C 80 30, -40 40, -120 0 Z" fill={isDay ? "#94a3b8" : "#334155"} />
-                    {/* Tail Fluke */}
-                    <path d="M 210 -5 C 240 -30, 260 -40, 280 -40 C 250 0, 280 40, 300 40 C 260 40, 230 20, 210 -5 Z" fill={isDay ? "#2c3e50" : "#1a252f"} />
-                    {/* Pectoral Fin */}
-                    <path d="M 0 20 C -20 60, -40 80, -30 90 C -10 60, 20 40, 0 20 Z" fill={isDay ? "#34495e" : "#0f172a"} />
-                    <path d="M 30 10 C 10 50, -10 70, 0 80 C 20 50, 50 30, 30 10 Z" fill={isDay ? "#1e293b" : "#020617"} opacity="0.6"/>
-                    {/* Eye */}
-                    <circle cx="-80" cy="5" r="3" fill="#fff" />
-                    <circle cx="-81" cy="5" r="1.5" fill="#000" />
-                  </g>
-                  {/* Splash Effect! Triggered exactly during the breach */}
-                  <g style={{ animation: 'whale-splash 55s infinite linear' }}>
-                    {Array.from({length: 25}).map((_, i) => (
-                       <circle key={`wsp-${i}`} cx={(Math.random()-0.5)*250} cy="0" r={Math.random()*15+5} fill="#fff" opacity="0.6" style={{animation: `hole-bubble ${1+Math.random()}s infinite linear`}} />
-                    ))}
-                  </g>
-                </g>
-              </g>
-            </g>
           </g>
 
           {/* Splashes (Only when profitable / moving) - Now massive and aggressive! */}
