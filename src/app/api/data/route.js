@@ -117,11 +117,16 @@ export async function GET(request) {
         if (reportDateStr) {
           let timeLabels = [];
           for (let r = 0; r < Math.min(10, hData.length); r++) {
-              if (hData[r] && hData[r].includes('8-9 AM')) {
-                  const startIndex = hData[r].indexOf('8-9 AM');
+              if (hData[r] && hData[r].includes('1ST')) {
+                  const startIndex = hData[r].indexOf('1ST');
                   timeLabels = hData[r].slice(startIndex, startIndex + 11).map(String);
                   break;
               }
+          }
+
+          // Fallback if not found
+          if (timeLabels.length === 0) {
+              timeLabels = ['1ST', '2ND', '3RD', '4TH', '5TH', '6TH', '7TH', '8TH', '9TH', '10TH', '11TH'];
           }
 
           const hourlyParsed = {
@@ -131,37 +136,38 @@ export async function GET(request) {
           };
           
           for (let i = 0; i < hData.length; i++) {
-              if (hData[i] && hData[i][0] === "LINE NO" && i + 3 < hData.length) {
-                const targetRow = hData[i+1] || [];
-                const actualRow = hData[i+2] || [];
+              const row = hData[i] || [];
+              const lineId = row[0];
+              
+              if (lineId && typeof lineId === 'string' && ['A', 'B', 'C', 'D'].includes(lineId.toUpperCase())) {
+                const targetRow = row;
+                const actualRow = hData[i+1] || [];
                 
-                if (targetRow[0]) {
-                  let dataStartIndex = 6;
-                  for(let c=0; c < targetRow.length; c++) {
-                      if (String(targetRow[c]).includes('TARGET')) {
-                          dataStartIndex = c + 1;
-                          break;
-                      }
-                  }
-
-                  let actualStartIndex = 6;
-                  for(let c=0; c < actualRow.length; c++) {
-                      if (String(actualRow[c]).includes('ACTUAL')) {
-                          actualStartIndex = c + 1;
-                          break;
-                      }
-                  }
-
-                  hourlyParsed.lines.push({
-                    line_id: targetRow[0],
-                    buyer: targetRow[1] || 'N/A',
-                    style: targetRow[2] || 'N/A',
-                    item: targetRow[3] || 'N/A',
-                    mp: targetRow[4] || 0,
-                    target: targetRow.slice(dataStartIndex, dataStartIndex + 11).map(v => Number(v) || 0),
-                    actual: actualRow.slice(actualStartIndex, actualStartIndex + 11).map(v => Number(v) || 0)
-                  });
+                let dataStartIndex = 6; // default after METRIC
+                for(let c=0; c < targetRow.length; c++) {
+                    if (String(targetRow[c]).includes('TARGET')) {
+                        dataStartIndex = c + 1;
+                        break;
+                    }
                 }
+
+                let actualStartIndex = 6;
+                for(let c=0; c < actualRow.length; c++) {
+                    if (String(actualRow[c]).includes('ACTUAL')) {
+                        actualStartIndex = c + 1;
+                        break;
+                    }
+                }
+
+                hourlyParsed.lines.push({
+                  line_id: lineId.toUpperCase(),
+                  buyer: targetRow[1] || 'N/A',
+                  style: targetRow[2] || 'N/A',
+                  item: targetRow[3] || 'N/A',
+                  mp: targetRow[4] || 0,
+                  target: targetRow.slice(dataStartIndex, dataStartIndex + 11).map(v => Number(v) || 0),
+                  actual: actualRow.slice(actualStartIndex, actualStartIndex + 11).map(v => Number(v) || 0)
+                });
               }
           }
 
