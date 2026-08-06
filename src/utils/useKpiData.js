@@ -57,6 +57,7 @@ export function useKpiData(monthOverride) {
         }
       } catch (err) {
         console.error(err);
+        delete fetchPromises[targetMonth];
         if (isMounted) setError(err.message);
       } finally {
         if (isMounted) setLoading(false);

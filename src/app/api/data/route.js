@@ -10,16 +10,32 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const month = searchParams.get('month');
 
-    // Serve historical data if requested
-    if (month === '2026-07') {
-      const filePath = path.join(process.cwd(), 'src', 'data', 'archive-2026-07.json');
-      const fileData = await fs.readFile(filePath, 'utf-8');
-      return NextResponse.json(JSON.parse(fileData));
+    // 1. Serve historical data if a specific month is requested
+    if (month && month !== 'live') {
+        try {
+            const { db } = await import('@/lib/firebase');
+            if (db) {
+                const doc = await db.collection('monthly_archives').doc(month).get();
+                if (doc.exists) {
+                    return NextResponse.json(doc.data());
+                }
+            }
+        } catch (firebaseError) {
+            console.error('Firebase fetch failed for monthly archive, falling back to local files:', firebaseError);
+        }
+        
+        // Fallback to local files if Firebase fails or is not configured
+        const filePath = path.join(process.cwd(), 'src', 'data', `archive-${month}.json`);
+        try {
+            const fileData = await fs.readFile(filePath, 'utf-8');
+            return NextResponse.json(JSON.parse(fileData));
+        } catch (e) {
+            return NextResponse.json({ error: 'Archive not found for this month', month }, { status: 404 });
+        }
     }
-    // Live Google Sheets export URL
+
+    // 2. Fetch live data directly from Google Sheets
     const url = 'https://docs.google.com/spreadsheets/d/1sk_chMraCOx2frbK4RqUoU9M1XkGMAkjP2VgClhPJKo/export?format=xlsx';
-    
-    // Fetch live data directly from Google Sheets
     const response = await fetch(url, { cache: 'no-store' });
     if (!response.ok) {
       throw new Error(`Failed to fetch from Google Sheets: ${response.statusText}`);
@@ -194,10 +210,29 @@ export async function GET(request) {
       console.error('Error auto-archiving hourly report:', archiveError);
     }
 
-    return NextResponse.json({
+    const payload = {
       lines,
       dailyProduction
-    });
+    };
+
+    // Auto-backup current month to Firebase
+    try {
+        if (dailyProduction.length > 0) {
+            const firstDate = dailyProduction.find(d => d.date && d.status === 'ACTIVE')?.date;
+            if (firstDate) {
+                const currentMonthStr = firstDate.substring(0, 7);
+                const { db } = await import('@/lib/firebase');
+                if (db) {
+                    await db.collection('monthly_archives').doc(currentMonthStr).set(payload);
+                    console.log(`Successfully auto-backed up month ${currentMonthStr} to Firebase.`);
+                }
+            }
+        }
+    } catch (firebaseError) {
+        console.error('Failed to auto-backup month to Firebase:', firebaseError);
+    }
+
+    return NextResponse.json(payload);
 
   } catch (error) {
     console.error('Error parsing excel:', error);

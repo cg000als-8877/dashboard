@@ -39,8 +39,8 @@ export default function DashboardLayout({ children }) {
 
   return (
     <div className="flex h-screen overflow-hidden w-full bg-[var(--color-bg-main)]">
-      {/* Desktop Permanent Sidebar */}
-      <div className="hidden md:block flex-shrink-0 z-40 relative h-full">
+      {/* Desktop Floating Sidebar */}
+      <div className="hidden md:flex flex-col justify-center flex-shrink-0 z-40 relative h-full py-4 pl-4 pr-0">
         <Sidebar onClose={() => {}} />
       </div>
 

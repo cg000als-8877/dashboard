@@ -1,6 +1,7 @@
-import admin from 'firebase-admin';
+import { initializeApp, getApps, cert } from 'firebase-admin/app';
+import { getFirestore } from 'firebase-admin/firestore';
 
-if (!admin.apps.length) {
+if (!getApps().length) {
   try {
     const projectId = process.env.FIREBASE_PROJECT_ID;
     const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
@@ -8,8 +9,8 @@ if (!admin.apps.length) {
     const privateKey = process.env.FIREBASE_PRIVATE_KEY ? process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n') : undefined;
 
     if (projectId && clientEmail && privateKey) {
-      admin.initializeApp({
-        credential: admin.credential.cert({
+      initializeApp({
+        credential: cert({
           projectId,
           clientEmail,
           privateKey,
@@ -24,4 +25,4 @@ if (!admin.apps.length) {
   }
 }
 
-export const db = admin.apps.length ? admin.firestore() : null;
+export const db = getApps().length > 0 ? getFirestore() : null;
