@@ -141,13 +141,13 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
     <>
       {/* Foremast (Front) */}
       <g transform={frontBarBroken ? "translate(100, 300) rotate(90, 900, 120)" : ""} style={{ transition: "all 3s ease-in", opacity: frontBarBroken ? 0 : 1 }}>
-        <line x1="900" y1="120" x2="900" y2="-20" stroke="#B0A696" strokeWidth="3" />
+        <line x1="900" y1="120" x2="900" y2="-20" stroke="url(#mast-grad)" strokeWidth="3" />
         <line x1="900" y1="120" x2="900" y2="40" stroke="#111" strokeWidth="4" />
       </g>
       
       {/* Mainmast (Back) */}
       <g transform={backBarsBroken ? "translate(-100, 300) rotate(-90, 250, 120)" : ""} style={{ transition: "all 3s ease-in", opacity: backBarsBroken ? 0 : 1 }}>
-        <line x1="250" y1="120" x2="250" y2="-10" stroke="#B0A696" strokeWidth="3" />
+        <line x1="250" y1="120" x2="250" y2="-10" stroke="url(#mast-grad)" strokeWidth="3" />
         <line x1="250" y1="120" x2="250" y2="40" stroke="#111" strokeWidth="4" />
       </g>
       
@@ -163,32 +163,32 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
       {/* Funnels */}
       <g transform={funnel4Broken ? "translate(450, 40) rotate(-75, 15, 70)" : "translate(450, 40)"} style={{ transition: "transform 2s ease-in-out" }}>
         <g transform="skewX(-10)">
-          <rect x="0" y="0" width="30" height="70" fill="#E4AB5C" />
-          <rect x="0" y="0" width="30" height="18" fill="#111111" />
+          <rect x="0" y="0" width="30" height="70" fill="url(#funnel-grad)" />
+          <rect x="0" y="0" width="30" height="18" fill="url(#funnel-top-grad)" />
           <line x1="-2" y1="10" x2="-2" y2="70" stroke="#111" strokeWidth="1" />
         </g>
       </g>
       
       <g transform={funnel3Broken ? "translate(570, 40) rotate(-65, 15, 70)" : "translate(570, 40)"} style={{ transition: "transform 2s ease-in-out" }}>
         <g transform="skewX(-10)">
-          <rect x="0" y="0" width="30" height="70" fill="#E4AB5C" />
-          <rect x="0" y="0" width="30" height="18" fill="#111111" />
+          <rect x="0" y="0" width="30" height="70" fill="url(#funnel-grad)" />
+          <rect x="0" y="0" width="30" height="18" fill="url(#funnel-top-grad)" />
           <line x1="-2" y1="10" x2="-2" y2="70" stroke="#111" strokeWidth="1" />
         </g>
       </g>
       
       <g transform={funnel2Broken ? "translate(690, 40) rotate(75, 15, 70)" : "translate(690, 40)"} style={{ transition: "transform 2s ease-in-out" }}>
         <g transform="skewX(-10)">
-          <rect x="0" y="0" width="30" height="70" fill="#E4AB5C" />
-          <rect x="0" y="0" width="30" height="18" fill="#111111" />
+          <rect x="0" y="0" width="30" height="70" fill="url(#funnel-grad)" />
+          <rect x="0" y="0" width="30" height="18" fill="url(#funnel-top-grad)" />
           <line x1="-2" y1="10" x2="-2" y2="70" stroke="#111" strokeWidth="1" />
         </g>
       </g>
       
       <g transform={funnel1Broken ? "translate(810, 40) rotate(85, 15, 70)" : "translate(810, 40)"} style={{ transition: "transform 2s ease-in-out" }}>
         <g transform="skewX(-10)">
-          <rect x="0" y="0" width="30" height="70" fill="#E4AB5C" />
-          <rect x="0" y="0" width="30" height="18" fill="#111111" />
+          <rect x="0" y="0" width="30" height="70" fill="url(#funnel-grad)" />
+          <rect x="0" y="0" width="30" height="18" fill="url(#funnel-top-grad)" />
           <line x1="-2" y1="10" x2="-2" y2="70" stroke="#111" strokeWidth="1" />
         </g>
       </g>
@@ -204,13 +204,13 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
         </g>
       )}
 
-      <path d="M 320 110 L 850 110 L 850 120 L 320 120 Z" fill="#F8F8F8" />
+      <path d="M 320 110 L 850 110 L 850 120 L 320 120 Z" fill="url(#hull-white-grad)" />
       <g transform="translate(330, 108)">
         {Array.from({length: 18}).map((_, i) => (
-          <path key={`lb-${i}`} d={`M ${i * 28} 0 C ${i * 28 + 2} 4, ${i * 28 + 14} 4, ${i * 28 + 16} 0 Z`} fill="#D9CBB0" stroke="#555" strokeWidth="0.5" />
+          <path key={`lb-${i}`} d={`M ${i * 28} 0 C ${i * 28 + 2} 4, ${i * 28 + 14} 4, ${i * 28 + 16} 0 Z`} fill="#f1f5f9" stroke="#555" strokeWidth="0.5" />
         ))}
       </g>
-      <path d="M 300 120 L 860 120 L 870 135 L 290 135 Z" fill="#FFFFFF" />
+      <path d="M 300 120 L 860 120 L 870 135 L 290 135 Z" fill="url(#hull-white-grad)" />
       <g>
         {Array.from({length: 91}).map((_, i) => {
            let props = { fill: !isDay && !isLoss ? "#FAD169" : "#222" };
@@ -223,7 +223,7 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
            return <rect key={`pd-${i}`} x={305 + i * 6} y="123" width="2.5" height="10" {...props} />;
         })}
       </g>
-      <path d="M 240 135 L 890 135 L 900 155 L 220 155 Z" fill="#EEEEEE" />
+      <path d="M 240 135 L 890 135 L 900 155 L 220 155 Z" fill="url(#hull-white-grad)" />
       <g>
         {Array.from({length: 71}).map((_, i) => {
            let props = { fill: !isDay && !isLoss ? "#FAD169" : "#111" };
@@ -250,11 +250,11 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
       </g>
 
       {/* Main Hull */}
-      <path d="M 110 155 L 985 155 L 945 250 L 160 250 C 140 250, 120 230, 120 200 C 115 180, 110 160, 110 155 Z" fill="#141414" />
+      <path d="M 110 155 L 985 155 L 945 250 L 160 250 C 140 250, 120 230, 120 200 C 115 180, 110 160, 110 155 Z" fill="url(#hull-black-grad)" />
       <path d="M 110 157 L 984 157" stroke="#E3B34C" strokeWidth="2" fill="none" />
       
       {/* Anti-fouling lower hull (Red) */}
-      <path d="M 160 250 L 945 250 L 933 280 C 880 300, 220 300, 180 280 L 160 250 Z" fill="#711F1F" />
+      <path d="M 160 250 L 945 250 L 933 280 C 880 300, 220 300, 180 280 L 160 250 Z" fill="url(#hull-red-grad)" />
 
       {/* Ship stress crack right before splitting */}
       {isCracking && (
@@ -365,6 +365,30 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
           10%, 30%, 50% { fill: #222; }
           100% { fill: #222; }
         }
+        @keyframes jelly-float {
+          0%, 100% { transform: translate(0, 0) rotate(-5deg); }
+          50% { transform: translate(60px, -150px) rotate(5deg); }
+        }
+        @keyframes jelly-pulse {
+          0%, 100% { transform: scale(1, 1); }
+          50% { transform: scale(1.1, 0.9); }
+        }
+        @keyframes whale-swim {
+          0% { transform: translateX(5000px); }
+          100% { transform: translateX(-4000px); }
+        }
+        @keyframes whale-breach {
+          0%, 42% { transform: translateY(100px) rotate(0deg); }
+          47% { transform: translateY(-300px) rotate(-35deg); }
+          50% { transform: translateY(-650px) rotate(-10deg); }
+          53% { transform: translateY(-300px) rotate(30deg); }
+          58%, 100% { transform: translateY(100px) rotate(0deg); }
+        }
+        @keyframes whale-splash {
+          0%, 51% { opacity: 0; transform: scale(0); }
+          53% { opacity: 1; transform: scale(1.5) translateY(-50px); }
+          56%, 100% { opacity: 0; transform: scale(3) translateY(50px); }
+        }
         @keyframes shooting-star {
           0% { opacity: 0; transform: translate(200px, -200px); }
           10% { opacity: 1; }
@@ -415,6 +439,41 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
           <linearGradient id="shooting-grad" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor="#ffffff" stopOpacity="1" />
             <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+          </linearGradient>
+          
+          {/* Metallic Gradients for Ship */}
+          <linearGradient id="funnel-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#b37a34" />
+            <stop offset="30%" stopColor="#F5B762" />
+            <stop offset="70%" stopColor="#f3c482" />
+            <stop offset="100%" stopColor="#8c581a" />
+          </linearGradient>
+          <linearGradient id="funnel-top-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#050505" />
+            <stop offset="40%" stopColor="#333" />
+            <stop offset="60%" stopColor="#444" />
+            <stop offset="100%" stopColor="#000" />
+          </linearGradient>
+          <linearGradient id="hull-black-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="#3a3a3a" />
+            <stop offset="30%" stopColor="#1a1a1a" />
+            <stop offset="80%" stopColor="#0a0a0a" />
+            <stop offset="100%" stopColor="#000000" />
+          </linearGradient>
+          <linearGradient id="hull-white-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="#ffffff" />
+            <stop offset="70%" stopColor="#e5e7eb" />
+            <stop offset="100%" stopColor="#9ca3af" />
+          </linearGradient>
+          <linearGradient id="hull-red-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="#8a2525" />
+            <stop offset="40%" stopColor="#5c1515" />
+            <stop offset="100%" stopColor="#2e0707" />
+          </linearGradient>
+          <linearGradient id="mast-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#c5baa6" />
+            <stop offset="50%" stopColor="#e5dfd3" />
+            <stop offset="100%" stopColor="#7a6e5a" />
           </linearGradient>
         </defs>
         
@@ -587,32 +646,59 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
               );
             })}
 
-            {/* Swimming Fish */}
-            {Array.from({length: 20}).map((_, i) => {
-              const y = 600 + Math.random() * 150;
-              const duration = 15 + Math.random() * 20;
-              const delay = Math.random() * -40; // Negative delay so they are scattered
-              const scale = Math.random() * 0.4 + 0.4;
-              const isRight = Math.random() > 0.5;
+            {/* Glowing Jellyfish (Night Only) */}
+            {!isDay && Array.from({length: 12}).map((_, i) => {
+              const x = (Math.random() * 8000) - 4000;
+              const y = 900 + Math.random() * 400;
+              const delay = Math.random() * -20;
+              const duration = 15 + Math.random() * 10;
+              const scale = Math.random() * 0.5 + 0.5;
+              const colorBase = Math.random() > 0.5 ? "0, 255, 255" : "255, 0, 255";
               
               return (
-                <g 
-                  key={`fish-${i}`} 
-                  style={{ animation: `fish-swim-${isRight ? 'right' : 'left'} ${duration}s infinite linear ${delay}s` }}
-                >
-                  <g transform={`translate(0, ${y}) scale(${isRight ? -scale : scale}, ${scale})`}>
-                    {/* Fish Body */}
-                    <path d="M 0 0 C -15 -15, -30 -10, -40 0 C -30 10, -15 15, 0 0" fill={isDay ? "#ff9800" : "#2a3f4c"} />
-                    {/* Tail */}
-                    <path d="M -35 0 L -50 -12 L -45 0 L -50 12 Z" fill={isDay ? "#ff9800" : "#2a3f4c"} />
-                    {/* Fin */}
-                    <path d="M -20 -8 L -15 -15 L -10 -5 Z" fill={isDay ? "#e65100" : "#21323d"} />
-                    {/* Eye */}
-                    <circle cx="-12" cy="-3" r="1.5" fill="#000" />
+                <g key={`jelly-${i}`} transform={`translate(${x}, ${y}) scale(${scale})`}>
+                  <g style={{ animation: `jelly-float ${duration}s infinite ease-in-out ${delay}s` }}>
+                    <g style={{ animation: `jelly-pulse 3s infinite alternate ease-in-out ${delay}s` }}>
+                      {/* Dome */}
+                      <path d="M -20 0 C -20 -30, 20 -30, 20 0 Z" fill={`rgba(${colorBase}, 0.5)`} style={{ filter: `drop-shadow(0 0 10px rgba(${colorBase}, 0.8))` }} />
+                      <path d="M -20 0 Q -10 5 0 0 Q 10 5 20 0" fill={`rgba(${colorBase}, 0.8)`} />
+                      {/* Tentacles */}
+                      {Array.from({length: 6}).map((_, j) => (
+                        <path key={`tent-${j}`} d={`M ${-15 + j*6} 0 Q ${-12 + j*6} 20 ${-18 + j*6} 40 T ${-15 + j*6} 80`} fill="none" stroke={`rgba(${colorBase}, 0.6)`} strokeWidth="1.5" style={{ animation: `seaweed-sway ${2 + Math.random()}s infinite alternate ease-in-out ${Math.random()}s` }} />
+                      ))}
+                    </g>
                   </g>
                 </g>
               );
             })}
+
+            {/* The Breach Whale */}
+            <g style={{ animation: 'whale-swim 55s infinite linear' }}>
+              <g transform="translate(0, 800)">
+                <g style={{ animation: 'whale-breach 55s infinite ease-in-out' }}>
+                  <g transform="scale(2)">
+                    {/* Whale Body */}
+                    <path d="M -120 0 C -80 -60, 80 -40, 120 0 C 160 30, 200 10, 220 -10 C 200 30, 160 50, 120 30 C 80 50, -40 60, -120 0 Z" fill={isDay ? "#2c3e50" : "#1a252f"} />
+                    {/* Belly */}
+                    <path d="M -120 0 C -40 60, 80 50, 120 30 C 80 30, -40 40, -120 0 Z" fill={isDay ? "#94a3b8" : "#334155"} />
+                    {/* Tail Fluke */}
+                    <path d="M 210 -5 C 240 -30, 260 -40, 280 -40 C 250 0, 280 40, 300 40 C 260 40, 230 20, 210 -5 Z" fill={isDay ? "#2c3e50" : "#1a252f"} />
+                    {/* Pectoral Fin */}
+                    <path d="M 0 20 C -20 60, -40 80, -30 90 C -10 60, 20 40, 0 20 Z" fill={isDay ? "#34495e" : "#0f172a"} />
+                    <path d="M 30 10 C 10 50, -10 70, 0 80 C 20 50, 50 30, 30 10 Z" fill={isDay ? "#1e293b" : "#020617"} opacity="0.6"/>
+                    {/* Eye */}
+                    <circle cx="-80" cy="5" r="3" fill="#fff" />
+                    <circle cx="-81" cy="5" r="1.5" fill="#000" />
+                  </g>
+                  {/* Splash Effect! Triggered exactly during the breach */}
+                  <g style={{ animation: 'whale-splash 55s infinite linear' }}>
+                    {Array.from({length: 25}).map((_, i) => (
+                       <circle key={`wsp-${i}`} cx={(Math.random()-0.5)*250} cy="0" r={Math.random()*15+5} fill="#fff" opacity="0.6" style={{animation: `hole-bubble ${1+Math.random()}s infinite linear`}} />
+                    ))}
+                  </g>
+                </g>
+              </g>
+            </g>
           </g>
 
           {/* Splashes (Only when profitable / moving) - Now massive and aggressive! */}
