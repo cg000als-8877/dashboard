@@ -1,0 +1,150 @@
+{
+  "date": "2026-08-06",
+  "timeLabels": [
+    "8-9 AM",
+    "9-10 AM",
+    "10-11 AM",
+    "11-12 AM",
+    "12-1 PM",
+    "1-2 PM",
+    "2-3 PM",
+    "3-4 PM",
+    "4-5 PM",
+    "5-6 PM",
+    "6-7 PM"
+  ],
+  "lines": [
+    {
+      "line_id": "A",
+      "buyer": "FAMETEX",
+      "style": "N/A",
+      "item": "SHERPA SHIRT",
+      "mp": 0,
+      "target": [
+        null,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "actual": [
+        null,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "line_id": "B",
+      "buyer": "ANKHI APP.",
+      "style": "BD2625",
+      "item": "LADIES TOP",
+      "mp": 0,
+      "target": [
+        130,
+        130,
+        130,
+        130,
+        130,
+        130,
+        130,
+        130,
+        130,
+        130,
+        130
+      ],
+      "actual": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "line_id": "C",
+      "buyer": "ANKHI APP.",
+      "style": "BD2526",
+      "item": "LADIES BOTTOM",
+      "mp": 0,
+      "target": [
+        140,
+        140,
+        140,
+        140,
+        140,
+        140,
+        140,
+        140,
+        140,
+        140,
+        140
+      ],
+      "actual": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "line_id": "D",
+      "buyer": "FAMETEX",
+      "style": "N/A",
+      "item": "MENS TEE SHIRT",
+      "mp": 0,
+      "target": [
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200
+      ],
+      "actual": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    }
+  ]
+}
