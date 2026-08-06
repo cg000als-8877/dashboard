@@ -171,12 +171,23 @@ export async function GET(request) {
               }
           }
 
-          // Ensure directory exists
+          // Ensure directory exists for local fallback
           const archiveDir = path.join(process.cwd(), 'src', 'data', 'hourly-archives');
           try { await fs.mkdir(archiveDir, { recursive: true }); } catch (e) {}
 
           const archivePath = path.join(archiveDir, `${reportDateStr}.json`);
           await fs.writeFile(archivePath, JSON.stringify(hourlyParsed, null, 2));
+
+          // Save to Firebase Firestore if configured
+          try {
+            const { db } = await import('@/lib/firebase');
+            if (db) {
+              await db.collection('hourly_archives').doc(reportDateStr).set(hourlyParsed);
+              console.log(`Successfully saved hourly data for ${reportDateStr} to Firebase.`);
+            }
+          } catch (firebaseError) {
+            console.error('Failed to save to Firebase:', firebaseError);
+          }
         }
       }
     } catch (archiveError) {
