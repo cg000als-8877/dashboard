@@ -114,6 +114,29 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
     return path + "L 4000 1600 L -4000 1600 Z";
   }, []);
 
+  const renderMoonGroup = () => (
+    <g>
+      <circle cx="1100" cy="80" r="45" fill="#f4f6f0" style={{ filter: 'drop-shadow(0 0 15px rgba(255,255,255,0.8))' }} />
+      <circle cx="1110" cy="70" r="8" fill="#e0e2db" opacity="0.6" />
+      <circle cx="1080" cy="90" r="12" fill="#e0e2db" opacity="0.4" />
+      <circle cx="1115" cy="100" r="6" fill="#e0e2db" opacity="0.5" />
+      
+      {Array.from({length: 15}).map((_, i) => (
+        <path 
+          key={`shoot1-${i}`}
+          d={`M ${Math.random() * 8000 - 4000} ${Math.random() * 200} l -150 150`}
+          stroke="url(#shooting-grad)"
+          strokeWidth="2"
+          strokeLinecap="round"
+          opacity="0"
+          style={{
+            animation: `shooting-star ${3 + Math.random() * 5}s infinite ease-in ${Math.random() * 15}s`
+          }}
+        />
+      ))}
+    </g>
+  );
+
   const renderShip = () => (
     <>
       {/* Foremast (Front) */}
@@ -188,16 +211,30 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
         ))}
       </g>
       <path d="M 300 120 L 860 120 L 870 135 L 290 135 Z" fill="#FFFFFF" />
-      <g fill="#222">
-        {Array.from({length: 91}).map((_, i) => (
-          <rect key={`pd-${i}`} x={305 + i * 6} y="123" width="2.5" height="10" />
-        ))}
+      <g>
+        {Array.from({length: 91}).map((_, i) => {
+           let props = { fill: !isDay && !isLoss ? "#FAD169" : "#222" };
+           if (!isDay && isLoss) {
+              props = {
+                 fill: "#FAD169",
+                 style: { animation: `window-flicker-out 0.6s forwards ${Math.random() * 6 + (i % 6)}s` }
+              };
+           }
+           return <rect key={`pd-${i}`} x={305 + i * 6} y="123" width="2.5" height="10" {...props} />;
+        })}
       </g>
       <path d="M 240 135 L 890 135 L 900 155 L 220 155 Z" fill="#EEEEEE" />
-      <g fill="#111">
-        {Array.from({length: 71}).map((_, i) => (
-          <rect key={`bd-${i}`} x={245 + i * 9} y="140" width="4" height="10" rx="1" />
-        ))}
+      <g>
+        {Array.from({length: 71}).map((_, i) => {
+           let props = { fill: !isDay && !isLoss ? "#FAD169" : "#111" };
+           if (!isDay && isLoss) {
+              props = {
+                 fill: "#FAD169",
+                 style: { animation: `window-flicker-out 0.6s forwards ${Math.random() * 6 + (i % 6)}s` }
+              };
+           }
+           return <rect key={`bd-${i}`} x={245 + i * 9} y="140" width="4" height="10" rx="1" {...props} />;
+        })}
       </g>
       <path d="M 170 155 L 320 155 L 320 165 L 160 165 Z" fill="#E0E0E0" />
       <path d="M 900 155 L 950 155 L 960 165 L 900 165 Z" fill="#E0E0E0" />
@@ -323,6 +360,17 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
           20% { opacity: 0.8; }
           100% { transform: translate(-20px, -60px) scale(1.5); opacity: 0; }
         }
+        @keyframes window-flicker-out {
+          0%, 20%, 40%, 60% { fill: #FAD169; }
+          10%, 30%, 50% { fill: #222; }
+          100% { fill: #222; }
+        }
+        @keyframes shooting-star {
+          0% { opacity: 0; transform: translate(200px, -200px); }
+          10% { opacity: 1; }
+          20% { opacity: 0; transform: translate(-200px, 200px); }
+          100% { opacity: 0; transform: translate(-200px, 200px); }
+        }
         @keyframes seaweed-sway {
           0% { transform: translateX(-8px) skewX(2deg); }
           100% { transform: translateX(8px) skewX(-2deg); }
@@ -364,6 +412,10 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
           <clipPath id="clip-bow">
             <rect x="630" y="-1000" width="2000" height="2000" />
           </clipPath>
+          <linearGradient id="shooting-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#ffffff" stopOpacity="1" />
+            <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+          </linearGradient>
         </defs>
         
         {/* Night Sky Stars / Day Sky Sun */}
@@ -388,6 +440,7 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
           ) : (
             <g style={{ animation: isProfit ? 'star-move 20s infinite linear' : 'none' }}>
             <g>
+            {renderMoonGroup()}
             {stars.map((star, i) => (
               <circle 
                 key={`s1-${i}`} 
@@ -401,6 +454,7 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
           </g>
           {/* Duplicate for seamless looping */}
           <g transform="translate(8000, 0)">
+            {renderMoonGroup()}
             {stars.map((star, i) => (
               <circle 
                 key={`s2-${i}`} 
