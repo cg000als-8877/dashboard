@@ -114,6 +114,32 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
     return path + "L 4000 1600 L -4000 1600 Z";
   }, []);
 
+  const renderShark = () => (
+    <g>
+      {/* Upper jaw/head */}
+      <path d="M 0 -8 C 40 -35, 100 -20, 140 0 C 100 15, 50 10, 0 -8 Z" fill="#1e293b" />
+      {/* Lower jaw (open) */}
+      <path d="M 10 18 C 30 25, 80 20, 140 0 C 80 5, 40 10, 10 18 Z" fill="#1e293b" />
+      {/* Mouth interior */}
+      <path d="M 0 -8 L 30 5 L 10 18 Z" fill="#0f172a" />
+      {/* Top teeth */}
+      <path d="M 0 -8 L 5 -5 L 8 -7 L 12 -2 L 16 -5 L 20 0 L 25 -2 L 30 5 Z" fill="#e2e8f0" />
+      {/* Bottom teeth */}
+      <path d="M 10 18 L 15 12 L 18 16 L 22 10 L 25 14 L 28 8 L 30 5 Z" fill="#e2e8f0" />
+      {/* Tail */}
+      <path d="M 130 -5 L 160 -30 L 150 0 L 160 30 L 130 5 Z" fill="#1e293b" />
+      {/* Top Fin */}
+      <path d="M 60 -15 L 80 -45 L 90 -10 Z" fill="#1e293b" />
+      {/* Bottom Fin */}
+      <path d="M 65 12 L 80 35 L 85 10 Z" fill="#1e293b" />
+      {/* Eye (Angry slant) */}
+      <circle cx="35" cy="-8" r="2.5" fill="#ef4444" />
+      <path d="M 30 -12 L 40 -8" stroke="#0f172a" strokeWidth="1.5" />
+      {/* Gills */}
+      <path d="M 50 0 Q 55 5 50 10 M 55 -2 Q 60 4 55 12 M 60 -4 Q 65 3 60 14" stroke="#0f172a" strokeWidth="1" fill="none" />
+    </g>
+  );
+
   const renderMoonGroup = () => (
     <g>
       <circle cx="1100" cy="80" r="45" fill="#f4f6f0" style={{ filter: 'drop-shadow(0 0 15px rgba(255,255,255,0.8))' }} />
@@ -360,6 +386,31 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
           20% { opacity: 0.8; }
           100% { transform: translate(-20px, -60px) scale(1.5); opacity: 0; }
         }
+        @keyframes shark-swim-left {
+          0% { transform: translateX(3000px); }
+          15%, 100% { transform: translateX(-3000px); }
+        }
+        @keyframes shark-swim-right {
+          0% { transform: translateX(-3000px) scaleX(-1); }
+          15%, 100% { transform: translateX(3000px) scaleX(-1); }
+        }
+        @keyframes fish-panic-1 {
+          0%, 5.5% { transform: translate(0,0) rotate(0deg); }
+          6.5% { transform: translate(50px, -30px) rotate(15deg); }
+          7.5% { transform: translate(-40px, 40px) rotate(-20deg); }
+          8.5% { transform: translate(60px, -10px) rotate(25deg); }
+          9.5% { transform: translate(-30px, 50px) rotate(-15deg); }
+          10.5% { transform: translate(40px, -20px) rotate(10deg); }
+          11.5%, 100% { transform: translate(0,0) rotate(0deg); }
+        }
+        @keyframes fish-panic-2 {
+          0%, 3.5% { transform: translate(0,0) rotate(0deg); }
+          4.5% { transform: translate(-50px, -30px) rotate(-15deg); }
+          5.5% { transform: translate(40px, 40px) rotate(20deg); }
+          6.5% { transform: translate(-60px, -10px) rotate(-25deg); }
+          7.5% { transform: translate(30px, 50px) rotate(15deg); }
+          8.5%, 100% { transform: translate(0,0) rotate(0deg); }
+        }
         @keyframes window-flicker-out {
           0%, 20%, 40%, 60% { fill: #FAD169; }
           10%, 30%, 50% { fill: #222; }
@@ -574,7 +625,7 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
 
             {/* Swimming Fish */}
             {Array.from({length: 20}).map((_, i) => {
-              const y = 600 + Math.random() * 150;
+              const y = 600 + Math.random() * 300;
               const duration = 15 + Math.random() * 20;
               const delay = Math.random() * -40; // Negative delay so they are scattered
               const scale = Math.random() * 0.4 + 0.4;
@@ -586,18 +637,34 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
                   style={{ animation: `fish-swim-${isRight ? 'right' : 'left'} ${duration}s infinite linear ${delay}s` }}
                 >
                   <g transform={`translate(0, ${y}) scale(${isRight ? -scale : scale}, ${scale})`}>
-                    {/* Fish Body */}
-                    <path d="M 0 0 C -15 -15, -30 -10, -40 0 C -30 10, -15 15, 0 0" fill={isDay ? "#ff9800" : "#2a3f4c"} />
-                    {/* Tail */}
-                    <path d="M -35 0 L -50 -12 L -45 0 L -50 12 Z" fill={isDay ? "#ff9800" : "#2a3f4c"} />
-                    {/* Fin */}
-                    <path d="M -20 -8 L -15 -15 L -10 -5 Z" fill={isDay ? "#e65100" : "#21323d"} />
-                    {/* Eye */}
-                    <circle cx="-12" cy="-3" r="1.5" fill="#000" />
+                    <g style={{ animation: `fish-panic-1 50s infinite linear 5s` }}>
+                      <g style={{ animation: `fish-panic-2 73s infinite linear 30s` }}>
+                        {/* Fish Body */}
+                        <path d="M 0 0 C -15 -15, -30 -10, -40 0 C -30 10, -15 15, 0 0" fill={isDay ? "#ff9800" : "#2a3f4c"} />
+                        {/* Tail */}
+                        <path d="M -35 0 L -50 -12 L -45 0 L -50 12 Z" fill={isDay ? "#ff9800" : "#2a3f4c"} />
+                        {/* Fin */}
+                        <path d="M -20 -8 L -15 -15 L -10 -5 Z" fill={isDay ? "#e65100" : "#21323d"} />
+                        {/* Eye */}
+                        <circle cx="-12" cy="-3" r="1.5" fill="#000" />
+                      </g>
+                    </g>
                   </g>
                 </g>
               );
             })}
+
+            {/* Mega Sharks */}
+            <g style={{ animation: 'shark-swim-right 50s infinite linear 5s' }}>
+              <g transform="translate(0, 750) scale(4)">
+                {renderShark()}
+              </g>
+            </g>
+            <g style={{ animation: 'shark-swim-left 73s infinite linear 30s' }}>
+              <g transform="translate(0, 1100) scale(3.5)">
+                {renderShark()}
+              </g>
+            </g>
           </g>
 
           {/* Splashes (Only when profitable / moving) - Now massive and aggressive! */}
