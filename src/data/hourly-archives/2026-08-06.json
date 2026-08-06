@@ -19,7 +19,7 @@
       "buyer": "FAMETEX",
       "style": "N/A",
       "item": "SHERPA SHIRT",
-      "mp": 0,
+      "mp": "08+02",
       "target": [
         0,
         0,
@@ -52,7 +52,7 @@
       "buyer": "ANKHI APP.",
       "style": "BD2625",
       "item": "LADIES TOP",
-      "mp": 0,
+      "mp": "45+24",
       "target": [
         130,
         130,
@@ -85,7 +85,7 @@
       "buyer": "ANKHI APP.",
       "style": "BD2526",
       "item": "LADIES BOTTOM",
-      "mp": 0,
+      "mp": "32+10",
       "target": [
         140,
         140,
@@ -118,7 +118,7 @@
       "buyer": "FAMETEX",
       "style": "N/A",
       "item": "MENS TEE SHIRT",
-      "mp": 0,
+      "mp": "27+16",
       "target": [
         200,
         200,

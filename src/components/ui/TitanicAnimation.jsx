@@ -88,8 +88,8 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
   }
 
   const stars = useMemo(() => {
-    return Array.from({ length: 150 }).map((_, i) => ({
-      cx: Math.random() * 2000 - 500,
+    return Array.from({ length: 400 }).map((_, i) => ({
+      cx: Math.random() * 8000 - 4000,
       cy: Math.random() * 700, 
       r: Math.random() * 1.5 + 0.5,
       opacity: Math.random() * 0.8 + 0.2,
@@ -295,7 +295,7 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
         }
         @keyframes star-move {
           0% { transform: translateX(0); }
-          100% { transform: translateX(-2000px); }
+          100% { transform: translateX(-8000px); }
         }
         @keyframes prop-spin {
           0% { transform: rotate(0deg); }
@@ -372,15 +372,17 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
             <g style={{ animation: isProfit ? 'star-move 40s infinite linear' : 'none' }}>
               <g>
                 <circle cx="-100" cy="150" r="40" fill="#fbc531" />
-                {Array.from({length: 15}).map((_, i) => (
-                  <path key={`cloud-${i}`} d={`M ${i * 400 - 500} ${100 + (i % 3) * 50} Q ${i * 400 - 450} ${80 + (i % 3) * 50} ${i * 400 - 400} ${100 + (i % 3) * 50} Q ${i * 400 - 350} ${90 + (i % 3) * 50} ${i * 400 - 300} ${110 + (i % 3) * 50} L ${i * 400 - 500} ${110 + (i % 3) * 50} Z`} fill="rgba(255,255,255,0.7)" />
-                ))}
+                {Array.from({length: 20}).map((_, i) => {
+                  const x = i * 400 - 4000;
+                  return <path key={`cloud-${i}`} d={`M ${x} ${100 + (i % 3) * 50} Q ${x + 50} ${80 + (i % 3) * 50} ${x + 100} ${100 + (i % 3) * 50} Q ${x + 150} ${90 + (i % 3) * 50} ${x + 200} ${110 + (i % 3) * 50} L ${x} ${110 + (i % 3) * 50} Z`} fill="rgba(255,255,255,0.7)" />
+                })}
               </g>
-              <g transform="translate(4000, 0)">
+              <g transform="translate(8000, 0)">
                 <circle cx="-100" cy="150" r="40" fill="#fbc531" />
-                {Array.from({length: 15}).map((_, i) => (
-                  <path key={`cloud2-${i}`} d={`M ${i * 400 - 500} ${100 + (i % 3) * 50} Q ${i * 400 - 450} ${80 + (i % 3) * 50} ${i * 400 - 400} ${100 + (i % 3) * 50} Q ${i * 400 - 350} ${90 + (i % 3) * 50} ${i * 400 - 300} ${110 + (i % 3) * 50} L ${i * 400 - 500} ${110 + (i % 3) * 50} Z`} fill="rgba(255,255,255,0.7)" />
-                ))}
+                {Array.from({length: 20}).map((_, i) => {
+                  const x = i * 400 - 4000;
+                  return <path key={`cloud2-${i}`} d={`M ${x} ${100 + (i % 3) * 50} Q ${x + 50} ${80 + (i % 3) * 50} ${x + 100} ${100 + (i % 3) * 50} Q ${x + 150} ${90 + (i % 3) * 50} ${x + 200} ${110 + (i % 3) * 50} L ${x} ${110 + (i % 3) * 50} Z`} fill="rgba(255,255,255,0.7)" />
+                })}
               </g>
             </g>
           ) : (
@@ -398,7 +400,7 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
             ))}
           </g>
           {/* Duplicate for seamless looping */}
-          <g transform="translate(2000, 0)">
+          <g transform="translate(8000, 0)">
             {stars.map((star, i) => (
               <circle 
                 key={`s2-${i}`} 
