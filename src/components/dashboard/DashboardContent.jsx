@@ -8,6 +8,7 @@ import { Sparkles, ArrowRight, Download, FileText } from 'lucide-react';
 import Link from 'next/link';
 import { RealTimeClock } from '@/components/ui/RealTimeClock';
 import { PrintableArchiveReport } from '@/components/report/PrintableArchiveReport';
+import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 
 export function DashboardContent({ month, isArchive = false }) {
   const { stats, dailyTrends, insights, lines, loading, error } = useKpiData(month);
@@ -108,30 +109,30 @@ export function DashboardContent({ month, isArchive = false }) {
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
           <MetricCard 
             title="Total Cost" 
-            value={`BDT ${Math.round(stats.totalCost).toLocaleString()}`} 
+            value={<AnimatedNumber value={Math.round(stats.totalCost)} prefix="BDT " />} 
             color="warning"
           />
           <MetricCard 
             title="Total Income" 
-            value={`BDT ${Math.round(stats.totalIncome).toLocaleString()}`}
+            value={<AnimatedNumber value={Math.round(stats.totalIncome)} prefix="BDT " />}
             color="primary"
           />
           <MetricCard 
             title={stats.netProfit >= 0 ? "Net Profit" : "Net Loss"} 
-            value={`${stats.netProfit > 0 ? '+BDT ' : 'BDT '}${Math.round(stats.netProfit).toLocaleString()}`}
+            value={<AnimatedNumber value={Math.abs(Math.round(stats.netProfit))} prefix={stats.netProfit >= 0 ? "+BDT " : "BDT -"} />}
             color={stats.netProfit >= 0 ? 'success' : 'danger'}
           />
           <MetricCard 
             title="Working Days" 
-            value={`${stats.workingDays} Days`} 
+            value={<AnimatedNumber value={stats.workingDays} suffix=" Days" />} 
           />
           <MetricCard 
             title="Production Lines" 
-            value={`${stats.activeLinesCount} Active`} 
+            value={<AnimatedNumber value={stats.activeLinesCount} suffix=" Active" />} 
           />
           <MetricCard 
             title={stats.averageDailyProfit >= 0 ? "Avg Daily Profit" : "Avg Daily Loss"} 
-            value={`${stats.averageDailyProfit > 0 ? '+' : ''}${Math.round(stats.averageDailyProfit).toLocaleString()} / day`}
+            value={<AnimatedNumber value={Math.abs(Math.round(stats.averageDailyProfit))} prefix={stats.averageDailyProfit >= 0 ? "+" : "-"} suffix=" / day" />}
             color={stats.averageDailyProfit >= 0 ? 'success' : 'danger'}
           />
         </div>
@@ -229,23 +230,30 @@ export function DashboardContent({ month, isArchive = false }) {
                   <div className="flex flex-row flex-wrap md:flex-nowrap w-full gap-2 md:gap-4 justify-between">
                     <div className="bg-[var(--color-surface)] p-2.5 md:p-4 rounded-xl md:rounded-2xl border border-[var(--color-border)] flex-1 basis-[45%] md:basis-auto md:min-w-[130px] shadow-sm transition-transform hover:-translate-y-1 duration-300">
                       <p className="text-[9px] md:text-[10px] text-[var(--color-text-muted)] font-medium uppercase tracking-widest mb-1">Production</p>
-                      <p className="text-base md:text-xl font-semibold md:font-bold text-[var(--color-text-main)]">{line.totalProduction} <span className="text-[10px] md:text-xs text-[var(--color-text-muted)]">PCS</span></p>
+                      <p className="text-base md:text-xl font-semibold md:font-bold text-[var(--color-text-main)]">
+                        <AnimatedNumber value={line.totalProduction} />
+                        <span className="text-[10px] md:text-xs text-[var(--color-text-muted)] ml-1">PCS</span>
+                      </p>
                     </div>
                     
                     <div className="bg-[var(--color-surface)] p-2.5 md:p-4 rounded-xl md:rounded-2xl border border-[var(--color-border)] flex-1 basis-[45%] md:basis-auto md:min-w-[130px] shadow-sm transition-transform hover:-translate-y-1 duration-300">
                       <p className="text-[9px] md:text-[10px] text-[var(--color-text-muted)] font-medium uppercase tracking-widest mb-1">Income</p>
-                      <p className="text-base md:text-xl font-semibold md:font-bold text-[var(--color-primary)]">BDT {Math.round(line.totalIncome).toLocaleString()}</p>
+                      <p className="text-base md:text-xl font-semibold md:font-bold text-[var(--color-primary)]">
+                        <AnimatedNumber value={Math.round(line.totalIncome)} prefix="BDT " />
+                      </p>
                     </div>
 
                     <div className="bg-[var(--color-surface)] p-2.5 md:p-4 rounded-xl md:rounded-2xl border border-[var(--color-border)] flex-1 basis-[45%] md:basis-auto md:min-w-[130px] shadow-sm transition-transform hover:-translate-y-1 duration-300">
                       <p className="text-[9px] md:text-[10px] text-[var(--color-text-muted)] font-medium uppercase tracking-widest mb-1">Cost</p>
-                      <p className="text-base md:text-xl font-semibold md:font-bold text-amber-500">BDT {Math.round(line.totalCost).toLocaleString()}</p>
+                      <p className="text-base md:text-xl font-semibold md:font-bold text-amber-500">
+                        <AnimatedNumber value={Math.round(line.totalCost)} prefix="BDT " />
+                      </p>
                     </div>
 
                     <div className={`bg-[var(--color-surface)] p-2.5 md:p-4 rounded-xl md:rounded-2xl border flex-1 basis-[45%] md:basis-auto md:min-w-[130px] shadow-sm transition-transform hover:-translate-y-1 duration-300 ${line.netProfit >= 0 ? 'border-[rgba(16,185,129,0.15)] bg-[var(--color-success-glow)]' : 'border-[rgba(255,59,48,0.15)] bg-[var(--color-danger-glow)]'}`}>
                       <p className="text-[9px] md:text-[10px] text-[var(--color-text-muted)] font-medium uppercase tracking-widest mb-1">{line.netProfit >= 0 ? 'Net Profit' : 'Net Loss'}</p>
                       <p className={`text-base md:text-xl font-semibold md:font-bold [filter:var(--shadow-text)] ${line.netProfit >= 0 ? 'text-[var(--color-success-text)]' : 'text-[var(--color-danger-text)]'}`}>
-                        BDT {Math.round(line.netProfit).toLocaleString()}
+                        <AnimatedNumber value={Math.round(line.netProfit)} prefix="BDT " />
                       </p>
                     </div>
                   </div>

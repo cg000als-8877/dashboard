@@ -6,6 +6,7 @@ import { Clock, Calendar as CalendarIcon, RefreshCw, AlertTriangle, Sparkles, Tr
 import { cn } from '@/components/layout/Sidebar';
 
 import { format, parseISO } from 'date-fns';
+import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 
 export default function HourlyPage() {
   const [availableDates, setAvailableDates] = useState([]);
@@ -209,11 +210,11 @@ export default function HourlyPage() {
                       <div className="hidden md:flex bg-[var(--color-bg-card)] rounded-xl p-3 shadow-[0_0_15px_rgba(0,0,0,0.2)] border border-[var(--color-border)] w-auto">
                         <div className="flex-1 text-center border-r border-[var(--color-border)] px-6">
                           <p className="text-[10px] uppercase tracking-widest text-[var(--color-text-secondary)] font-semibold mb-1 whitespace-nowrap">Total Target</p>
-                          <p className="text-lg font-bold text-[var(--color-text-main)]">{factoryTotalTarget.toLocaleString()}</p>
+                          <p className="text-lg font-bold text-[var(--color-text-main)]"><AnimatedNumber value={factoryTotalTarget} /></p>
                         </div>
                         <div className="flex-1 text-center border-r border-[var(--color-border)] px-6">
                           <p className="text-[10px] uppercase tracking-widest text-[var(--color-text-secondary)] font-semibold mb-1 whitespace-nowrap">Total Actual</p>
-                          <p className="text-lg font-bold text-blue-600 dark:text-blue-400">{factoryTotalActual.toLocaleString()}</p>
+                          <p className="text-lg font-bold text-blue-600 dark:text-blue-400"><AnimatedNumber value={factoryTotalActual} /></p>
                         </div>
                         <div className="flex-1 text-center px-6">
                           <p className="text-[10px] uppercase tracking-widest text-[var(--color-text-secondary)] font-semibold mb-1 whitespace-nowrap">Achievement</p>
@@ -221,7 +222,7 @@ export default function HourlyPage() {
                             "text-xl font-black",
                             (factoryAchievement >= 100) ? "text-[var(--color-success-text)]" : "text-amber-500"
                           )}>
-                            {factoryAchievement}%
+                            <AnimatedNumber value={factoryAchievement} suffix="%" />
                           </p>
                         </div>
                       </div>
@@ -234,7 +235,7 @@ export default function HourlyPage() {
                             <div className="w-1.5 h-8 bg-slate-400 dark:bg-gray-500 rounded-full" />
                             <div className="flex flex-col">
                               <span className="text-[10px] uppercase tracking-widest text-[var(--color-text-secondary)] font-bold">Target</span>
-                              <span className="text-xl font-black text-[var(--color-text-main)] leading-none mt-0.5">{factoryTotalTarget.toLocaleString()}</span>
+                              <span className="text-xl font-black text-[var(--color-text-main)] leading-none mt-0.5"><AnimatedNumber value={factoryTotalTarget} /></span>
                             </div>
                           </div>
                           {/* Actual */}
@@ -242,7 +243,7 @@ export default function HourlyPage() {
                             <div className="w-1.5 h-8 bg-blue-500 rounded-full" />
                             <div className="flex flex-col">
                               <span className="text-[10px] uppercase tracking-widest text-[var(--color-text-secondary)] font-bold">Actual</span>
-                              <span className="text-xl font-black text-blue-600 dark:text-blue-400 leading-none mt-0.5">{factoryTotalActual.toLocaleString()}</span>
+                              <span className="text-xl font-black text-blue-600 dark:text-blue-400 leading-none mt-0.5"><AnimatedNumber value={factoryTotalActual} /></span>
                             </div>
                           </div>
                         </div>
@@ -268,12 +269,13 @@ export default function HourlyPage() {
                             />
                           </svg>
                           <div className="absolute inset-0 flex flex-col items-center justify-center">
-                            <span className={cn(
-                              "text-xl font-black tracking-tighter",
-                              (factoryAchievement >= 100) ? "text-[var(--color-success-text)]" : "text-amber-500"
-                            )}>
-                              {factoryAchievement}
-                            </span>
+                            <AnimatedNumber 
+                              value={factoryAchievement} 
+                              className={cn(
+                                "text-xl font-black tracking-tighter",
+                                (factoryAchievement >= 100) ? "text-[var(--color-success-text)]" : "text-amber-500"
+                              )} 
+                            />
                             <span className="text-[10px] font-bold text-[var(--color-text-secondary)] -mt-1">%</span>
                           </div>
                         </div>
@@ -589,7 +591,7 @@ export default function HourlyPage() {
                     <div className="bg-[var(--color-surface)]/30 p-3 border-t border-[var(--color-border)] flex flex-col items-center justify-center mt-auto">
                       <p className="text-[9px] text-[var(--color-text-muted)] uppercase font-bold tracking-widest mb-1">Total Actual</p>
                       <p className="text-2xl font-bold text-[var(--color-primary)] leading-none">
-                        {line.actual.reduce((a, b) => a + (b || 0), 0).toLocaleString()}
+                        <AnimatedNumber value={line.actual.reduce((a, b) => a + (b || 0), 0)} />
                       </p>
                     </div>
                   </Card>
