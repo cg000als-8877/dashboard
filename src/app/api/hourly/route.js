@@ -130,7 +130,7 @@ export async function GET(request) {
         }
     } else {
         // List available dates
-        let dates = [];
+        const dateSet = new Set();
 
         // Try Firebase first
         try {
@@ -138,24 +138,26 @@ export async function GET(request) {
             if (db) {
                 const snapshot = await db.collection('hourly_archives').get();
                 snapshot.forEach(doc => {
-                    dates.push(doc.id);
+                    dateSet.add(doc.id);
                 });
             }
         } catch (firebaseError) {
             console.error('Firebase list failed, falling back to local files:', firebaseError);
         }
 
-        // Fallback to local files
-        if (dates.length === 0) {
-            try {
-                const files = await fs.readdir(archiveDir);
-                dates = files
-                    .filter(f => f.endsWith('.json'))
-                    .map(f => f.replace('.json', ''));
-            } catch (e) {
-                // Directory might not exist yet
-            }
+        // Merge local files
+        try {
+            const files = await fs.readdir(archiveDir);
+            files.forEach(f => {
+                if (f.endsWith('.json')) {
+                    dateSet.add(f.replace('.json', ''));
+                }
+            });
+        } catch (e) {
+            // Directory might not exist yet
         }
+        
+        let dates = Array.from(dateSet);
 
         // Inject the live date into the dropdown menu if it's new
         if (liveData && liveData.date && !dates.includes(liveData.date)) {
