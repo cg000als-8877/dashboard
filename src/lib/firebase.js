@@ -26,3 +26,7 @@ if (!getApps().length) {
 }
 
 export const db = getApps().length > 0 ? getFirestore() : null;
+
+if (db) {
+  db.settings({ ignoreUndefinedProperties: true });
+}

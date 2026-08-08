@@ -56,7 +56,7 @@ export default function Sidebar({ onClose }) {
       {/* The main sidebar box */}
       <div className="flex flex-col w-full h-fit max-h-[calc(100vh-32px)] bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-2xl shadow-[0_12px_40px_-10px_rgba(0,0,0,0.15)] overflow-hidden">
         {/* Brand Header */}
-        <div className={cn("py-6 flex flex-col gap-6 shrink-0 border-b border-[var(--color-border)]/50 mx-4 mb-2", isCollapsed ? "px-0 items-center mx-2" : "px-2")}>
+        <div className={cn("py-5 flex flex-col shrink-0 border-b border-[var(--color-border)]/50 mx-4 mb-1", isCollapsed ? "px-0 items-center mx-2" : "px-2")}>
           <Link href="/" className={cn("flex flex-col group cursor-pointer w-fit", isCollapsed ? "items-center gap-1" : "gap-0.5")}>
             {isCollapsed ? (
               <Ship size={24} className="text-[var(--color-text-main)] group-hover:text-[var(--color-primary)] transition-colors" />
@@ -74,12 +74,11 @@ export default function Sidebar({ onClose }) {
         </div>
 
         {/* Navigation */}
-        <nav className={cn("flex-1 space-y-0.5 overflow-y-auto hide-scrollbar", isCollapsed ? "px-2" : "px-3")}>
-
-          <div className={cn("mb-2 mt-3 transition-all duration-300", isCollapsed ? "px-0 text-center" : "px-2")}>
+        <nav className={cn("flex-1 space-y-0.5 overflow-y-auto hide-scrollbar", isCollapsed ? "px-2" : "px-2")}>
+          <div className={cn("mb-2 mt-2 transition-all duration-300", isCollapsed ? "px-0 text-center" : "px-3")}>
             <div className="flex items-center gap-2">
-              {!isCollapsed && <div className="h-px w-3 bg-gradient-to-r from-[var(--color-primary)] to-transparent opacity-60"></div>}
-              <p className={cn("text-[9px] font-bold text-[var(--color-text-muted)] uppercase", isCollapsed ? "tracking-widest" : "tracking-[0.25em]")}>
+              {!isCollapsed && <div className="h-px w-2 bg-gradient-to-r from-[var(--color-primary)] to-transparent opacity-60"></div>}
+              <p className={cn("text-[9px] font-bold text-[var(--color-text-muted)] uppercase", isCollapsed ? "tracking-widest" : "tracking-[0.2em]")}>
                 {isCollapsed ? "Nav" : "Main Menu"}
               </p>
             </div>
@@ -94,17 +93,25 @@ export default function Sidebar({ onClose }) {
                 title={isCollapsed ? item.name : undefined}
                 className={cn(
                   "flex items-center rounded-xl transition-all duration-300 relative group overflow-hidden",
-                  isCollapsed ? "justify-center p-3 my-1" : "px-3 py-3 gap-3 my-1",
+                  isCollapsed ? "justify-center p-2.5 my-1" : "px-3 py-2.5 gap-3 mx-1 my-0.5",
                   isActive 
-                    ? "bg-gradient-to-r from-[var(--color-primary)]/15 to-transparent text-[var(--color-primary)] shadow-[inset_3px_0_0_0_var(--color-primary)]" 
-                    : "text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-main)] hover:shadow-[inset_3px_0_0_0_var(--color-border)]"
+                    ? "bg-[var(--color-primary)]/10 text-[var(--color-primary)] font-bold shadow-[inset_0_0_0_1px_rgba(37,99,235,0.2)]" 
+                    : "text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-main)] font-medium"
                 )}
               >
-                <item.icon size={18} strokeWidth={isActive ? 2.5 : 2} className={cn(isActive ? "text-[var(--color-primary)]" : "text-[var(--color-text-muted)] shrink-0")} />
+                <div className={cn(
+                  "flex items-center justify-center transition-transform duration-300 group-hover:scale-110",
+                  isActive ? "text-[var(--color-primary)]" : "text-[var(--color-text-muted)] group-hover:text-[var(--color-primary)]"
+                )}>
+                  <item.icon size={18} strokeWidth={isActive ? 2.5 : 2} />
+                </div>
                 {!isCollapsed && (
-                  <span className={cn("text-sm tracking-wide md:font-bold whitespace-nowrap overflow-hidden", isActive ? "font-bold" : "font-medium")}>
+                  <span className="text-[13px] tracking-wide whitespace-nowrap group-hover:translate-x-1 transition-transform duration-300">
                     {item.name}
                   </span>
+                )}
+                {!isCollapsed && isActive && (
+                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-3/5 bg-[var(--color-primary)] rounded-r-full shadow-[0_0_8px_var(--color-primary)]" />
                 )}
               </Link>
             );
@@ -112,57 +119,42 @@ export default function Sidebar({ onClose }) {
         </nav>
 
         {/* Footer Area */}
-        <div className={cn("p-4 flex flex-col gap-4 border-t border-[var(--color-border)] shrink-0", isCollapsed && "items-center px-2")}>
+        <div className={cn("p-3 flex flex-col gap-3 border-t border-[var(--color-border)] shrink-0", isCollapsed && "items-center px-2")}>
           {/* Minimal Theme Toggle */}
           <button 
             onClick={toggleTheme}
             title={isCollapsed ? "Toggle Theme" : undefined}
             className={cn(
-              "flex items-center rounded-lg hover:bg-[var(--color-surface-hover)] transition-colors text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)] group",
-              isCollapsed ? "justify-center p-3" : "justify-between px-3 py-2.5 w-full"
+              "flex items-center rounded-xl hover:bg-[var(--color-surface-hover)] transition-all text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)] group",
+              isCollapsed ? "justify-center p-2.5" : "justify-between px-3 py-2 mx-1"
             )}
           >
-            {!isCollapsed && <span className="text-sm font-medium tracking-wide whitespace-nowrap overflow-hidden">Appearance</span>}
-            {theme === 'dark' ? <Sun size={16} className="group-hover:text-yellow-400 transition-colors shrink-0" /> : <Moon size={16} className="group-hover:text-blue-500 transition-colors shrink-0" />}
+            {!isCollapsed && <span className="text-[13px] font-medium tracking-wide whitespace-nowrap">Appearance</span>}
+            <div className="group-hover:rotate-12 group-hover:scale-110 transition-all duration-300">
+              {theme === 'dark' ? <Sun size={16} className="text-yellow-400 drop-shadow-[0_0_6px_rgba(250,204,21,0.6)]" /> : <Moon size={16} className="text-blue-500 drop-shadow-[0_0_6px_rgba(59,130,246,0.6)]" />}
+            </div>
           </button>
 
-          {/* Minimal System Status */}
+          {/* Compact System Status */}
           {!isCollapsed && (
-            <div className="p-4 rounded-xl bg-[var(--color-surface)] border border-[var(--color-border)] flex flex-col gap-3">
-              {/* Desktop Update Text (Top) */}
-              <div className="hidden md:block whitespace-nowrap overflow-hidden pb-2 border-b border-[var(--color-border)]">
-                <p className="text-[7.5px] text-[var(--color-text-muted)] font-medium tracking-wide uppercase truncate">
-                  {updateDate ? (
-                    <>Last updated <span className="text-[var(--color-primary)] font-bold">{updateDate}</span></>
-                  ) : (
-                    "Loading..."
-                  )}
-                </p>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-md bg-[var(--color-bg-card)] border border-[var(--color-border)] flex items-center justify-center shrink-0">
-                  <Ship size={16} className="text-[var(--color-text-main)]" />
-                </div>
-                <div className="flex flex-col whitespace-nowrap overflow-hidden">
-                  <span className="text-sm font-bold text-[var(--color-text-main)]">Bapl OS</span>
-                  <span className="text-[10px] text-[var(--color-text-muted)] font-medium tracking-widest uppercase">v2.0.4</span>
-                </div>
-              </div>
+            <div className="mx-1 px-3 py-2.5 rounded-xl bg-[var(--color-surface)] border border-[var(--color-border)] flex flex-col gap-1.5 group hover:border-[var(--color-primary)]/40 transition-colors cursor-default relative overflow-hidden">
+              <div className="absolute -right-4 -top-4 w-12 h-12 bg-[var(--color-primary)]/5 rounded-full blur-xl group-hover:bg-[var(--color-primary)]/10 transition-all duration-500" />
               
-              <div className="flex items-center justify-between pt-3 border-t border-[var(--color-border)]">
-                <div className="flex items-center gap-1.5 whitespace-nowrap overflow-hidden">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
-                  <span className="text-[10px] font-bold text-[var(--color-text-main)] tracking-wider uppercase">System Online</span>
+              <div className="flex items-center justify-between relative z-10">
+                <div className="flex items-center gap-2">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500 shadow-[0_0_6px_#10b981]"></span>
+                  </span>
+                  <span className="text-[11px] font-bold text-[var(--color-text-main)] tracking-wider">System Online</span>
                 </div>
+                <span className="text-[9px] text-[var(--color-text-muted)] font-bold bg-[var(--color-bg-card)] px-1.5 py-0.5 rounded-md border border-[var(--color-border)] shadow-sm">
+                  v2.0.4
+                </span>
               </div>
-              
-              {/* Mobile Update Text (Bottom) */}
-              <div className="whitespace-nowrap overflow-hidden md:hidden">
-                <p className="text-[9px] text-[var(--color-text-muted)] font-medium tracking-wide uppercase truncate">
-                  {updateDate ? `Last updated ${updateDate}` : "Loading..."}
-                </p>
-              </div>
+              <p className="text-[8px] text-[var(--color-text-muted)] font-medium tracking-wider uppercase truncate relative z-10">
+                {updateDate ? `Updated: ${updateDate}` : "Loading data..."}
+              </p>
             </div>
           )}
         </div>
