@@ -6,6 +6,7 @@ import path from 'path';
 export const dynamic = 'force-dynamic'; // Ensure it always fetches fresh data
 
 export async function GET(request) {
+  console.log("=== API DATA ROUTE HIT ===", request.url);
   try {
     const { searchParams } = new URL(request.url);
     const month = searchParams.get('month');
