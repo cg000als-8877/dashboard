@@ -60,24 +60,35 @@ async function fetchLiveHourlyData() {
     
     for (let i = 0; i < hData.length; i++) {
         const row = hData[i] || [];
-        const lineId = row[0];
-        if (lineId && typeof lineId === 'string' && ['A', 'B', 'C', 'D'].includes(lineId.toUpperCase())) {
+        
+        let lineId = null;
+        let lineColIndex = 0;
+        for (let c = 0; c < Math.min(3, row.length); c++) {
+            const val = String(row[c] || '').trim().toUpperCase();
+            if (['A', 'B', 'C', 'D'].includes(val)) {
+                lineId = val;
+                lineColIndex = c;
+                break;
+            }
+        }
+
+        if (lineId) {
           const targetRow = row;
           const actualRow = hData[i+1] || [];
-          let dataStartIndex = 6;
+          let dataStartIndex = lineColIndex + 5;
           for(let c=0; c < targetRow.length; c++) {
               if (String(targetRow[c]).includes('TARGET')) { dataStartIndex = c + 1; break; }
           }
-          let actualStartIndex = 6;
+          let actualStartIndex = lineColIndex + 5;
           for(let c=0; c < actualRow.length; c++) {
               if (String(actualRow[c]).includes('ACTUAL')) { actualStartIndex = c + 1; break; }
           }
           hourlyParsed.lines.push({
-            line_id: lineId.toUpperCase(),
-            buyer: targetRow[1] || 'N/A',
-            style: targetRow[2] || 'N/A',
-            item: targetRow[3] || 'N/A',
-            mp: targetRow[4] || 0,
+            line_id: lineId,
+            buyer: targetRow[lineColIndex + 1] || 'N/A',
+            style: targetRow[lineColIndex + 2] || 'N/A',
+            item: targetRow[lineColIndex + 3] || 'N/A',
+            mp: targetRow[lineColIndex + 4] || 0,
             target: targetRow.slice(dataStartIndex, dataStartIndex + 11).map(v => Number(v) || 0),
             actual: actualRow.slice(actualStartIndex, actualStartIndex + 11).map(v => Number(v) || 0)
           });

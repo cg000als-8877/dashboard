@@ -13,5 +13,138 @@
     "10TH",
     "11TH"
   ],
-  "lines": []
+  "lines": [
+    {
+      "line_id": "A",
+      "buyer": "FAMETEX",
+      "style": "N/A",
+      "item": "SHERPA SHIRT",
+      "mp": 0,
+      "target": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "actual": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "line_id": "B",
+      "buyer": "ANKHI APP.",
+      "style": "BD2625",
+      "item": "LADIES TOP",
+      "mp": 0,
+      "target": [
+        130,
+        130,
+        130,
+        130,
+        130,
+        130,
+        130,
+        130,
+        130,
+        0,
+        0
+      ],
+      "actual": [
+        120,
+        120,
+        120,
+        100,
+        100,
+        100,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "line_id": "C",
+      "buyer": "ANKHI APP.",
+      "style": "BD2526",
+      "item": "LADIES BOTTOM",
+      "mp": 0,
+      "target": [
+        140,
+        140,
+        140,
+        140,
+        140,
+        140,
+        140,
+        140,
+        140,
+        0,
+        0
+      ],
+      "actual": [
+        110,
+        120,
+        120,
+        120,
+        120,
+        120,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "line_id": "D",
+      "buyer": "FAMETEX",
+      "style": "N/A",
+      "item": "MENS TEE SHIRT",
+      "mp": 0,
+      "target": [
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        0
+      ],
+      "actual": [
+        120,
+        150,
+        150,
+        170,
+        150,
+        130,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    }
+  ]
 }
