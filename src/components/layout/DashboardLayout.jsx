@@ -29,6 +29,16 @@ export default function DashboardLayout({ children }) {
   const { selectedMonth, setSelectedMonth } = useMonth();
   const { theme, toggleTheme } = useTheme();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  const handleScroll = (e) => {
+    if (e.target.scrollTop > 20) {
+      if (!isScrolled) setIsScrolled(true);
+      if (isMobileMenuOpen) setIsMobileMenuOpen(false);
+    } else {
+      if (isScrolled) setIsScrolled(false);
+    }
+  };
 
   let datePart = "Loading...";
   if (dailyTrends && dailyTrends.length > 0) {
@@ -46,9 +56,14 @@ export default function DashboardLayout({ children }) {
 
       <div className="flex flex-col flex-1 overflow-hidden relative w-full">
         {/* Mobile Header & Sticky Nav (Hidden on Desktop) */}
-        <header className="md:hidden fixed top-0 left-0 right-0 bg-[var(--color-bg-card)] z-40 flex flex-col border-b border-[var(--color-border)] shadow-sm">
-          {/* Top Logo Section */}
-          <div className="py-3 px-4 sm:px-6 flex items-center justify-between border-b border-[var(--color-border)] w-full relative">
+        <header className="md:hidden fixed top-0 left-0 right-0 bg-[var(--color-bg-card)] z-50 flex flex-col border-b border-[var(--color-border)] shadow-sm transition-all duration-300">
+          {/* Top Logo Section (Hides on Scroll) */}
+          <div className={cn(
+            "transition-all duration-300 overflow-hidden w-full relative flex items-center justify-between",
+            isScrolled 
+              ? "max-h-0 py-0 px-4 opacity-0 border-b-0 pointer-events-none" 
+              : "max-h-24 py-3 px-4 sm:px-6 border-b border-[var(--color-border)] opacity-100"
+          )}>
             <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-surface)] to-transparent pointer-events-none"></div>
             <Link href="/" className="flex items-center gap-2 relative z-10 cursor-pointer">
               <div className="flex flex-col">
@@ -72,37 +87,11 @@ export default function DashboardLayout({ children }) {
               <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)] transition-colors p-2 relative z-50">
                 {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
               </button>
-
-              {/* Compressed Dropdown Menu */}
-              {isMobileMenuOpen && (
-                <>
-                  <div className="fixed inset-0 z-40" onClick={() => setIsMobileMenuOpen(false)}></div>
-                  <div className="absolute top-full right-0 mt-1 w-44 bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-xl shadow-lg flex flex-col p-1.5 animate-[fade-down_0.2s_ease-out_both] z-50 origin-top-right">
-                    <div className="flex flex-col gap-0.5">
-                      {navItems.filter(item => ['Analytics', 'Simulator'].includes(item.name)).map(item => (
-                        <Link
-                          key={item.name}
-                          href={item.href}
-                          onClick={() => setIsMobileMenuOpen(false)}
-                          className={cn(
-                            "flex items-center gap-2 px-3 py-2 rounded-lg font-bold text-[10px] tracking-widest uppercase transition-all",
-                            pathname.startsWith(item.href)
-                              ? "bg-[var(--color-primary)]/15 text-[var(--color-primary)]"
-                              : "text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-main)]"
-                          )}
-                        >
-                          <item.icon size={14} />
-                          {item.name}
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-                </>
-              )}
             </div>
           </div>
+
           {/* Minimal Fit-to-Frame Top Nav Bar */}
-          <nav className="flex items-center justify-between w-full px-2 sm:px-4 py-2.5 border-t border-[var(--color-border)] bg-[var(--color-bg-card)] overflow-hidden">
+          <nav className="flex items-center justify-between w-full px-2 sm:px-4 py-2.5 bg-[var(--color-bg-card)] overflow-hidden shrink-0">
             {navItems.filter(item => ['Dashboard', 'Hourly', 'Lines', 'Archive'].includes(item.name)).map((item, index, arr) => {
               const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
               return (
@@ -135,10 +124,43 @@ export default function DashboardLayout({ children }) {
               );
             })}
           </nav>
+
+          {/* Compressed Dropdown Menu (Floats ON TOP of Everything with z-[100]) */}
+          {isMobileMenuOpen && (
+            <>
+              <div className="fixed inset-0 z-[90] bg-black/20 backdrop-blur-[2px]" onClick={() => setIsMobileMenuOpen(false)}></div>
+              <div className="absolute top-12 right-3 w-48 bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-xl shadow-2xl flex flex-col p-2 animate-[fade-down_0.2s_ease-out_both] z-[100] origin-top-right">
+                <div className="flex flex-col gap-1">
+                  {navItems.filter(item => ['Analytics', 'Simulator'].includes(item.name)).map(item => (
+                    <Link
+                      key={item.name}
+                      href={item.href}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className={cn(
+                        "flex items-center gap-2.5 px-3 py-2.5 rounded-lg font-bold text-xs tracking-widest uppercase transition-all",
+                        pathname.startsWith(item.href)
+                          ? "bg-[var(--color-primary)]/15 text-[var(--color-primary)] shadow-sm"
+                          : "text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-main)]"
+                      )}
+                    >
+                      <item.icon size={16} />
+                      {item.name}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
         </header>
 
         {/* Main Content */}
-        <main className="flex-1 overflow-y-auto w-full pt-[115px] md:pt-8 p-4 md:p-8">
+        <main 
+          onScroll={handleScroll}
+          className={cn(
+            "flex-1 overflow-y-auto w-full transition-all duration-300 p-4 md:p-8",
+            isScrolled ? "pt-[52px] md:pt-8" : "pt-[115px] md:pt-8"
+          )}
+        >
           <div className="w-full h-full max-w-[1800px] mx-auto">
             {children}
           </div>

@@ -1,11 +1,19 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { useTheme } from '@/components/ThemeProvider';
 
 export function TitanicAnimation({ netProfit, isSimulation = false, simState = 'profit', simDay = 1 }) {
   const { theme } = useTheme();
   const isDay = theme === 'light';
+
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
 
   const isLoss = isSimulation ? simState === 'loss' : netProfit < 0;
   const isProfit = isSimulation ? simState === 'profit' : netProfit > 0;
@@ -213,27 +221,15 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
       <path d="M 300 120 L 860 120 L 870 135 L 290 135 Z" fill="url(#hull-white-grad)" />
       <g>
         {Array.from({length: 91}).map((_, i) => {
-           let props = { fill: !isDay && !isLoss ? "#FAD169" : "#222" };
-           if (!isDay && isLoss) {
-              props = {
-                 fill: "#FAD169",
-                 style: { animation: `window-flicker-out 0.6s forwards ${Math.random() * 6 + (i % 6)}s` }
-              };
-           }
-           return <rect key={`pd-${i}`} x={305 + i * 6} y="123" width="2.5" height="10" {...props} />;
+           const fill = !isDay && !isLoss ? "#FAD169" : "#222";
+           return <rect key={`pd-${i}`} x={305 + i * 6} y="123" width="2.5" height="10" fill={fill} />;
         })}
       </g>
       <path d="M 240 135 L 890 135 L 900 155 L 220 155 Z" fill="url(#hull-white-grad)" />
       <g>
         {Array.from({length: 71}).map((_, i) => {
-           let props = { fill: !isDay && !isLoss ? "#FAD169" : "#111" };
-           if (!isDay && isLoss) {
-              props = {
-                 fill: "#FAD169",
-                 style: { animation: `window-flicker-out 0.6s forwards ${Math.random() * 6 + (i % 6)}s` }
-              };
-           }
-           return <rect key={`bd-${i}`} x={245 + i * 9} y="140" width="4" height="10" rx="1" {...props} />;
+           const fill = !isDay && !isLoss ? "#FAD169" : "#111";
+           return <rect key={`bd-${i}`} x={245 + i * 9} y="140" width="4" height="10" rx="1" fill={fill} />;
         })}
       </g>
       <path d="M 170 155 L 320 155 L 320 165 L 160 165 Z" fill="#E0E0E0" />
@@ -491,7 +487,8 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
                 cy={star.cy} 
                 r={star.r} 
                 fill="#FFFFFF" 
-                style={{ animation: `star-twinkle ${star.duration}s infinite ease-in-out ${star.delay}s` }}
+                opacity={star.opacity}
+                style={isMobile ? undefined : { animation: `star-twinkle ${star.duration}s infinite ease-in-out ${star.delay}s` }}
               />
             ))}
           </g>
@@ -505,7 +502,8 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
                 cy={star.cy} 
                 r={star.r} 
                 fill="#FFFFFF" 
-                style={{ animation: `star-twinkle ${star.duration}s infinite ease-in-out ${star.delay}s` }}
+                opacity={star.opacity}
+                style={isMobile ? undefined : { animation: `star-twinkle ${star.duration}s infinite ease-in-out ${star.delay}s` }}
               />
             ))}
           </g>
@@ -618,7 +616,7 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
               const xPos = -400 + Math.random() * 2000;
               const yPos = 770 + Math.random() * 50;
               return (
-                <g key={`weed-${i}`} style={{ animation: `seaweed-sway ${2 + Math.random() * 2}s infinite alternate ease-in-out ${Math.random()}s` }}>
+                <g key={`weed-${i}`}>
                   <path 
                     d={`M ${xPos} ${yPos} Q ${xPos + 15} ${yPos - 40} ${xPos - 5} ${yPos - 80} T ${xPos + 10} ${yPos - 120}`} 
                     fill="none" 
