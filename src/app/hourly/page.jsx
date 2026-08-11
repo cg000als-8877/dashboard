@@ -7,6 +7,7 @@ import { cn } from '@/components/layout/Sidebar';
 
 import { format, parseISO } from 'date-fns';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
+import { NetworkLoader } from '@/components/ui/NetworkLoader';
 
 export default function HourlyPage() {
   const [availableDates, setAvailableDates] = useState([]);
@@ -65,32 +66,7 @@ export default function HourlyPage() {
   }, [selectedDate]);
 
   if (loading && !data) {
-    return (
-      <div className="flex-1 p-4 md:p-8 flex flex-col items-center justify-center min-h-[60vh] relative z-20">
-        {/* Futuristic glowing spinner */}
-        <div className="relative w-20 h-20 md:w-24 md:h-24 flex items-center justify-center mb-6 md:mb-8">
-          {/* Outer rotating ring */}
-          <div className="absolute inset-0 rounded-full border-t-2 border-r-2 border-[var(--color-primary)] animate-spin shadow-[0_0_15px_var(--color-primary)]" style={{ animationDuration: '2s' }}></div>
-          {/* Inner counter-rotating ring */}
-          <div className="absolute inset-3 rounded-full border-b-2 border-l-2 border-indigo-400/70 animate-spin" style={{ animationDuration: '1.5s', animationDirection: 'reverse' }}></div>
-          {/* Center glowing core */}
-          <div className="w-3 h-3 md:w-4 md:h-4 bg-[var(--color-primary)] rounded-full shadow-[0_0_20px_var(--color-primary)] animate-pulse"></div>
-        </div>
-        
-        {/* Futuristic Text */}
-        <div className="flex flex-col items-center gap-2">
-          <p className="text-[var(--color-primary)] font-bold uppercase tracking-[0.2em] md:tracking-[0.3em] text-xs md:text-sm animate-pulse">
-            Establishing Data Link
-          </p>
-          <div className="flex items-center gap-1.5 opacity-60 mt-1">
-            <span className="w-1 h-1 md:w-1.5 md:h-1.5 rounded-full bg-[var(--color-text-main)] animate-bounce" style={{ animationDelay: '0ms' }}></span>
-            <span className="w-1 h-1 md:w-1.5 md:h-1.5 rounded-full bg-[var(--color-text-main)] animate-bounce" style={{ animationDelay: '150ms' }}></span>
-            <span className="w-1 h-1 md:w-1.5 md:h-1.5 rounded-full bg-[var(--color-text-main)] animate-bounce" style={{ animationDelay: '300ms' }}></span>
-          </div>
-          <p className="text-[8px] md:text-[10px] text-[var(--color-text-muted)] tracking-widest uppercase mt-3 md:mt-4">Retrieving real-time telemetry...</p>
-        </div>
-      </div>
-    );
+    return <NetworkLoader title="Syncing Hourly Telemetry" subtitle="Establishing Neural Mesh Data Link..." />;
   }
 
   return (

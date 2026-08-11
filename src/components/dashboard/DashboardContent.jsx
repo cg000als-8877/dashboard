@@ -9,6 +9,7 @@ import Link from 'next/link';
 import { RealTimeClock } from '@/components/ui/RealTimeClock';
 import { PrintableArchiveReport } from '@/components/report/PrintableArchiveReport';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
+import { NetworkLoader } from '@/components/ui/NetworkLoader';
 
 export function DashboardContent({ month, isArchive = false }) {
   const { stats, dailyTrends, insights, lines, loading, error } = useKpiData(month);
@@ -33,11 +34,7 @@ export function DashboardContent({ month, isArchive = false }) {
   }, [month]);
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center h-96">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--color-primary)]"></div>
-      </div>
-    );
+    return <NetworkLoader title="Connecting Factory Nodes" subtitle="Establishing Live Telemetry & Constellation Data Mesh..." />;
   }
 
   if (error) {

@@ -5,6 +5,7 @@ import { useKpiData } from '@/utils/useKpiData';
 import { MetricCard, Card } from '@/components/ui/Card';
 import { TitanicAnimation } from '@/components/ui/TitanicAnimation';
 import { Settings, Play, Anchor, AlertTriangle } from 'lucide-react';
+import { NetworkLoader } from '@/components/ui/NetworkLoader';
 
 export default function SimulatorPage() {
   const { stats, loading, error } = useKpiData();
@@ -12,11 +13,7 @@ export default function SimulatorPage() {
   const [simDay, setSimDay] = useState(1); // 1 to 31
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center h-96">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
-      </div>
-    );
+    return <NetworkLoader title="Initializing Vessel Physics" subtitle="Calibrating Oceanic Hull Simulation & Water Dynamics..." />;
   }
 
   if (error) {

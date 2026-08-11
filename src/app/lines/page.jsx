@@ -4,16 +4,13 @@ import { useKpiData } from '@/utils/useKpiData';
 import { Card } from '@/components/ui/Card';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
+import { NetworkLoader } from '@/components/ui/NetworkLoader';
 
 export default function ProductionLines() {
   const { lines, loading, error } = useKpiData();
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center h-96">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
-      </div>
-    );
+    return <NetworkLoader title="Mapping Line Telemetry" subtitle="Scanning Active Production Lines & Capacity..." />;
   }
 
   if (error) {
