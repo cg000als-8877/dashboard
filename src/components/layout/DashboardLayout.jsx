@@ -29,16 +29,6 @@ export default function DashboardLayout({ children }) {
   const { selectedMonth, setSelectedMonth } = useMonth();
   const { theme, toggleTheme } = useTheme();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
-
-  const handleScroll = (e) => {
-    if (e.target.scrollTop > 20) {
-      if (!isScrolled) setIsScrolled(true);
-      if (isMobileMenuOpen) setIsMobileMenuOpen(false);
-    } else {
-      if (isScrolled) setIsScrolled(false);
-    }
-  };
 
   let datePart = "Loading...";
   if (dailyTrends && dailyTrends.length > 0) {
@@ -56,14 +46,9 @@ export default function DashboardLayout({ children }) {
 
       <div className="flex flex-col flex-1 overflow-hidden relative w-full">
         {/* Mobile Header & Sticky Nav (Hidden on Desktop) */}
-        <header className="md:hidden fixed top-0 left-0 right-0 bg-[var(--color-bg-card)] z-50 flex flex-col border-b border-[var(--color-border)] shadow-sm transition-all duration-300">
-          {/* Top Logo Section (Hides on Scroll) */}
-          <div className={cn(
-            "transition-all duration-300 overflow-hidden w-full relative flex items-center justify-between",
-            isScrolled 
-              ? "max-h-0 py-0 px-4 opacity-0 border-b-0 pointer-events-none" 
-              : "max-h-24 py-3 px-4 sm:px-6 border-b border-[var(--color-border)] opacity-100"
-          )}>
+        <header className="md:hidden fixed top-0 left-0 right-0 bg-[var(--color-bg-card)] z-50 flex flex-col border-b border-[var(--color-border)] shadow-sm">
+          {/* Top Logo Section */}
+          <div className="py-3 px-4 sm:px-6 flex items-center justify-between border-b border-[var(--color-border)] w-full relative">
             <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-surface)] to-transparent pointer-events-none"></div>
             <Link href="/" className="flex items-center gap-2 relative z-10 cursor-pointer">
               <div className="flex flex-col">
@@ -154,13 +139,7 @@ export default function DashboardLayout({ children }) {
         </header>
 
         {/* Main Content */}
-        <main 
-          onScroll={handleScroll}
-          className={cn(
-            "flex-1 overflow-y-auto w-full transition-all duration-300 p-4 md:p-8",
-            isScrolled ? "pt-[52px] md:pt-8" : "pt-[115px] md:pt-8"
-          )}
-        >
+        <main className="flex-1 overflow-y-auto w-full pt-[115px] md:pt-8 p-4 md:p-8">
           <div className="w-full h-full max-w-[1800px] mx-auto">
             {children}
           </div>
