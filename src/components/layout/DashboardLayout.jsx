@@ -10,7 +10,7 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { useKpiData } from '@/utils/useKpiData';
 import { format, parseISO } from 'date-fns';
-import { Clock, LayoutDashboard, Factory, BarChart3, Ship, Download, Calendar, FileText, History, Sun, Moon, Utensils } from 'lucide-react';
+import { Clock, LayoutDashboard, Factory, BarChart3, Ship, Download, Calendar, FileText, History, Sun, Moon } from 'lucide-react';
 import { useMonth } from '@/components/providers/MonthProvider';
 import { useTheme } from '@/components/ThemeProvider';
 
@@ -95,16 +95,6 @@ export default function DashboardLayout({ children }) {
                           {item.name}
                         </Link>
                       ))}
-                      <a
-                        href="https://baplc.vercel.app/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                        className="flex items-center gap-2 px-3 py-2 rounded-lg font-bold text-[10px] tracking-widest uppercase transition-all text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-main)]"
-                      >
-                        <Utensils size={14} />
-                        BAPL CANTEEN
-                      </a>
                     </div>
                   </div>
                 </>
