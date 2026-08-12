@@ -226,8 +226,8 @@ export default function HourlyPage() {
                 </div>
               </div>
 
-              {/* Color Coded Date List */}
-              <div className="max-h-[60vh] overflow-y-auto p-2 space-y-1.5 hide-scrollbar">
+              {/* Color Coded Date List (Compressed for Mobile) */}
+              <div className="max-h-[50vh] overflow-y-auto p-2 space-y-1 hide-scrollbar">
                 {availableDates.map((date) => {
                   const hInfo = getHolidayInfo(date);
                   const isSelected = selectedDate === date;
@@ -241,7 +241,7 @@ export default function HourlyPage() {
                         setIsDatePickerModalOpen(false);
                       }}
                       className={cn(
-                        "w-full text-left px-4 py-3 rounded-xl flex items-center justify-between transition-all font-medium border",
+                        "w-full text-left px-3 py-2 rounded-lg flex items-center justify-between transition-all font-medium border text-xs md:text-sm",
                         isSelected 
                           ? "bg-[var(--color-primary)]/15 text-[var(--color-primary)] border-[var(--color-primary)]/40 shadow-sm"
                           : hInfo
@@ -251,14 +251,14 @@ export default function HourlyPage() {
                             : "bg-[var(--color-surface)]/40 text-[var(--color-text-main)] border-transparent hover:bg-[var(--color-surface)]"
                       )}
                     >
-                      <div className="flex items-center gap-3">
-                        <span className="text-base">{hInfo ? hInfo.icon : (isToday ? '⭐️' : '📅')}</span>
+                      <div className="flex items-center gap-2.5">
+                        <span className="text-sm md:text-base">{hInfo ? hInfo.icon : (isToday ? '⭐️' : '📅')}</span>
                         <div className="flex flex-col">
-                          <span className="text-sm font-bold">
+                          <span className="text-xs md:text-sm font-semibold leading-tight">
                             {isToday ? `Today (${formatDate(date)})` : formatDate(date)}
                           </span>
                           {hInfo && (
-                            <span className="text-[10px] opacity-80 font-medium">
+                            <span className="text-[9px] opacity-80 font-medium leading-none mt-0.5">
                               {hInfo.title}
                             </span>
                           )}
@@ -267,7 +267,7 @@ export default function HourlyPage() {
 
                       {hInfo ? (
                         <span className={cn(
-                          "text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full border",
+                          "text-[8px] md:text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full border shrink-0 ml-2",
                           hInfo.isFriday 
                             ? "bg-rose-500/20 text-rose-400 border-rose-500/30" 
                             : "bg-amber-500/20 text-amber-400 border-amber-500/40"
@@ -275,7 +275,7 @@ export default function HourlyPage() {
                           {hInfo.isFriday ? 'Friday Rest' : 'Public Holiday'}
                         </span>
                       ) : (
-                        <span className="text-xs opacity-50 font-mono">{date}</span>
+                        <span className="text-[10px] md:text-xs opacity-50 font-mono shrink-0 ml-2">{date}</span>
                       )}
                     </button>
                   );
