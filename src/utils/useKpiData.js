@@ -29,10 +29,20 @@ export function useKpiData(monthOverride) {
       setLoading(true);
       try {
         if (!fetchPromises[targetMonth]) {
-          fetchPromises[targetMonth] = fetch(`/api/data?month=${targetMonth}`).then(res => {
-            if (!res.ok) throw new Error('Failed to fetch data');
-            return res.json();
-          });
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 8000);
+
+          fetchPromises[targetMonth] = fetch(`/api/data?month=${targetMonth}`, { signal: controller.signal })
+            .then(res => {
+              clearTimeout(timeoutId);
+              if (!res.ok) throw new Error('Failed to fetch data');
+              return res.json();
+            })
+            .catch(err => {
+              clearTimeout(timeoutId);
+              delete fetchPromises[targetMonth];
+              throw err;
+            });
         }
         
         const rawData = await fetchPromises[targetMonth];
