@@ -52,9 +52,9 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false }) {
   const totalIncome = activeRows.reduce((sum, d) => sum + (d.total_income || 0), 0);
   const totalNetProfitLoss = activeRows.reduce((sum, d) => sum + (d.net_profit || 0), 0);
 
-  // Extract date range and style
-  const firstDateStr = lineData[0]?.date || '';
-  const lastDateStr = lineData[lineData.length - 1]?.date || '';
+  // Extract date range from first to last active updated day
+  const firstDateStr = (firstActiveIndex !== -1 ? lineData[firstActiveIndex]?.date : lineData[0]?.date) || '';
+  const lastDateStr = (lastActiveIndex !== -1 ? lineData[lastActiveIndex]?.date : lineData[lineData.length - 1]?.date) || '';
   
   let dateRange = 'N/A';
   if (firstDateStr && lastDateStr) {
