@@ -9,7 +9,9 @@ const fetchPromises = {};
 
 export function useKpiData(monthOverride) {
   const { selectedMonth } = useMonth();
-  const targetMonth = monthOverride || selectedMonth;
+  const targetMonth = (monthOverride && monthOverride !== 'undefined') 
+    ? monthOverride 
+    : (selectedMonth && selectedMonth !== 'undefined' ? selectedMonth : 'live');
   const [data, setData] = useState(dataCache[targetMonth] || null);
   const [loading, setLoading] = useState(!dataCache[targetMonth]);
   const [error, setError] = useState(null);

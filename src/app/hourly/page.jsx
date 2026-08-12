@@ -9,11 +9,17 @@ import { format, parseISO } from 'date-fns';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { NetworkLoader } from '@/components/ui/NetworkLoader';
 
+// In-memory cache for instant page switching
+const hourlyCache = {
+  dates: null,
+  data: {}
+};
+
 export default function HourlyPage() {
-  const [availableDates, setAvailableDates] = useState([]);
-  const [selectedDate, setSelectedDate] = useState('');
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [availableDates, setAvailableDates] = useState(hourlyCache.dates || []);
+  const [selectedDate, setSelectedDate] = useState(hourlyCache.dates ? hourlyCache.dates[0] : '');
+  const [data, setData] = useState(selectedDate && hourlyCache.data[selectedDate] ? hourlyCache.data[selectedDate] : null);
+  const [loading, setLoading] = useState(!data);
   const [mobileLineIndex, setMobileLineIndex] = useState(0);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isFactoryTableExpanded, setIsFactoryTableExpanded] = useState(false);
@@ -39,34 +45,81 @@ export default function HourlyPage() {
   };
   
   useEffect(() => {
-    // We hit /api/data first so it auto-archives the latest live sheet.
-    fetch('/api/data')
-      .then(() => fetch(`/api/hourly?_t=${Date.now()}`))
-      .then(res => res.json())
-      .then(json => {
-        if (json.availableDates && json.availableDates.length > 0) {
+    let isMounted = true;
+
+    async function initHourly() {
+      if (hourlyCache.dates && hourlyCache.dates.length > 0) {
+        if (isMounted) {
+          setAvailableDates(hourlyCache.dates);
+          const latest = hourlyCache.dates[0];
+          setSelectedDate(latest);
+          if (hourlyCache.data[latest]) {
+            setData(hourlyCache.data[latest]);
+            setLoading(false);
+          }
+        }
+      }
+
+      try {
+        const res = await fetch(`/api/hourly`);
+        if (!res.ok) throw new Error('Failed to fetch hourly index');
+        const json = await res.json();
+        
+        if (isMounted && json.availableDates && json.availableDates.length > 0) {
+          hourlyCache.dates = json.availableDates;
           setAvailableDates(json.availableDates);
-          setSelectedDate(json.availableDates[0]); // Select latest by default
-        } else {
+          if (!selectedDate) {
+            setSelectedDate(json.availableDates[0]);
+          }
+        } else if (isMounted) {
           setLoading(false);
         }
-      })
-      .catch(() => setLoading(false));
+      } catch (err) {
+        console.error(err);
+        if (isMounted) setLoading(false);
+      }
+    }
+
+    initHourly();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   useEffect(() => {
     if (!selectedDate) return;
+
+    if (hourlyCache.data[selectedDate]) {
+      setData(hourlyCache.data[selectedDate]);
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
-    fetch(`/api/hourly?date=${selectedDate}&_t=${Date.now()}`)
+    let isMounted = true;
+
+    fetch(`/api/hourly?date=${selectedDate}`)
       .then(res => res.json())
       .then(json => {
-        setData(json);
-        setLoading(false);
+        if (isMounted) {
+          hourlyCache.data[selectedDate] = json;
+          setData(json);
+          setLoading(false);
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        if (isMounted) setLoading(false);
       });
+
+    return () => {
+      isMounted = false;
+    };
   }, [selectedDate]);
 
   if (loading && !data) {
-    return <NetworkLoader title="Syncing Hourly Telemetry" subtitle="Establishing Neural Mesh Data Link..." />;
+    return <NetworkLoader />;
   }
 
   return (

@@ -5,9 +5,9 @@ const config: CapacitorConfig = {
   appName: 'BYZID APPARELS',
   webDir: 'public',
   server: {
-    url: 'https://bapldata.vercel.app',
+    url: 'http://localhost:3000',
     cleartext: true,
-    androidScheme: 'https'
+    androidScheme: 'http'
   },
   android: {
     allowMixedContent: true,
