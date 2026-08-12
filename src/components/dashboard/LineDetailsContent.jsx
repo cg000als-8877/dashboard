@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, ChevronRight } from 'lucide-react';
 import { useKpiData } from '@/utils/useKpiData';
 
 export function LineDetailsContent({ id, month, backUrl, isEmbed = false }) {
@@ -74,18 +74,31 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false }) {
     <div className={`space-y-6 animate-[fade-up_0.4s_ease-out_both] ${isEmbed ? '' : 'p-2 md:p-0'}`} id={`line-${id}`}>
       
       {!isEmbed && (
-        <header className="flex items-center gap-3 md:gap-5 mb-6 md:mb-8 relative z-10">
-          <Link 
-            href={backUrl} 
-            className="p-2 md:p-3 rounded-xl bg-[var(--color-surface)] hover:bg-[var(--color-surface-hover)] border border-[var(--color-border)] text-[var(--color-text-main)] transition-all hover:scale-105 active:scale-95 shadow-[0_0_15px_rgba(0,0,0,0.5)]"
-          >
-            <ArrowLeft className="w-4 h-4 md:w-5 md:h-5" />
-          </Link>
-          <div>
-            <h1 className="text-lg md:text-3xl font-semibold md:font-bold tracking-tighter uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] via-[var(--color-text-secondary)] to-[var(--color-text-muted)] leading-tight">
-              Line {id.toUpperCase()} Telemetry
-            </h1>
-            <p className="text-[var(--color-primary)] font-medium tracking-widest uppercase text-[9px] md:text-xs mt-0.5 md:mt-1">Detailed breakdown synced from source records.</p>
+        <header className="flex flex-col gap-2 mb-6 md:mb-8 relative z-10">
+          {/* Breadcrumb Trail */}
+          <nav className="flex items-center gap-1.5 text-[10px] md:text-xs font-semibold uppercase tracking-wider text-[var(--color-text-muted)]">
+            <Link href="/" className="hover:text-[var(--color-primary)] transition-colors">Dashboard</Link>
+            <ChevronRight size={12} className="opacity-60" />
+            <Link href={backUrl} className="hover:text-[var(--color-primary)] transition-colors">Lines</Link>
+            <ChevronRight size={12} className="opacity-60" />
+            <span className="text-[var(--color-primary)] font-bold">Line {id.toUpperCase()}</span>
+            <ChevronRight size={12} className="opacity-60" />
+            <span className="text-[var(--color-text-main)] font-bold">Telemetry</span>
+          </nav>
+
+          <div className="flex items-center gap-3 md:gap-5 mt-1">
+            <Link 
+              href={backUrl} 
+              className="p-2 md:p-3 rounded-xl bg-[var(--color-surface)] hover:bg-[var(--color-surface-hover)] border border-[var(--color-border)] text-[var(--color-text-main)] transition-all hover:scale-105 active:scale-95 shadow-[0_0_15px_rgba(0,0,0,0.5)]"
+            >
+              <ArrowLeft className="w-4 h-4 md:w-5 md:h-5" />
+            </Link>
+            <div>
+              <h1 className="text-lg md:text-3xl font-semibold md:font-bold tracking-tighter uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] via-[var(--color-text-secondary)] to-[var(--color-text-muted)] leading-tight">
+                Line {id.toUpperCase()} Telemetry
+              </h1>
+              <p className="text-[var(--color-primary)] font-medium tracking-widest uppercase text-[9px] md:text-xs mt-0.5 md:mt-1">Detailed breakdown synced from source records.</p>
+            </div>
           </div>
         </header>
       )}
