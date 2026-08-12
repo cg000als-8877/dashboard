@@ -26,7 +26,7 @@ export default function DashboardLayout({ children }) {
   const pathname = usePathname();
   const { dailyTrends } = useKpiData();
   const { selectedMonth, setSelectedMonth } = useMonth();
-  const { visualTheme, setVisualTheme, mode, setMode, VISUAL_THEMES, APPEARANCE_MODES } = useTheme();
+  const { visualTheme, setVisualTheme, mode, setMode, toggleTheme, VISUAL_THEMES, APPEARANCE_MODES } = useTheme();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   let datePart = "Loading...";
@@ -58,14 +58,40 @@ export default function DashboardLayout({ children }) {
               </div>
             </Link>
             
-            {/* Top Right Burger Button */}
-            <div className="flex items-center ml-auto relative z-50">
+            {/* Top Right Header Controls */}
+            <div className="flex items-center gap-2 ml-auto relative z-50">
+              {/* Light / Dark Mode Icon Button */}
+              <button 
+                onClick={toggleTheme}
+                className="p-2 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)]/70 text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)] hover:border-[var(--color-primary)]/30 transition-all active:scale-95 flex items-center justify-center shadow-sm"
+                aria-label="Toggle Light/Dark Mode"
+                title="Toggle Light/Dark Mode"
+              >
+                {mode === 'dark' ? (
+                  <Sun size={17} className="text-amber-400 drop-shadow-[0_0_6px_rgba(251,191,36,0.6)]" />
+                ) : (
+                  <Moon size={17} className="text-indigo-400 drop-shadow-[0_0_6px_rgba(129,140,248,0.6)]" />
+                )}
+              </button>
+
+              {/* Premium Interactive Burger Menu Button */}
               <button 
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} 
-                className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)] transition-colors p-2 relative z-50 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)]/50 active:scale-95"
+                className={cn(
+                  "relative p-2 rounded-xl transition-all duration-300 active:scale-95 border flex items-center justify-center overflow-hidden group shadow-sm",
+                  isMobileMenuOpen 
+                    ? "bg-[var(--color-primary)]/20 text-[var(--color-primary)] border-[var(--color-primary)]/50 shadow-[0_0_12px_var(--color-primary-glow)]" 
+                    : "bg-[var(--color-surface)]/70 text-[var(--color-text-main)] border-[var(--color-border)] hover:border-[var(--color-primary)]/40 hover:text-[var(--color-primary)]"
+                )}
                 aria-label="Open mobile menu and theme selector"
               >
-                {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+                <div className="relative z-10 flex items-center justify-center">
+                  {isMobileMenuOpen ? (
+                    <X size={18} className="transition-transform duration-300 rotate-90 scale-110" />
+                  ) : (
+                    <Menu size={18} className="transition-transform duration-300 group-hover:scale-105" />
+                  )}
+                </div>
               </button>
             </div>
           </div>

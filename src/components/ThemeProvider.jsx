@@ -36,14 +36,14 @@ export function ThemeProvider({ children }) {
       setVisualThemeState('amber-forge');
     }
 
-    // 2. Appearance Mode
+    // 2. Appearance Mode - always default to dark on first visit
     if (storedMode) {
       setModeState(storedMode);
     } else if (legacyTheme) {
       setModeState(legacyTheme);
     } else {
-      const systemPrefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
-      setModeState(systemPrefersLight ? 'light' : 'dark');
+      // First visit: always default to dark mode
+      setModeState('dark');
     }
 
     // Listen for system theme changes if user hasn't explicitly set mode

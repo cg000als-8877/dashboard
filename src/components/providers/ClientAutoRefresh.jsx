@@ -2,8 +2,8 @@
 
 import { useEffect, useRef } from 'react';
 
-// Auto-refresh after 10 minutes of inactivity
-const IDLE_TIMEOUT_MS = 10 * 60 * 1000; 
+// Auto-refresh after 5 minutes of inactivity
+const IDLE_TIMEOUT_MS = 5 * 60 * 1000; 
 
 export function ClientAutoRefresh() {
   const lastActiveTime = useRef(Date.now());
@@ -42,7 +42,7 @@ export function ClientAutoRefresh() {
     // Also check visibility change (tab switching)
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
-        checkIdleTime(); // If they come back after 10 mins, instantly refresh
+        checkIdleTime(); // If they come back after 5 mins, instantly refresh
       } else {
         resetIdleTimer(); // Reset the timer when they leave so it doesn't count active time
       }

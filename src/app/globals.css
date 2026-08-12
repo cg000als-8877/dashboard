@@ -58,6 +58,10 @@ html[data-theme="amber-forge"] {
   --color-primary: #F59E0B;
   --color-primary-glow: rgba(245, 158, 11, 0.4);
   --color-primary-glow-hover: rgba(245, 158, 11, 0.6);
+
+  /* Distinct Cool Electric Cyan for Cost & Warnings in Amber Forge theme */
+  --color-warning: #06B6D4;
+  --color-warning-glow: rgba(6, 182, 212, 0.4);
 }
 
 html[data-theme="cyber-violet"] {
