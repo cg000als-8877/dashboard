@@ -9,6 +9,9 @@ export const VISUAL_THEMES = [
   { id: 'neon-mint', name: 'Neon Mint', color: '#10B981' },
   { id: 'copper-steel', name: 'Copper Steel', color: '#EA580C' },
   { id: 'cyberpunk', name: 'Cyberpunk', color: '#FF003C' },
+  { id: 'graphite-linear', name: 'Graphite Linear', color: '#8B8CF7' },
+  { id: 'obsidian-vercel', name: 'Obsidian Vercel', color: '#FFFFFF' },
+  { id: 'electric-indigo', name: 'Electric Indigo', color: '#7C6CFF' },
 ];
 
 export const APPEARANCE_MODES = [

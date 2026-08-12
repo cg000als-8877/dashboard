@@ -386,6 +386,299 @@ html[data-theme="cyberpunk"][data-mode="light"] {
   --color-warning: #007FA8;
 }
 
+/* ═══════════════════════════════════════════
+   GRAPHITE LINEAR — Minimal Slate × Indigo Glow
+   Light & Dark custom palettes
+═══════════════════════════════════════════ */
+html[data-theme="graphite-linear"] {
+  --color-primary: #8B8CF7;
+  --color-primary-bright: #A7A8FF;
+  --color-primary-soft: #24243B;
+  --color-primary-glow: rgba(139, 140, 247, 0.22);
+  --color-primary-glow-hover: rgba(139, 140, 247, 0.45);
+
+  --color-secondary: #C4C4CC;
+  --color-success: #45C486;
+  --color-success-text: #6BE0A2;
+  --color-success-glow: rgba(69, 196, 134, 0.25);
+  --color-danger: #E85B63;
+  --color-danger-text: #FF777E;
+  --color-danger-glow: rgba(232, 91, 99, 0.25);
+  --color-warning: #D9A441;
+  --color-warning-text: #F1C467;
+  --color-warning-glow: rgba(217, 164, 65, 0.25);
+  --color-info: #6E9FEA;
+}
+
+html[data-theme="graphite-linear"][data-mode="dark"] {
+  --color-bg-main: #0E0E0F;
+  --color-bg-card: #171718;
+  --color-bg-card-hover: #1D1D1F;
+
+  --color-surface: rgba(255, 255, 255, 0.045);
+  --color-surface-hover: rgba(255, 255, 255, 0.075);
+
+  --color-border: rgba(255, 255, 255, 0.085);
+  --color-border-strong: rgba(255, 255, 255, 0.14);
+
+  --color-text-main: #F5F5F4;
+  --color-text-secondary: #A1A1A0;
+  --color-text-muted: #70706F;
+  --color-text-subtle: #505050;
+
+  --color-primary: #8B8CF7;
+  --color-primary-bright: #A7A8FF;
+  --color-primary-soft: #24243B;
+  --color-primary-glow: rgba(139, 140, 247, 0.22);
+
+  --color-secondary: #C4C4CC;
+  --color-success: #45C486;
+  --color-success-text: #6BE0A2;
+  --color-danger: #E85B63;
+  --color-danger-text: #FF777E;
+  --color-warning: #D9A441;
+  --color-warning-text: #F1C467;
+  --color-info: #6E9FEA;
+
+  --shadow-color: rgba(0, 0, 0, 0.55);
+}
+
+html[data-theme="graphite-linear"][data-mode="light"] {
+  --color-bg-main: #F7F7F5;
+  --color-bg-card: #FFFFFF;
+  --color-bg-card-hover: #F2F2F0;
+
+  --color-surface: rgba(20, 20, 20, 0.035);
+  --color-surface-hover: rgba(20, 20, 20, 0.06);
+
+  --color-border: rgba(20, 20, 20, 0.09);
+  --color-border-strong: rgba(20, 20, 20, 0.15);
+
+  --color-text-main: #18181A;
+  --color-text-secondary: #5F5F63;
+  --color-text-muted: #85858A;
+  --color-text-subtle: #A1A1A5;
+
+  --color-primary: #625CF6;
+  --color-primary-bright: #736DFF;
+  --color-primary-soft: #ECEBFF;
+  --color-primary-glow: rgba(98, 92, 246, 0.14);
+
+  --color-secondary: #6B6B73;
+  --color-success: #188653;
+  --color-success-text: #167348;
+  --color-danger: #D63E49;
+  --color-danger-text: #C73540;
+  --color-warning: #A66A00;
+  --color-warning-text: #925B00;
+  --color-info: #356DAF;
+
+  --shadow-color: rgba(0, 0, 0, 0.10);
+}
+
+/* ═══════════════════════════════════════════
+   OBSIDIAN VERCEL — Ultra-Monochrome High-Contrast
+   Light & Dark custom palettes
+═══════════════════════════════════════════ */
+html[data-theme="obsidian-vercel"] {
+  --color-primary: #FFFFFF;
+  --color-primary-bright: #FFFFFF;
+  --color-primary-soft: #1A1A1A;
+  --color-primary-glow: rgba(255, 255, 255, 0.12);
+  --color-primary-glow-hover: rgba(255, 255, 255, 0.25);
+
+  --color-secondary: #8B8B8B;
+  --color-success: #35C979;
+  --color-success-text: #5BE295;
+  --color-success-glow: rgba(53, 201, 121, 0.25);
+  --color-danger: #EF5350;
+  --color-danger-text: #FF706D;
+  --color-danger-glow: rgba(239, 83, 80, 0.25);
+  --color-warning: #E6A23C;
+  --color-warning-text: #F5BF62;
+  --color-warning-glow: rgba(230, 162, 60, 0.25);
+  --color-info: #7CA7E8;
+}
+
+html[data-theme="obsidian-vercel"][data-mode="dark"] {
+  --color-bg-main: #000000;
+  --color-bg-card: #0A0A0A;
+  --color-bg-card-hover: #111111;
+
+  --color-surface: rgba(255, 255, 255, 0.035);
+  --color-surface-hover: rgba(255, 255, 255, 0.065);
+
+  --color-border: #1F1F1F;
+  --color-border-strong: #2E2E2E;
+
+  --color-text-main: #FAFAFA;
+  --color-text-secondary: #A1A1A1;
+  --color-text-muted: #666666;
+  --color-text-subtle: #444444;
+
+  --color-primary: #FFFFFF;
+  --color-primary-bright: #FFFFFF;
+  --color-primary-soft: #1A1A1A;
+  --color-primary-glow: rgba(255, 255, 255, 0.12);
+
+  --color-secondary: #8B8B8B;
+
+  --color-success: #35C979;
+  --color-success-text: #5BE295;
+
+  --color-danger: #EF5350;
+  --color-danger-text: #FF706D;
+
+  --color-warning: #E6A23C;
+  --color-warning-text: #F5BF62;
+
+  --color-info: #7CA7E8;
+
+  --shadow-color: rgba(0, 0, 0, 0.65);
+}
+
+html[data-theme="obsidian-vercel"][data-mode="light"] {
+  --color-bg-main: #FAFAFA;
+  --color-bg-card: #FFFFFF;
+  --color-bg-card-hover: #F5F5F5;
+
+  --color-surface: rgba(0, 0, 0, 0.025);
+  --color-surface-hover: rgba(0, 0, 0, 0.045);
+
+  --color-border: #EAEAEA;
+  --color-border-strong: #D8D8D8;
+
+  --color-text-main: #171717;
+  --color-text-secondary: #525252;
+  --color-text-muted: #737373;
+  --color-text-subtle: #A3A3A3;
+
+  --color-primary: #171717;
+  --color-primary-bright: #000000;
+  --color-primary-soft: #F0F0F0;
+  --color-primary-glow: rgba(0, 0, 0, 0.10);
+
+  --color-secondary: #666666;
+
+  --color-success: #168653;
+  --color-success-text: #147548;
+
+  --color-danger: #D93B3B;
+  --color-danger-text: #C92F2F;
+
+  --color-warning: #A96700;
+  --color-warning-text: #925900;
+
+  --color-info: #356EA9;
+
+  --shadow-color: rgba(0, 0, 0, 0.08);
+}
+
+/* ═══════════════════════════════════════════
+   ELECTRIC INDIGO — Stripe-Inspired Vibrant Indigo
+   Light & Dark custom palettes
+═══════════════════════════════════════════ */
+html[data-theme="electric-indigo"] {
+  --color-primary: #7C6CFF;
+  --color-primary-bright: #9A8EFF;
+  --color-primary-soft: #292449;
+  --color-primary-glow: rgba(124, 108, 255, 0.26);
+  --color-primary-glow-hover: rgba(124, 108, 255, 0.50);
+
+  --color-secondary: #38D9C5;
+  --color-secondary-soft: #123C38;
+
+  --color-success: #32D583;
+  --color-success-text: #62E8A2;
+  --color-success-glow: rgba(50, 213, 131, 0.25);
+
+  --color-danger: #FF5B67;
+  --color-danger-text: #FF7C85;
+  --color-danger-glow: rgba(255, 91, 103, 0.25);
+
+  --color-warning: #F5B544;
+  --color-warning-text: #FFD06A;
+  --color-warning-glow: rgba(245, 181, 68, 0.25);
+
+  --color-info: #65A9FF;
+}
+
+html[data-theme="electric-indigo"][data-mode="dark"] {
+  --color-bg-main: #0B0A14;
+  --color-bg-card: #141220;
+  --color-bg-card-hover: #1B182A;
+
+  --color-surface: rgba(255, 255, 255, 0.045);
+  --color-surface-hover: rgba(255, 255, 255, 0.075);
+
+  --color-border: rgba(190, 180, 255, 0.12);
+  --color-border-strong: rgba(190, 180, 255, 0.20);
+
+  --color-text-main: #F8F7FF;
+  --color-text-secondary: #AAA6BC;
+  --color-text-muted: #777287;
+  --color-text-subtle: #565263;
+
+  --color-primary: #7C6CFF;
+  --color-primary-bright: #9A8EFF;
+  --color-primary-soft: #292449;
+  --color-primary-glow: rgba(124, 108, 255, 0.26);
+
+  --color-secondary: #38D9C5;
+  --color-secondary-soft: #123C38;
+
+  --color-success: #32D583;
+  --color-success-text: #62E8A2;
+
+  --color-danger: #FF5B67;
+  --color-danger-text: #FF7C85;
+
+  --color-warning: #F5B544;
+  --color-warning-text: #FFD06A;
+
+  --color-info: #65A9FF;
+
+  --shadow-color: rgba(0, 0, 0, 0.55);
+}
+
+html[data-theme="electric-indigo"][data-mode="light"] {
+  --color-bg-main: #F6F5FA;
+  --color-bg-card: #FFFFFF;
+  --color-bg-card-hover: #F1F0F7;
+
+  --color-surface: rgba(70, 60, 120, 0.035);
+  --color-surface-hover: rgba(70, 60, 120, 0.065);
+
+  --color-border: rgba(88, 75, 150, 0.12);
+  --color-border-strong: rgba(88, 75, 150, 0.20);
+
+  --color-text-main: #191724;
+  --color-text-secondary: #575467;
+  --color-text-muted: #7D788B;
+  --color-text-subtle: #A29EAD;
+
+  --color-primary: #635BDA;
+  --color-primary-bright: #756CF0;
+  --color-primary-soft: #EBE9FF;
+  --color-primary-glow: rgba(99, 91, 218, 0.15);
+
+  --color-secondary: #118F83;
+  --color-secondary-soft: #DDF6F2;
+
+  --color-success: #138A55;
+  --color-success-text: #117848;
+
+  --color-danger: #D93645;
+  --color-danger-text: #C92D3A;
+
+  --color-warning: #A86A00;
+  --color-warning-text: #925A00;
+
+  --color-info: #3474B8;
+
+  --shadow-color: rgba(35, 30, 60, 0.10);
+}
+
 /* APPEARANCE MODES */
 html[data-mode="dark"] {
   --color-bg-main: #0B0F17;
