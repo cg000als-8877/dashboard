@@ -61,7 +61,7 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false }) {
     const startParts = firstDateStr.split('-');
     const endParts = lastDateStr.split('-');
     if (startParts[1] === endParts[1] && startParts[0] === endParts[0]) {
-      const monthNames = [null, 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+      const monthNames = [null, 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
       dateRange = `${startParts[2]} - ${endParts[2]} ${monthNames[parseInt(startParts[1])]}, ${startParts[0]}`;
     } else {
       dateRange = `${firstDateStr} to ${lastDateStr}`;
