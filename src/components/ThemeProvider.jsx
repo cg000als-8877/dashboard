@@ -3,13 +3,12 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
 export const VISUAL_THEMES = [
+  { id: 'lime-ivory', name: 'Lime Ivory', color: '#9BE52C' },
   { id: 'ocean-dark', name: 'Ocean Dark', color: '#4F8CFF' },
   { id: 'amber-forge', name: 'Amber Forge', color: '#F59E0B' },
   { id: 'cyber-violet', name: 'Cyber Violet', color: '#A855F7' },
-  { id: 'neon-mint', name: 'Neon Mint', color: '#10B981' },
   { id: 'copper-steel', name: 'Copper Steel', color: '#EA580C' },
   { id: 'cyberpunk', name: 'Cyberpunk', color: '#FF003C' },
-  { id: 'graphite-linear', name: 'Graphite Linear', color: '#8B8CF7' },
   { id: 'obsidian-vercel', name: 'Obsidian Vercel', color: '#FFFFFF' },
   { id: 'electric-indigo', name: 'Electric Indigo', color: '#7C6CFF' },
 ];
@@ -22,7 +21,7 @@ export const APPEARANCE_MODES = [
 const ThemeContext = createContext();
 
 export function ThemeProvider({ children }) {
-  const [visualTheme, setVisualThemeState] = useState('ocean-dark');
+  const [visualTheme, setVisualThemeState] = useState('lime-ivory');
   const [mode, setModeState] = useState('dark');
   const [mounted, setMounted] = useState(false);
 
@@ -38,7 +37,7 @@ export function ThemeProvider({ children }) {
     if (storedVisualTheme && VISUAL_THEMES.some(t => t.id === storedVisualTheme)) {
       setVisualThemeState(storedVisualTheme);
     } else {
-      setVisualThemeState('ocean-dark');
+      setVisualThemeState('lime-ivory');
     }
 
     // 2. Appearance Mode - always default to dark on first visit

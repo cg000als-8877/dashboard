@@ -347,10 +347,10 @@ export default function HourlyPage() {
               const factoryAchievement = factoryTotalTarget > 0 ? Math.round((factoryTotalActual / factoryTotalTarget) * 100) : 0;
 
               return (
-                <Card className="p-0 overflow-hidden border-2 border-indigo-500/20 bg-gradient-to-b from-[var(--color-bg-card)] to-[var(--color-surface)] shadow-lg">
+                <Card className="p-0 overflow-hidden border-2 border-[var(--color-primary)]/20 bg-gradient-to-b from-[var(--color-bg-card)] to-[var(--color-surface)] shadow-lg">
                   <div className="p-4 md:p-6 border-b border-[var(--color-border)] flex flex-col md:flex-row justify-between items-center gap-4">
                     <div className="text-center md:text-left w-full md:w-auto">
-                      <h2 className="text-lg md:text-4xl font-bold tracking-tight text-[var(--color-primary)] drop-shadow-[0_0_10px_rgba(37,99,235,0.3)]">
+                      <h2 className="text-lg md:text-4xl font-bold tracking-tight text-[var(--color-primary)] drop-shadow-[0_0_10px_var(--color-primary-glow)]">
                         TOTAL PRODUCTION
                       </h2>
                       <p className="text-[10px] md:text-base text-[var(--color-text-secondary)] font-medium mt-0.5 md:mt-1">
@@ -392,10 +392,10 @@ export default function HourlyPage() {
                           </div>
                           {/* Actual */}
                           <div className="flex items-center gap-3">
-                            <div className="w-1.5 h-8 bg-blue-500 rounded-full" />
+                            <div className="w-1.5 h-8 bg-[var(--color-primary)] rounded-full" />
                             <div className="flex flex-col">
                               <span className="text-[10px] uppercase tracking-widest text-[var(--color-text-secondary)] font-bold">Actual</span>
-                              <span className="text-xl font-black text-blue-600 dark:text-blue-400 leading-none mt-0.5"><AnimatedNumber value={factoryTotalActual} /></span>
+                              <span className="text-xl font-black text-[var(--color-primary)] leading-none mt-0.5"><AnimatedNumber value={factoryTotalActual} /></span>
                             </div>
                           </div>
                         </div>
@@ -411,7 +411,7 @@ export default function HourlyPage() {
                             {/* Progress */}
                             <circle 
                               cx="50" cy="50" r="40" 
-                              stroke={(factoryAchievement >= 100) ? "var(--color-success-text)" : "#f59e0b"} 
+                              stroke="var(--color-primary)" 
                               strokeWidth="8" 
                               strokeLinecap="round"
                               fill="none" 
@@ -423,10 +423,7 @@ export default function HourlyPage() {
                           <div className="absolute inset-0 flex flex-col items-center justify-center">
                             <AnimatedNumber 
                               value={factoryAchievement} 
-                              className={cn(
-                                "text-xl font-black tracking-tighter",
-                                (factoryAchievement >= 100) ? "text-[var(--color-success-text)]" : "text-amber-500"
-                              )} 
+                              className="text-xl font-black tracking-tighter text-[var(--color-primary)]"
                             />
                             <span className="text-[10px] font-bold text-[var(--color-text-secondary)] -mt-1">%</span>
                           </div>
@@ -638,7 +635,7 @@ export default function HourlyPage() {
                 )}>
                   <Card className="p-0 overflow-hidden flex flex-col h-full shadow-md hover:shadow-lg transition-shadow duration-300">
                     <div className="bg-[var(--color-surface)]/50 pt-3 pb-2 flex justify-center border-b border-[var(--color-border)]">
-                      <div className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white px-6 py-1 rounded-full text-sm font-bold shadow-md shadow-indigo-500/20">
+                      <div className="bg-[var(--color-primary)] text-[var(--color-on-primary)] px-6 py-1 rounded-full text-sm font-bold tracking-wider shadow-[0_4px_15px_var(--color-primary-glow)] border border-[var(--color-primary)]/30 transition-all duration-300">
                         LINE {line.line_id}
                       </div>
                     </div>
