@@ -38,34 +38,84 @@
   --color-surface-hover: rgba(0, 0, 0, 0.4);
   --color-on-primary: #FFFFFF;
   --shadow-color: rgba(0, 0, 0, 0.5);
+
+  /* Default theme primary */
+  --color-primary: #F59E0B;
+  --color-primary-glow: rgba(245, 158, 11, 0.4);
+  --color-primary-glow-hover: rgba(245, 158, 11, 0.6);
 }
 
-.light-mode {
-  --color-bg-main: #F1F5F9; /* Slate 100 - Cool, premium off-white */
-  --color-bg-card: #FFFFFF; /* Solid pure white */
-  --color-bg-card-hover: #F8FAFC; /* Slightly off-white on hover */
+/* Polished Theme & Mode Transitions (150ms-250ms) */
+:root, html, body, aside, nav, button, div, card, input, p, h1, h2, h3, span {
+  transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+              color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* VISUAL THEME ACCENTS */
+html[data-theme="amber-forge"] {
+  --color-primary: #F59E0B;
+  --color-primary-glow: rgba(245, 158, 11, 0.4);
+  --color-primary-glow-hover: rgba(245, 158, 11, 0.6);
+}
+
+html[data-theme="cyber-violet"] {
+  --color-primary: #A855F7;
+  --color-primary-glow: rgba(168, 85, 247, 0.4);
+  --color-primary-glow-hover: rgba(168, 85, 247, 0.6);
+}
+
+html[data-theme="neon-mint"] {
+  --color-primary: #10B981;
+  --color-primary-glow: rgba(16, 185, 129, 0.4);
+  --color-primary-glow-hover: rgba(16, 185, 129, 0.6);
+}
+
+html[data-theme="copper-steel"] {
+  --color-primary: #EA580C;
+  --color-primary-glow: rgba(234, 88, 12, 0.4);
+  --color-primary-glow-hover: rgba(234, 88, 12, 0.6);
+}
+
+/* APPEARANCE MODES */
+html[data-mode="dark"] {
+  --color-bg-main: #0B0F17;
+  --color-bg-card: #131A24;
+  --color-bg-card-hover: #18212E;
+  --color-border: rgba(255, 255, 255, 0.08);
+  --color-text-main: #FFFFFF;
+  --color-text-secondary: #9BA7B4;
+  --color-text-muted: #6D7684;
+  --color-surface: rgba(0, 0, 0, 0.25);
+  --color-surface-hover: rgba(0, 0, 0, 0.4);
+  --shadow-color: rgba(0, 0, 0, 0.5);
+}
+
+html[data-mode="light"], .light-mode {
+  --color-bg-main: #F1F5F9;
+  --color-bg-card: #FFFFFF;
+  --color-bg-card-hover: #F8FAFC;
+  --color-border: rgba(15, 23, 42, 0.08);
   
-  --color-border: rgba(15, 23, 42, 0.06); /* Very subtle slate border */
+  --color-on-primary: #FFFFFF;
+  --color-success: #10B981;
+  --color-danger: #EF4444;
+  --color-warning: #F59E0B;
   
-  --color-primary: #4F46E5; /* Premium Indigo */
-  --color-on-primary: #FFFFFF; /* White text on indigo */
-  --color-success: #10B981; /* Emerald */
-  --color-danger: #EF4444; /* Red */
-  --color-warning: #F59E0B; /* Amber */
+  --color-text-main: #0F172A;
+  --color-text-secondary: #475569;
+  --color-text-muted: #94A3B8;
+  --color-success-text: #047857;
+  --color-danger-text: #B91C1C;
   
-  --color-text-main: #0F172A; /* Slate 900 */
-  --color-text-secondary: #475569; /* Slate 600 */
-  --color-text-muted: #94A3B8; /* Slate 400 */
-  --color-success-text: #047857; /* Emerald 700 */
-  --color-danger-text: #B91C1C; /* Red 700 */
-  
-  --color-primary-glow: rgba(79, 70, 229, 0.15); /* Soft diffused shadow instead of neon glow */
-  --color-primary-glow-hover: rgba(79, 70, 229, 0.25);
+  --color-primary-glow: rgba(15, 23, 42, 0.08);
+  --color-primary-glow-hover: rgba(15, 23, 42, 0.15);
   --color-success-glow: rgba(16, 185, 129, 0.15);
   --color-danger-glow: rgba(239, 68, 68, 0.15);
   --color-warning-glow: rgba(245, 158, 11, 0.15);
   
-  --shadow-text: drop-shadow(0 1px 2px rgba(15, 23, 42, 0.05)); /* Extremely subtle text shadow */
+  --shadow-text: drop-shadow(0 1px 2px rgba(15, 23, 42, 0.05));
 
   --color-surface: rgba(15, 23, 42, 0.03);
   --color-surface-hover: rgba(15, 23, 42, 0.06);

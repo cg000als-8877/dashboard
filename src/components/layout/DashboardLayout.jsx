@@ -4,13 +4,12 @@ import { useState, Fragment } from 'react';
 import Sidebar from './Sidebar';
 import { Menu, X } from 'lucide-react';
 import { cn } from './Sidebar';
-import { RealTimeClock } from '@/components/ui/RealTimeClock';
 
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { useKpiData } from '@/utils/useKpiData';
 import { format, parseISO } from 'date-fns';
-import { Clock, LayoutDashboard, Factory, BarChart3, Ship, Download, Calendar, FileText, History, Sun, Moon, RotateCw } from 'lucide-react';
+import { Clock, LayoutDashboard, Factory, BarChart3, Ship, History, Palette, Sun, Moon } from 'lucide-react';
 import { useMonth } from '@/components/providers/MonthProvider';
 import { useTheme } from '@/components/ThemeProvider';
 
@@ -27,46 +26,8 @@ export default function DashboardLayout({ children }) {
   const pathname = usePathname();
   const { dailyTrends } = useKpiData();
   const { selectedMonth, setSelectedMonth } = useMonth();
-  const { theme, toggleTheme } = useTheme();
+  const { visualTheme, setVisualTheme, mode, setMode, VISUAL_THEMES, APPEARANCE_MODES } = useTheme();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const [startY, setStartY] = useState(0);
-  const [pullY, setPullY] = useState(0);
-
-  const handleTouchStart = (e) => {
-    const mainEl = e.currentTarget;
-    if (mainEl.scrollTop <= 2) {
-      setStartY(e.touches[0].clientY);
-    } else {
-      setStartY(0);
-    }
-  };
-
-  const handleTouchMove = (e) => {
-    if (startY === 0) return;
-    const currentY = e.touches[0].clientY;
-    const diff = currentY - startY;
-    if (diff > 0) {
-      setPullY(Math.min(diff * 0.45, 75));
-    }
-  };
-
-  const handleTouchEnd = () => {
-    if (pullY >= 45) {
-      triggerRefresh();
-    } else {
-      setPullY(0);
-    }
-    setStartY(0);
-  };
-
-  const triggerRefresh = () => {
-    setIsRefreshing(true);
-    setPullY(60);
-    setTimeout(() => {
-      window.location.reload();
-    }, 250);
-  };
 
   let datePart = "Loading...";
   if (dailyTrends && dailyTrends.length > 0) {
@@ -84,7 +45,7 @@ export default function DashboardLayout({ children }) {
       <div className="flex flex-col flex-1 overflow-hidden relative w-full">
         {/* Mobile Header & Sticky Nav (Hidden on Desktop) */}
         <header className="md:hidden fixed top-0 left-0 right-0 bg-[var(--color-bg-card)] z-50 flex flex-col border-b border-[var(--color-border)] shadow-sm">
-          {/* Top Logo Section */}
+          {/* Top Logo & Burger Menu Button */}
           <div className="py-3 px-4 sm:px-6 flex items-center justify-between border-b border-[var(--color-border)] w-full relative">
             <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-surface)] to-transparent pointer-events-none"></div>
             <Link href="/" className="flex items-center gap-2 relative z-10 cursor-pointer">
@@ -97,25 +58,13 @@ export default function DashboardLayout({ children }) {
               </div>
             </Link>
             
-            <div className="flex items-center gap-2 sm:gap-4 ml-auto relative z-50">
+            {/* Top Right Burger Button */}
+            <div className="flex items-center ml-auto relative z-50">
               <button 
-                onClick={triggerRefresh}
-                className="p-1.5 rounded-md hover:bg-[var(--color-surface-hover)] transition-colors text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)]"
-                aria-label="Refresh application data"
-                title="Refresh Data"
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} 
+                className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)] transition-colors p-2 relative z-50 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)]/50 active:scale-95"
+                aria-label="Open mobile menu and theme selector"
               >
-                <RotateCw size={17} className={isRefreshing ? "animate-spin text-[var(--color-primary)]" : ""} />
-              </button>
-
-              <button 
-                onClick={toggleTheme}
-                className="p-1.5 rounded-md hover:bg-[var(--color-surface-hover)] transition-colors text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)]"
-                aria-label="Toggle theme"
-              >
-                {theme === 'dark' ? <Sun size={18} className="text-yellow-400" /> : <Moon size={18} className="text-blue-500" />}
-              </button>
-              
-              <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)] transition-colors p-2 relative z-50">
                 {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
               </button>
             </div>
@@ -132,7 +81,7 @@ export default function DashboardLayout({ children }) {
                     className={cn(
                       "relative text-[10px] sm:text-[11px] font-bold uppercase tracking-widest transition-all duration-300 text-center flex-1 py-1.5 sm:py-2 rounded-lg flex items-center justify-center overflow-hidden",
                       isActive 
-                        ? "text-[var(--color-primary)] drop-shadow-[0_0_8px_rgba(37,99,235,0.8)]" 
+                        ? "text-[var(--color-primary)] drop-shadow-[0_0_8px_var(--color-primary-glow)]" 
                         : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)]"
                     )}
                   >
@@ -143,7 +92,7 @@ export default function DashboardLayout({ children }) {
                                style={{ background: 'conic-gradient(from 0deg, transparent 60%, var(--color-primary) 100%)' }}>
                           </div>
                         </div>
-                        <div className="absolute inset-[2px] rounded-[6px] bg-[var(--color-bg-card)] shadow-[0_0_15px_rgba(37,99,235,0.2)_inset]"></div>
+                        <div className="absolute inset-[2px] rounded-[6px] bg-[var(--color-bg-card)] shadow-[0_0_15px_var(--color-primary-glow)_inset]"></div>
                       </>
                     )}
                     <span className="relative z-10">{item.name}</span>
@@ -156,19 +105,20 @@ export default function DashboardLayout({ children }) {
             })}
           </nav>
 
-          {/* Compressed Dropdown Menu (Floats ON TOP of Everything with z-[100]) */}
+          {/* Burger Dropdown Menu with Theme & Appearance Selector */}
           {isMobileMenuOpen && (
             <>
-              <div className="fixed inset-0 z-[90] bg-black/20 backdrop-blur-[2px]" onClick={() => setIsMobileMenuOpen(false)}></div>
-              <div className="absolute top-12 right-3 w-48 bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-xl shadow-2xl flex flex-col p-2 animate-[fade-down_0.2s_ease-out_both] z-[100] origin-top-right">
-                <div className="flex flex-col gap-1">
+              <div className="fixed inset-0 z-[90] bg-black/40 backdrop-blur-[2px]" onClick={() => setIsMobileMenuOpen(false)}></div>
+              <div className="absolute top-14 right-3 w-60 bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-2xl shadow-2xl flex flex-col p-3 animate-[fade-down_0.2s_ease-out_both] z-[100] origin-top-right space-y-3">
+                {/* Additional Navigation Links */}
+                <div className="flex flex-col gap-1 pb-2 border-b border-[var(--color-border)]">
                   {navItems.filter(item => ['Analytics', 'Simulator'].includes(item.name)).map(item => (
                     <Link
                       key={item.name}
                       href={item.href}
                       onClick={() => setIsMobileMenuOpen(false)}
                       className={cn(
-                        "flex items-center gap-2.5 px-3 py-2.5 rounded-lg font-bold text-xs tracking-widest uppercase transition-all",
+                        "flex items-center gap-2.5 px-3 py-2 rounded-lg font-bold text-xs tracking-widest uppercase transition-all",
                         pathname.startsWith(item.href)
                           ? "bg-[var(--color-primary)]/15 text-[var(--color-primary)] shadow-sm"
                           : "text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-main)]"
@@ -179,6 +129,76 @@ export default function DashboardLayout({ children }) {
                     </Link>
                   ))}
                 </div>
+
+                {/* THEME SELECTOR IN BURGER MENU */}
+                <div>
+                  <p className="text-[9px] font-extrabold uppercase tracking-widest text-[var(--color-text-muted)] mb-1.5 px-1">
+                    Visual Theme
+                  </p>
+                  <div className="space-y-1">
+                    {VISUAL_THEMES.map((t) => {
+                      const isSelected = visualTheme === t.id;
+                      return (
+                        <button
+                          key={t.id}
+                          onClick={() => setVisualTheme(t.id)}
+                          className={cn(
+                            "w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all",
+                            isSelected
+                              ? "bg-[var(--color-primary)]/15 text-[var(--color-primary)] font-bold shadow-sm"
+                              : "text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-main)]"
+                          )}
+                        >
+                          <div className="flex items-center gap-2">
+                            <div className={cn(
+                              "w-3 h-3 rounded-full border flex items-center justify-center shrink-0 transition-colors",
+                              isSelected ? "border-[var(--color-primary)] bg-[var(--color-primary)]" : "border-[var(--color-border)]"
+                            )}>
+                              {isSelected && <div className="w-1 h-1 rounded-full bg-white" />}
+                            </div>
+                            <span>{t.name}</span>
+                          </div>
+                          <span 
+                            className="w-2 h-2 rounded-full shrink-0 shadow-sm" 
+                            style={{ backgroundColor: t.color }} 
+                          />
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* APPEARANCE MODE IN BURGER MENU */}
+                <div>
+                  <p className="text-[9px] font-extrabold uppercase tracking-widest text-[var(--color-text-muted)] mb-1.5 px-1">
+                    Appearance Mode
+                  </p>
+                  <div className="grid grid-cols-2 gap-1 p-0.5 bg-[var(--color-surface)] rounded-xl border border-[var(--color-border)]">
+                    {APPEARANCE_MODES.map((m) => {
+                      const isSelected = mode === m.id;
+                      return (
+                        <button
+                          key={m.id}
+                          onClick={() => setMode(m.id)}
+                          className={cn(
+                            "py-1.5 px-2 rounded-lg text-[10px] font-bold flex items-center justify-center gap-1.5 transition-all",
+                            isSelected
+                              ? "bg-[var(--color-bg-card)] text-[var(--color-primary)] border border-[var(--color-primary)]/30 shadow-sm"
+                              : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)]"
+                          )}
+                        >
+                          <div className={cn(
+                            "w-2.5 h-2.5 rounded-full border flex items-center justify-center shrink-0",
+                            isSelected ? "border-[var(--color-primary)] bg-[var(--color-primary)]" : "border-[var(--color-border)]"
+                          )}>
+                            {isSelected && <div className="w-0.5 h-0.5 rounded-full bg-white" />}
+                          </div>
+                          <span>{m.name}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
               </div>
             </>
           )}
@@ -186,27 +206,8 @@ export default function DashboardLayout({ children }) {
 
         {/* Main Content */}
         <main 
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
           className="flex-1 overflow-y-auto w-full pt-[115px] md:pt-8 p-4 md:p-8 relative"
         >
-          {/* Pull-to-Refresh Visual Indicator (Mobile) */}
-          {pullY > 0 && (
-            <div 
-              className="md:hidden fixed top-[115px] left-1/2 -translate-x-1/2 z-40 transition-transform duration-75 flex items-center justify-center"
-              style={{ transform: `translate(-50%, ${pullY - 40}px)` }}
-            >
-              <div className="w-9 h-9 rounded-full bg-[var(--color-bg-card)] border border-[var(--color-border)] shadow-xl flex items-center justify-center text-[var(--color-primary)]">
-                <RotateCw 
-                  size={18} 
-                  className={isRefreshing ? "animate-spin" : ""}
-                  style={{ transform: isRefreshing ? undefined : `rotate(${pullY * 4}deg)` }} 
-                />
-              </div>
-            </div>
-          )}
-
           <div className="w-full h-full max-w-[1800px] mx-auto">
             {children}
           </div>

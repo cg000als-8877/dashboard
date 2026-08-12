@@ -2,60 +2,105 @@
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
+export const VISUAL_THEMES = [
+  { id: 'amber-forge', name: 'Amber Forge', color: '#F59E0B' },
+  { id: 'cyber-violet', name: 'Cyber Violet', color: '#A855F7' },
+  { id: 'neon-mint', name: 'Neon Mint', color: '#10B981' },
+  { id: 'copper-steel', name: 'Copper Steel', color: '#EA580C' }
+];
+
+export const APPEARANCE_MODES = [
+  { id: 'light', name: 'Light' },
+  { id: 'dark', name: 'Dark' }
+];
+
 const ThemeContext = createContext();
 
 export function ThemeProvider({ children }) {
-  const [theme, setTheme] = useState('dark');
+  const [visualTheme, setVisualThemeState] = useState('amber-forge');
+  const [mode, setModeState] = useState('dark');
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-    const storedTheme = localStorage.getItem('theme');
     
-    const getSystemTheme = () => window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    // Read persisted choices or fallbacks
+    const storedVisualTheme = localStorage.getItem('app-visual-theme');
+    const storedMode = localStorage.getItem('app-mode');
+    const legacyTheme = localStorage.getItem('theme'); // backward compatibility
 
-    if (storedTheme) {
-      setTheme(storedTheme);
+    // 1. Visual Theme
+    if (storedVisualTheme && VISUAL_THEMES.some(t => t.id === storedVisualTheme)) {
+      setVisualThemeState(storedVisualTheme);
     } else {
-      setTheme(getSystemTheme());
+      setVisualThemeState('amber-forge');
     }
 
+    // 2. Appearance Mode
+    if (storedMode) {
+      setModeState(storedMode);
+    } else if (legacyTheme) {
+      setModeState(legacyTheme);
+    } else {
+      const systemPrefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+      setModeState(systemPrefersLight ? 'light' : 'dark');
+    }
+
+    // Listen for system theme changes if user hasn't explicitly set mode
     const mediaQuery = window.matchMedia('(prefers-color-scheme: light)');
-    const handleChange = (e) => {
-      if (!localStorage.getItem('theme')) {
-        setTheme(e.matches ? 'light' : 'dark');
+    const handleSystemChange = (e) => {
+      if (!localStorage.getItem('app-mode')) {
+        setModeState(e.matches ? 'light' : 'dark');
       }
     };
 
     if (mediaQuery.addEventListener) {
-      mediaQuery.addEventListener('change', handleChange);
-      return () => mediaQuery.removeEventListener('change', handleChange);
-    } else if (mediaQuery.addListener) {
-      mediaQuery.addListener(handleChange);
-      return () => mediaQuery.removeListener(handleChange);
+      mediaQuery.addEventListener('change', handleSystemChange);
+      return () => mediaQuery.removeEventListener('change', handleSystemChange);
     }
   }, []);
 
   useEffect(() => {
     if (mounted) {
-      if (theme === 'light') {
+      document.documentElement.setAttribute('data-theme', visualTheme);
+      document.documentElement.setAttribute('data-mode', mode);
+
+      if (mode === 'light') {
         document.documentElement.classList.add('light-mode');
       } else {
         document.documentElement.classList.remove('light-mode');
       }
     }
-  }, [theme, mounted]);
+  }, [visualTheme, mode, mounted]);
+
+  const setVisualTheme = (themeId) => {
+    setVisualThemeState(themeId);
+    localStorage.setItem('app-visual-theme', themeId);
+  };
+
+  const setMode = (modeId) => {
+    setModeState(modeId);
+    localStorage.setItem('app-mode', modeId);
+    localStorage.setItem('theme', modeId); // legacy sync
+  };
 
   const toggleTheme = () => {
-    setTheme(prev => {
-      const newTheme = prev === 'dark' ? 'light' : 'dark';
-      localStorage.setItem('theme', newTheme);
-      return newTheme;
-    });
+    setMode(mode === 'dark' ? 'light' : 'dark');
   };
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+    <ThemeContext.Provider 
+      value={{ 
+        visualTheme, 
+        setVisualTheme, 
+        mode, 
+        setMode, 
+        theme: mode, 
+        toggleTheme,
+        VISUAL_THEMES,
+        APPEARANCE_MODES
+      }}
+    >
       {mounted ? children : <div style={{ visibility: 'hidden' }}>{children}</div>}
     </ThemeContext.Provider>
   );
