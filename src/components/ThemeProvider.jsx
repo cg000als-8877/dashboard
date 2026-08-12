@@ -3,10 +3,12 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
 export const VISUAL_THEMES = [
+  { id: 'ocean-dark', name: 'Ocean Dark', color: '#4F8CFF' },
   { id: 'amber-forge', name: 'Amber Forge', color: '#F59E0B' },
   { id: 'cyber-violet', name: 'Cyber Violet', color: '#A855F7' },
   { id: 'neon-mint', name: 'Neon Mint', color: '#10B981' },
-  { id: 'copper-steel', name: 'Copper Steel', color: '#EA580C' }
+  { id: 'copper-steel', name: 'Copper Steel', color: '#EA580C' },
+  { id: 'cyberpunk', name: 'Cyberpunk', color: '#FF003C' },
 ];
 
 export const APPEARANCE_MODES = [
@@ -17,7 +19,7 @@ export const APPEARANCE_MODES = [
 const ThemeContext = createContext();
 
 export function ThemeProvider({ children }) {
-  const [visualTheme, setVisualThemeState] = useState('amber-forge');
+  const [visualTheme, setVisualThemeState] = useState('ocean-dark');
   const [mode, setModeState] = useState('dark');
   const [mounted, setMounted] = useState(false);
 
@@ -33,7 +35,7 @@ export function ThemeProvider({ children }) {
     if (storedVisualTheme && VISUAL_THEMES.some(t => t.id === storedVisualTheme)) {
       setVisualThemeState(storedVisualTheme);
     } else {
-      setVisualThemeState('amber-forge');
+      setVisualThemeState('ocean-dark');
     }
 
     // 2. Appearance Mode - always default to dark on first visit

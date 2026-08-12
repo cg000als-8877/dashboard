@@ -39,10 +39,10 @@
   --color-on-primary: #FFFFFF;
   --shadow-color: rgba(0, 0, 0, 0.5);
 
-  /* Default theme primary */
-  --color-primary: #F59E0B;
-  --color-primary-glow: rgba(245, 158, 11, 0.4);
-  --color-primary-glow-hover: rgba(245, 158, 11, 0.6);
+  /* Default theme primary — Ocean Dark (original) */
+  --color-primary: #4F8CFF;
+  --color-primary-glow: rgba(79, 140, 255, 0.4);
+  --color-primary-glow-hover: rgba(79, 140, 255, 0.6);
 }
 
 /* Polished Theme & Mode Transitions (150ms-250ms) */
@@ -53,33 +53,337 @@
               box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* VISUAL THEME ACCENTS */
+/* ═══════════════════════════════════════════
+   OCEAN DARK — Original Classic Blue (Default)
+   Primary:  #4F8CFF  (Electric Blue)
+   Cost:     #F5A623  (Amber Gold)
+   Profit:   #2ECC71  (Emerald Green)
+   Danger:   #FF5A5F  (Coral Red)
+   Bg Dark:  #0B0F17  (Deep Blue-Charcoal)
+═══════════════════════════════════════════ */
+html[data-theme="ocean-dark"] {
+  --color-primary: #4F8CFF;
+  --color-primary-glow: rgba(79, 140, 255, 0.4);
+  --color-primary-glow-hover: rgba(79, 140, 255, 0.6);
+  --color-success: #2ECC71;
+  --color-success-text: #34D399;
+  --color-success-glow: rgba(46, 204, 113, 0.4);
+  --color-danger: #FF5A5F;
+  --color-danger-text: #F87171;
+  --color-danger-glow: rgba(231, 76, 60, 0.4);
+  --color-warning: #F5A623;
+  --color-warning-glow: rgba(245, 166, 35, 0.4);
+}
+html[data-theme="ocean-dark"][data-mode="dark"] {
+  --color-bg-main: #0B0F17;
+  --color-bg-card: #131A24;
+  --color-bg-card-hover: #18212E;
+  --color-border: rgba(255, 255, 255, 0.08);
+  --color-text-main: #FFFFFF;
+  --color-text-secondary: #9BA7B4;
+  --color-text-muted: #6D7684;
+  --color-surface: rgba(0, 0, 0, 0.25);
+  --color-surface-hover: rgba(0, 0, 0, 0.4);
+  --shadow-color: rgba(0, 0, 0, 0.5);
+}
+html[data-theme="ocean-dark"][data-mode="light"] {
+  --color-bg-main: #F1F5F9;
+  --color-bg-card: #FFFFFF;
+  --color-bg-card-hover: #F8FAFC;
+  --color-border: rgba(79, 140, 255, 0.15);
+  --color-text-main: #0F172A;
+  --color-text-secondary: #475569;
+  --color-text-muted: #94A3B8;
+  --color-surface: rgba(79, 140, 255, 0.04);
+  --color-surface-hover: rgba(79, 140, 255, 0.08);
+  --shadow-color: rgba(79, 140, 255, 0.12);
+  --color-success: #10B981;
+  --color-success-text: #047857;
+  --color-danger: #EF4444;
+  --color-danger-text: #B91C1C;
+  --color-warning: #F59E0B;
+}
+
+/* ═══════════════════════════════════════════
+   AMBER FORGE — Molten Gold × Warm Steel
+   Primary:  #F59E0B  (Molten Amber)
+   Cost:     #06B6D4  (Electric Cyan — contrast)
+   Profit:   #22C55E  (Emerald)
+   Danger:   #FF5A5F  (Ember Red)
+   Bg Dark:  #0F0A00  (Near-black warm)
+═══════════════════════════════════════════ */
 html[data-theme="amber-forge"] {
   --color-primary: #F59E0B;
   --color-primary-glow: rgba(245, 158, 11, 0.4);
   --color-primary-glow-hover: rgba(245, 158, 11, 0.6);
-
-  /* Distinct Cool Electric Cyan for Cost & Warnings in Amber Forge theme */
+  /* Cost distinct from amber income */
   --color-warning: #06B6D4;
   --color-warning-glow: rgba(6, 182, 212, 0.4);
+  --color-success: #22C55E;
+  --color-success-text: #4ADE80;
+  --color-success-glow: rgba(34, 197, 94, 0.35);
+  --color-danger: #FF5A5F;
+  --color-danger-text: #FCA5A5;
+  --color-danger-glow: rgba(255, 90, 95, 0.35);
+}
+html[data-theme="amber-forge"][data-mode="dark"] {
+  --color-bg-main: #0F0A00;
+  --color-bg-card: #1A1200;
+  --color-bg-card-hover: #221800;
+  --color-border: rgba(245, 158, 11, 0.18);
+  --color-text-main: #FFF8E7;
+  --color-text-secondary: #C4975A;
+  --color-text-muted: #7A5E2A;
+  --color-surface: rgba(245, 158, 11, 0.04);
+  --color-surface-hover: rgba(245, 158, 11, 0.08);
+  --shadow-color: rgba(245, 158, 11, 0.25);
+}
+html[data-theme="amber-forge"][data-mode="light"] {
+  --color-bg-main: #FFFBF0;
+  --color-bg-card: #FFFFFF;
+  --color-bg-card-hover: #FFFDF5;
+  --color-border: rgba(245, 158, 11, 0.2);
+  --color-text-main: #1C1000;
+  --color-text-secondary: #7A5500;
+  --color-text-muted: #B08840;
+  --color-surface: rgba(245, 158, 11, 0.05);
+  --color-surface-hover: rgba(245, 158, 11, 0.1);
+  --shadow-color: rgba(245, 158, 11, 0.15);
+  --color-success: #15803D;
+  --color-success-text: #15803D;
+  --color-danger: #DC2626;
+  --color-danger-text: #DC2626;
+  --color-warning: #0891B2;
 }
 
+/* ═══════════════════════════════════════════
+   CYBER VIOLET — Deep Space Purple
+   Primary:  #A855F7  (Electric Violet)
+   Cost:     #FB923C  (Neon Orange — contrast)
+   Profit:   #22C55E  (Neon Green)
+   Danger:   #F43F5E  (Rose Red)
+   Bg Dark:  #08001A  (Deep Void Purple-Black)
+═══════════════════════════════════════════ */
 html[data-theme="cyber-violet"] {
   --color-primary: #A855F7;
   --color-primary-glow: rgba(168, 85, 247, 0.4);
   --color-primary-glow-hover: rgba(168, 85, 247, 0.6);
+  --color-warning: #FB923C;
+  --color-warning-glow: rgba(251, 146, 60, 0.4);
+  --color-success: #22C55E;
+  --color-success-text: #4ADE80;
+  --color-success-glow: rgba(34, 197, 94, 0.35);
+  --color-danger: #F43F5E;
+  --color-danger-text: #FDA4AF;
+  --color-danger-glow: rgba(244, 63, 94, 0.35);
+}
+html[data-theme="cyber-violet"][data-mode="dark"] {
+  --color-bg-main: #08001A;
+  --color-bg-card: #10042E;
+  --color-bg-card-hover: #170842;
+  --color-border: rgba(168, 85, 247, 0.2);
+  --color-text-main: #F0E8FF;
+  --color-text-secondary: #A87ACC;
+  --color-text-muted: #5E3E80;
+  --color-surface: rgba(168, 85, 247, 0.05);
+  --color-surface-hover: rgba(168, 85, 247, 0.1);
+  --shadow-color: rgba(168, 85, 247, 0.3);
+}
+html[data-theme="cyber-violet"][data-mode="light"] {
+  --color-bg-main: #F5F0FF;
+  --color-bg-card: #FFFFFF;
+  --color-bg-card-hover: #FAF7FF;
+  --color-border: rgba(168, 85, 247, 0.18);
+  --color-text-main: #1A0040;
+  --color-text-secondary: #5B21B6;
+  --color-text-muted: #9061C9;
+  --color-surface: rgba(168, 85, 247, 0.05);
+  --color-surface-hover: rgba(168, 85, 247, 0.1);
+  --shadow-color: rgba(168, 85, 247, 0.15);
+  --color-success: #15803D;
+  --color-success-text: #15803D;
+  --color-danger: #BE123C;
+  --color-danger-text: #BE123C;
+  --color-warning: #C2410C;
 }
 
+/* ═══════════════════════════════════════════
+   NEON MINT — Bio-Teal × Dark Jungle
+   Primary:  #10B981  (Emerald Mint)
+   Cost:     #F59E0B  (Amber Gold — warm contrast)
+   Profit:   #34D399  (Bright Mint)
+   Danger:   #FF5A5F  (Coral Red)
+   Bg Dark:  #000F0A  (Deep Void Teal-Black)
+═══════════════════════════════════════════ */
 html[data-theme="neon-mint"] {
   --color-primary: #10B981;
   --color-primary-glow: rgba(16, 185, 129, 0.4);
   --color-primary-glow-hover: rgba(16, 185, 129, 0.6);
+  --color-warning: #F59E0B;
+  --color-warning-glow: rgba(245, 158, 11, 0.4);
+  --color-success: #34D399;
+  --color-success-text: #6EE7B7;
+  --color-success-glow: rgba(52, 211, 153, 0.35);
+  --color-danger: #FF5A5F;
+  --color-danger-text: #FCA5A5;
+  --color-danger-glow: rgba(255, 90, 95, 0.35);
+}
+html[data-theme="neon-mint"][data-mode="dark"] {
+  --color-bg-main: #000F0A;
+  --color-bg-card: #001A10;
+  --color-bg-card-hover: #002218;
+  --color-border: rgba(16, 185, 129, 0.2);
+  --color-text-main: #E8FFF5;
+  --color-text-secondary: #5CA88A;
+  --color-text-muted: #2E6650;
+  --color-surface: rgba(16, 185, 129, 0.05);
+  --color-surface-hover: rgba(16, 185, 129, 0.1);
+  --shadow-color: rgba(16, 185, 129, 0.25);
+}
+html[data-theme="neon-mint"][data-mode="light"] {
+  --color-bg-main: #F0FFF8;
+  --color-bg-card: #FFFFFF;
+  --color-bg-card-hover: #F5FFFB;
+  --color-border: rgba(16, 185, 129, 0.18);
+  --color-text-main: #001A0D;
+  --color-text-secondary: #065F46;
+  --color-text-muted: #059669;
+  --color-surface: rgba(16, 185, 129, 0.05);
+  --color-surface-hover: rgba(16, 185, 129, 0.1);
+  --shadow-color: rgba(16, 185, 129, 0.15);
+  --color-success: #047857;
+  --color-success-text: #047857;
+  --color-danger: #DC2626;
+  --color-danger-text: #DC2626;
+  --color-warning: #B45309;
 }
 
+/* ═══════════════════════════════════════════
+   COPPER STEEL — Industrial Rust × Dark Iron
+   Primary:  #EA580C  (Burnished Copper)
+   Cost:     #3B82F6  (Electric Blue — cool contrast)
+   Profit:   #22C55E  (Signal Green)
+   Danger:   #FF5A5F  (Warning Red)
+   Bg Dark:  #0A0805  (Dark Iron)
+═══════════════════════════════════════════ */
 html[data-theme="copper-steel"] {
   --color-primary: #EA580C;
   --color-primary-glow: rgba(234, 88, 12, 0.4);
   --color-primary-glow-hover: rgba(234, 88, 12, 0.6);
+  --color-warning: #3B82F6;
+  --color-warning-glow: rgba(59, 130, 246, 0.4);
+  --color-success: #22C55E;
+  --color-success-text: #4ADE80;
+  --color-success-glow: rgba(34, 197, 94, 0.35);
+  --color-danger: #FF5A5F;
+  --color-danger-text: #FCA5A5;
+  --color-danger-glow: rgba(255, 90, 95, 0.35);
+}
+html[data-theme="copper-steel"][data-mode="dark"] {
+  --color-bg-main: #0A0805;
+  --color-bg-card: #160F08;
+  --color-bg-card-hover: #1E150C;
+  --color-border: rgba(234, 88, 12, 0.2);
+  --color-text-main: #FFF4EE;
+  --color-text-secondary: #B87A5A;
+  --color-text-muted: #6B4A33;
+  --color-surface: rgba(234, 88, 12, 0.05);
+  --color-surface-hover: rgba(234, 88, 12, 0.1);
+  --shadow-color: rgba(234, 88, 12, 0.25);
+}
+html[data-theme="copper-steel"][data-mode="light"] {
+  --color-bg-main: #FFF5EE;
+  --color-bg-card: #FFFFFF;
+  --color-bg-card-hover: #FFF8F5;
+  --color-border: rgba(234, 88, 12, 0.18);
+  --color-text-main: #1A0800;
+  --color-text-secondary: #9A3A00;
+  --color-text-muted: #C07040;
+  --color-surface: rgba(234, 88, 12, 0.05);
+  --color-surface-hover: rgba(234, 88, 12, 0.1);
+  --shadow-color: rgba(234, 88, 12, 0.15);
+  --color-success: #15803D;
+  --color-success-text: #15803D;
+  --color-danger: #DC2626;
+  --color-danger-text: #DC2626;
+  --color-warning: #1D4ED8;
+}
+
+/* ═══════════════════════════════════════════
+   CYBERPUNK THEME — Neon Red × Electric Dark
+   Primary:  #FF003C  (Neon Red)
+   Income:   #FFE600  (Toxic Yellow / Cyber Gold)
+   Cost:     #00F5FF  (Electric Cyan)
+   Profit:   #39FF14  (Neon Green)
+   Danger:   #FF00A0  (Hot Magenta)
+   Bg Dark:  #0A0010  (Deep Void Purple-Black)
+═══════════════════════════════════════════ */
+html[data-theme="cyberpunk"] {
+  /* Accent */
+  --color-primary: #FF003C;
+  --color-primary-glow: rgba(255, 0, 60, 0.45);
+  --color-primary-glow-hover: rgba(255, 0, 60, 0.7);
+
+  /* Success = Neon Green */
+  --color-success: #39FF14;
+  --color-success-text: #39FF14;
+  --color-success-glow: rgba(57, 255, 20, 0.4);
+
+  /* Danger = Hot Magenta */
+  --color-danger: #FF00A0;
+  --color-danger-text: #FF00A0;
+  --color-danger-glow: rgba(255, 0, 160, 0.4);
+
+  /* Warning/Cost = Electric Cyan */
+  --color-warning: #00F5FF;
+  --color-warning-glow: rgba(0, 245, 255, 0.4);
+}
+
+html[data-theme="cyberpunk"][data-mode="dark"] {
+  /* Backgrounds — deep void purple-black */
+  --color-bg-main: #06000F;
+  --color-bg-card: #0F0520;
+  --color-bg-card-hover: #160830;
+
+  /* Borders — neon red tint */
+  --color-border: rgba(255, 0, 60, 0.18);
+
+  /* Text */
+  --color-text-main: #FFE9F0;
+  --color-text-secondary: #C084A0;
+  --color-text-muted: #7B4060;
+
+  /* Surfaces */
+  --color-surface: rgba(255, 0, 60, 0.04);
+  --color-surface-hover: rgba(255, 0, 60, 0.08);
+  --shadow-color: rgba(255, 0, 60, 0.3);
+}
+
+html[data-theme="cyberpunk"][data-mode="light"] {
+  /* Backgrounds — pale neon white */
+  --color-bg-main: #FFF0F4;
+  --color-bg-card: #FFFFFF;
+  --color-bg-card-hover: #FFF5F8;
+
+  /* Borders */
+  --color-border: rgba(255, 0, 60, 0.15);
+
+  /* Text */
+  --color-text-main: #1A0010;
+  --color-text-secondary: #7A0030;
+  --color-text-muted: #B05070;
+
+  /* Surfaces */
+  --color-surface: rgba(255, 0, 60, 0.04);
+  --color-surface-hover: rgba(255, 0, 60, 0.08);
+  --shadow-color: rgba(255, 0, 60, 0.15);
+
+  /* Success / Danger in light mode */
+  --color-success: #1A8C00;
+  --color-success-text: #1A8C00;
+  --color-danger: #CC0080;
+  --color-danger-text: #CC0080;
+  --color-warning: #007FA8;
 }
 
 /* APPEARANCE MODES */
