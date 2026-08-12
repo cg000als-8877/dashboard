@@ -10,7 +10,7 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { useKpiData } from '@/utils/useKpiData';
 import { format, parseISO } from 'date-fns';
-import { Clock, LayoutDashboard, Factory, BarChart3, Ship, Download, Calendar, FileText, History, Sun, Moon } from 'lucide-react';
+import { Clock, LayoutDashboard, Factory, BarChart3, Ship, Download, Calendar, FileText, History, Sun, Moon, RotateCw } from 'lucide-react';
 import { useMonth } from '@/components/providers/MonthProvider';
 import { useTheme } from '@/components/ThemeProvider';
 
@@ -29,11 +29,48 @@ export default function DashboardLayout({ children }) {
   const { selectedMonth, setSelectedMonth } = useMonth();
   const { theme, toggleTheme } = useTheme();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [startY, setStartY] = useState(0);
+  const [pullY, setPullY] = useState(0);
+
+  const handleTouchStart = (e) => {
+    const mainEl = e.currentTarget;
+    if (mainEl.scrollTop <= 2) {
+      setStartY(e.touches[0].clientY);
+    } else {
+      setStartY(0);
+    }
+  };
+
+  const handleTouchMove = (e) => {
+    if (startY === 0) return;
+    const currentY = e.touches[0].clientY;
+    const diff = currentY - startY;
+    if (diff > 0) {
+      setPullY(Math.min(diff * 0.45, 75));
+    }
+  };
+
+  const handleTouchEnd = () => {
+    if (pullY >= 45) {
+      triggerRefresh();
+    } else {
+      setPullY(0);
+    }
+    setStartY(0);
+  };
+
+  const triggerRefresh = () => {
+    setIsRefreshing(true);
+    setPullY(60);
+    setTimeout(() => {
+      window.location.reload();
+    }, 250);
+  };
 
   let datePart = "Loading...";
   if (dailyTrends && dailyTrends.length > 0) {
     const endDate = dailyTrends[dailyTrends.length - 1].date;
-    // Lowercase 'do' for day with suffix (e.g. 26th), 'MMMM' for full month name, 'yyyy' for year
     datePart = format(parseISO(endDate), 'do MMMM, yyyy');
   }
 
@@ -61,6 +98,15 @@ export default function DashboardLayout({ children }) {
             </Link>
             
             <div className="flex items-center gap-2 sm:gap-4 ml-auto relative z-50">
+              <button 
+                onClick={triggerRefresh}
+                className="p-1.5 rounded-md hover:bg-[var(--color-surface-hover)] transition-colors text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)]"
+                aria-label="Refresh application data"
+                title="Refresh Data"
+              >
+                <RotateCw size={17} className={isRefreshing ? "animate-spin text-[var(--color-primary)]" : ""} />
+              </button>
+
               <button 
                 onClick={toggleTheme}
                 className="p-1.5 rounded-md hover:bg-[var(--color-surface-hover)] transition-colors text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)]"
@@ -139,7 +185,28 @@ export default function DashboardLayout({ children }) {
         </header>
 
         {/* Main Content */}
-        <main className="flex-1 overflow-y-auto w-full pt-[115px] md:pt-8 p-4 md:p-8">
+        <main 
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+          className="flex-1 overflow-y-auto w-full pt-[115px] md:pt-8 p-4 md:p-8 relative"
+        >
+          {/* Pull-to-Refresh Visual Indicator (Mobile) */}
+          {pullY > 0 && (
+            <div 
+              className="md:hidden fixed top-[115px] left-1/2 -translate-x-1/2 z-40 transition-transform duration-75 flex items-center justify-center"
+              style={{ transform: `translate(-50%, ${pullY - 40}px)` }}
+            >
+              <div className="w-9 h-9 rounded-full bg-[var(--color-bg-card)] border border-[var(--color-border)] shadow-xl flex items-center justify-center text-[var(--color-primary)]">
+                <RotateCw 
+                  size={18} 
+                  className={isRefreshing ? "animate-spin" : ""}
+                  style={{ transform: isRefreshing ? undefined : `rotate(${pullY * 4}deg)` }} 
+                />
+              </div>
+            </div>
+          )}
+
           <div className="w-full h-full max-w-[1800px] mx-auto">
             {children}
           </div>

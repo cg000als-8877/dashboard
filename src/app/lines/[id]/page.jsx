@@ -1,10 +1,16 @@
-"use client";
-
-import React, { use } from 'react';
+import React from 'react';
 import { LineDetailsContent } from '@/components/dashboard/LineDetailsContent';
 
-export default function LineDetailsPage({ params }) {
-  const { id } = use(params); // 'a', 'b', 'c', or 'd'
-  
+export function generateStaticParams() {
+  return [
+    { id: 'a' },
+    { id: 'b' },
+    { id: 'c' },
+    { id: 'd' }
+  ];
+}
+
+export default async function LineDetailsPage({ params }) {
+  const { id } = await params;
   return <LineDetailsContent id={id} month="live" backUrl="/lines" />;
 }

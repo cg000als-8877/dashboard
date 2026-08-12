@@ -2,137 +2,316 @@
 
 export function NetworkLoader() {
   return (
-    <div className="gyro-page">
+    <div className="loader-wrapper">
       {/* Background Soft Ambient Glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-[var(--color-primary)]/10 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-[var(--color-primary)]/15 rounded-full blur-[90px] pointer-events-none" />
 
-      {/* 3D Gyroscopic Ring Container */}
-      <div className="gyro-container">
-        <div className="gyro-ring" />
-        <div className="gyro-ring" />
-        <div className="gyro-ring" />
-        <div className="gyro-ring" />
-        
-        {/* Center Text */}
-        <h3 className="gyro-text">
-          loading
-        </h3>
-      </div>
+      {/* Hourglass SVG Loader */}
+      <svg className="loader" viewBox="0 0 52 52">
+        <g className="loader__model">
+          {/* Motion lines */}
+          <path
+            className="loader__motion-thin"
+            d="M26,2 A24,24 0 1,1 26,50 A24,24 0 1,1 26,2"
+            fill="none"
+            stroke="var(--color-primary)"
+            strokeWidth="1.5"
+            strokeDasharray="153.94 153.94"
+            opacity="0.4"
+          />
+          <path
+            className="loader__motion-medium"
+            d="M26,2 A24,24 0 1,1 26,50 A24,24 0 1,1 26,2"
+            fill="none"
+            stroke="var(--color-primary)"
+            strokeWidth="2.5"
+            strokeDasharray="153.94 153.94"
+            opacity="0.7"
+          />
+          <path
+            className="loader__motion-thick"
+            d="M26,2 A24,24 0 1,1 26,50 A24,24 0 1,1 26,2"
+            fill="none"
+            stroke="var(--color-primary)"
+            strokeWidth="4"
+            strokeDasharray="153.94 153.94"
+          />
 
-      {/* 3D Gyroscopic Ring CSS matched with Website Colors */}
+          {/* Hourglass Body Group */}
+          <g transform="translate(13.75, 9.25)">
+            {/* Sand Mound Bottom */}
+            <path
+              className="loader__sand-mound-bottom"
+              d="M3,30.5 C3,26 9.25,23.5 12.25,23.5 C15.25,23.5 21.5,26 21.5,30.5 Z"
+              fill="var(--color-primary)"
+            />
+
+            {/* Sand Mound Top */}
+            <path
+              className="loader__sand-mound-top"
+              d="M3.5,3.5 L21,3.5 C18,8 14.5,11.5 12.25,12.5 C10,11.5 6.5,8 3.5,3.5 Z"
+              fill="var(--color-primary)"
+            />
+
+            {/* Sand Drop Stream */}
+            <path
+              className="loader__sand-drop"
+              d="M12.25,12.5 L12.25,24.5"
+              stroke="var(--color-primary)"
+              strokeWidth="2"
+              strokeDasharray="107 107"
+              strokeLinecap="round"
+              fill="none"
+            />
+
+            {/* Glass Frame Contour */}
+            <path
+              d="M2.5,2 L22,2 C22,2 22,3 20.5,5 C18.5,7.5 14,11.5 13.5,13.5 C13,15.5 13,18 13.5,19.5 C14,21.5 18.5,25.5 20.5,28 C22,30 22,31 22,31 L2.5,31 C2.5,31 2.5,30 4,28 C6,25.5 10.5,21.5 11,19.5 C11.5,18 11.5,15.5 11,13.5 C10.5,11.5 6,7.5 4,5 C2.5,3 2.5,2 2.5,2 Z"
+              fill="none"
+              stroke="var(--color-text-main)"
+              strokeWidth="2"
+              strokeLinejoin="round"
+            />
+
+            {/* Glare Highlights */}
+            <path
+              className="loader__glare-top"
+              d="M5.5,5 C7,3.5 10,3.5 10,3.5"
+              fill="none"
+              stroke="rgba(255,255,255,0.8)"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+            />
+            <path
+              className="loader__glare-bottom"
+              d="M5.5,28.5 C7,30 10,30 10,30"
+              fill="none"
+              stroke="rgba(255,255,255,0.8)"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+            />
+          </g>
+        </g>
+      </svg>
+
       <style jsx>{`
-        .gyro-page {
+        .loader-wrapper {
           display: flex;
           justify-content: center;
           align-items: center;
-          min-height: 60vh;
+          min-height: 70vh;
           width: 100%;
           position: relative;
           z-index: 20;
           user-select: none;
         }
 
-        .gyro-container {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          position: relative;
-          width: 220px;
-          height: 220px;
+        .loader {
+          --dur: 2s;
+          display: block;
+          margin: auto;
+          width: 8em;
+          height: 8em;
+          filter: drop-shadow(0 0 16px var(--color-primary-glow));
         }
 
-        .gyro-text {
-          color: var(--color-primary, #3b82f6);
-          font-size: 0.85rem;
-          font-weight: 900;
-          letter-spacing: 0.35em;
-          text-transform: uppercase;
-          position: absolute;
-          z-index: 10;
-          animation: pulse 1.8s ease-in-out infinite;
-          filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.6));
+        @media (min-width: 768px) {
+          .loader {
+            width: 11em;
+            height: 11em;
+          }
         }
 
-        .gyro-ring {
-          width: 190px;
-          height: 190px;
-          border: 1px solid transparent;
-          border-radius: 50%;
-          position: absolute;
+        .loader__glare-top,
+        .loader__glare-bottom,
+        .loader__model,
+        .loader__motion-thick,
+        .loader__motion-medium,
+        .loader__motion-thin,
+        .loader__sand-drop,
+        .loader__sand-mound-top,
+        .loader__sand-mound-bottom {
+          animation-duration: var(--dur);
+          animation-timing-function: cubic-bezier(0.83, 0, 0.17, 1);
+          animation-iteration-count: infinite;
         }
 
-        /* Ring 1 - Electric Blue */
-        .gyro-ring:nth-child(1) {
-          border-bottom: 6px solid #3b82f6;
-          filter: drop-shadow(0 0 8px #3b82f6);
-          animation: rotate1 2s linear infinite;
+        .loader__glare-top {
+          animation-name: glare-top;
         }
 
-        @keyframes rotate1 {
+        .loader__glare-bottom {
+          animation-name: glare-bottom;
+        }
+
+        .loader__model {
+          animation-name: loader-flip;
+          transform-origin: 26px 26px;
+        }
+
+        .loader__motion-thick,
+        .loader__motion-medium,
+        .loader__motion-thin {
+          transform-origin: 26px 26px;
+        }
+
+        .loader__motion-thick {
+          animation-name: motion-thick;
+        }
+
+        .loader__motion-medium {
+          animation-name: motion-medium;
+        }
+
+        .loader__motion-thin {
+          animation-name: motion-thin;
+        }
+
+        .loader__sand-drop {
+          animation-name: sand-drop;
+        }
+
+        .loader__sand-mound-top {
+          animation-name: sand-mound-top;
+        }
+
+        .loader__sand-mound-bottom {
+          animation-name: sand-mound-bottom;
+          transform-origin: 12.25px 31.5px;
+        }
+
+        @keyframes loader-flip {
           from {
-            transform: rotateX(50deg) rotateZ(110deg);
+            transform: rotate(-180deg);
           }
+          24%,
           to {
-            transform: rotateX(50deg) rotateZ(470deg);
+            transform: rotate(0deg);
           }
         }
 
-        /* Ring 2 - Cyan Glow */
-        .gyro-ring:nth-child(2) {
-          border-bottom: 6px solid #06b6d4;
-          filter: drop-shadow(0 0 8px #06b6d4);
-          animation: rotate2 2s linear infinite;
-        }
-
-        @keyframes rotate2 {
+        @keyframes glare-top {
           from {
-            transform: rotateX(20deg) rotateY(50deg) rotateZ(20deg);
+            stroke: rgba(255, 255, 255, 0);
           }
+          24%,
           to {
-            transform: rotateX(20deg) rotateY(50deg) rotateZ(380deg);
+            stroke: rgba(255, 255, 255, 0.8);
           }
         }
 
-        /* Ring 3 - Neon Purple / Violet */
-        .gyro-ring:nth-child(3) {
-          border-bottom: 6px solid #8b5cf6;
-          filter: drop-shadow(0 0 8px #8b5cf6);
-          animation: rotate3 2s linear infinite;
-        }
-
-        @keyframes rotate3 {
+        @keyframes glare-bottom {
           from {
-            transform: rotateX(40deg) rotateY(130deg) rotateZ(450deg);
+            stroke: rgba(255, 255, 255, 0.8);
           }
+          24%,
           to {
-            transform: rotateX(40deg) rotateY(130deg) rotateZ(90deg);
+            stroke: rgba(255, 255, 255, 0);
           }
         }
 
-        /* Ring 4 - Sky Blue */
-        .gyro-ring:nth-child(4) {
-          border-bottom: 6px solid #60a5fa;
-          filter: drop-shadow(0 0 8px #60a5fa);
-          animation: rotate4 2s linear infinite;
-        }
-
-        @keyframes rotate4 {
+        @keyframes motion-thick {
           from {
-            transform: rotateX(70deg) rotateZ(270deg);
+            animation-timing-function: cubic-bezier(0.33, 0, 0.67, 0);
+            stroke: rgba(255, 255, 255, 0);
+            stroke-dashoffset: 153.94;
+            transform: rotate(0.67turn);
           }
+          20% {
+            animation-timing-function: cubic-bezier(0.33, 1, 0.67, 1);
+            stroke: var(--color-primary);
+            stroke-dashoffset: 141.11;
+            transform: rotate(1turn);
+          }
+          40%,
           to {
-            transform: rotateX(70deg) rotateZ(630deg);
+            stroke: rgba(255, 255, 255, 0);
+            stroke-dashoffset: 153.94;
+            transform: rotate(1.33turn);
           }
         }
 
-        @keyframes pulse {
-          0%, 100% {
-            opacity: 0.6;
-            transform: scale(0.96);
+        @keyframes motion-medium {
+          from,
+          8% {
+            animation-timing-function: cubic-bezier(0.33, 0, 0.67, 0);
+            stroke: rgba(255, 255, 255, 0);
+            stroke-dashoffset: 153.94;
+            transform: rotate(0.5turn);
           }
-          50% {
-            opacity: 1;
-            transform: scale(1.04);
+          20% {
+            animation-timing-function: cubic-bezier(0.33, 1, 0.67, 1);
+            stroke: var(--color-primary-glow, #60a5fa);
+            stroke-dashoffset: 147.53;
+            transform: rotate(0.83turn);
+          }
+          32%,
+          to {
+            stroke: rgba(255, 255, 255, 0);
+            stroke-dashoffset: 153.94;
+            transform: rotate(1.17turn);
+          }
+        }
+
+        @keyframes motion-thin {
+          from,
+          4% {
+            animation-timing-function: cubic-bezier(0.33, 0, 0.67, 0);
+            stroke: rgba(255, 255, 255, 0);
+            stroke-dashoffset: 153.94;
+            transform: rotate(0.33turn);
+          }
+          24% {
+            animation-timing-function: cubic-bezier(0.33, 1, 0.67, 1);
+            stroke: var(--color-text-secondary, #9ba7b4);
+            stroke-dashoffset: 134.7;
+            transform: rotate(0.67turn);
+          }
+          44%,
+          to {
+            stroke: rgba(255, 255, 255, 0);
+            stroke-dashoffset: 153.94;
+            transform: rotate(1turn);
+          }
+        }
+
+        @keyframes sand-drop {
+          from,
+          10% {
+            animation-timing-function: cubic-bezier(0.12, 0, 0.39, 0);
+            stroke-dashoffset: 1;
+          }
+          70%,
+          to {
+            stroke-dashoffset: -107;
+          }
+        }
+
+        @keyframes sand-mound-top {
+          from,
+          10% {
+            animation-timing-function: linear;
+            transform: translate(0, 0);
+          }
+          15% {
+            animation-timing-function: cubic-bezier(0.12, 0, 0.39, 0);
+            transform: translate(0, 1.5px);
+          }
+          51%,
+          to {
+            transform: translate(0, 13px);
+          }
+        }
+
+        @keyframes sand-mound-bottom {
+          from,
+          31% {
+            animation-timing-function: cubic-bezier(0.61, 1, 0.88, 1);
+            transform: scale(1, 0);
+          }
+          56%,
+          to {
+            transform: scale(1, 1);
           }
         }
       `}</style>
