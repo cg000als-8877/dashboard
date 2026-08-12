@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Card } from '@/components/ui/Card';
 import { Clock, Calendar as CalendarIcon, RefreshCw, AlertTriangle, Sparkles, TrendingUp, Activity, ChevronLeft, ChevronRight, ChevronDown } from 'lucide-react';
 import { cn } from '@/components/layout/Sidebar';
@@ -16,6 +16,7 @@ const hourlyCache = {
 };
 
 export default function HourlyPage() {
+  const dateInputRef = useRef(null);
   const [availableDates, setAvailableDates] = useState(hourlyCache.dates || []);
   const [selectedDate, setSelectedDate] = useState(hourlyCache.dates ? hourlyCache.dates[0] : '');
   const [data, setData] = useState(selectedDate && hourlyCache.data[selectedDate] ? hourlyCache.data[selectedDate] : null);
@@ -138,60 +139,47 @@ export default function HourlyPage() {
           </div>
           
           <div className="relative group w-full md:w-auto z-30">
-            <button
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              className="w-full md:w-auto flex items-center justify-center md:justify-start gap-2 bg-[var(--color-bg-card)] border border-[var(--color-border)] text-[var(--color-text-main)] py-2.5 md:py-3 px-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/50 transition-all duration-200 hover:bg-[var(--color-surface)] hover:border-[var(--color-primary)]/30 font-semibold cursor-pointer shadow-sm active:scale-[0.98]"
-            >
-              <CalendarIcon className="h-4 w-4 md:h-5 md:w-5 text-[var(--color-primary)] opacity-70 group-hover:opacity-100 transition-opacity flex-shrink-0" />
-              <span className="truncate">
-                {selectedDate 
-                  ? selectedDate === availableDates[0] ? `Today (${formatDate(selectedDate)})` : formatDate(selectedDate)
-                  : 'Select Date'}
-              </span>
-              <svg 
-                className={cn(
-                  "h-4 w-4 text-[var(--color-text-muted)] transition-transform duration-300 ml-1 md:ml-4 flex-shrink-0",
-                  isDropdownOpen ? "rotate-180 text-[var(--color-primary)]" : "group-hover:text-[var(--color-primary)]"
-                )} 
-                fill="none" stroke="currentColor" viewBox="0 0 24 24"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-              </svg>
-            </button>
-
             <div 
-              className={cn(
-                "absolute top-full mt-2 w-full md:min-w-[200px] left-0 md:right-0 md:left-auto bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-xl shadow-xl overflow-hidden transition-all duration-300 origin-top",
-                isDropdownOpen ? "opacity-100 scale-y-100 pointer-events-auto translate-y-0" : "opacity-0 scale-y-95 pointer-events-none -translate-y-2"
-              )}
+              onClick={() => {
+                if (dateInputRef.current) {
+                  try {
+                    dateInputRef.current.showPicker();
+                  } catch (e) {
+                    dateInputRef.current.focus();
+                  }
+                }
+              }}
+              className="w-full md:w-auto flex items-center justify-between md:justify-start gap-3 bg-[var(--color-bg-card)] border border-[var(--color-border)] text-[var(--color-text-main)] py-2.5 md:py-3 px-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/50 transition-all duration-200 hover:bg-[var(--color-surface)] hover:border-[var(--color-primary)]/30 font-semibold cursor-pointer shadow-sm active:scale-[0.98] relative overflow-hidden"
             >
-              <div className="max-h-[60vh] overflow-y-auto hide-scrollbar py-1">
-                {availableDates.map(date => (
-                  <button
-                    key={date}
-                    onClick={() => {
-                      setSelectedDate(date);
-                      setIsDropdownOpen(false);
-                    }}
-                    className={cn(
-                      "w-full text-center md:text-left px-4 py-3.5 md:py-3 text-sm font-medium transition-colors hover:bg-[var(--color-surface)]",
-                      selectedDate === date 
-                        ? "text-[var(--color-primary)] bg-[var(--color-primary)]/10" 
-                        : "text-[var(--color-text-main)]"
-                    )}
-                  >
-                    {date === availableDates[0] ? `Today (${formatDate(date)})` : formatDate(date)}
-                  </button>
-                ))}
+              <div className="flex items-center gap-2.5 min-w-0">
+                <CalendarIcon className="h-4 w-4 md:h-5 md:w-5 text-[var(--color-primary)] opacity-80 group-hover:opacity-100 transition-opacity flex-shrink-0" />
+                <span className="truncate text-xs md:text-sm font-semibold">
+                  {selectedDate 
+                    ? selectedDate === availableDates[0] ? `Today (${formatDate(selectedDate)})` : formatDate(selectedDate)
+                    : 'Select Date'}
+                </span>
               </div>
-            </div>
-            
-            {isDropdownOpen && (
-              <div 
-                className="fixed inset-0 z-[-1]" 
-                onClick={() => setIsDropdownOpen(false)}
+
+              <div className="flex items-center gap-1 bg-[var(--color-primary)]/10 text-[var(--color-primary)] border border-[var(--color-primary)]/20 px-2.5 py-1 rounded-lg shrink-0">
+                <span className="text-[10px] uppercase font-bold tracking-wider">
+                  Pick Date
+                </span>
+              </div>
+
+              <input 
+                ref={dateInputRef}
+                type="date"
+                value={selectedDate || ''}
+                min={availableDates.length > 0 ? availableDates[availableDates.length - 1] : ''}
+                max={availableDates.length > 0 ? availableDates[0] : ''}
+                onChange={(e) => {
+                  if (e.target.value) {
+                    setSelectedDate(e.target.value);
+                  }
+                }}
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
               />
-            )}
+            </div>
           </div>
         </div>
 
