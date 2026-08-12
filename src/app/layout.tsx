@@ -4,6 +4,7 @@ import DashboardLayout from "@/components/layout/DashboardLayout";
 import { MonthProvider } from "@/components/providers/MonthProvider";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { ClientAutoRefresh } from "@/components/providers/ClientAutoRefresh";
+import { ThemePicker } from "@/components/ui/ThemePicker";
 import { Suspense } from "react";
 
 const inter = Inter({ 
@@ -14,8 +15,10 @@ const inter = Inter({
 export const metadata = {
   title: "Byzid Apparels (Pvt) Ltd",
   description: "Dashboard for Factory Operations",
+  manifest: "/manifest.json",
   icons: {
-    icon: '/logo.jpg'
+    icon: '/logo.png',
+    apple: '/logo.png'
   }
 };
 
@@ -30,6 +33,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <DashboardLayout>
                 {children}
               </DashboardLayout>
+              <ThemePicker />
             </MonthProvider>
           </ThemeProvider>
         </Suspense>

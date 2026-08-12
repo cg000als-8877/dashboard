@@ -1,0 +1,24 @@
+{
+  "name": "BYZID APPARELS PVT LTD",
+  "short_name": "BYZID APPARELS",
+  "description": "Production & Telemetry Dashboard for BYZID APPARELS PVT LTD",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0B0F17",
+  "theme_color": "#0B0F17",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

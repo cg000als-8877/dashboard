@@ -72,6 +72,114 @@
   --shadow-color: rgba(15, 23, 42, 0.15);
 }
 
+/* ═══ Theme: Emerald (Dark) ═══ */
+.theme-emerald {
+  --color-bg-main: #0A1410;
+  --color-bg-card: #111F18;
+  --color-bg-card-hover: #162A20;
+  --color-border: rgba(255,255,255,0.06);
+  --color-primary: #34D399;
+  --color-on-primary: #0A1410;
+  --color-success: #10B981;
+  --color-danger: #F87171;
+  --color-warning: #FBBF24;
+  --color-text-main: #F0FDF4;
+  --color-text-secondary: #86EFAC;
+  --color-text-muted: #4ADE80;
+  --color-success-text: #34D399;
+  --color-danger-text: #FCA5A5;
+  --color-primary-glow: rgba(52, 211, 153, 0.35);
+  --color-primary-glow-hover: rgba(52, 211, 153, 0.55);
+  --color-success-glow: rgba(16, 185, 129, 0.35);
+  --color-danger-glow: rgba(248, 113, 113, 0.35);
+  --color-warning-glow: rgba(251, 191, 36, 0.35);
+  --shadow-text: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+  --color-surface: rgba(0, 0, 0, 0.2);
+  --color-surface-hover: rgba(0, 0, 0, 0.35);
+  --shadow-color: rgba(0, 0, 0, 0.5);
+}
+
+/* Emerald Light */
+.theme-emerald.light-mode {
+  --color-bg-main: #ECFDF5;
+  --color-bg-card: #FFFFFF;
+  --color-bg-card-hover: #F0FDF4;
+  --color-border: rgba(6, 78, 59, 0.08);
+  --color-primary: #059669;
+  --color-on-primary: #FFFFFF;
+  --color-success: #10B981;
+  --color-danger: #EF4444;
+  --color-warning: #F59E0B;
+  --color-text-main: #064E3B;
+  --color-text-secondary: #047857;
+  --color-text-muted: #6EE7B7;
+  --color-success-text: #047857;
+  --color-danger-text: #B91C1C;
+  --color-primary-glow: rgba(5, 150, 105, 0.12);
+  --color-primary-glow-hover: rgba(5, 150, 105, 0.2);
+  --color-success-glow: rgba(16, 185, 129, 0.12);
+  --color-danger-glow: rgba(239, 68, 68, 0.12);
+  --color-warning-glow: rgba(245, 158, 11, 0.12);
+  --shadow-text: drop-shadow(0 1px 2px rgba(6, 78, 59, 0.05));
+  --color-surface: rgba(6, 78, 59, 0.03);
+  --color-surface-hover: rgba(6, 78, 59, 0.06);
+  --shadow-color: rgba(6, 78, 59, 0.12);
+}
+
+/* ═══ Theme: Rose (Dark) ═══ */
+.theme-rose {
+  --color-bg-main: #1A0A10;
+  --color-bg-card: #241318;
+  --color-bg-card-hover: #2E1A20;
+  --color-border: rgba(255,255,255,0.06);
+  --color-primary: #FB7185;
+  --color-on-primary: #1A0A10;
+  --color-success: #34D399;
+  --color-danger: #F87171;
+  --color-warning: #FBBF24;
+  --color-text-main: #FFF1F2;
+  --color-text-secondary: #FDA4AF;
+  --color-text-muted: #F9A8D4;
+  --color-success-text: #34D399;
+  --color-danger-text: #FCA5A5;
+  --color-primary-glow: rgba(251, 113, 133, 0.35);
+  --color-primary-glow-hover: rgba(251, 113, 133, 0.55);
+  --color-success-glow: rgba(52, 211, 153, 0.35);
+  --color-danger-glow: rgba(248, 113, 113, 0.35);
+  --color-warning-glow: rgba(251, 191, 36, 0.35);
+  --shadow-text: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+  --color-surface: rgba(0, 0, 0, 0.2);
+  --color-surface-hover: rgba(0, 0, 0, 0.35);
+  --shadow-color: rgba(0, 0, 0, 0.5);
+}
+
+/* Rose Light */
+.theme-rose.light-mode {
+  --color-bg-main: #FFF1F2;
+  --color-bg-card: #FFFFFF;
+  --color-bg-card-hover: #FFF5F6;
+  --color-border: rgba(136, 19, 55, 0.08);
+  --color-primary: #E11D48;
+  --color-on-primary: #FFFFFF;
+  --color-success: #10B981;
+  --color-danger: #EF4444;
+  --color-warning: #F59E0B;
+  --color-text-main: #881337;
+  --color-text-secondary: #9F1239;
+  --color-text-muted: #FDA4AF;
+  --color-success-text: #047857;
+  --color-danger-text: #B91C1C;
+  --color-primary-glow: rgba(225, 29, 72, 0.12);
+  --color-primary-glow-hover: rgba(225, 29, 72, 0.2);
+  --color-success-glow: rgba(16, 185, 129, 0.12);
+  --color-danger-glow: rgba(239, 68, 68, 0.12);
+  --color-warning-glow: rgba(245, 158, 11, 0.12);
+  --shadow-text: drop-shadow(0 1px 2px rgba(136, 19, 55, 0.05));
+  --color-surface: rgba(136, 19, 55, 0.03);
+  --color-surface-hover: rgba(136, 19, 55, 0.06);
+  --shadow-color: rgba(136, 19, 55, 0.12);
+}
+
 body {
   font-family: var(--font-sans);
   margin: 0;

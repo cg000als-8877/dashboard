@@ -4,25 +4,32 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 
 const ThemeContext = createContext();
 
+const THEMES = ['oceanic', 'emerald', 'rose'];
+
 export function ThemeProvider({ children }) {
   const [theme, setTheme] = useState('dark');
+  const [colorTheme, setColorThemeState] = useState('oceanic');
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-    const storedTheme = localStorage.getItem('theme');
-    
+    const storedMode = localStorage.getItem('theme');
+    const storedColor = localStorage.getItem('colorTheme');
+
     const getSystemTheme = () => window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
 
-    if (storedTheme) {
-      setTheme(storedTheme);
+    if (storedMode) {
+      setTheme(storedMode);
     } else {
       setTheme(getSystemTheme());
     }
 
+    if (storedColor && THEMES.includes(storedColor)) {
+      setColorThemeState(storedColor);
+    }
+
     const mediaQuery = window.matchMedia('(prefers-color-scheme: light)');
     const handleChange = (e) => {
-      // Only auto-update if the user hasn't explicitly set a preference
       if (!localStorage.getItem('theme')) {
         setTheme(e.matches ? 'light' : 'dark');
       }
@@ -38,14 +45,22 @@ export function ThemeProvider({ children }) {
   }, []);
 
   useEffect(() => {
-    if (mounted) {
-      if (theme === 'light') {
-        document.documentElement.classList.add('light-mode');
-      } else {
-        document.documentElement.classList.remove('light-mode');
-      }
+    if (!mounted) return;
+    const el = document.documentElement;
+    
+    // Mode: light or dark
+    if (theme === 'light') {
+      el.classList.add('light-mode');
+    } else {
+      el.classList.remove('light-mode');
     }
-  }, [theme, mounted]);
+
+    // Color theme: remove all, then add current
+    THEMES.forEach(t => el.classList.remove(`theme-${t}`));
+    if (colorTheme !== 'oceanic') {
+      el.classList.add(`theme-${colorTheme}`);
+    }
+  }, [theme, colorTheme, mounted]);
 
   const toggleTheme = () => {
     setTheme(prev => {
@@ -55,8 +70,15 @@ export function ThemeProvider({ children }) {
     });
   };
 
+  const setColorTheme = (name) => {
+    if (THEMES.includes(name)) {
+      setColorThemeState(name);
+      localStorage.setItem('colorTheme', name);
+    }
+  };
+
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+    <ThemeContext.Provider value={{ theme, toggleTheme, colorTheme, setColorTheme }}>
       {mounted ? children : <div style={{ visibility: 'hidden' }}>{children}</div>}
     </ThemeContext.Provider>
   );
