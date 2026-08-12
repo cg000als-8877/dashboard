@@ -4,7 +4,6 @@ import DashboardLayout from "@/components/layout/DashboardLayout";
 import { MonthProvider } from "@/components/providers/MonthProvider";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { ClientAutoRefresh } from "@/components/providers/ClientAutoRefresh";
-import { ThemePicker } from "@/components/ui/ThemePicker";
 import { Suspense } from "react";
 
 const inter = Inter({ 
@@ -33,7 +32,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <DashboardLayout>
                 {children}
               </DashboardLayout>
-              <ThemePicker />
             </MonthProvider>
           </ThemeProvider>
         </Suspense>

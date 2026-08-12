@@ -4,28 +4,20 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 
 const ThemeContext = createContext();
 
-const THEMES = ['oceanic', 'emerald', 'rose'];
-
 export function ThemeProvider({ children }) {
   const [theme, setTheme] = useState('dark');
-  const [colorTheme, setColorThemeState] = useState('oceanic');
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-    const storedMode = localStorage.getItem('theme');
-    const storedColor = localStorage.getItem('colorTheme');
-
+    const storedTheme = localStorage.getItem('theme');
+    
     const getSystemTheme = () => window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
 
-    if (storedMode) {
-      setTheme(storedMode);
+    if (storedTheme) {
+      setTheme(storedTheme);
     } else {
       setTheme(getSystemTheme());
-    }
-
-    if (storedColor && THEMES.includes(storedColor)) {
-      setColorThemeState(storedColor);
     }
 
     const mediaQuery = window.matchMedia('(prefers-color-scheme: light)');
@@ -45,22 +37,14 @@ export function ThemeProvider({ children }) {
   }, []);
 
   useEffect(() => {
-    if (!mounted) return;
-    const el = document.documentElement;
-    
-    // Mode: light or dark
-    if (theme === 'light') {
-      el.classList.add('light-mode');
-    } else {
-      el.classList.remove('light-mode');
+    if (mounted) {
+      if (theme === 'light') {
+        document.documentElement.classList.add('light-mode');
+      } else {
+        document.documentElement.classList.remove('light-mode');
+      }
     }
-
-    // Color theme: remove all, then add current
-    THEMES.forEach(t => el.classList.remove(`theme-${t}`));
-    if (colorTheme !== 'oceanic') {
-      el.classList.add(`theme-${colorTheme}`);
-    }
-  }, [theme, colorTheme, mounted]);
+  }, [theme, mounted]);
 
   const toggleTheme = () => {
     setTheme(prev => {
@@ -70,15 +54,8 @@ export function ThemeProvider({ children }) {
     });
   };
 
-  const setColorTheme = (name) => {
-    if (THEMES.includes(name)) {
-      setColorThemeState(name);
-      localStorage.setItem('colorTheme', name);
-    }
-  };
-
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme, colorTheme, setColorTheme }}>
+    <ThemeContext.Provider value={{ theme, toggleTheme }}>
       {mounted ? children : <div style={{ visibility: 'hidden' }}>{children}</div>}
     </ThemeContext.Provider>
   );
