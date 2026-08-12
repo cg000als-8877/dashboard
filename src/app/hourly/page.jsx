@@ -2,12 +2,13 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { Card } from '@/components/ui/Card';
-import { Clock, Calendar as CalendarIcon, RefreshCw, AlertTriangle, Sparkles, TrendingUp, Activity, ChevronLeft, ChevronRight, ChevronDown } from 'lucide-react';
+import { Clock, Calendar as CalendarIcon, RefreshCw, AlertTriangle, Sparkles, TrendingUp, Activity, ChevronLeft, ChevronRight, ChevronDown, Calendar, Flag, ShieldCheck } from 'lucide-react';
 import { cn } from '@/components/layout/Sidebar';
 
 import { format, parseISO } from 'date-fns';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { NetworkLoader } from '@/components/ui/NetworkLoader';
+import { getHolidayInfo } from '@/utils/holidays';
 
 // In-memory cache for instant page switching
 const hourlyCache = {
@@ -22,8 +23,10 @@ export default function HourlyPage() {
   const [data, setData] = useState(selectedDate && hourlyCache.data[selectedDate] ? hourlyCache.data[selectedDate] : null);
   const [loading, setLoading] = useState(!data);
   const [mobileLineIndex, setMobileLineIndex] = useState(0);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isFactoryTableExpanded, setIsFactoryTableExpanded] = useState(false);
+  const [isDatePickerModalOpen, setIsDatePickerModalOpen] = useState(false);
+
+  const holidayInfo = getHolidayInfo(selectedDate);
 
   useEffect(() => {
     let timeoutId;
@@ -123,14 +126,20 @@ export default function HourlyPage() {
     return <NetworkLoader />;
   }
 
+  const isDataEmpty = !data || !data.lines || data.lines.length === 0 || (
+    data.lines.every(l => !l.actual || l.actual.every(a => a === 0)) &&
+    data.lines.every(l => !l.target || l.target.every(t => t === 0))
+  );
+
   return (
     <div className="min-h-screen bg-[var(--color-bg-main)] p-4 md:p-6 xl:p-8">
       <div className="w-full space-y-8">
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex flex-col items-center md:items-start text-center md:text-left">
-            <h1 className="text-xl md:text-5xl font-bold tracking-tighter uppercase mb-1 md:mb-2 bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] to-[var(--color-text-muted)]">
-              Hourly Tracking {selectedDate && <span className="opacity-80">- {format(parseISO(selectedDate), 'dd MMM, yy')}</span>}
+            <h1 className="text-xl md:text-5xl font-bold tracking-tighter uppercase mb-1 md:mb-2 bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] to-[var(--color-text-muted)] flex items-center gap-3">
+              Hourly Tracking 
+              {selectedDate && <span className="opacity-80">- {format(parseISO(selectedDate), 'dd MMM, yy')}</span>}
             </h1>
             <p className="text-[var(--color-text-secondary)] text-[10px] md:text-base tracking-wide font-medium flex items-center justify-center md:justify-start gap-1.5 md:gap-2">
               <Clock className="hidden md:block md:w-4 md:h-4 text-[var(--color-primary)]" />
@@ -138,17 +147,10 @@ export default function HourlyPage() {
             </p>
           </div>
           
-          <div className="relative group w-full md:w-auto z-30">
+          <div className="relative group w-full md:w-auto z-30 flex flex-col md:flex-row items-center gap-2">
+            {/* Custom Date Picker Button & Input */}
             <div 
-              onClick={() => {
-                if (dateInputRef.current) {
-                  try {
-                    dateInputRef.current.showPicker();
-                  } catch (e) {
-                    dateInputRef.current.focus();
-                  }
-                }
-              }}
+              onClick={() => setIsDatePickerModalOpen(true)}
               className="w-full md:w-auto flex items-center justify-between md:justify-start gap-3 bg-[var(--color-bg-card)] border border-[var(--color-border)] text-[var(--color-text-main)] py-2.5 md:py-3 px-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/50 transition-all duration-200 hover:bg-[var(--color-surface)] hover:border-[var(--color-primary)]/30 font-semibold cursor-pointer shadow-sm active:scale-[0.98] relative overflow-hidden"
             >
               <div className="flex items-center gap-2.5 min-w-0">
@@ -158,6 +160,11 @@ export default function HourlyPage() {
                     ? selectedDate === availableDates[0] ? `Today (${formatDate(selectedDate)})` : formatDate(selectedDate)
                     : 'Select Date'}
                 </span>
+                {holidayInfo && (
+                  <span className="text-[9px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                    {holidayInfo.icon} {holidayInfo.isFriday ? 'Friday' : 'Holiday'}
+                  </span>
+                )}
               </div>
 
               <div className="flex items-center gap-1 bg-[var(--color-primary)]/10 text-[var(--color-primary)] border border-[var(--color-primary)]/20 px-2.5 py-1 rounded-lg shrink-0">
@@ -165,30 +172,158 @@ export default function HourlyPage() {
                   Pick Date
                 </span>
               </div>
-
-              <input 
-                ref={dateInputRef}
-                type="date"
-                value={selectedDate || ''}
-                min={availableDates.length > 0 ? availableDates[availableDates.length - 1] : ''}
-                max={availableDates.length > 0 ? availableDates[0] : ''}
-                onChange={(e) => {
-                  if (e.target.value) {
-                    setSelectedDate(e.target.value);
-                  }
-                }}
-                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-              />
             </div>
           </div>
         </div>
 
-        {!data || !data.lines || data.lines.length === 0 ? (
-           <Card className="flex flex-col items-center justify-center p-12 text-center">
-             <AlertTriangle className="w-12 h-12 text-amber-500 mb-4 opacity-80" />
-             <h3 className="text-xl font-bold mb-2">No Hourly Data Available</h3>
-             <p className="text-[var(--color-text-secondary)]">We couldn't find hourly records for {selectedDate}.</p>
-           </Card>
+        {/* Quick Date Modal & Color Coded List */}
+        {isDatePickerModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md animate-[fade-in_0.2s_ease-out]">
+            <div className="bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl animate-[scale-up_0.25s_ease-out]">
+              <div className="p-4 border-b border-[var(--color-border)] flex items-center justify-between bg-[var(--color-surface)]/50">
+                <div className="flex items-center gap-2">
+                  <Calendar className="w-5 h-5 text-[var(--color-primary)]" />
+                  <h3 className="font-bold text-base text-[var(--color-text-main)] uppercase tracking-wider">Select Production Date</h3>
+                </div>
+                <button 
+                  onClick={() => setIsDatePickerModalOpen(false)}
+                  className="p-1.5 rounded-lg hover:bg-[var(--color-surface)] text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] transition-colors"
+                >
+                  ✕
+                </button>
+              </div>
+
+              {/* Native Calendar Trigger Header */}
+              <div className="p-4 border-b border-[var(--color-border)] bg-[var(--color-bg-card)] flex items-center justify-between">
+                <div className="text-xs text-[var(--color-text-secondary)] font-medium">
+                  Use Device Calendar or Select from Below:
+                </div>
+                <div className="relative">
+                  <button 
+                    onClick={() => {
+                      if (dateInputRef.current) {
+                        try { dateInputRef.current.showPicker(); } catch (e) { dateInputRef.current.focus(); }
+                      }
+                    }}
+                    className="px-3 py-1.5 bg-[var(--color-primary)] text-white text-xs font-bold rounded-lg shadow-sm hover:opacity-90 transition-opacity"
+                  >
+                    Open Calendar Sheet
+                  </button>
+                  <input 
+                    ref={dateInputRef}
+                    type="date"
+                    value={selectedDate || ''}
+                    min={availableDates.length > 0 ? availableDates[availableDates.length - 1] : ''}
+                    max={availableDates.length > 0 ? availableDates[0] : ''}
+                    onChange={(e) => {
+                      if (e.target.value) {
+                        setSelectedDate(e.target.value);
+                        setIsDatePickerModalOpen(false);
+                      }
+                    }}
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                  />
+                </div>
+              </div>
+
+              {/* Color Coded Date List */}
+              <div className="max-h-[60vh] overflow-y-auto p-2 space-y-1.5 hide-scrollbar">
+                {availableDates.map((date) => {
+                  const hInfo = getHolidayInfo(date);
+                  const isSelected = selectedDate === date;
+                  const isToday = date === availableDates[0];
+
+                  return (
+                    <button
+                      key={date}
+                      onClick={() => {
+                        setSelectedDate(date);
+                        setIsDatePickerModalOpen(false);
+                      }}
+                      className={cn(
+                        "w-full text-left px-4 py-3 rounded-xl flex items-center justify-between transition-all font-medium border",
+                        isSelected 
+                          ? "bg-[var(--color-primary)]/15 text-[var(--color-primary)] border-[var(--color-primary)]/40 shadow-sm"
+                          : hInfo
+                            ? hInfo.isFriday 
+                              ? "bg-rose-500/10 text-rose-300 border-rose-500/20 hover:bg-rose-500/20" 
+                              : "bg-amber-500/10 text-amber-300 border-amber-500/30 hover:bg-amber-500/20"
+                            : "bg-[var(--color-surface)]/40 text-[var(--color-text-main)] border-transparent hover:bg-[var(--color-surface)]"
+                      )}
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="text-base">{hInfo ? hInfo.icon : (isToday ? '⭐️' : '📅')}</span>
+                        <div className="flex flex-col">
+                          <span className="text-sm font-bold">
+                            {isToday ? `Today (${formatDate(date)})` : formatDate(date)}
+                          </span>
+                          {hInfo && (
+                            <span className="text-[10px] opacity-80 font-medium">
+                              {hInfo.title}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      {hInfo ? (
+                        <span className={cn(
+                          "text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full border",
+                          hInfo.isFriday 
+                            ? "bg-rose-500/20 text-rose-400 border-rose-500/30" 
+                            : "bg-amber-500/20 text-amber-400 border-amber-500/40"
+                        )}>
+                          {hInfo.isFriday ? 'Friday Rest' : 'Public Holiday'}
+                        </span>
+                      ) : (
+                        <span className="text-xs opacity-50 font-mono">{date}</span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Holiday / Empty State Handler */}
+        {isDataEmpty ? (
+          holidayInfo ? (
+            <Card className="p-8 md:p-14 border-2 border-amber-500/30 bg-gradient-to-br from-[var(--color-bg-card)] via-[var(--color-surface)] to-amber-950/20 shadow-2xl rounded-3xl relative overflow-hidden text-center my-6">
+              <div className="absolute top-0 right-0 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+              <div className="relative z-10 flex flex-col items-center max-w-xl mx-auto">
+                <div className="w-20 h-20 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-4xl mb-4 shadow-lg shadow-amber-500/10 animate-bounce">
+                  {holidayInfo.icon}
+                </div>
+                
+                <span className="text-[10px] md:text-xs font-extrabold uppercase tracking-widest px-3 py-1 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30 mb-3">
+                  {holidayInfo.isFriday ? "Weekly Factory Holiday" : "Official Public Holiday"}
+                </span>
+
+                <h3 className="text-2xl md:text-4xl font-extrabold tracking-tight text-[var(--color-text-main)] mb-1">
+                  {holidayInfo.title}
+                </h3>
+                
+                <p className="text-xs md:text-sm font-semibold text-amber-400/90 mb-4 uppercase tracking-wider">
+                  {holidayInfo.subtitle} • {formatDate(selectedDate)}
+                </p>
+
+                <div className="p-4 rounded-xl bg-[var(--color-bg-card)] border border-[var(--color-border)] text-xs md:text-sm text-[var(--color-text-secondary)] leading-relaxed shadow-inner mb-4">
+                  {holidayInfo.description}
+                </div>
+
+                <div className="flex items-center gap-2 text-[10px] uppercase font-bold tracking-widest text-[var(--color-text-muted)]">
+                  <span className="w-2 h-2 rounded-full bg-amber-500"></span>
+                  Factory Operations Closed • Resuming Next Working Day
+                </div>
+              </div>
+            </Card>
+          ) : (
+            <Card className="flex flex-col items-center justify-center p-12 text-center">
+              <AlertTriangle className="w-12 h-12 text-amber-500 mb-4 opacity-80" />
+              <h3 className="text-xl font-bold mb-2">No Hourly Data Available</h3>
+              <p className="text-[var(--color-text-secondary)]">We couldn't find hourly records for {selectedDate}.</p>
+            </Card>
+          )
         ) : (
           <div className="space-y-8">
             {/* Factory Overview Summary */}
