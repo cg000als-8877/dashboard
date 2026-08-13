@@ -16,6 +16,29 @@ const hourlyCache = {
   data: {}
 };
 
+const LINE_META = {
+  'A': {
+    color: '#10B981', // Emerald
+    glow: 'rgba(16, 185, 129, 0.25)',
+    onColor: '#FFFFFF'
+  },
+  'B': {
+    color: '#3B82F6', // Blue
+    glow: 'rgba(59, 130, 246, 0.25)',
+    onColor: '#FFFFFF'
+  },
+  'C': {
+    color: '#A855F7', // Purple
+    glow: 'rgba(168, 85, 247, 0.25)',
+    onColor: '#FFFFFF'
+  },
+  'D': {
+    color: '#F59E0B', // Amber
+    glow: 'rgba(245, 158, 11, 0.25)',
+    onColor: '#FFFFFF'
+  }
+};
+
 export default function HourlyPage() {
   const dateInputRef = useRef(null);
   const [availableDates, setAvailableDates] = useState(hourlyCache.dates || []);
@@ -588,164 +611,181 @@ export default function HourlyPage() {
                   </div>
                 </Card>
               );
-            })()}
+              })()}
 
-            <div className="md:hidden flex justify-center w-full mb-4 px-1">
-              <div className="flex overflow-x-auto gap-2 hide-scrollbar py-1.5 px-1.5 relative bg-[var(--color-bg-card)] rounded-xl border border-[var(--color-border)] shadow-sm max-w-full">
-                {/* Liquid Sliding Background */}
-                <div 
-                  className="absolute top-1.5 bottom-1.5 w-[72px] rounded-lg transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] z-0"
-                  style={{
-                    transform: `translateX(${mobileLineIndex * (72 + 8)}px)`
-                  }}
-                >
-                  <div className="absolute inset-0 rounded-lg overflow-hidden border border-[var(--color-border)] shadow-sm bg-[var(--color-surface)]">
-                    <div className="absolute inset-[-100%] animate-[spin_3s_linear_infinite] opacity-30"
-                         style={{ background: 'conic-gradient(from 0deg, transparent 70%, var(--color-primary) 100%)' }}>
-                    </div>
-                    <div className="absolute inset-[1px] rounded-[7px] bg-[var(--color-bg-card)]"></div>
-                  </div>
-                </div>
-
-                {data.lines.map((line, idx) => {
-                  const isActive = idx === mobileLineIndex;
-                  return (
-                    <button
-                      key={`tab-${line.line_id}`}
-                      onClick={() => setMobileLineIndex(idx)}
-                      className={cn(
-                        "relative w-[72px] py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-widest whitespace-nowrap transition-colors duration-300 flex items-center justify-center shrink-0 z-10",
-                        isActive 
-                          ? "text-[var(--color-primary)] drop-shadow-[0_0_2px_rgba(37,99,235,0.2)]" 
-                          : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)]"
-                      )}
+              <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-4 gap-4 md:gap-6">
+              {data.lines.map((line, idx) => {
+                const meta = LINE_META[line.line_id.toUpperCase()] || LINE_META['A'];
+                return (
+                  <div key={line.line_id} className={cn(
+                    "md:block h-full transition-all duration-300",
+                    idx === mobileLineIndex ? "block animate-[fade-in_0.3s_ease-out]" : "hidden"
+                  )}>
+                    <Card 
+                      className="p-0 overflow-hidden flex flex-col h-full shadow-md hover:shadow-lg transition-all duration-300 relative"
+                      style={{
+                        borderTop: `3px solid ${meta.color}`,
+                        boxShadow: `0 4px 20px rgba(0, 0, 0, 0.15), 0 0 10px ${meta.glow}`
+                      }}
                     >
-                      LINE {line.line_id}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-4 gap-4 md:gap-6">
-              {data.lines.map((line, idx) => (
-                <div key={line.line_id} className={cn(
-                  "md:block h-full transition-all duration-300",
-                  idx === mobileLineIndex ? "block animate-[fade-in_0.3s_ease-out]" : "hidden"
-                )}>
-                  <Card className="p-0 overflow-hidden flex flex-col h-full shadow-md hover:shadow-lg transition-shadow duration-300">
-                    <div className="bg-[var(--color-surface)]/50 pt-3 pb-2 flex justify-center border-b border-[var(--color-border)]">
-                      <div className="bg-[var(--color-primary)] text-[var(--color-on-primary)] px-6 py-1 rounded-full text-sm font-bold tracking-wider shadow-[0_4px_15px_var(--color-primary-glow)] border border-[var(--color-primary)]/30 transition-all duration-300">
-                        LINE {line.line_id}
-                      </div>
-                    </div>
-                    
-                    <div className="p-2 md:p-3 border-b border-[var(--color-border)] bg-[var(--color-surface)]/30">
-                      <div className="grid grid-cols-2 lg:grid-cols-1 gap-1.5 md:gap-2">
-                        {/* Buyer */}
-                        <div className="bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-md md:rounded-lg p-1.5 md:p-2 shadow-sm flex items-center gap-1.5 md:gap-2">
-                          <div className="w-1 h-full min-h-[20px] md:min-h-[28px] lg:min-h-[20px] rounded-full bg-emerald-500 flex-shrink-0"></div>
-                          <div className="flex flex-col lg:flex-row lg:items-center justify-between w-full min-w-0 overflow-hidden">
-                            <span className="text-[9px] lg:text-[10px] uppercase text-[var(--color-text-secondary)] font-medium leading-tight">Buyer</span>
-                            <span className="text-[10px] md:text-xs lg:text-[11px] font-semibold text-[var(--color-text-main)] truncate text-left lg:text-right">{line.buyer || 'N/A'}</span>
-                          </div>
-                        </div>
-                        {/* Style */}
-                        <div className="bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-md md:rounded-lg p-1.5 md:p-2 shadow-sm flex items-center gap-1.5 md:gap-2">
-                          <div className="w-1 h-full min-h-[20px] md:min-h-[28px] lg:min-h-[20px] rounded-full bg-blue-500 flex-shrink-0"></div>
-                          <div className="flex flex-col lg:flex-row lg:items-center justify-between w-full min-w-0 overflow-hidden">
-                            <span className="text-[9px] lg:text-[10px] uppercase text-[var(--color-text-secondary)] font-medium leading-tight">Style</span>
-                            <span className="text-[10px] md:text-xs lg:text-[11px] font-semibold text-[var(--color-text-main)] truncate text-left lg:text-right">{line.style || 'N/A'}</span>
-                          </div>
-                        </div>
-                        {/* Item */}
-                        <div className="bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-md md:rounded-lg p-1.5 md:p-2 shadow-sm flex items-center gap-1.5 md:gap-2">
-                          <div className="w-1 h-full min-h-[20px] md:min-h-[28px] lg:min-h-[20px] rounded-full bg-purple-500 flex-shrink-0"></div>
-                          <div className="flex flex-col lg:flex-row lg:items-center justify-between w-full min-w-0 overflow-hidden">
-                            <span className="text-[9px] lg:text-[10px] uppercase text-[var(--color-text-secondary)] font-medium leading-tight">Item</span>
-                            <span className="text-[10px] md:text-xs lg:text-[11px] font-semibold text-[var(--color-text-main)] truncate text-left lg:text-right">{line.item || 'N/A'}</span>
-                          </div>
-                        </div>
-                        {/* MP */}
-                        <div className="bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-md md:rounded-lg p-1.5 md:p-2 shadow-sm flex items-center gap-1.5 md:gap-2">
-                          <div className="w-1 h-full min-h-[20px] md:min-h-[28px] lg:min-h-[20px] rounded-full bg-amber-500 flex-shrink-0"></div>
-                          <div className="flex flex-col lg:flex-row lg:items-center justify-between w-full min-w-0 overflow-hidden">
-                            <span className="text-[9px] lg:text-[10px] uppercase text-[var(--color-text-secondary)] font-medium leading-tight">Manpower</span>
-                            <span className="text-[10px] md:text-xs lg:text-[11px] font-semibold text-[var(--color-text-main)] truncate text-left lg:text-right">{line.mp || '0'}</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="overflow-x-auto w-full flex-grow hide-scrollbar">
-                      <table className="w-full text-center border-collapse table-fixed min-w-[200px]">
-                        <thead>
-                          <tr className="bg-[var(--color-bg-card)]">
-                            <th className="px-1 py-2 text-[8px] md:text-[9px] lg:text-[10px] uppercase text-[var(--color-text-secondary)] font-bold border-b border-r border-[var(--color-border)] w-1/4">
-                              Hour
-                            </th>
-                            <th className="px-1 py-2 text-[8px] md:text-[9px] lg:text-[10px] uppercase text-[var(--color-text-secondary)] font-bold border-b border-r border-[var(--color-border)] w-1/4">
-                              Target
-                            </th>
-                            <th className="px-1 py-2 text-[8px] md:text-[9px] lg:text-[10px] uppercase text-[var(--color-text-secondary)] font-bold border-b border-r border-[var(--color-border)] w-1/4">
-                              Actual
-                            </th>
-                            <th className="px-1 py-2 text-[8px] md:text-[9px] lg:text-[10px] uppercase text-[var(--color-text-secondary)] font-bold border-b border-[var(--color-border)] w-1/4 truncate">
-                              Achieve
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {data.timeLabels.map((time, timeIdx) => {
-                            const tgt = line.target[timeIdx] || 0;
-                            const act = line.actual[timeIdx] || 0;
-                            let percent = 0;
-                            if (tgt > 0) {
-                              percent = Math.round((act / tgt) * 100);
-                            }
-                            const isGoodAchieve = percent >= 100;
-                            const isGoodAct = act >= tgt && tgt > 0;
-                            const isZero = tgt === 0 && act === 0;
-
-                            const ordinals = ["1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th"];
-                            const serialTime = ordinals[timeIdx] || time;
-
+                      <div className="bg-[var(--color-surface)]/50 border-b border-[var(--color-border)] shrink-0">
+                        {/* Mobile view segmented control switcher */}
+                        <div className="flex md:hidden items-center justify-between p-2 gap-1.5 w-full bg-[var(--color-bg-card)]">
+                          {data.lines.map((l, lIdx) => {
+                            const isTabActive = lIdx === mobileLineIndex;
+                            const lMeta = LINE_META[l.line_id.toUpperCase()] || LINE_META['A'];
+                            
                             return (
-                              <tr key={`line-row-${timeIdx}`} className="border-b border-[var(--color-border)] last:border-b-0 hover:bg-[var(--color-surface)]/50 transition-colors">
-                                <td className="px-2 py-2.5 text-xs font-bold text-[var(--color-text-main)] bg-[var(--color-surface)]/30 border-r border-[var(--color-border)]">
-                                  {serialTime}
-                                </td>
-                                <td className="px-2 py-2.5 text-xs font-semibold text-[var(--color-text-secondary)] border-r border-[var(--color-border)] opacity-80">
-                                  {tgt}
-                                </td>
-                                <td className={cn(
-                                  "px-2 py-2.5 text-sm font-bold border-r border-[var(--color-border)]",
-                                  isZero ? "text-[var(--color-text-muted)]" : isGoodAct ? "text-[var(--color-success-text)]" : "text-amber-500"
-                                )}>
-                                  {act}
-                                </td>
-                                <td className={cn(
-                                  "px-2 py-2.5 text-sm font-bold bg-[var(--color-bg-card)]/30",
-                                  isZero ? "text-[var(--color-text-muted)] opacity-50" : isGoodAchieve ? "text-blue-500 dark:text-blue-400" : "text-rose-500 dark:text-rose-400"
-                                )}>
-                                  {isZero ? '-' : `${percent}%`}
-                                </td>
-                              </tr>
+                              <button
+                                key={`mobile-line-tab-${line.line_id}-${l.line_id}`}
+                                onClick={() => setMobileLineIndex(lIdx)}
+                                className={cn(
+                                  "flex-1 py-2 px-1 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all duration-300 relative border flex items-center justify-center gap-1 active:scale-95",
+                                  isTabActive
+                                    ? "border-transparent text-white shadow-md font-extrabold"
+                                    : "border-[var(--color-border)] bg-[var(--color-bg-card)] text-[var(--color-text-secondary)] font-bold"
+                                )}
+                                style={isTabActive ? { 
+                                  backgroundColor: lMeta.color,
+                                  boxShadow: `0 4px 12px ${lMeta.glow}`,
+                                  color: lMeta.onColor
+                                } : {}}
+                              >
+                                {isTabActive && <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-bg-card)] animate-pulse"></span>}
+                                LINE {l.line_id}
+                              </button>
                             );
                           })}
-                        </tbody>
-                      </table>
-                    </div>
-                    
-                    <div className="bg-[var(--color-surface)]/30 p-3 border-t border-[var(--color-border)] flex flex-col items-center justify-center mt-auto">
-                      <p className="text-[9px] text-[var(--color-text-muted)] uppercase font-bold tracking-widest mb-1">Total Actual</p>
-                      <p className="text-2xl font-bold text-[var(--color-primary)] leading-none">
-                        <AnimatedNumber value={line.actual.reduce((a, b) => a + (b || 0), 0)} />
-                      </p>
-                    </div>
-                  </Card>
-                </div>
-              ))}
+                        </div>
+
+                        {/* Desktop view static header */}
+                        <div className="hidden md:flex justify-center pt-3 pb-2">
+                          <div 
+                            className="text-white px-6 py-1 rounded-full text-sm font-bold tracking-wider border transition-all duration-300"
+                            style={{
+                              backgroundColor: meta.color,
+                              borderColor: `${meta.color}50`,
+                              boxShadow: `0 4px 15px ${meta.glow}`
+                            }}
+                          >
+                            LINE {line.line_id}
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="p-2 md:p-3 border-b border-[var(--color-border)] bg-[var(--color-surface)]/30">
+                        <div className="grid grid-cols-2 lg:grid-cols-1 gap-1.5 md:gap-2">
+                          {/* Buyer */}
+                          <div className="bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-md md:rounded-lg p-1.5 md:p-2 shadow-sm flex items-center gap-1.5 md:gap-2">
+                            <div className="w-1 h-full min-h-[20px] md:min-h-[28px] lg:min-h-[20px] rounded-full bg-emerald-500 flex-shrink-0"></div>
+                            <div className="flex flex-col lg:flex-row lg:items-center justify-between w-full min-w-0 overflow-hidden">
+                              <span className="text-[9px] lg:text-[10px] uppercase text-[var(--color-text-secondary)] font-medium leading-tight">Buyer</span>
+                              <span className="text-[10px] md:text-xs lg:text-[11px] font-semibold text-[var(--color-text-main)] truncate text-left lg:text-right">{line.buyer || 'N/A'}</span>
+                            </div>
+                          </div>
+                          {/* Style */}
+                          <div className="bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-md md:rounded-lg p-1.5 md:p-2 shadow-sm flex items-center gap-1.5 md:gap-2">
+                            <div className="w-1 h-full min-h-[20px] md:min-h-[28px] lg:min-h-[20px] rounded-full bg-blue-500 flex-shrink-0"></div>
+                            <div className="flex flex-col lg:flex-row lg:items-center justify-between w-full min-w-0 overflow-hidden">
+                              <span className="text-[9px] lg:text-[10px] uppercase text-[var(--color-text-secondary)] font-medium leading-tight">Style</span>
+                              <span className="text-[10px] md:text-xs lg:text-[11px] font-semibold text-[var(--color-text-main)] truncate text-left lg:text-right">{line.style || 'N/A'}</span>
+                            </div>
+                          </div>
+                          {/* Item */}
+                          <div className="bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-md md:rounded-lg p-1.5 md:p-2 shadow-sm flex items-center gap-1.5 md:gap-2">
+                            <div className="w-1 h-full min-h-[20px] md:min-h-[28px] lg:min-h-[20px] rounded-full bg-purple-500 flex-shrink-0"></div>
+                            <div className="flex flex-col lg:flex-row lg:items-center justify-between w-full min-w-0 overflow-hidden">
+                              <span className="text-[9px] lg:text-[10px] uppercase text-[var(--color-text-secondary)] font-medium leading-tight">Item</span>
+                              <span className="text-[10px] md:text-xs lg:text-[11px] font-semibold text-[var(--color-text-main)] truncate text-left lg:text-right">{line.item || 'N/A'}</span>
+                            </div>
+                          </div>
+                          {/* MP */}
+                          <div className="bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-md md:rounded-lg p-1.5 md:p-2 shadow-sm flex items-center gap-1.5 md:gap-2">
+                            <div className="w-1 h-full min-h-[20px] md:min-h-[28px] lg:min-h-[20px] rounded-full bg-amber-500 flex-shrink-0"></div>
+                            <div className="flex flex-col lg:flex-row lg:items-center justify-between w-full min-w-0 overflow-hidden">
+                              <span className="text-[9px] lg:text-[10px] uppercase text-[var(--color-text-secondary)] font-medium leading-tight">Manpower</span>
+                              <span className="text-[10px] md:text-xs lg:text-[11px] font-semibold text-[var(--color-text-main)] truncate text-left lg:text-right">{line.mp || '0'}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="overflow-x-auto w-full flex-grow hide-scrollbar">
+                        <table className="w-full text-center border-collapse table-fixed min-w-[200px]">
+                          <thead>
+                            <tr className="bg-[var(--color-bg-card)]">
+                              <th className="px-1 py-2 text-[8px] md:text-[9px] lg:text-[10px] uppercase text-[var(--color-text-secondary)] font-bold border-b border-r border-[var(--color-border)] w-1/4">
+                                Hour
+                              </th>
+                              <th className="px-1 py-2 text-[8px] md:text-[9px] lg:text-[10px] uppercase text-[var(--color-text-secondary)] font-bold border-b border-r border-[var(--color-border)] w-1/4">
+                                Target
+                              </th>
+                              <th className="px-1 py-2 text-[8px] md:text-[9px] lg:text-[10px] uppercase text-[var(--color-text-secondary)] font-bold border-b border-r border-[var(--color-border)] w-1/4">
+                                Actual
+                              </th>
+                              <th className="px-1 py-2 text-[8px] md:text-[9px] lg:text-[10px] uppercase text-[var(--color-text-secondary)] font-bold border-b border-r border-[var(--color-border)] w-1/4 truncate">
+                                Achieve
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {data.timeLabels.map((time, timeIdx) => {
+                              const tgt = line.target[timeIdx] || 0;
+                              const act = line.actual[timeIdx] || 0;
+                              let percent = 0;
+                              if (tgt > 0) {
+                                percent = Math.round((act / tgt) * 100);
+                              }
+                              const isGoodAchieve = percent >= 100;
+                              const isGoodAct = act >= tgt && tgt > 0;
+                              const isZero = tgt === 0 && act === 0;
+
+                              const ordinals = ["1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th"];
+                              const serialTime = ordinals[timeIdx] || time;
+
+                              return (
+                                <tr key={`line-row-${timeIdx}`} className="border-b border-[var(--color-border)] last:border-b-0 hover:bg-[var(--color-surface)]/50 transition-colors">
+                                  <td className="px-2 py-2.5 text-xs font-bold text-[var(--color-text-main)] bg-[var(--color-surface)]/30 border-r border-[var(--color-border)]">
+                                    {serialTime}
+                                  </td>
+                                  <td className="px-2 py-2.5 text-xs font-semibold text-[var(--color-text-secondary)] border-r border-[var(--color-border)] opacity-80">
+                                    {tgt}
+                                  </td>
+                                  <td className={cn(
+                                    "px-2 py-2.5 text-sm font-bold border-r border-[var(--color-border)]",
+                                    isZero ? "text-[var(--color-text-muted)]" : isGoodAct ? "text-[var(--color-success-text)]" : "text-amber-500"
+                                  )}>
+                                    {act}
+                                  </td>
+                                  <td className={cn(
+                                    "px-2 py-2.5 text-sm font-bold bg-[var(--color-bg-card)]/30",
+                                    isZero ? "text-[var(--color-text-muted)] opacity-50" : isGoodAchieve ? "text-blue-500 dark:text-blue-400" : "text-rose-500 dark:text-rose-400"
+                                  )}>
+                                    {isZero ? '-' : `${percent}%`}
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                          </tbody>
+                        </table>
+                      </div>
+                      
+                      <div className="bg-[var(--color-surface)]/30 p-3 border-t border-[var(--color-border)] flex flex-col items-center justify-center mt-auto">
+                        <p className="text-[9px] text-[var(--color-text-muted)] uppercase font-bold tracking-widest mb-1">Total Actual</p>
+                        <p 
+                          className="text-2xl font-black leading-none transition-all duration-300"
+                          style={{
+                            color: meta.color,
+                            textShadow: `0 0 10px ${meta.glow}`
+                          }}
+                        >
+                          <AnimatedNumber value={line.actual.reduce((a, b) => a + (b || 0), 0)} />
+                        </p>
+                      </div>
+                    </Card>
+                  </div>
+                );
+              })}
             </div>
 
             {/* Smart Intelligence Section */}

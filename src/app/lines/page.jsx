@@ -28,13 +28,26 @@ export default function ProductionLines() {
       </header>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {lines.map((line, idx) => (
-          <Card 
-            key={line.id} 
-            hover 
-            className="flex flex-col relative overflow-hidden w-full p-0"
-            style={{ animationDelay: `${idx * 0.1}s` }}
-          >
+        {lines.map((line, idx) => {
+          const LINE_COLORS = {
+            'a': '#10B981', // Emerald
+            'b': '#3B82F6', // Blue
+            'c': '#A855F7', // Purple
+            'd': '#F59E0B'  // Amber
+          };
+          const lineAccentColor = LINE_COLORS[line.id.toLowerCase()] || 'var(--color-primary)';
+          return (
+            <Card 
+              key={line.id} 
+              hover 
+              className="flex flex-col relative overflow-hidden w-full p-0"
+              style={{ 
+                '--color-primary': lineAccentColor,
+                '--color-primary-glow': `${lineAccentColor}24`,
+                '--color-primary-glow-hover': `${lineAccentColor}45`,
+                animationDelay: `${idx * 0.1}s` 
+              }}
+            >
             <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-[var(--color-surface)] to-transparent pointer-events-none"></div>
             
             <div className="flex flex-col p-4 md:p-5 relative z-10 h-full">
@@ -99,7 +112,8 @@ export default function ProductionLines() {
             {/* Decorative side accent */}
             <div className="absolute top-0 left-0 w-1 h-full" style={{ backgroundColor: line.netProfit >= 0 ? '#10b981' : '#ff3b30' }}></div>
           </Card>
-        ))}
+        );
+      })}
       </div>
     </div>
   );

@@ -69,8 +69,8 @@
       "actual": [
         100,
         120,
-        null,
-        null,
+        120,
+        120,
         null,
         null,
         null,
@@ -102,8 +102,8 @@
       "actual": [
         120,
         80,
-        null,
-        null,
+        50,
+        80,
         null,
         null,
         null,
@@ -135,8 +135,8 @@
       "actual": [
         160,
         120,
-        null,
-        null,
+        160,
+        170,
         null,
         null,
         null,

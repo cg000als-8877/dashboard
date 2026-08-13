@@ -70,8 +70,24 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false }) {
   
   const itemName = activeRows.find(r => r.item)?.item || 'N/A';
 
+  const LINE_COLORS = {
+    'a': '#10B981', // Emerald
+    'b': '#3B82F6', // Blue
+    'c': '#A855F7', // Purple
+    'd': '#F59E0B'  // Amber
+  };
+  const lineAccentColor = LINE_COLORS[id.toLowerCase()] || 'var(--color-primary)';
+
   return (
-    <div className={`space-y-6 animate-[fade-up_0.4s_ease-out_both] ${isEmbed ? '' : 'p-2 md:p-0'}`} id={`line-${id}`}>
+    <div 
+      className={`space-y-6 animate-[fade-up_0.4s_ease-out_both] ${isEmbed ? '' : 'p-2 md:p-0'}`} 
+      id={`line-${id}`}
+      style={{
+        '--color-primary': lineAccentColor,
+        '--color-primary-glow': `${lineAccentColor}24`,
+        '--color-primary-glow-hover': `${lineAccentColor}45`
+      }}
+    >
       
       {!isEmbed && (
         <header className="flex flex-col gap-2 mb-6 md:mb-8 relative z-10">
