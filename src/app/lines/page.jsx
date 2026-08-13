@@ -91,8 +91,8 @@ export default function ProductionLines() {
                   className="group relative flex items-center justify-center gap-3 w-full py-3 rounded-xl border border-[var(--color-border)] hover:border-transparent overflow-hidden transition-all duration-300"
                 >
                   <div className="absolute inset-0 bg-[var(--color-primary)] translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out z-0"></div>
-                  <span className="text-xs font-bold tracking-[0.2em] uppercase text-[var(--color-text-secondary)] group-hover:text-white relative z-10 transition-colors duration-300">View Details</span>
-                  <ArrowRight size={16} className="text-[var(--color-text-secondary)] group-hover:text-white group-hover:translate-x-1 relative z-10 transition-all duration-300" />
+                  <span className="text-xs font-bold tracking-[0.2em] uppercase text-[var(--color-text-secondary)] group-hover:text-[var(--color-on-primary)] relative z-10 transition-colors duration-300">View Details</span>
+                  <ArrowRight size={16} className="text-[var(--color-text-secondary)] group-hover:text-[var(--color-on-primary)] group-hover:translate-x-1 relative z-10 transition-all duration-300" />
                 </Link>
               </div>
             </div>

@@ -87,7 +87,7 @@ export function ThemePicker() {
         onClick={() => setOpen(!open)}
         className={`w-11 h-11 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 border border-[var(--color-border)] ${
           open 
-            ? 'bg-[var(--color-primary)] text-white rotate-45 scale-110' 
+            ? 'bg-[var(--color-primary)] text-[var(--color-on-primary)] rotate-45 scale-110' 
             : 'bg-[var(--color-bg-card)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)] hover:scale-110'
         }`}
         style={open ? { boxShadow: `0 0 20px var(--color-primary-glow)` } : {}}

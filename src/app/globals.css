@@ -10,8 +10,11 @@
   --color-primary: #4F8CFF;
   --color-on-primary: #FFFFFF;
   --color-success: #2ECC71;
+  --color-on-success: #FFFFFF;
   --color-danger: #FF5A5F;
+  --color-on-danger: #FFFFFF;
   --color-warning: #F5A623;
+  --color-on-warning: #FFFFFF;
   
 
   --color-text-main: #FFFFFF;
@@ -37,6 +40,9 @@
   --color-surface: rgba(0, 0, 0, 0.25);
   --color-surface-hover: rgba(0, 0, 0, 0.4);
   --color-on-primary: #FFFFFF;
+  --color-on-success: #FFFFFF;
+  --color-on-danger: #FFFFFF;
+  --color-on-warning: #FFFFFF;
   --shadow-color: rgba(0, 0, 0, 0.5);
 
   /* Default theme primary — Lime Ivory */
@@ -386,12 +392,15 @@ html[data-theme="obsidian-vercel"][data-mode="dark"] {
   --color-secondary: #8B8B8B;
 
   --color-success: #35C979;
+  --color-on-success: #000000;
   --color-success-text: #5BE295;
 
   --color-danger: #EF5350;
+  --color-on-danger: #FFFFFF;
   --color-danger-text: #FF706D;
 
   --color-warning: #E6A23C;
+  --color-on-warning: #000000;
   --color-warning-text: #F5BF62;
 
   --color-info: #7CA7E8;
@@ -424,12 +433,15 @@ html[data-theme="obsidian-vercel"][data-mode="light"] {
   --color-secondary: #666666;
 
   --color-success: #168653;
+  --color-on-success: #FFFFFF;
   --color-success-text: #147548;
 
   --color-danger: #D93B3B;
+  --color-on-danger: #FFFFFF;
   --color-danger-text: #C92F2F;
 
   --color-warning: #A96700;
+  --color-on-warning: #FFFFFF;
   --color-warning-text: #925900;
 
   --color-info: #356EA9;
@@ -599,12 +611,15 @@ html[data-theme="lime-ivory"][data-mode="dark"] {
   --color-secondary-soft: #20231D;
 
   --color-success: #9BE52C;
+  --color-on-success: #101B03;
   --color-success-text: #B4F54A;
 
   --color-danger: #FF5B61;
+  --color-on-danger: #FFFFFF;
   --color-danger-text: #FF777C;
 
   --color-warning: #E5B83D;
+  --color-on-warning: #1F1B05;
   --color-warning-text: #F4CF68;
 
   --color-info: #79A9E8;
@@ -638,12 +653,15 @@ html[data-theme="lime-ivory"][data-mode="light"] {
   --color-secondary-soft: #E9ECE4;
 
   --color-success: #579400;
+  --color-on-success: #FFFFFF;
   --color-success-text: #4E8500;
 
   --color-danger: #D9363E;
+  --color-on-danger: #FFFFFF;
   --color-danger-text: #C82E36;
 
   --color-warning: #A86F00;
+  --color-on-warning: #FFFFFF;
   --color-warning-text: #946000;
 
   --color-info: #3E70A8;

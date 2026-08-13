@@ -205,7 +205,7 @@ export default function HourlyPage() {
                         try { dateInputRef.current.showPicker(); } catch (e) { dateInputRef.current.focus(); }
                       }
                     }}
-                    className="px-3 py-1.5 bg-[var(--color-primary)] text-white text-xs font-bold rounded-lg shadow-sm hover:opacity-90 transition-opacity"
+                    className="px-3 py-1.5 bg-[var(--color-primary)] text-[var(--color-on-primary)] text-xs font-bold rounded-lg shadow-sm hover:opacity-90 transition-opacity"
                   >
                     Open Calendar Sheet
                   </button>

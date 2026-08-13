@@ -60,21 +60,21 @@ export default function SimulatorPage() {
             <div className="flex flex-row flex-nowrap gap-1 md:gap-4 mb-2 md:mb-8 w-full justify-between">
               <button 
                 onClick={() => setSimMode('profit')}
-                className={`flex-1 flex justify-center items-center gap-1 px-1 py-2 md:px-5 md:py-3 rounded md:rounded-xl font-medium text-[10px] md:text-base whitespace-nowrap transition-all duration-300 ${simMode === 'profit' ? 'bg-[var(--color-success)] text-white [box-shadow:0_0_20px_var(--color-success-glow)]' : 'bg-[var(--color-bg-main)] text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)]'}`}
+                className={`flex-1 flex justify-center items-center gap-1 px-1 py-2 md:px-5 md:py-3 rounded md:rounded-xl font-medium text-[10px] md:text-base whitespace-nowrap transition-all duration-300 ${simMode === 'profit' ? 'bg-[var(--color-success)] text-[var(--color-on-success)] [box-shadow:0_0_20px_var(--color-success-glow)]' : 'bg-[var(--color-bg-main)] text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)]'}`}
               >
                 <Play className="w-3 h-3 md:w-4 md:h-4" /> Profit Mode
               </button>
               
               <button 
                 onClick={() => setSimMode('neutral')}
-                className={`flex-1 flex justify-center items-center gap-1 px-1 py-2 md:px-5 md:py-3 rounded md:rounded-xl font-medium text-[10px] md:text-base whitespace-nowrap transition-all duration-300 ${simMode === 'neutral' ? 'bg-[var(--color-warning)] text-white [box-shadow:0_0_20px_var(--color-warning-glow)]' : 'bg-[var(--color-bg-main)] text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)]'}`}
+                className={`flex-1 flex justify-center items-center gap-1 px-1 py-2 md:px-5 md:py-3 rounded md:rounded-xl font-medium text-[10px] md:text-base whitespace-nowrap transition-all duration-300 ${simMode === 'neutral' ? 'bg-[var(--color-warning)] text-[var(--color-on-warning)] [box-shadow:0_0_20px_var(--color-warning-glow)]' : 'bg-[var(--color-bg-main)] text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)]'}`}
               >
                 <Anchor className="w-3 h-3 md:w-4 md:h-4" /> Neutral Mode
               </button>
               
               <button 
                 onClick={() => { setSimMode('loss'); setSimDay(1); }}
-                className={`flex-1 flex justify-center items-center gap-1 px-1 py-2 md:px-5 md:py-3 rounded md:rounded-xl font-medium text-[10px] md:text-base whitespace-nowrap transition-all duration-300 ${simMode === 'loss' ? 'bg-[var(--color-danger)] text-white [box-shadow:0_0_20px_var(--color-danger-glow)]' : 'bg-[var(--color-bg-main)] text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)]'}`}
+                className={`flex-1 flex justify-center items-center gap-1 px-1 py-2 md:px-5 md:py-3 rounded md:rounded-xl font-medium text-[10px] md:text-base whitespace-nowrap transition-all duration-300 ${simMode === 'loss' ? 'bg-[var(--color-danger)] text-[var(--color-on-danger)] [box-shadow:0_0_20px_var(--color-danger-glow)]' : 'bg-[var(--color-bg-main)] text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)]'}`}
               >
                 <AlertTriangle className="w-3 h-3 md:w-4 md:h-4" /> Loss Mode
               </button>
