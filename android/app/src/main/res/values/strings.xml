@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name"> BYZID APPARELS</string>
-    <string name="title_activity_main"> BYZID APPARELS</string>
+    <string name="app_name">BAPL</string>
+    <string name="title_activity_main">BAPL</string>
     <string name="package_name">com.byzid.apparels</string>
     <string name="custom_url_scheme">com.byzid.apparels</string>
 </resources>

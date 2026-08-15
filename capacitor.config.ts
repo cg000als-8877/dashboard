@@ -2,7 +2,7 @@ import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'com.byzid.apparels',
-  appName: 'BYZID APPARELS',
+  appName: 'BAPL',
   webDir: 'public',
   server: {
     url: 'https://bapldata.vercel.app',
@@ -12,6 +12,13 @@ const config: CapacitorConfig = {
   android: {
     allowMixedContent: true,
     backgroundColor: '#0B0F17'
+  },
+  plugins: {
+    SplashScreen: {
+      launchShowDuration: 0,
+      launchAutoHide: true,
+      backgroundColor: '#0B0F17'
+    }
   }
 };
 
