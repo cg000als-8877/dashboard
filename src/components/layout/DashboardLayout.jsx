@@ -160,8 +160,8 @@ export default function DashboardLayout({ children }) {
         </header>
 
         {/* Mobile Bottom Fixed Navigation Bar */}
-        <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[var(--color-bg-card)]/95 backdrop-blur-xl border-t border-[var(--color-border)] shadow-[0_-4px_25px_rgba(0,0,0,0.3)] px-2 py-2 flex items-center justify-around">
-          {navItems.filter(item => ['Dashboard', 'Hourly', 'Lines', 'Analytics', 'Simulator'].includes(item.name)).map((item) => {
+        <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[var(--color-bg-card)]/95 backdrop-blur-xl border-t border-[var(--color-border)] shadow-[0_-4px_25px_rgba(0,0,0,0.3)] px-1 py-2 flex items-center justify-around">
+          {navItems.map((item) => {
             const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
             const Icon = item.icon;
             
@@ -170,17 +170,17 @@ export default function DashboardLayout({ children }) {
                 key={`mobile-bottom-${item.name}`}
                 href={item.href}
                 className={cn(
-                  "flex flex-col items-center justify-center gap-1 flex-1 py-1 px-1 rounded-xl transition-all duration-300 relative group active:scale-95",
+                  "flex flex-col items-center justify-center gap-1 flex-1 py-1 px-0.5 rounded-lg transition-all duration-300 relative group active:scale-95",
                   isActive
                     ? "text-[var(--color-primary)] font-extrabold"
                     : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] font-medium"
                 )}
               >
                 {isActive && (
-                  <div className="absolute inset-0 bg-[var(--color-primary)]/10 rounded-xl shadow-[inset_0_0_12px_var(--color-primary-glow)] -z-0" />
+                  <div className="absolute inset-0 bg-[var(--color-primary)]/10 rounded-lg shadow-[inset_0_0_12px_var(--color-primary-glow)] -z-0" />
                 )}
-                <Icon size={20} className={cn("relative z-10 transition-transform duration-300", isActive && "scale-110 drop-shadow-[0_0_8px_var(--color-primary-glow)]")} />
-                <span className="text-[9px] uppercase tracking-wider leading-none relative z-10">{item.name}</span>
+                <Icon size={18} className={cn("relative z-10 transition-transform duration-300", isActive && "scale-110 drop-shadow-[0_0_8px_var(--color-primary-glow)]")} />
+                <span className="text-[8px] uppercase tracking-tighter leading-none relative z-10">{item.name}</span>
               </Link>
             );
           })}
