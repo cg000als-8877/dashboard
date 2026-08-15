@@ -9,7 +9,7 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { useKpiData } from '@/utils/useKpiData';
 import { format, parseISO } from 'date-fns';
-import { Clock, LayoutDashboard, Factory, BarChart3, Ship, History, Palette, Sun, Moon } from 'lucide-react';
+import { Clock, LayoutDashboard, Factory, BarChart3, Ship, History, Palette, Sun, Moon, GitCompare } from 'lucide-react';
 import { useMonth } from '@/components/providers/MonthProvider';
 import { useTheme } from '@/components/ThemeProvider';
 
@@ -17,6 +17,7 @@ const navItems = [
   { name: 'Dashboard', href: '/', icon: LayoutDashboard },
   { name: 'Hourly', href: '/hourly', icon: Clock },
   { name: 'Lines', href: '/lines', icon: Factory },
+  { name: 'Compare', href: '/compare', icon: GitCompare },
   { name: 'Analytics', href: '/analytics', icon: BarChart3 },
   { name: 'Simulator', href: '/simulator', icon: Ship },
   { name: 'Archive', href: '/archive', icon: History },
@@ -86,6 +87,21 @@ export default function DashboardLayout({ children }) {
                 <Moon size={17} className="text-indigo-400 drop-shadow-[0_0_6px_rgba(129,140,248,0.6)]" />
               )}
             </button>
+
+            {/* Simulator Shortcut Button */}
+            <Link 
+              href="/simulator"
+              className={cn(
+                "p-2 rounded-xl border transition-all active:scale-95 flex items-center justify-center shadow-sm",
+                pathname === '/simulator'
+                  ? "bg-[var(--color-primary)]/20 text-[var(--color-primary)] border-[var(--color-primary)]/50 shadow-[0_0_12px_var(--color-primary-glow)]"
+                  : "bg-[var(--color-surface)]/70 text-[var(--color-text-secondary)] border-[var(--color-border)] hover:text-[var(--color-text-main)] hover:border-[var(--color-primary)]/30"
+              )}
+              aria-label="Go to Simulator"
+              title="Go to Simulator"
+            >
+              <Ship size={17} />
+            </Link>
           </div>
 
           {/* Theme & Appearance Selector Popover Modal */}

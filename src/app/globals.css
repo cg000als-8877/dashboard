@@ -39,6 +39,12 @@ h1, h2, h3, h4, h5, h6, .font-display {
   font-family: var(--font-display) !important;
 }
 
+select option {
+  background-color: var(--color-bg-card) !important;
+  color: var(--color-text-main) !important;
+}
+
+
 @keyframes shimmer {
   0% {
     background-position: -200% 0;

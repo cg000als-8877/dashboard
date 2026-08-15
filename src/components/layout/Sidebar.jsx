@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Factory, BarChart3, FileText, Settings, Ship, Download, Calendar, History, Sun, Moon, Clock, ChevronLeft, ChevronRight, Palette } from 'lucide-react';
+import { LayoutDashboard, Factory, BarChart3, FileText, Settings, Ship, Download, Calendar, History, Sun, Moon, Clock, ChevronLeft, ChevronRight, Palette, GitCompare } from 'lucide-react';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { useMonth } from '@/components/providers/MonthProvider';
@@ -20,6 +20,7 @@ const navItems = [
   { name: 'Dashboard', href: '/', icon: LayoutDashboard },
   { name: 'Hourly', href: '/hourly', icon: Clock },
   { name: 'Lines', href: '/lines', icon: Factory },
+  { name: 'Compare', href: '/compare', icon: GitCompare },
   { name: 'Analytics', href: '/analytics', icon: BarChart3 },
   { name: 'Simulator', href: '/simulator', icon: Ship },
   { name: 'Archive', href: '/archive', icon: History },
