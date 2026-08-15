@@ -177,7 +177,7 @@ export default function DashboardLayout({ children }) {
 
         {/* Mobile Bottom Fixed Navigation Bar */}
         <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[var(--color-bg-card)]/95 backdrop-blur-xl border-t border-[var(--color-border)] shadow-[0_-4px_25px_rgba(0,0,0,0.3)] px-1 py-2 flex items-center justify-around">
-          {navItems.map((item) => {
+          {navItems.filter(item => item.name !== 'Simulator').map((item) => {
             const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
             const Icon = item.icon;
             
