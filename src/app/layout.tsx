@@ -1,4 +1,4 @@
-import { Inter } from "next/font/google";
+import { Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { MonthProvider } from "@/components/providers/MonthProvider";
@@ -9,6 +9,12 @@ import { Suspense } from "react";
 const inter = Inter({ 
   weight: ["300", "400", "500", "600", "700"],
   subsets: ["latin"] 
+});
+
+const spaceGrotesk = Space_Grotesk({
+  weight: ["300", "400", "500", "600", "700"],
+  subsets: ["latin"],
+  variable: "--font-space-grotesk"
 });
 
 export const metadata = {
@@ -24,7 +30,7 @@ export const metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} bg-[var(--color-bg-main)] text-[var(--color-text-main)]`}>
+      <body className={`${inter.className} ${spaceGrotesk.variable} bg-[var(--color-bg-main)] text-[var(--color-text-main)]`}>
         <Suspense fallback={<div>Loading...</div>}>
           <ThemeProvider>
             <MonthProvider>

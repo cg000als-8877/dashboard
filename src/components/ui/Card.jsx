@@ -3,8 +3,8 @@ import { cn } from "@/components/layout/Sidebar";
 export function Card({ children, className, hover = false, ...props }) {
   return (
     <div className={cn(
-      "relative bg-[var(--color-bg-card)]/90 border border-[var(--color-border)] rounded-2xl p-4 md:p-6 transition-all duration-500 overflow-hidden shadow-sm",
-      hover && "hover:bg-[var(--color-surface-hover)] hover:-translate-y-1 hover:border-[var(--color-border)] hover:shadow-[0_12px_40px_rgba(79,140,255,0.15)] group",
+      "relative bg-[var(--color-bg-card)]/75 backdrop-blur-md border border-[var(--color-border)]/60 rounded-2xl p-4 md:p-6 transition-all duration-500 overflow-hidden shadow-sm",
+      hover && "hover:bg-[var(--color-surface-hover)]/90 hover:-translate-y-0.5 hover:border-[var(--color-primary)]/40 hover:shadow-[0_12px_40px_var(--color-primary-glow)] group",
       className
     )}
     {...props}

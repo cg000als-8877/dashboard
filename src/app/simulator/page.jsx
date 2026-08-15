@@ -4,8 +4,8 @@ import { useState } from 'react';
 import { useKpiData } from '@/utils/useKpiData';
 import { MetricCard, Card } from '@/components/ui/Card';
 import { TitanicAnimation } from '@/components/ui/TitanicAnimation';
-import { Settings, Play, Anchor, AlertTriangle } from 'lucide-react';
-import { NetworkLoader } from '@/components/ui/NetworkLoader';
+import { Settings, Play, Anchor, AlertTriangle, HelpCircle } from 'lucide-react';
+import { SimulatorSkeleton } from '@/components/ui/Skeletons';
 
 export default function SimulatorPage() {
   const { stats, loading, error } = useKpiData();
@@ -13,7 +13,7 @@ export default function SimulatorPage() {
   const [simDay, setSimDay] = useState(1); // 1 to 31
 
   if (loading) {
-    return <NetworkLoader title="Initializing Vessel Physics" subtitle="Calibrating Oceanic Hull Simulation & Water Dynamics..." />;
+    return <SimulatorSkeleton />;
   }
 
   if (error) {
@@ -23,14 +23,20 @@ export default function SimulatorPage() {
   return (
     <div className="space-y-8 animate-[fade-up_0.4s_ease-out_both]">
       {/* SIMULATOR EXPLANATION */}
-      <div className="bg-[rgba(255,255,255,0.02)] border border-[var(--color-border)] rounded-xl p-3 md:p-6 shadow-sm mb-4">
-        <h3 className="text-sm md:text-xl font-medium text-[var(--color-text-main)] mb-2 md:mb-4">How the Ship Simulator Works:</h3>
-        <ul className="space-y-1.5 md:space-y-3 text-[10px] md:text-sm text-[var(--color-text-secondary)]">
+      <details className="bg-[rgba(255,255,255,0.015)] border border-[var(--color-border)] rounded-2xl p-4 shadow-sm mb-4 group transition-all duration-300">
+        <summary className="text-xs md:text-sm font-bold uppercase tracking-wider text-[var(--color-text-main)] cursor-pointer flex items-center justify-between select-none">
+          <div className="flex items-center gap-2">
+            <HelpCircle size={16} className="text-[var(--color-primary)]" />
+            <span>How the Ship Simulator Works</span>
+          </div>
+          <span className="text-[var(--color-text-muted)] text-[10px] group-open:rotate-180 transition-transform duration-200">▼</span>
+        </summary>
+        <ul className="mt-3.5 space-y-2 text-[10px] md:text-sm text-[var(--color-text-secondary)] pl-5 list-disc border-t border-[var(--color-border)]/40 pt-3.5">
           <li><strong className="text-[var(--color-success)]">Profitable:</strong> When the company is making money, the ship moves forward "full steam ahead."</li>
           <li><strong className="text-[var(--color-warning)]">Breaking Even:</strong> When the company is neither making a profit nor taking a loss, the ship sits in neutral.</li>
           <li><strong className="text-[var(--color-danger)]">Losing Money:</strong> If the company starts losing money day by day, the ship begins to take on water. The situation grows more dramatic each day, culminating in the ship completely sinking by the end of the month.</li>
         </ul>
-      </div>
+      </details>
 
       {/* Titanic Fun Animation Section */}
       <div className="w-full">

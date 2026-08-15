@@ -3,13 +3,13 @@
 import { useKpiData } from '@/utils/useKpiData';
 import { DailyPerformanceChart, IncomeVsCostChart, MonthlyProfitBarChart } from '@/components/dashboard/DashboardCharts';
 import { Card } from '@/components/ui/Card';
-import { NetworkLoader } from '@/components/ui/NetworkLoader';
+import { AnalyticsSkeleton } from '@/components/ui/Skeletons';
 
 export default function Analytics() {
   const { dailyTrends, loading, error } = useKpiData();
 
   if (loading) {
-    return <NetworkLoader title="Analyzing Financial Network" subtitle="Synthesizing Production Data & Income Metrics..." />;
+    return <AnalyticsSkeleton />;
   }
 
   if (error) {

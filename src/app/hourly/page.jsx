@@ -7,7 +7,7 @@ import { cn } from '@/components/layout/Sidebar';
 
 import { format, parseISO } from 'date-fns';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
-import { NetworkLoader } from '@/components/ui/NetworkLoader';
+import { HourlySkeleton } from '@/components/ui/Skeletons';
 import { getHolidayInfo } from '@/utils/holidays';
 
 // In-memory cache for instant page switching
@@ -146,7 +146,7 @@ export default function HourlyPage() {
   }, [selectedDate]);
 
   if (loading && !data) {
-    return <NetworkLoader />;
+    return <HourlySkeleton />;
   }
 
   const isDataEmpty = !data || !data.lines || data.lines.length === 0 || (
@@ -792,103 +792,113 @@ export default function HourlyPage() {
             {data.lines.length > 0 && (
               <Card className="p-4 md:p-6 border border-indigo-500/30 bg-gradient-to-br from-[var(--color-bg-card)] to-indigo-950/10 dark:to-indigo-900/20 shadow-lg relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl -mr-20 -mt-20"></div>
-                <div className="flex items-center gap-2 md:gap-3 mb-3 md:mb-6 relative z-10">
-                  <div className="p-1.5 md:p-2 bg-indigo-500/20 rounded-lg text-indigo-400">
-                    <Sparkles className="w-5 h-5 md:w-6 md:h-6" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg md:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-400">
-                      Smart Analytics Report
-                    </h3>
-                    <p className="text-[10px] md:text-xs text-[var(--color-text-muted)] uppercase tracking-widest mt-0.5 md:mt-1">Real-time AI Insights</p>
-                  </div>
-                </div>
-                
-                <div className="space-y-2 md:space-y-4 relative z-10">
-                  {(() => {
-                    let totalTarget = 0;
-                    let totalActual = 0;
-                    
-                    const lineStats = data.lines.map(line => {
-                      const tgt = line.target.reduce((a,b)=>a+(b||0),0);
-                      const act = line.actual.reduce((a,b)=>a+(b||0),0);
-                      let hoursHit = 0;
-                      let activeHours = 0;
-                      line.target.forEach((t, i) => {
-                         const a = line.actual[i] || 0;
-                         if (t > 0) {
-                            activeHours++;
-                            if (a >= t) hoursHit++;
-                         }
-                      });
-                      totalTarget += tgt;
-                      totalActual += act;
-                      
-                      return {
-                         id: line.line_id,
-                         tgt, act,
-                         achieve: tgt > 0 ? (act/tgt)*100 : 0,
-                         consistency: activeHours > 0 ? (hoursHit/activeHours)*100 : 0
-                      }
-                    });
-
-                    let peakHourIdx = -1;
-                    let maxHourOutput = -1;
-                    for (let i = 0; i < data.timeLabels.length; i++) {
-                       let sum = 0;
-                       data.lines.forEach(l => sum += (l.actual[i] || 0));
-                       if (sum > maxHourOutput) {
-                          maxHourOutput = sum;
-                          peakHourIdx = i;
-                       }
-                    }
-                    
-                    const overallAchieve = totalTarget > 0 ? (totalActual/totalTarget)*100 : 0;
-                    
-                    const sortedByAchieve = [...lineStats].sort((a,b) => b.achieve - a.achieve);
-                    const bestLine = sortedByAchieve[0];
-                    const worstLine = sortedByAchieve[sortedByAchieve.length - 1];
-                    
-                    const sortedByCons = [...lineStats].sort((a,b) => b.consistency - a.consistency);
-                    const mostConsistent = sortedByCons[0];
-
-                    const insights = [];
-                    insights.push({ icon: Activity, text: `Overall factory achievement currently stands at ${overallAchieve.toFixed(1)}% (${totalActual.toLocaleString()} / ${totalTarget.toLocaleString()} units).`});
-                    
-                    if (bestLine && bestLine.achieve > 0) {
-                      insights.push({ icon: TrendingUp, text: `Line ${bestLine.id} is leading performance with a stellar ${bestLine.achieve.toFixed(1)}% achievement rate.`});
-                    }
-                    
-                    if (peakHourIdx !== -1 && maxHourOutput > 0) {
-                      insights.push({ icon: Clock, text: `Peak production occurred during ${data.timeLabels[peakHourIdx]} with ${maxHourOutput} units produced factory-wide.`});
-                    }
-
-                    if (mostConsistent && mostConsistent.consistency > 0) {
-                      insights.push({ icon: Sparkles, text: `Line ${mostConsistent.id} is the most consistent, successfully hitting its hourly target ${mostConsistent.consistency.toFixed(0)}% of the active hours.`});
-                    }
-
-                    if (worstLine && worstLine.tgt > 0 && worstLine.id !== bestLine?.id) {
-                      insights.push({ icon: AlertTriangle, text: `Line ${worstLine.id} requires attention, currently running at the lowest achievement rate of ${worstLine.achieve.toFixed(1)}%.`});
-                    }
-                    
-                    if (overallAchieve >= 95) {
-                      insights.push({ icon: Sparkles, text: "Overall summary: The factory is operating at peak efficiency today. Keep up the incredible momentum!"});
-                    } else if (overallAchieve >= 80) {
-                      insights.push({ icon: Activity, text: "Overall summary: The factory is performing well, but slight improvements across underperforming lines could help us reach daily targets."});
-                    } else if (totalTarget > 0) {
-                      insights.push({ icon: AlertTriangle, text: "Overall summary: The factory is falling significantly behind daily targets. Immediate floor intervention and bottleneck analysis is recommended."});
-                    }
-
-                    return insights.map((insight, idx) => (
-                      <div key={idx} className="flex items-start gap-2 md:gap-3 p-2.5 md:p-3 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)] shadow-sm hover:border-indigo-500/30 transition-colors">
-                        <insight.icon className="w-4 h-4 md:w-5 md:h-5 text-indigo-400 shrink-0 mt-0.5" />
-                        <p className="text-[var(--color-text-secondary)] leading-relaxed text-xs md:text-sm font-medium">
-                          {insight.text}
-                        </p>
+                <details className="group" open>
+                  <summary className="list-none flex items-center justify-between cursor-pointer select-none relative z-10">
+                    <div className="flex items-center gap-2 md:gap-3">
+                      <div className="p-1.5 md:p-2 bg-indigo-500/20 rounded-lg text-indigo-400">
+                        <Sparkles className="w-5 h-5 md:w-6 md:h-6" />
                       </div>
-                    ));
-                  })()}
-                </div>
+                      <div>
+                        <h3 className="text-lg md:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-400 font-display">
+                          Smart Analytics Report
+                        </h3>
+                        <p className="text-[10px] md:text-xs text-[var(--color-text-muted)] uppercase tracking-widest mt-0.5 md:mt-1">Real-time AI Insights</p>
+                      </div>
+                    </div>
+                    <span className="text-[var(--color-text-muted)] text-[10px] group-open:rotate-180 transition-transform duration-200">▼</span>
+                  </summary>
+                  
+                  <div className="space-y-2 md:space-y-4 mt-4 relative z-10 animate-[fade-in_0.3s_ease-out]">
+                    {(() => {
+                      let totalTarget = 0;
+                      let totalActual = 0;
+                      
+                      const lineStats = data.lines.map(line => {
+                        const tgt = line.target.reduce((a,b)=>a+(b||0),0);
+                        const act = line.actual.reduce((a,b)=>a+(b||0),0);
+                        let hoursHit = 0;
+                        let activeHours = 0;
+                        line.target.forEach((t, i) => {
+                           const a = line.actual[i] || 0;
+                           if (t > 0) {
+                              activeHours++;
+                              if (a >= t) hoursHit++;
+                           }
+                        });
+                        totalTarget += tgt;
+                        totalActual += act;
+                        
+                        return {
+                           id: line.line_id,
+                           tgt, act,
+                           achieve: tgt > 0 ? (act/tgt)*100 : 0,
+                           consistency: activeHours > 0 ? (hoursHit/activeHours)*100 : 0
+                        };
+                      });
+
+                      const overallAchieve = totalTarget > 0 ? (totalActual/totalTarget)*100 : 0;
+                      
+                      // Calculate peak hour
+                      let maxHourOutput = 0;
+                      let peakHourIdx = -1;
+                      if (data.timeLabels && data.timeLabels.length > 0) {
+                        for (let h = 0; h < data.timeLabels.length; h++) {
+                          let hourTotal = 0;
+                          data.lines.forEach(l => {
+                            hourTotal += (l.actual[h] || 0);
+                          });
+                          if (hourTotal > maxHourOutput) {
+                            maxHourOutput = hourTotal;
+                            peakHourIdx = h;
+                          }
+                        }
+                      }
+
+                      const sortedByAchieve = [...lineStats].sort((a,b) => b.achieve - a.achieve);
+                      const bestLine = sortedByAchieve[0];
+                      const worstLine = sortedByAchieve[sortedByAchieve.length - 1];
+                      
+                      const sortedByCons = [...lineStats].sort((a,b) => b.consistency - a.consistency);
+                      const mostConsistent = sortedByCons[0];
+
+                      const insights = [];
+                      insights.push({ icon: Activity, text: `Overall factory achievement currently stands at ${overallAchieve.toFixed(1)}% (${totalActual.toLocaleString()} / ${totalTarget.toLocaleString()} units).`});
+                      
+                      if (bestLine && bestLine.achieve > 0) {
+                        insights.push({ icon: TrendingUp, text: `Line ${bestLine.id} is leading performance with a stellar ${bestLine.achieve.toFixed(1)}% achievement rate.`});
+                      }
+                      
+                      if (peakHourIdx !== -1 && maxHourOutput > 0) {
+                        insights.push({ icon: Clock, text: `Peak production occurred during ${data.timeLabels[peakHourIdx]} with ${maxHourOutput} units produced factory-wide.`});
+                      }
+
+                      if (mostConsistent && mostConsistent.consistency > 0) {
+                        insights.push({ icon: Sparkles, text: `Line ${mostConsistent.id} is the most consistent, successfully hitting its hourly target ${mostConsistent.consistency.toFixed(0)}% of the active hours.`});
+                      }
+
+                      if (worstLine && worstLine.tgt > 0 && worstLine.id !== bestLine?.id) {
+                        insights.push({ icon: AlertTriangle, text: `Line ${worstLine.id} requires attention, currently running at the lowest achievement rate of ${worstLine.achieve.toFixed(1)}%.`});
+                      }
+                      
+                      if (overallAchieve >= 95) {
+                        insights.push({ icon: Sparkles, text: "Overall summary: The factory is operating at peak efficiency today. Keep up the incredible momentum!"});
+                      } else if (overallAchieve >= 80) {
+                        insights.push({ icon: Activity, text: "Overall summary: The factory is performing well, but slight improvements across underperforming lines could help us reach daily targets."});
+                      } else if (totalTarget > 0) {
+                        insights.push({ icon: AlertTriangle, text: "Overall summary: The factory is falling significantly behind daily targets. Immediate floor intervention and bottleneck analysis is recommended."});
+                      }
+
+                      return insights.map((insight, idx) => (
+                        <div key={idx} className="flex items-start gap-2 md:gap-3 p-2.5 md:p-3 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)] shadow-sm hover:border-indigo-500/30 transition-colors">
+                          <insight.icon className="w-4 h-4 md:w-5 md:h-5 text-indigo-400 shrink-0 mt-0.5" />
+                          <p className="text-[var(--color-text-secondary)] leading-relaxed text-xs md:text-sm font-medium">
+                            {insight.text}
+                          </p>
+                        </div>
+                      ));
+                    })()}
+                  </div>
+                </details>
               </Card>
             )}
           </div>
