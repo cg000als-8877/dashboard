@@ -730,8 +730,14 @@ export default function HourlyPage() {
                           </thead>
                           <tbody>
                             {data.timeLabels.map((time, timeIdx) => {
-                              const tgt = line.target[timeIdx] || 0;
-                              const act = line.actual[timeIdx] || 0;
+                              const rawTgt = line.target[timeIdx];
+                              const rawAct = line.actual[timeIdx];
+                              const hasTarget = rawTgt !== null && rawTgt !== undefined;
+                              const hasActual = rawAct !== null && rawAct !== undefined;
+                              
+                              const tgt = hasTarget ? Number(rawTgt) : 0;
+                              const act = hasActual ? Number(rawAct) : 0;
+                              
                               let percent = 0;
                               if (tgt > 0) {
                                 percent = Math.round((act / tgt) * 100);
@@ -749,26 +755,30 @@ export default function HourlyPage() {
                                     {serialTime}
                                   </td>
                                   <td className="px-2 py-2.5 text-xs font-semibold text-[var(--color-text-secondary)] border-r border-[var(--color-border)] opacity-80">
-                                    {tgt}
+                                    {hasActual ? tgt : '-'}
                                   </td>
                                   <td className={cn(
                                     "px-2 py-1.5 text-sm font-bold border-r border-[var(--color-border)]",
-                                    isZero ? "text-[var(--color-text-muted)]" : isGoodAct ? "text-[var(--color-success-text)]" : "text-amber-500"
+                                    !hasActual ? "text-[var(--color-text-muted)] opacity-50" : isZero ? "text-[var(--color-text-muted)]" : isGoodAct ? "text-[var(--color-success-text)]" : "text-amber-500"
                                   )}>
-                                    <div className="flex flex-col items-center justify-center">
-                                      <span>{act}</span>
-                                      {act > 0 && act < 80 && tgt > 0 && (
-                                        <span className="text-[7px] leading-tight text-black dark:text-white font-extralight tracking-tighter mt-0.5 block max-w-[65px] mx-auto text-center">
-                                          Machine Problem
-                                        </span>
-                                      )}
-                                    </div>
+                                    {!hasActual ? (
+                                      '-'
+                                    ) : (
+                                      <div className="flex flex-col items-center justify-center">
+                                        <span>{act}</span>
+                                        {act < 80 && tgt > 0 && (
+                                          <span className="text-[7px] leading-tight text-black dark:text-white font-extralight tracking-tighter mt-0.5 block max-w-[65px] mx-auto text-center">
+                                            Machine Problem
+                                          </span>
+                                        )}
+                                      </div>
+                                    )}
                                   </td>
                                   <td className={cn(
                                     "px-2 py-2.5 text-sm font-bold bg-[var(--color-bg-card)]/30",
-                                    isZero ? "text-[var(--color-text-muted)] opacity-50" : isGoodAchieve ? "text-blue-500 dark:text-blue-400" : "text-rose-500 dark:text-rose-400"
+                                    !hasActual ? "text-[var(--color-text-muted)] opacity-50" : isZero ? "text-[var(--color-text-muted)] opacity-50" : isGoodAchieve ? "text-blue-500 dark:text-blue-400" : "text-rose-500 dark:text-rose-400"
                                   )}>
-                                    {isZero ? '-' : `${percent}%`}
+                                    {!hasActual ? '-' : isZero ? '-' : `${percent}%`}
                                   </td>
                                 </tr>
                               );

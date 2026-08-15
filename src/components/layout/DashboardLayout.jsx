@@ -49,7 +49,7 @@ export default function DashboardLayout({ children }) {
           <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-surface)] to-transparent pointer-events-none"></div>
           <Link href="/" className="flex items-center gap-2 relative z-10 cursor-pointer">
             <div className="flex flex-col">
-              <span className="font-extrabold text-[13px] tracking-wider uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] to-[var(--color-text-muted)] leading-tight whitespace-nowrap [filter:var(--shadow-text)]">BYZID APPARELS</span>
+              <span className="font-extrabold text-[12px] sm:text-[13px] tracking-wider uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] to-[var(--color-text-muted)] leading-tight whitespace-nowrap [filter:var(--shadow-text)]">BYZID APPARELS PVT LTD</span>
               <span className="text-[9px] italic text-[var(--color-text-muted)] mt-0.5 flex items-center gap-1">
                 <span>Updated:</span>
                 <span className="text-[var(--color-primary)] font-medium">{datePart}</span>

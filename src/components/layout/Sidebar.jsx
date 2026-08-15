@@ -208,20 +208,26 @@ export default function Sidebar({ onClose }) {
 
           {/* Compact System Status */}
           {!isCollapsed && (
-            <div className="mx-1 px-2.5 py-2 rounded-xl bg-[var(--color-surface)] border border-[var(--color-border)] flex flex-col gap-1 group hover:border-[var(--color-primary)]/40 transition-colors cursor-default relative overflow-hidden">
-              <div className="flex items-center justify-between relative z-10">
-                <div className="flex items-center gap-1.5">
-                  <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                  </span>
-                  <span className="text-[10px] font-bold text-[var(--color-text-main)] tracking-wider">System Online</span>
-                </div>
-                <span className="text-[8px] text-[var(--color-text-muted)] font-bold bg-[var(--color-bg-card)] px-1.5 py-0.5 rounded-md border border-[var(--color-border)]">
-                  v2.0.4
-                </span>
+            <>
+              <div className="mx-1.5 px-0.5 flex items-center gap-1 text-[9px] italic text-[var(--color-text-muted)] tracking-wider">
+                <span>Last Update:</span>
+                <span className="text-[var(--color-primary)] font-semibold not-italic">{updateDate || 'Loading...'}</span>
               </div>
-            </div>
+              <div className="mx-1 px-2.5 py-2 rounded-xl bg-[var(--color-surface)] border border-[var(--color-border)] flex flex-col gap-1 group hover:border-[var(--color-primary)]/40 transition-colors cursor-default relative overflow-hidden">
+                <div className="flex items-center justify-between relative z-10">
+                  <div className="flex items-center gap-1.5">
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                    </span>
+                    <span className="text-[10px] font-bold text-[var(--color-text-main)] tracking-wider">System Online</span>
+                  </div>
+                  <span className="text-[8px] text-[var(--color-text-muted)] font-bold bg-[var(--color-bg-card)] px-1.5 py-0.5 rounded-md border border-[var(--color-border)]">
+                    v2.0.4
+                  </span>
+                </div>
+              </div>
+            </>
           )}
         </div>
       </div>

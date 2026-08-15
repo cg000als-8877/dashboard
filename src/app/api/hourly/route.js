@@ -89,8 +89,8 @@ async function fetchLiveHourlyData() {
             style: targetRow[lineColIndex + 2] || 'N/A',
             item: targetRow[lineColIndex + 3] || 'N/A',
             mp: targetRow[lineColIndex + 4] || 0,
-            target: targetRow.slice(dataStartIndex, dataStartIndex + 11).map(v => Number(v) || 0),
-            actual: actualRow.slice(actualStartIndex, actualStartIndex + 11).map(v => Number(v) || 0)
+            target: targetRow.slice(dataStartIndex, dataStartIndex + 11).map(v => (v === undefined || v === null || String(v).trim() === '') ? null : Number(v)),
+            actual: actualRow.slice(actualStartIndex, actualStartIndex + 11).map(v => (v === undefined || v === null || String(v).trim() === '') ? null : Number(v))
           });
         }
     }
