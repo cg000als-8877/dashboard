@@ -752,10 +752,17 @@ export default function HourlyPage() {
                                     {tgt}
                                   </td>
                                   <td className={cn(
-                                    "px-2 py-2.5 text-sm font-bold border-r border-[var(--color-border)]",
+                                    "px-2 py-1.5 text-sm font-bold border-r border-[var(--color-border)]",
                                     isZero ? "text-[var(--color-text-muted)]" : isGoodAct ? "text-[var(--color-success-text)]" : "text-amber-500"
                                   )}>
-                                    {act}
+                                    <div className="flex flex-col items-center justify-center">
+                                      <span>{act}</span>
+                                      {act > 0 && act < 80 && tgt > 0 && (
+                                        <span className="text-[7px] leading-tight text-black dark:text-white font-extralight tracking-tighter mt-0.5 block max-w-[65px] mx-auto text-center">
+                                          Machine Problem
+                                        </span>
+                                      )}
+                                    </div>
                                   </td>
                                   <td className={cn(
                                     "px-2 py-2.5 text-sm font-bold bg-[var(--color-bg-card)]/30",
