@@ -253,17 +253,27 @@ export default function DashboardLayout({ children }) {
                 key={`mobile-bottom-${item.name}`}
                 href={item.href}
                 className={cn(
-                  "flex flex-col items-center justify-center gap-1 flex-1 py-1 px-0.5 rounded-lg transition-all duration-300 relative group active:scale-95",
+                  "flex flex-col items-center justify-center gap-1 flex-1 py-1 px-0.5 transition-all duration-300 relative group active:scale-95",
                   isActive
                     ? "text-[var(--color-primary)] font-extrabold"
                     : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] font-medium"
                 )}
               >
-                {isActive && (
-                  <div className="absolute inset-0 bg-[var(--color-primary)]/10 rounded-lg shadow-[inset_0_0_12px_var(--color-primary-glow)] -z-0" />
-                )}
-                <Icon size={18} className={cn("relative z-10 transition-transform duration-300", isActive && "scale-110 drop-shadow-[0_0_8px_var(--color-primary-glow)]")} />
-                <span className="text-[8px] uppercase tracking-tighter leading-none relative z-10">{item.name}</span>
+                <div className="relative flex items-center justify-center">
+                  {isActive ? (
+                    <div className="relative w-9 h-9 rounded-full flex items-center justify-center overflow-hidden shrink-0 shadow-lg border border-[var(--color-border)]/20">
+                      <div className="absolute inset-[-50%] bg-[conic-gradient(from_0deg,transparent_15%,var(--color-primary)_50%,transparent_85%)] animate-[nav-border-spin_2s_linear_infinite]" />
+                      <div className="absolute inset-[1.5px] rounded-full bg-[var(--color-bg-card)] flex items-center justify-center z-10">
+                        <Icon size={16} className="text-[var(--color-primary)] drop-shadow-[0_0_5px_var(--color-primary-glow)]" />
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="w-9 h-9 rounded-full flex items-center justify-center text-[var(--color-text-secondary)] transition-colors group-hover:text-[var(--color-text-main)]">
+                      <Icon size={18} className="transition-transform duration-300 group-hover:scale-110" />
+                    </div>
+                  )}
+                </div>
+                <span className="text-[8px] uppercase tracking-tighter leading-none relative z-10 mt-0.5">{item.name}</span>
               </Link>
             );
           })}
