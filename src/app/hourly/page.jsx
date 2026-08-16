@@ -40,6 +40,163 @@ const LINE_META = {
   }
 };
 
+function PrecisionProgressRing({ percentage }) {
+  // ── Geometry ─────────────────────────────────────────────
+  const cx = 50; const cy = 50;
+  // Push the arc outward so it has clear air from the center label
+  const rOuter = 46;   // outer decorative orbit ring
+  const rMain  = 40;   // main progress arc
+
+  const circMain  = 2 * Math.PI * rMain;
+
+  // 270-degree sweep, gap centered at bottom-left (starts at 135°)
+  const sweepDeg = 270;
+  const startDeg = 135;
+  const arcMain  = (sweepDeg / 360) * circMain;
+  const gapMain  = circMain - arcMain;
+
+  const clampedPct = Math.min(Math.max(percentage, 0), 100);
+
+  // ── Animation state ───────────────────────────────────────
+  const [mainOffset, setMainOffset] = useState(arcMain);
+  const [canAnimate, setCanAnimate] = useState(false);
+
+  useEffect(() => {
+    // Step 1 — instantly reset to "empty" (no transition yet)
+    setCanAnimate(false);
+    setMainOffset(arcMain);
+
+    // Step 2 — enable the CSS transition one tick later
+    const t1 = setTimeout(() => setCanAnimate(true), 30);
+
+    // Step 3 — change the value so the transition actually plays
+    const t2 = setTimeout(() => {
+      setMainOffset(arcMain * (1 - clampedPct / 100));
+    }, 80);
+
+    return () => { clearTimeout(t1); clearTimeout(t2); };
+  }, [clampedPct, arcMain]);
+
+  const easing = 'cubic-bezier(0.34, 1.15, 0.64, 1)';
+  const transition = canAnimate ? `stroke-dashoffset 1.2s ${easing}` : 'none';
+
+  // ── Tip-dot ───────────────────────────────────────────────
+  // Use SVG transform so CSS transition actually works (cx/cy are not animatable)
+  const tipDeg = startDeg + (clampedPct / 100) * sweepDeg;
+  const tipRad = (tipDeg * Math.PI) / 180;
+  const tipX   = cx + rMain * Math.cos(tipRad);
+  const tipY   = cy + rMain * Math.sin(tipRad);
+  const tipTransform = `translate(${tipX - cx} ${tipY - cy})`;
+
+  // ── Gradient / filter IDs ────────────────────────────────
+  const gradId = 'pgGrad';
+  const glowId = 'pgGlow';
+
+  return (
+    // Container is w-28 h-28 (112 px) so there's breathing room around the bigger arc
+    <div className="relative w-28 h-28 flex items-center justify-center shrink-0">
+      <svg viewBox="0 0 100 100" className="w-full h-full" overflow="visible">
+        <defs>
+          {/* Arc gradient: secondary → primary → primary-bright */}
+          <linearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%"   stopColor="var(--color-secondary)"      stopOpacity="0.75" />
+            <stop offset="45%"  stopColor="var(--color-primary)"         stopOpacity="1"    />
+            <stop offset="100%" stopColor="var(--color-primary-bright)"  stopOpacity="1"    />
+          </linearGradient>
+          {/* Glow filter */}
+          <filter id={glowId} x="-100%" y="-100%" width="300%" height="300%">
+            <feGaussianBlur stdDeviation="2.2" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
+
+        {/* ── Outer decorative orbit (dashed) ── */}
+        <circle
+          cx={cx} cy={cy} r={rOuter}
+          fill="none"
+          stroke="var(--color-primary)"
+          strokeWidth="0.6"
+          strokeDasharray="1.8 5"
+          opacity="0.22"
+        />
+
+        {/* ── Ghost track arc (neutral) ── */}
+        <circle
+          cx={cx} cy={cy} r={rMain}
+          fill="none"
+          stroke="rgba(128,128,128,0.16)"
+          strokeWidth="7"
+          strokeLinecap="round"
+          strokeDasharray={`${arcMain} ${gapMain}`}
+          transform={`rotate(${startDeg} ${cx} ${cy})`}
+        />
+
+        {/* ── Main gradient progress arc ── */}
+        <circle
+          cx={cx} cy={cy} r={rMain}
+          fill="none"
+          stroke={`url(#${gradId})`}
+          strokeWidth="7"
+          strokeLinecap="round"
+          strokeDasharray={`${arcMain} ${gapMain}`}
+          style={{ strokeDashoffset: mainOffset, transition }}
+          transform={`rotate(${startDeg} ${cx} ${cy})`}
+        />
+
+
+
+
+
+        {/* ── Tip dot (uses transform so CSS transition works) ── */}
+        {clampedPct > 0 && (
+          <g
+            transform={tipTransform}
+            style={{
+              transition: canAnimate ? `transform 1.2s ${easing}` : 'none',
+              transformOrigin: `${cx}px ${cy}px`,
+            }}
+          >
+            {/* halo */}
+            <circle cx={cx} cy={cy} r="5" fill="var(--color-primary)" opacity="0.20" filter={`url(#${glowId})`} />
+            {/* core */}
+            <circle cx={cx} cy={cy} r="2.5" fill="var(--color-primary-bright)" filter={`url(#${glowId})`} />
+          </g>
+        )}
+
+        {/* ── 0% and 100% boundary ticks ── */}
+        {[startDeg, startDeg + sweepDeg].map((deg) => {
+          const r = (deg * Math.PI) / 180;
+          return (
+            <line key={deg}
+              x1={cx + (rMain - 5) * Math.cos(r)} y1={cy + (rMain - 5) * Math.sin(r)}
+              x2={cx + (rMain + 5) * Math.cos(r)} y2={cy + (rMain + 5) * Math.sin(r)}
+              stroke="var(--color-text-muted)" strokeWidth="1.2" opacity="0.35"
+            />
+          );
+        })}
+      </svg>
+
+      {/* ── Center label ── */}
+      <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+        <div className="flex items-baseline gap-[1px]">
+          <AnimatedNumber
+            value={clampedPct}
+            className="text-[20px] font-black tracking-tighter leading-none text-[var(--color-primary)]"
+          />
+          <span className="text-[9px] font-black text-[var(--color-primary)] leading-none mb-[1px]">%</span>
+        </div>
+        <span className="text-[6px] font-extrabold uppercase tracking-[0.18em] text-[var(--color-text-muted)] mt-[2px]">
+          ACH
+        </span>
+      </div>
+    </div>
+  );
+}
+
+
 export default function HourlyPage() {
   const dateInputRef = useRef(null);
   const [availableDates, setAvailableDates] = useState(hourlyCache.dates || []);
@@ -431,71 +588,7 @@ export default function HourlyPage() {
                         </div>
 
                         {/* Chronometer-Style Segmented Precision Gauge (No Glow) */}
-                        <div className="relative w-24 h-24 flex items-center justify-center shrink-0">
-                          <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-                            <defs>
-                              {/* Mask defining the dashed segments */}
-                              <mask id="segmentedPieMask">
-                                <circle 
-                                  cx="50" cy="50" r="36" 
-                                  stroke="white" strokeWidth="6" 
-                                  strokeDasharray="3 2" fill="none"
-                                />
-                              </mask>
-                            </defs>
-                            
-                            {/* Dial Calibration Ticks (12, 3, 6, 9 o'clock) */}
-                            <line x1="50" y1="5" x2="50" y2="9" stroke="var(--color-text-muted)" strokeWidth="1.5" className="opacity-60" />
-                            <line x1="95" y1="50" x2="91" y2="50" stroke="var(--color-text-muted)" strokeWidth="1.5" className="opacity-60" />
-                            <line x1="50" y1="95" x2="50" y2="91" stroke="var(--color-text-muted)" strokeWidth="1.5" className="opacity-60" />
-                            <line x1="5" y1="50" x2="9" y2="50" stroke="var(--color-text-muted)" strokeWidth="1.5" className="opacity-60" />
-                            
-                            {/* Outer Hairline Guide Bezel */}
-                            <circle 
-                              cx="50" cy="50" r="44" 
-                              stroke="var(--color-border)" strokeWidth="1" fill="none" className="opacity-30"
-                            />
-                            
-                            {/* Inner Solid Support Track */}
-                            <circle 
-                              cx="50" cy="50" r="36" 
-                              stroke="var(--color-surface)" strokeWidth="6" fill="none" 
-                            />
-                            
-                            {/* Segmented Track Backdrop (Dashes where progress hasn't reached yet) */}
-                            <circle 
-                              cx="50" cy="50" r="36" 
-                              stroke="var(--color-border)" strokeWidth="6" fill="none" className="opacity-40"
-                              mask="url(#segmentedPieMask)"
-                            />
-                            
-                            {/* Segmented Active Progress Ring (Perfectly cut using mask) */}
-                            <circle 
-                              cx="50" cy="50" r="36" 
-                              stroke="var(--color-primary)" 
-                              strokeWidth="6" 
-                              strokeLinecap="butt"
-                              fill="none" 
-                              strokeDasharray={2 * Math.PI * 36}
-                              strokeDashoffset={2 * Math.PI * 36 * (1 - Math.min(factoryAchievement, 100) / 100)}
-                              className="transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] origin-center"
-                              mask="url(#segmentedPieMask)"
-                            />
-                            
-                            {/* Inner Hairline Ring */}
-                            <circle 
-                              cx="50" cy="50" r="29" 
-                              stroke="var(--color-border)" strokeWidth="1" fill="none" className="opacity-30"
-                            />
-                          </svg>
-                          <div className="absolute inset-0 flex flex-col items-center justify-center">
-                            <AnimatedNumber 
-                              value={factoryAchievement} 
-                              className="text-xl font-black tracking-tighter text-[var(--color-primary)]"
-                            />
-                            <span className="text-[10px] font-bold text-[var(--color-text-secondary)] -mt-1">%</span>
-                          </div>
-                        </div>
+                        <PrecisionProgressRing percentage={factoryAchievement} />
                       </div>
                     </div>
                   </div>
