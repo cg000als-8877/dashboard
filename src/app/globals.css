@@ -217,6 +217,117 @@ html[data-theme="jungle-nebula"][data-mode="light"] {
 }
 
 /* ═══════════════════════════════════════════
+   GEN-Z — Funky Vivid Hyper-Colorful Neon
+   Vivid cobalt, hot pink, laser yellow, neon turquoise
+   Bg Dark:   #08000f
+═══════════════════════════════════════════ */
+html[data-theme="gen-z"] {
+  --color-primary: #ff007f;
+  --color-primary-bright: #ff3399;
+  --color-primary-soft: #300018;
+  --color-primary-glow: rgba(255, 0, 127, 0.5);
+  --color-primary-glow-hover: rgba(255, 0, 127, 0.8);
+
+  --color-secondary: #00ffcc;
+  --color-secondary-bright: #33ffdd;
+  --color-secondary-soft: #003026;
+
+  --color-success: #39ff14;
+  --color-success-text: #39ff14;
+  --color-success-glow: rgba(57, 255, 20, 0.4);
+
+  --color-danger: #ff003c;
+  --color-danger-text: #ff3366;
+  --color-danger-glow: rgba(255, 0, 60, 0.4);
+
+  --color-warning: #ffff00;
+  --color-warning-text: #ffff00;
+  --color-warning-glow: rgba(255, 255, 0, 0.4);
+
+  --color-info: #00d2ff;
+}
+
+html[data-theme="gen-z"][data-mode="dark"] {
+  --color-bg-main: #08000f;
+  --color-bg-card: #130122;
+  --color-bg-card-hover: #1e0235;
+  --color-bg-elevated: #240340;
+
+  --color-surface: rgba(255, 0, 128, 0.08);
+  --color-surface-hover: rgba(255, 0, 128, 0.15);
+
+  --color-border: rgba(0, 255, 200, 0.25);
+  --color-border-strong: rgba(255, 0, 200, 0.40);
+
+  --color-text-main: #00ffcc;
+  --color-text-secondary: #ff007f;
+  --color-text-muted: #ffaa00;
+  --color-text-subtle: #cc00ff;
+
+  --color-primary: #ff007f;
+  --color-primary-bright: #ff3399;
+  --color-primary-soft: #300018;
+  --color-primary-glow: rgba(255, 0, 127, 0.5);
+
+  --color-secondary: #00ffcc;
+  --color-secondary-bright: #33ffdd;
+  --color-secondary-soft: #003026;
+
+  --color-success: #39ff14;
+  --color-success-text: #39ff14;
+
+  --color-danger: #ff003c;
+  --color-danger-text: #ff3366;
+
+  --color-warning: #ffff00;
+  --color-warning-text: #ffff00;
+
+  --color-info: #00d2ff;
+
+  --shadow-color: rgba(255, 0, 128, 0.25);
+}
+
+html[data-theme="gen-z"][data-mode="light"] {
+  --color-bg-main: #fff0fa;
+  --color-bg-card: #ffffff;
+  --color-bg-card-hover: #ffe3f5;
+  --color-bg-elevated: #ffd6f0;
+
+  --color-surface: rgba(0, 255, 200, 0.10);
+  --color-surface-hover: rgba(0, 255, 200, 0.20);
+
+  --color-border: rgba(255, 0, 128, 0.25);
+  --color-border-strong: rgba(0, 255, 200, 0.40);
+
+  --color-text-main: #1b003a;
+  --color-text-secondary: #ff007f;
+  --color-text-muted: #00b386;
+  --color-text-subtle: #8a00e6;
+
+  --color-primary: #ff007f;
+  --color-primary-bright: #ff3399;
+  --color-primary-soft: #fff0f7;
+  --color-primary-glow: rgba(255, 0, 127, 0.3);
+
+  --color-secondary: #00cc99;
+  --color-secondary-bright: #00ffcc;
+  --color-secondary-soft: #e6fcf7;
+
+  --color-success: #10b981;
+  --color-success-text: #147749;
+
+  --color-danger: #ef4444;
+  --color-danger-text: #b91c1c;
+
+  --color-warning: #eab308;
+  --color-warning-text: #854d0e;
+
+  --color-info: #06b6d4;
+
+  --shadow-color: rgba(255, 0, 128, 0.12);
+}
+
+/* ═══════════════════════════════════════════
    OCEAN DARK — Original Classic Blue (Default)
    Primary:  #4F8CFF  (Electric Blue)
    Cost:     #F5A623  (Amber Gold)
