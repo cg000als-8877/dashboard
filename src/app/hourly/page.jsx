@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { Card } from '@/components/ui/Card';
 import { Clock, Calendar as CalendarIcon, RefreshCw, AlertTriangle, Sparkles, TrendingUp, Activity, ChevronLeft, ChevronRight, ChevronDown, Calendar, Flag, ShieldCheck } from 'lucide-react';
 import { cn } from '@/components/layout/Sidebar';
@@ -48,6 +49,11 @@ export default function HourlyPage() {
   const [mobileLineIndex, setMobileLineIndex] = useState(0);
   const [isFactoryTableExpanded, setIsFactoryTableExpanded] = useState(false);
   const [isDatePickerModalOpen, setIsDatePickerModalOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const holidayInfo = getHolidayInfo(selectedDate);
 
@@ -199,9 +205,9 @@ export default function HourlyPage() {
           </div>
         </div>
 
-        {/* Quick Date Modal & Color Coded List */}
-        {isDatePickerModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md animate-[fade-in_0.2s_ease-out]">
+        {/* Quick Date Modal & Color Coded List (Rendered at root using Portal to avoid ancestor transform clipping) */}
+        {mounted && typeof window !== 'undefined' && isDatePickerModalOpen && createPortal(
+          <div className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-black/70 backdrop-blur-md animate-[fade-in_0.2s_ease-out]">
             <div className="bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl animate-[scale-up_0.25s_ease-out]">
               <div className="p-4 border-b border-[var(--color-border)] flex items-center justify-between bg-[var(--color-surface)]/50">
                 <div className="flex items-center gap-2">
@@ -305,7 +311,8 @@ export default function HourlyPage() {
                 })}
               </div>
             </div>
-          </div>
+          </div>,
+          document.body
         )}
 
         {/* Holiday / Empty State Handler */}
