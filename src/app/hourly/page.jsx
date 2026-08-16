@@ -767,7 +767,7 @@ export default function HourlyPage() {
                                       <div className="flex flex-col items-center justify-center">
                                         <span>{act}</span>
                                         {act < 80 && tgt > 0 && (
-                                          <span className="text-[7px] leading-tight text-black dark:text-white font-extralight tracking-tighter mt-0.5 block max-w-[65px] mx-auto text-center">
+                                          <span className="text-[9px] leading-none text-black dark:text-white font-light tracking-tight mt-0.5 block max-w-[80px] mx-auto text-center">
                                             Machine Problem
                                           </span>
                                         )}

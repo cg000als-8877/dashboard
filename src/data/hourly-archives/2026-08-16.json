@@ -1,0 +1,150 @@
+{
+  "date": "2026-08-16",
+  "timeLabels": [
+    "1ST",
+    "2ND",
+    "3RD",
+    "4TH",
+    "5TH",
+    "6TH",
+    "7TH",
+    "8TH",
+    "9TH",
+    "10TH",
+    "11TH"
+  ],
+  "lines": [
+    {
+      "line_id": "A",
+      "buyer": "FAMETEX",
+      "style": "N/A",
+      "item": "SHERPA SHIRT",
+      "mp": 12,
+      "target": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "actual": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "line_id": "B",
+      "buyer": "ANKHI APP.",
+      "style": "BD2625",
+      "item": "LADIES TOP",
+      "mp": 48,
+      "target": [
+        130,
+        130,
+        130,
+        130,
+        130,
+        130,
+        130,
+        130,
+        130,
+        null,
+        null
+      ],
+      "actual": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "line_id": "C",
+      "buyer": "ANKHI APP.",
+      "style": "BD2526",
+      "item": "LADIES BOTTOM",
+      "mp": 31,
+      "target": [
+        140,
+        140,
+        140,
+        140,
+        140,
+        140,
+        140,
+        140,
+        null,
+        null,
+        null
+      ],
+      "actual": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "line_id": "D",
+      "buyer": "FAMETEX",
+      "style": "N/A",
+      "item": "MENS TEE SHIRT",
+      "mp": 28,
+      "target": [
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        null,
+        null,
+        null
+      ],
+      "actual": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    }
+  ]
+}

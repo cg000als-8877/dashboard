@@ -9,7 +9,7 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { useKpiData } from '@/utils/useKpiData';
 import { format, parseISO } from 'date-fns';
-import { Clock, LayoutDashboard, Factory, BarChart3, Ship, History, Palette, Sun, Moon, GitCompare } from 'lucide-react';
+import { Clock, LayoutDashboard, Factory, BarChart3, Ship, History, Palette, Sun, Moon, GitCompare, Coffee } from 'lucide-react';
 import { useMonth } from '@/components/providers/MonthProvider';
 import { useTheme } from '@/components/ThemeProvider';
 
@@ -29,6 +29,8 @@ export default function DashboardLayout({ children }) {
   const { selectedMonth, setSelectedMonth } = useMonth();
   const { visualTheme, setVisualTheme, mode, setMode, toggleTheme, VISUAL_THEMES, APPEARANCE_MODES } = useTheme();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isBurgerOpen, setIsBurgerOpen] = useState(false);
+  const [showCanteenModal, setShowCanteenModal] = useState(false);
 
   let datePart = "Loading...";
   if (dailyTrends && dailyTrends.length > 0) {
@@ -61,7 +63,10 @@ export default function DashboardLayout({ children }) {
           <div className="flex items-center gap-2 relative z-50">
             {/* Visual Theme Palette Toggle */}
             <button 
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} 
+              onClick={() => {
+                setIsMobileMenuOpen(!isMobileMenuOpen);
+                setIsBurgerOpen(false);
+              }} 
               className={cn(
                 "p-2 rounded-xl transition-all duration-300 active:scale-95 border flex items-center justify-center shadow-sm",
                 isMobileMenuOpen 
@@ -76,7 +81,11 @@ export default function DashboardLayout({ children }) {
 
             {/* Light / Dark Mode Toggle Button */}
             <button 
-              onClick={toggleTheme}
+              onClick={() => {
+                toggleTheme();
+                setIsBurgerOpen(false);
+                setIsMobileMenuOpen(false);
+              }}
               className="p-2 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)]/70 text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)] hover:border-[var(--color-primary)]/30 transition-all active:scale-95 flex items-center justify-center shadow-sm"
               aria-label="Toggle Light/Dark Mode"
               title="Toggle Light/Dark Mode"
@@ -88,21 +97,79 @@ export default function DashboardLayout({ children }) {
               )}
             </button>
 
-            {/* Simulator Shortcut Button */}
-            <Link 
-              href="/simulator"
+            {/* Hamburger Shortcut Menu Toggle Button */}
+            <button 
+              onClick={() => {
+                setIsBurgerOpen(!isBurgerOpen);
+                setIsMobileMenuOpen(false);
+              }}
               className={cn(
-                "p-2 rounded-xl border transition-all active:scale-95 flex items-center justify-center shadow-sm",
-                pathname === '/simulator'
-                  ? "bg-[var(--color-primary)]/20 text-[var(--color-primary)] border-[var(--color-primary)]/50 shadow-[0_0_12px_var(--color-primary-glow)]"
-                  : "bg-[var(--color-surface)]/70 text-[var(--color-text-secondary)] border-[var(--color-border)] hover:text-[var(--color-text-main)] hover:border-[var(--color-primary)]/30"
+                "p-2 rounded-xl border transition-all active:scale-95 flex items-center justify-center shadow-sm h-9 w-9",
+                isBurgerOpen
+                  ? "bg-[var(--color-primary)]/20 border-[var(--color-primary)]/50 shadow-[0_0_12px_var(--color-primary-glow)]"
+                  : "bg-[var(--color-surface)]/70 border-[var(--color-border)] hover:border-[var(--color-primary)]/30"
               )}
-              aria-label="Go to Simulator"
-              title="Go to Simulator"
+              aria-label="Toggle Quick Navigation"
+              title="Quick Navigation"
             >
-              <Ship size={17} />
-            </Link>
+              <div className={cn("burger", isBurgerOpen && "open")}>
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </button>
           </div>
+
+          {/* Quick Navigation Hamburger Popover Modal */}
+          {isBurgerOpen && (
+            <>
+              <div className="fixed inset-0 z-[90] bg-black/40 backdrop-blur-[2px]" onClick={() => setIsBurgerOpen(false)}></div>
+              <div className="absolute top-14 right-3 w-48 bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-2xl shadow-2xl flex flex-col p-2 animate-[fade-down_0.2s_ease-out_both] z-[100] origin-top-right">
+                <p className="text-[9px] font-extrabold uppercase tracking-widest text-[var(--color-text-muted)] mb-2 px-2.5 pt-1.5">
+                  Quick Navigation
+                </p>
+                <div className="space-y-0.5">
+                  {[
+                    { name: 'Compare', href: '/compare', icon: GitCompare },
+                    { name: 'Analytics', href: '/analytics', icon: BarChart3 },
+                    { name: 'Simulator', href: '/simulator', icon: Ship }
+                  ].map((item) => {
+                    const isActive = pathname === item.href;
+                    const Icon = item.icon;
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        onClick={() => setIsBurgerOpen(false)}
+                        className={cn(
+                          "w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer",
+                          isActive
+                            ? "bg-[var(--color-primary)]/15 text-[var(--color-primary)] font-bold shadow-sm"
+                            : "text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-main)]"
+                        )}
+                      >
+                        <Icon size={14} />
+                        <span>{item.name}</span>
+                      </Link>
+                    );
+                  })}
+                  
+                  <div className="h-px bg-[var(--color-border)] my-1 opacity-60"></div>
+                  
+                  <button
+                    onClick={() => {
+                      setIsBurgerOpen(false);
+                      setShowCanteenModal(true);
+                    }}
+                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-main)]"
+                  >
+                    <Coffee size={14} className="text-amber-500" />
+                    <span>BAPL CANTEEN</span>
+                  </button>
+                </div>
+              </div>
+            </>
+          )}
 
           {/* Theme & Appearance Selector Popover Modal */}
           {isMobileMenuOpen && (
@@ -177,7 +244,7 @@ export default function DashboardLayout({ children }) {
 
         {/* Mobile Bottom Fixed Navigation Bar */}
         <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[var(--color-bg-card)]/95 backdrop-blur-xl border-t border-[var(--color-border)] shadow-[0_-4px_25px_rgba(0,0,0,0.3)] px-1 py-2 flex items-center justify-around">
-          {navItems.filter(item => item.name !== 'Simulator').map((item) => {
+          {navItems.filter(item => !['Simulator', 'Compare', 'Analytics'].includes(item.name)).map((item) => {
             const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
             const Icon = item.icon;
             
@@ -210,6 +277,53 @@ export default function DashboardLayout({ children }) {
             {children}
           </div>
         </main>
+
+        {/* Canteen Modal Popup Dialog */}
+        {showCanteenModal && (
+          <>
+            <div 
+              className="fixed inset-0 z-[110] bg-black/60 backdrop-blur-sm animate-[fade-in_0.2s_ease-out_both]"
+              onClick={() => setShowCanteenModal(false)}
+            ></div>
+            <div className="fixed inset-0 flex items-center justify-center z-[120] p-4 pointer-events-none">
+              <div className="bg-[var(--color-bg-card)] border border-[var(--color-border)] w-full max-w-sm rounded-3xl shadow-2xl p-6 flex flex-col items-center gap-4 text-center pointer-events-auto animate-[fade-down_0.2s_ease-out_both]">
+                <div className="w-12 h-12 rounded-full bg-amber-500/10 text-amber-500 flex items-center justify-center shadow-inner">
+                  <Coffee size={22} />
+                </div>
+                <div className="space-y-1">
+                  <h3 className="text-sm font-extrabold text-[var(--color-text-main)] tracking-wider uppercase">
+                    BAPL Canteen
+                  </h3>
+                  <p className="text-xs text-[var(--color-text-secondary)] leading-relaxed px-2">
+                    Are you a member of the BAPL Canteen?
+                  </p>
+                </div>
+                <div className="grid grid-cols-2 gap-3 w-full mt-2">
+                  <button
+                    onClick={() => {
+                      setShowCanteenModal(false);
+                      window.open("https://baplc.vercel.app", "_blank");
+                    }}
+                    className="py-2.5 px-4 rounded-xl bg-[var(--color-primary)] hover:bg-[var(--color-primary)]/80 text-[var(--color-on-primary)] font-bold text-xs transition-all active:scale-95 shadow-sm cursor-pointer"
+                  >
+                    Yes
+                  </button>
+                  <button
+                    onClick={() => {
+                      setShowCanteenModal(false);
+                      if (pathname !== '/') {
+                        window.location.href = "/";
+                      }
+                    }}
+                    className="py-2.5 px-4 rounded-xl bg-[var(--color-surface)] border border-[var(--color-border)] hover:bg-[var(--color-surface-hover)] text-[var(--color-text-secondary)] font-bold text-xs transition-all active:scale-95 shadow-sm cursor-pointer"
+                  >
+                    No
+                  </button>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

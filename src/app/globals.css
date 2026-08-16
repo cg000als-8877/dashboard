@@ -868,3 +868,59 @@ body {
     border: 1px solid #ccc !important;
   }
 }
+
+/* Compact Animated Hamburger Icon (Theme Aware) */
+.burger {
+  position: relative;
+  width: 16px;
+  height: 12px;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.burger span {
+  display: block;
+  height: 2px;
+  width: 100%;
+  background: var(--color-text-secondary);
+  border-radius: 9px;
+  opacity: 1;
+  left: 0;
+  transform: rotate(0deg);
+  transition: .25s ease-in-out;
+}
+
+.burger span:nth-of-type(1) {
+  transform-origin: left center;
+}
+
+.burger span:nth-of-type(2) {
+  transform-origin: left center;
+}
+
+.burger span:nth-of-type(3) {
+  transform-origin: left center;
+}
+
+.burger.open span:nth-of-type(1) {
+  transform: rotate(45deg) translate(0.5px, -1.5px);
+  background: var(--color-primary);
+}
+
+.burger.open span:nth-of-type(2) {
+  width: 0%;
+  opacity: 0;
+}
+
+.burger.open span:nth-of-type(3) {
+  transform: rotate(-45deg) translate(0.5px, 1.5px);
+  background: var(--color-primary);
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
