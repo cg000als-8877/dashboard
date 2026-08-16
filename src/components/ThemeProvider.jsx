@@ -4,6 +4,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 
 export const VISUAL_THEMES = [
   { id: 'lime-ivory', name: 'Lime Ivory', color: '#9BE52C' },
+  { id: 'jungle-nebula', name: 'Jungle Nebula', color: '#57C27A' },
   { id: 'ocean-dark', name: 'Ocean Dark', color: '#4F8CFF' },
   { id: 'amber-forge', name: 'Amber Forge', color: '#F59E0B' },
   { id: 'cyber-violet', name: 'Cyber Violet', color: '#A855F7' },
@@ -11,7 +12,7 @@ export const VISUAL_THEMES = [
   { id: 'cyberpunk', name: 'Cyberpunk', color: '#FF003C' },
   { id: 'obsidian-vercel', name: 'Obsidian Vercel', color: '#FFFFFF' },
   { id: 'electric-indigo', name: 'Electric Indigo', color: '#7C6CFF' },
-  { id: 'aurora', name: 'Aurora', color: '#A875FF' },
+  { id: 'verdant', name: 'Verdant', color: '#80B918' },
 ];
 
 export const APPEARANCE_MODES = [
