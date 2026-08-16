@@ -11,6 +11,7 @@ export const VISUAL_THEMES = [
   { id: 'cyberpunk', name: 'Cyberpunk', color: '#FF003C' },
   { id: 'obsidian-vercel', name: 'Obsidian Vercel', color: '#FFFFFF' },
   { id: 'electric-indigo', name: 'Electric Indigo', color: '#7C6CFF' },
+  { id: 'aurora', name: 'Aurora', color: '#A875FF' },
 ];
 
 export const APPEARANCE_MODES = [

@@ -108,7 +108,7 @@ export default function DashboardLayout({ children }) {
                   <p className="text-[9px] font-extrabold uppercase tracking-widest text-[var(--color-text-muted)] mb-1.5 px-1">
                     Visual Theme
                   </p>
-                  <div className="space-y-1 max-h-56 overflow-y-auto hide-scrollbar">
+                  <div className="space-y-1">
                     {VISUAL_THEMES.map((t) => {
                       const isSelected = visualTheme === t.id;
                       return (

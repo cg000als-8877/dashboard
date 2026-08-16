@@ -596,6 +596,112 @@ html[data-theme="electric-indigo"][data-mode="light"] {
 }
 
 /* ═══════════════════════════════════════════
+   AURORA — High-Tech Neon Aurora (Violet & Mint)
+   Vibrant violet and mint accents
+   Bg Dark:  #0C0D12
+═══════════════════════════════════════════ */
+html[data-theme="aurora"] {
+  --color-primary: #A875FF;
+  --color-primary-bright: #C09AFF;
+  --color-primary-soft: #2D2145;
+  --color-primary-glow: rgba(168, 117, 255, 0.23);
+  --color-primary-glow-hover: rgba(168, 117, 255, 0.45);
+
+  --color-secondary: #5DD6D0;
+  --color-secondary-soft: #163B3A;
+
+  --color-success: #4BD38A;
+  --color-success-text: #72E7A5;
+  --color-success-glow: rgba(75, 211, 138, 0.25);
+
+  --color-danger: #FF6270;
+  --color-danger-text: #FF858F;
+  --color-danger-glow: rgba(255, 98, 112, 0.25);
+
+  --color-warning: #F2B84B;
+  --color-warning-text: #FFD16F;
+  --color-warning-glow: rgba(242, 184, 75, 0.25);
+
+  --color-info: #70A9FF;
+}
+
+html[data-theme="aurora"][data-mode="dark"] {
+  --color-bg-main: #0C0D12;
+  --color-bg-card: #151720;
+  --color-bg-card-hover: #1C1E2A;
+
+  --color-surface: rgba(255, 255, 255, 0.045);
+  --color-surface-hover: rgba(255, 255, 255, 0.075);
+
+  --color-border: rgba(180, 190, 220, 0.10);
+  --color-border-strong: rgba(180, 190, 220, 0.17);
+
+  --color-text-main: #F4F5FA;
+  --color-text-secondary: #A6A9B8;
+  --color-text-muted: #707486;
+  --color-text-subtle: #515463;
+
+  --color-primary: #A875FF;
+  --color-primary-bright: #C09AFF;
+  --color-primary-soft: #2D2145;
+  --color-primary-glow: rgba(168, 117, 255, 0.23);
+
+  --color-secondary: #5DD6D0;
+  --color-secondary-soft: #163B3A;
+
+  --color-success: #4BD38A;
+  --color-success-text: #72E7A5;
+
+  --color-danger: #FF6270;
+  --color-danger-text: #FF858F;
+
+  --color-warning: #F2B84B;
+  --color-warning-text: #FFD16F;
+
+  --color-info: #70A9FF;
+
+  --shadow-color: rgba(0, 0, 0, 0.60);
+}
+
+html[data-theme="aurora"][data-mode="light"] {
+  --color-bg-main: #F5F5F8;
+  --color-bg-card: #FFFFFF;
+  --color-bg-card-hover: #F0F0F4;
+
+  --color-surface: rgba(50, 50, 80, 0.03);
+  --color-surface-hover: rgba(50, 50, 80, 0.055);
+
+  --color-border: rgba(70, 70, 100, 0.10);
+  --color-border-strong: rgba(70, 70, 100, 0.17);
+
+  --color-text-main: #1B1C24;
+  --color-text-secondary: #555866;
+  --color-text-muted: #7B7E8C;
+  --color-text-subtle: #A0A2AC;
+
+  --color-primary: #8051D8;
+  --color-primary-bright: #9368E8;
+  --color-primary-soft: #EFE8FF;
+  --color-primary-glow: rgba(128, 81, 216, 0.14);
+
+  --color-secondary: #198F89;
+  --color-secondary-soft: #DDF5F3;
+
+  --color-success: #188A55;
+  --color-success-text: #147749;
+
+  --color-danger: #D63D4C;
+  --color-danger-text: #C63140;
+
+  --color-warning: #A76A00;
+  --color-warning-text: #925B00;
+
+  --color-info: #3A73B7;
+
+  --shadow-color: rgba(30, 25, 50, 0.08);
+}
+
+/* ═══════════════════════════════════════════
    LIME IVORY — Acid Lime × Ivory Charcoal
    Primary:  #9BE52C (Dark Mode Acid Lime)
             #72A915 (Light Mode Controlled Readable Lime)
