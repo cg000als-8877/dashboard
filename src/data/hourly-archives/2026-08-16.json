@@ -67,10 +67,10 @@
         null
       ],
       "actual": [
-        null,
-        null,
-        null,
-        null,
+        80,
+        65,
+        100,
+        100,
         null,
         null,
         null,
@@ -100,10 +100,10 @@
         null
       ],
       "actual": [
-        null,
-        null,
-        null,
-        null,
+        100,
+        80,
+        80,
+        90,
         null,
         null,
         null,
@@ -133,10 +133,10 @@
         null
       ],
       "actual": [
-        null,
-        null,
-        null,
-        null,
+        130,
+        140,
+        150,
+        160,
         null,
         null,
         null,

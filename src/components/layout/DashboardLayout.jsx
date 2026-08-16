@@ -239,7 +239,7 @@ export default function DashboardLayout({ children }) {
         )}
 
         {/* Mobile Bottom Fixed Navigation Bar */}
-        <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[var(--color-bg-card)]/95 backdrop-blur-xl border-t border-[var(--color-border)] shadow-[0_-4px_20px_rgba(0,0,0,0.2)] px-1 py-1 flex items-center justify-around animate-[fade-in_0.3s_ease-out]">
+        <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[var(--color-bg-card)]/95 backdrop-blur-xl border-t border-[var(--color-border)] shadow-[0_-4px_20px_rgba(0,0,0,0.25)] px-1 py-1.5 flex items-center justify-around animate-[fade-in_0.3s_ease-out]">
           {navItems.filter(item => !['Simulator', 'Compare', 'Analytics'].includes(item.name)).map((item) => {
             const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
             const Icon = item.icon;
@@ -252,24 +252,24 @@ export default function DashboardLayout({ children }) {
                   "flex flex-col items-center justify-center flex-1 py-0.5 px-0.5 transition-all duration-300 relative group active:scale-95",
                   isActive
                     ? "text-[var(--color-primary)] font-extrabold"
-                    : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] font-medium"
+                    : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] font-bold"
                 )}
               >
                 <div className="relative flex items-center justify-center">
                   {isActive ? (
-                    <div className="relative w-7 h-7 rounded-full flex items-center justify-center overflow-hidden shrink-0 shadow-sm border border-[var(--color-border)]/20">
+                    <div className="relative w-8 h-8 rounded-full flex items-center justify-center overflow-hidden shrink-0 shadow-sm border border-[var(--color-border)]/20">
                       <div className="absolute inset-[-50%] bg-[conic-gradient(from_0deg,transparent_15%,var(--color-primary)_50%,transparent_85%)] animate-[nav-border-spin_2s_linear_infinite]" />
-                      <div className="absolute inset-[1.2px] rounded-full bg-[var(--color-bg-card)] flex items-center justify-center z-10">
-                        <Icon size={13} className="text-[var(--color-primary)] drop-shadow-[0_0_4px_var(--color-primary-glow)]" />
+                      <div className="absolute inset-[1.5px] rounded-full bg-[var(--color-bg-card)] flex items-center justify-center z-10">
+                        <Icon size={15} className="text-[var(--color-primary)] drop-shadow-[0_0_4px_var(--color-primary-glow)]" />
                       </div>
                     </div>
                   ) : (
-                    <div className="w-7 h-7 rounded-full flex items-center justify-center text-[var(--color-text-secondary)] transition-colors group-hover:text-[var(--color-text-main)]">
-                      <Icon size={15} className="transition-transform duration-300 group-hover:scale-110" />
+                    <div className="w-8 h-8 rounded-full flex items-center justify-center text-[var(--color-text-secondary)] transition-colors group-hover:text-[var(--color-text-main)]">
+                      <Icon size={18} className="transition-transform duration-300 group-hover:scale-110" />
                     </div>
                   )}
                 </div>
-                <span className="text-[7.5px] uppercase tracking-tighter leading-none relative z-10 mt-0.5">{item.name}</span>
+                <span className="text-[9px] font-bold uppercase tracking-tighter leading-none relative z-10 mt-1">{item.name}</span>
               </Link>
             );
           })}
@@ -284,24 +284,24 @@ export default function DashboardLayout({ children }) {
               "flex flex-col items-center justify-center flex-1 py-0.5 px-0.5 transition-all duration-300 relative group active:scale-95 cursor-pointer",
               isBurgerOpen
                 ? "text-[var(--color-primary)] font-extrabold"
-                : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] font-medium"
+                : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] font-bold"
             )}
           >
             <div className="relative flex items-center justify-center">
               {isBurgerOpen ? (
-                <div className="relative w-7 h-7 rounded-full flex items-center justify-center overflow-hidden shrink-0 shadow-sm border border-[var(--color-border)]/20">
+                <div className="relative w-8 h-8 rounded-full flex items-center justify-center overflow-hidden shrink-0 shadow-sm border border-[var(--color-border)]/20">
                   <div className="absolute inset-[-50%] bg-[conic-gradient(from_0deg,transparent_15%,var(--color-primary)_50%,transparent_85%)] animate-[nav-border-spin_2s_linear_infinite]" />
-                  <div className="absolute inset-[1.2px] rounded-full bg-[var(--color-bg-card)] flex items-center justify-center z-10">
-                    <X size={13} className="text-[var(--color-primary)] drop-shadow-[0_0_4px_var(--color-primary-glow)]" />
+                  <div className="absolute inset-[1.5px] rounded-full bg-[var(--color-bg-card)] flex items-center justify-center z-10">
+                    <X size={15} className="text-[var(--color-primary)] drop-shadow-[0_0_4px_var(--color-primary-glow)]" />
                   </div>
                 </div>
               ) : (
-                <div className="w-7 h-7 rounded-full flex items-center justify-center text-[var(--color-text-secondary)] transition-colors group-hover:text-[var(--color-text-main)]">
-                  <Menu size={15} className="transition-transform duration-300 group-hover:scale-110" />
+                <div className="w-8 h-8 rounded-full flex items-center justify-center text-[var(--color-text-secondary)] transition-colors group-hover:text-[var(--color-text-main)]">
+                  <Menu size={18} className="transition-transform duration-300 group-hover:scale-110" />
                 </div>
               )}
             </div>
-            <span className="text-[7.5px] uppercase tracking-tighter leading-none relative z-10 mt-0.5">OTHERS</span>
+            <span className="text-[9px] font-bold uppercase tracking-tighter leading-none relative z-10 mt-1">OTHERS</span>
           </button>
         </nav>
 

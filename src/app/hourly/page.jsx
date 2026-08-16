@@ -155,7 +155,7 @@ export default function HourlyPage() {
   );
 
   return (
-    <div className="min-h-screen bg-[var(--color-bg-main)] p-4 md:p-6 xl:p-8">
+    <div className="space-y-8 pb-10 animate-[fade-up_0.4s_ease-out_both] w-full">
       <div className="w-full space-y-8">
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -423,24 +423,62 @@ export default function HourlyPage() {
                           </div>
                         </div>
 
-                        {/* Pie Chart */}
+                        {/* Chronometer-Style Segmented Precision Gauge (No Glow) */}
                         <div className="relative w-24 h-24 flex items-center justify-center shrink-0">
                           <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-                            {/* Track */}
+                            <defs>
+                              {/* Mask defining the dashed segments */}
+                              <mask id="segmentedPieMask">
+                                <circle 
+                                  cx="50" cy="50" r="36" 
+                                  stroke="white" strokeWidth="6" 
+                                  strokeDasharray="3 2" fill="none"
+                                />
+                              </mask>
+                            </defs>
+                            
+                            {/* Dial Calibration Ticks (12, 3, 6, 9 o'clock) */}
+                            <line x1="50" y1="5" x2="50" y2="9" stroke="var(--color-text-muted)" strokeWidth="1.5" className="opacity-60" />
+                            <line x1="95" y1="50" x2="91" y2="50" stroke="var(--color-text-muted)" strokeWidth="1.5" className="opacity-60" />
+                            <line x1="50" y1="95" x2="50" y2="91" stroke="var(--color-text-muted)" strokeWidth="1.5" className="opacity-60" />
+                            <line x1="5" y1="50" x2="9" y2="50" stroke="var(--color-text-muted)" strokeWidth="1.5" className="opacity-60" />
+                            
+                            {/* Outer Hairline Guide Bezel */}
                             <circle 
-                              cx="50" cy="50" r="40" 
-                              stroke="var(--color-surface)" strokeWidth="8" fill="none" 
+                              cx="50" cy="50" r="44" 
+                              stroke="var(--color-border)" strokeWidth="1" fill="none" className="opacity-30"
                             />
-                            {/* Progress */}
+                            
+                            {/* Inner Solid Support Track */}
                             <circle 
-                              cx="50" cy="50" r="40" 
+                              cx="50" cy="50" r="36" 
+                              stroke="var(--color-surface)" strokeWidth="6" fill="none" 
+                            />
+                            
+                            {/* Segmented Track Backdrop (Dashes where progress hasn't reached yet) */}
+                            <circle 
+                              cx="50" cy="50" r="36" 
+                              stroke="var(--color-border)" strokeWidth="6" fill="none" className="opacity-40"
+                              mask="url(#segmentedPieMask)"
+                            />
+                            
+                            {/* Segmented Active Progress Ring (Perfectly cut using mask) */}
+                            <circle 
+                              cx="50" cy="50" r="36" 
                               stroke="var(--color-primary)" 
-                              strokeWidth="8" 
-                              strokeLinecap="round"
+                              strokeWidth="6" 
+                              strokeLinecap="butt"
                               fill="none" 
-                              strokeDasharray={2 * Math.PI * 40}
-                              strokeDashoffset={2 * Math.PI * 40 * (1 - Math.min(factoryAchievement, 100) / 100)}
+                              strokeDasharray={2 * Math.PI * 36}
+                              strokeDashoffset={2 * Math.PI * 36 * (1 - Math.min(factoryAchievement, 100) / 100)}
                               className="transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] origin-center"
+                              mask="url(#segmentedPieMask)"
+                            />
+                            
+                            {/* Inner Hairline Ring */}
+                            <circle 
+                              cx="50" cy="50" r="29" 
+                              stroke="var(--color-border)" strokeWidth="1" fill="none" className="opacity-30"
                             />
                           </svg>
                           <div className="absolute inset-0 flex flex-col items-center justify-center">
