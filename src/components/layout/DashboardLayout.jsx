@@ -180,42 +180,59 @@ export default function DashboardLayout({ children }) {
               </p>
               <div className="space-y-0.5">
                 {[
-                  { name: 'Compare', href: '/compare', icon: GitCompare },
+                  { name: 'Canteen', type: 'button', icon: Coffee },
+                  { name: 'Simulator', href: '/simulator', icon: Ship },
                   { name: 'Analytics', href: '/analytics', icon: BarChart3 },
-                  { name: 'Simulator', href: '/simulator', icon: Ship }
+                  { name: 'Compare', href: '/compare', icon: GitCompare },
+                  { name: 'Line A', href: '/lines/A', icon: Factory, color: '#10B981' },
+                  { name: 'Line B', href: '/lines/B', icon: Factory, color: '#3B82F6' },
+                  { name: 'Line C', href: '/lines/C', icon: Factory, color: '#A855F7' },
+                  { name: 'Line D', href: '/lines/D', icon: Factory, color: '#F59E0B' },
                 ].map((item) => {
-                  const isActive = pathname === item.href;
                   const Icon = item.icon;
+                  const isButton = item.type === 'button';
+                  const isActive = !isButton && pathname === item.href;
+                  
+                  const content = (
+                    <>
+                      <Icon size={14} style={item.color ? { color: item.color } : undefined} className={cn(!item.color && (isActive ? "text-[var(--color-primary)]" : "text-[var(--color-text-secondary)]"))} />
+                      <span>{item.name}</span>
+                    </>
+                  );
+                  
+                  const commonClass = cn(
+                    "w-full flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer",
+                    isActive
+                      ? "bg-[var(--color-primary)]/15 text-[var(--color-primary)] font-bold shadow-sm"
+                      : "text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-main)]"
+                  );
+                  
+                  if (isButton) {
+                    return (
+                      <button
+                        key={item.name}
+                        onClick={() => {
+                          setIsBurgerOpen(false);
+                          setShowCanteenModal(true);
+                        }}
+                        className={commonClass}
+                      >
+                        {content}
+                      </button>
+                    );
+                  }
+                  
                   return (
                     <Link
-                      key={item.href}
+                      key={item.name}
                       href={item.href}
                       onClick={() => setIsBurgerOpen(false)}
-                      className={cn(
-                        "w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer",
-                        isActive
-                          ? "bg-[var(--color-primary)]/15 text-[var(--color-primary)] font-bold shadow-sm"
-                          : "text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-main)]"
-                      )}
+                      className={commonClass}
                     >
-                      <Icon size={14} />
-                      <span>{item.name}</span>
+                      {content}
                     </Link>
                   );
                 })}
-                
-                <div className="h-px bg-[var(--color-border)] my-1 opacity-60"></div>
-                
-                <button
-                  onClick={() => {
-                    setIsBurgerOpen(false);
-                    setShowCanteenModal(true);
-                  }}
-                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-main)]"
-                >
-                  <Coffee size={14} className="text-amber-500" />
-                  <span>BAPL CANTEEN</span>
-                </button>
               </div>
             </div>
           </>
