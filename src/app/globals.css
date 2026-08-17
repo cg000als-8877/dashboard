@@ -86,11 +86,11 @@ html[data-mode="light"] .shimmer {
   --color-on-warning: #FFFFFF;
   --shadow-color: rgba(0, 0, 0, 0.5);
 
-  /* Default theme primary — Lime Ivory */
-  --color-primary: #9BE52C;
-  --color-on-primary: #101B03;
-  --color-primary-glow: rgba(155, 229, 44, 0.24);
-  --color-primary-glow-hover: rgba(155, 229, 44, 0.45);
+  /* Default theme primary — Jungle Nebula */
+  --color-primary: #57c27a;
+  --color-on-primary: #0e0b1c;
+  --color-primary-glow: rgba(87, 194, 122, 0.25);
+  --color-primary-glow-hover: rgba(87, 194, 122, 0.45);
 }
 
 /* Polished Theme & Mode Transitions (150ms-250ms) */

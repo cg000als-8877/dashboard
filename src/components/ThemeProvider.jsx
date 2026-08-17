@@ -24,7 +24,7 @@ export const APPEARANCE_MODES = [
 const ThemeContext = createContext();
 
 export function ThemeProvider({ children }) {
-  const [visualTheme, setVisualThemeState] = useState('lime-ivory');
+  const [visualTheme, setVisualThemeState] = useState('jungle-nebula');
   const [mode, setModeState] = useState('dark');
   const [mounted, setMounted] = useState(false);
 
@@ -40,7 +40,7 @@ export function ThemeProvider({ children }) {
     if (storedVisualTheme && VISUAL_THEMES.some(t => t.id === storedVisualTheme)) {
       setVisualThemeState(storedVisualTheme);
     } else {
-      setVisualThemeState('lime-ivory');
+      setVisualThemeState('jungle-nebula');
     }
 
     // 2. Appearance Mode - always default to dark on first visit

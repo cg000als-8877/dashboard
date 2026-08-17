@@ -53,23 +53,31 @@ function PrecisionProgressRing({ percentage }) {
   const sweepDeg = 270;
   const startDeg = 135;
   const arcMain  = (sweepDeg / 360) * circMain;
-  const gapMain  = circMain - arcMain;
+  // ⚠️ Gap MUST be >= circMain so the pattern period (arcMain+gap) > one full revolution.
+  // If gap = gapMain (only 90°), period = circumference → the offset just SHIFTS the arc
+  // instead of hiding it, so 0% still looks full. Using circMain as gap prevents wrapping.
+  const bigGap   = circMain;
 
   const clampedPct = Math.min(Math.max(percentage, 0), 100);
 
   // ── Animation state ───────────────────────────────────────
-  const [mainOffset, setMainOffset] = useState(arcMain);
+  // offset=arcMain → arc completely hidden (0%)
+  // offset=0       → full 270° arc visible (100%)
+  // With bigGap = circMain, pattern period > one full revolution so the arc
+  // genuinely disappears at offset=arcMain instead of wrapping to a shifted position.
+  const toOffset = arcMain * (1 - clampedPct / 100);
+  const [mainOffset, setMainOffset] = useState(toOffset);
   const [canAnimate, setCanAnimate] = useState(false);
 
   useEffect(() => {
-    // Step 1 — instantly reset to "empty" (no transition yet)
+    // Step 1 — snap to full-empty instantly (no transition) to establish a start point
     setCanAnimate(false);
     setMainOffset(arcMain);
 
-    // Step 2 — enable the CSS transition one tick later
+    // Step 2 — enable transition one paint later
     const t1 = setTimeout(() => setCanAnimate(true), 30);
 
-    // Step 3 — change the value so the transition actually plays
+    // Step 3 — animate to the real target value
     const t2 = setTimeout(() => {
       setMainOffset(arcMain * (1 - clampedPct / 100));
     }, 80);
@@ -123,14 +131,14 @@ function PrecisionProgressRing({ percentage }) {
           opacity="0.22"
         />
 
-        {/* ── Ghost track arc (neutral) ── */}
+        {/* ── Ghost track arc (neutral 270° range) ── */}
         <circle
           cx={cx} cy={cy} r={rMain}
           fill="none"
           stroke="rgba(128,128,128,0.16)"
           strokeWidth="7"
           strokeLinecap="round"
-          strokeDasharray={`${arcMain} ${gapMain}`}
+          strokeDasharray={`${arcMain} ${bigGap}`}
           transform={`rotate(${startDeg} ${cx} ${cy})`}
         />
 
@@ -141,7 +149,7 @@ function PrecisionProgressRing({ percentage }) {
           stroke={`url(#${gradId})`}
           strokeWidth="7"
           strokeLinecap="round"
-          strokeDasharray={`${arcMain} ${gapMain}`}
+          strokeDasharray={`${arcMain} ${bigGap}`}
           style={{ strokeDashoffset: mainOffset, transition }}
           transform={`rotate(${startDeg} ${cx} ${cy})`}
         />
