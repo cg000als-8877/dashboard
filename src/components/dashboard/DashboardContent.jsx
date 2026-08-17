@@ -65,7 +65,7 @@ export function DashboardContent({ month, isArchive = false }) {
 
   return (
     <>
-      <div className="space-y-8 animate-[fade-up_0.4s_ease-out_both] pb-10 no-print">
+      <div className="space-y-8 animate-[fade-up_0.4s_ease-out_both] no-print">
       {/* Titanic Animation (Live Dashboard Only) */}
       {!isArchive && (
         <div className="flex flex-col gap-2 relative z-10 -mt-10 md:-mt-8 -mx-4 md:-mx-8 md:w-[calc(100%+4rem)]">

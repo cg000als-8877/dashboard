@@ -13,7 +13,7 @@ export default function ArchiveMonthPage({ params }) {
   const availableLines = ['a', 'b', 'c', 'd'];
 
   return (
-    <div className="relative pb-24 scroll-smooth">
+    <div className="relative scroll-smooth">
       {/* Archive-specific Context Header */}
       <div className="flex items-center justify-between gap-4 mb-6 md:mt-0 relative z-20">
         <Link 

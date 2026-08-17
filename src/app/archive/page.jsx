@@ -112,7 +112,7 @@ export default function ArchiveDirectoryPage() {
   }, []);
 
   return (
-    <div className="space-y-8 animate-[fade-up_0.4s_ease-out_both] pb-20 md:pt-0">
+    <div className="space-y-8 animate-[fade-up_0.4s_ease-out_both] md:pt-0">
       
       {/* Archive Header */}
       <header className="flex flex-col mb-8 relative z-10">

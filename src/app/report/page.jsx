@@ -44,7 +44,7 @@ export default function ReportPage() {
   const monthLabel = selectedMonth === 'live' ? 'August 2026 (Live)' : 'July 2026 (Archive)';
 
   return (
-    <div className="bg-[var(--color-bg-main)] min-h-screen text-[var(--color-text-main)] pb-20">
+    <div className="bg-[var(--color-bg-main)] min-h-screen text-[var(--color-text-main)]">
       
       {/* Print Controls (hidden on print) */}
       <div className="hide-on-print p-6 flex justify-between items-center bg-[rgba(0,0,0,0.5)] border-b border-[rgba(255,255,255,0.05)] sticky top-0 z-50 backdrop-blur-xl">

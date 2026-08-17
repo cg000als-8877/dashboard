@@ -326,7 +326,7 @@ export default function HourlyPage() {
   );
 
   return (
-    <div className="space-y-8 pb-10 animate-[fade-up_0.4s_ease-out_both] w-full">
+    <div className="space-y-8 animate-[fade-up_0.4s_ease-out_both] w-full">
       <div className="w-full space-y-8">
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">

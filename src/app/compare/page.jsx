@@ -314,7 +314,7 @@ export default function ComparePage() {
   };
 
   return (
-    <div className="space-y-6 pb-24 md:pt-0">
+    <div className="space-y-6 md:pt-0">
       
       {/* Page Header */}
       <header className="flex flex-col mb-4 relative z-10">
