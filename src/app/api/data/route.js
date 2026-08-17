@@ -46,7 +46,7 @@ export async function GET(request) {
     const fileBuffer = Buffer.from(arrayBuffer);
 
     // Read the workbook directly from the buffer
-    const workbook = XLSX.read(fileBuffer, { type: 'buffer' });
+    const workbook = XLSX.read(fileBuffer, { type: 'buffer', cellComments: true });
     
     const lines = [];
     const dailyProduction = [];
@@ -180,10 +180,21 @@ export async function GET(request) {
 
                 let actualStartIndex = lineColIndex + 5;
                 for(let c=0; c < actualRow.length; c++) {
-                    if (String(actualRow[c]).includes('ACTUAL')) {
-                        actualStartIndex = c + 1;
-                        break;
-                    }
+                    if (String(actualRow[c]).includes('ACTUAL')) { actualStartIndex = c + 1; break; }
+                }
+
+                const actualRowIdx = i + 1;
+                const notes = [];
+                for (let h = 0; h < 11; h++) {
+                  const colIdx = actualStartIndex + h;
+                  const cellRef = XLSX.utils.encode_cell({ r: actualRowIdx, c: colIdx });
+                  const cellObj = hourlySheet[cellRef];
+                  if (cellObj && cellObj.c && cellObj.c.length > 0) {
+                    const noteText = cellObj.c.map(c => c.t).filter(Boolean).join('; ').trim();
+                    notes.push(noteText || null);
+                  } else {
+                    notes.push(null);
+                  }
                 }
 
                 hourlyParsed.lines.push({
@@ -192,8 +203,9 @@ export async function GET(request) {
                   style: targetRow[lineColIndex + 2] || 'N/A',
                   item: targetRow[lineColIndex + 3] || 'N/A',
                   mp: targetRow[lineColIndex + 4] || 0,
-                  target: targetRow.slice(dataStartIndex, dataStartIndex + 11).map(v => Number(v) || 0),
-                  actual: actualRow.slice(actualStartIndex, actualStartIndex + 11).map(v => Number(v) || 0)
+                  target: targetRow.slice(dataStartIndex, dataStartIndex + 11).map(v => (v === undefined || v === null || String(v).trim() === '') ? null : Number(v)),
+                  actual: actualRow.slice(actualStartIndex, actualStartIndex + 11).map(v => (v === undefined || v === null || String(v).trim() === '') ? null : Number(v)),
+                  notes: notes
                 });
               }
           }

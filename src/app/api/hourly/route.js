@@ -12,7 +12,7 @@ async function fetchLiveHourlyData() {
     
     const arrayBuffer = await response.arrayBuffer();
     const fileBuffer = Buffer.from(arrayBuffer);
-    const workbook = XLSX.read(fileBuffer, { type: 'buffer' });
+    const workbook = XLSX.read(fileBuffer, { type: 'buffer', cellComments: true });
     
     const hourlySheet = workbook.Sheets['HOURLY P. Report'];
     if (!hourlySheet) return null;
@@ -83,6 +83,21 @@ async function fetchLiveHourlyData() {
           for(let c=0; c < actualRow.length; c++) {
               if (String(actualRow[c]).includes('ACTUAL')) { actualStartIndex = c + 1; break; }
           }
+
+          const actualRowIdx = i + 1;
+          const notes = [];
+          for (let h = 0; h < 11; h++) {
+            const colIdx = actualStartIndex + h;
+            const cellRef = XLSX.utils.encode_cell({ r: actualRowIdx, c: colIdx });
+            const cellObj = hourlySheet[cellRef];
+            if (cellObj && cellObj.c && cellObj.c.length > 0) {
+              const noteText = cellObj.c.map(c => c.t).filter(Boolean).join('; ').trim();
+              notes.push(noteText || null);
+            } else {
+              notes.push(null);
+            }
+          }
+
           hourlyParsed.lines.push({
             line_id: lineId,
             buyer: targetRow[lineColIndex + 1] || 'N/A',
@@ -90,7 +105,8 @@ async function fetchLiveHourlyData() {
             item: targetRow[lineColIndex + 3] || 'N/A',
             mp: targetRow[lineColIndex + 4] || 0,
             target: targetRow.slice(dataStartIndex, dataStartIndex + 11).map(v => (v === undefined || v === null || String(v).trim() === '') ? null : Number(v)),
-            actual: actualRow.slice(actualStartIndex, actualStartIndex + 11).map(v => (v === undefined || v === null || String(v).trim() === '') ? null : Number(v))
+            actual: actualRow.slice(actualStartIndex, actualStartIndex + 11).map(v => (v === undefined || v === null || String(v).trim() === '') ? null : Number(v)),
+            notes: notes
           });
         }
     }

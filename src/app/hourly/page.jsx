@@ -912,9 +912,12 @@ export default function HourlyPage() {
                                     ) : (
                                       <div className="flex flex-col items-center justify-center">
                                         <span>{act}</span>
-                                        {act < 80 && tgt > 0 && (
-                                          <span className="text-[9px] leading-none text-black dark:text-white font-light tracking-tight mt-0.5 block max-w-[80px] mx-auto text-center">
-                                            Machine Problem
+                                        {line.notes && line.notes[timeIdx] && (
+                                          <span 
+                                            className="text-[8px] md:text-[8.5px] font-normal text-white whitespace-nowrap leading-tight mt-0.5 block max-w-full truncate"
+                                            title={line.notes[timeIdx]}
+                                          >
+                                            {line.notes[timeIdx]}
                                           </span>
                                         )}
                                       </div>
