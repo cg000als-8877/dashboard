@@ -113,12 +113,22 @@ export async function GET(request) {
     }
 
     if (date) {
-        // 2. If the user is requesting today's date, return the LIVE data immediately (Bypass GitHub/local files)
+        // 2. If the user is requesting today's date, return the LIVE data immediately
         if (liveData && liveData.date === date) {
             return NextResponse.json(liveData);
         }
 
-        // 3. Fallback to Firebase for historical dates
+        // 3. Check local JSON files FIRST for historical dates — they are the authoritative backup
+        //    (Firebase auto-saves can be incomplete if saved mid-day; local files are manually maintained)
+        const filePath = path.join(archiveDir, `${date}.json`);
+        try {
+            const fileData = await fs.readFile(filePath, 'utf-8');
+            return NextResponse.json(JSON.parse(fileData));
+        } catch (e) {
+            // No local file — fall through to Firebase
+        }
+
+        // 4. Fallback to Firebase if no local file exists
         try {
             const { db } = await import('@/lib/firebase');
             if (db) {
@@ -128,17 +138,10 @@ export async function GET(request) {
                 }
             }
         } catch (firebaseError) {
-            console.error('Firebase fetch failed, falling back to local files:', firebaseError);
+            console.error('Firebase fetch failed:', firebaseError);
         }
 
-        // 4. Fallback to local JSON files if Firebase fails or is not configured
-        const filePath = path.join(archiveDir, `${date}.json`);
-        try {
-            const fileData = await fs.readFile(filePath, 'utf-8');
-            return NextResponse.json(JSON.parse(fileData));
-        } catch (e) {
-            return NextResponse.json({ error: 'Archive not found for this date', date }, { status: 404 });
-        }
+        return NextResponse.json({ error: 'Archive not found for this date', date }, { status: 404 });
     } else {
         // List available dates
         const dateSet = new Set();

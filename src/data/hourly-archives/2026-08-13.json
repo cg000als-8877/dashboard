@@ -20,32 +20,8 @@
       "style": "N/A",
       "item": "SHERPA SHIRT",
       "mp": 12,
-      "target": [
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null
-      ],
-      "actual": [
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null
-      ]
+      "target": [null, null, null, null, null, null, null, null, null, null, null],
+      "actual": [null, null, null, null, null, null, null, null, null, null, null]
     },
     {
       "line_id": "B",
@@ -53,32 +29,8 @@
       "style": "BD2625",
       "item": "LADIES TOP",
       "mp": 48,
-      "target": [
-        130,
-        130,
-        130,
-        130,
-        130,
-        130,
-        130,
-        130,
-        130,
-        null,
-        null
-      ],
-      "actual": [
-        100,
-        120,
-        120,
-        120,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null
-      ]
+      "target": [130, 130, 130, 130, 130, 130, 130, 130, 130, null, null],
+      "actual": [100, 120, 120, 120, 120, 0, 100, 100, 100, null, null]
     },
     {
       "line_id": "C",
@@ -86,32 +38,8 @@
       "style": "BD2526",
       "item": "LADIES BOTTOM",
       "mp": 31,
-      "target": [
-        140,
-        140,
-        140,
-        140,
-        140,
-        140,
-        140,
-        140,
-        null,
-        null,
-        null
-      ],
-      "actual": [
-        120,
-        80,
-        50,
-        80,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null
-      ]
+      "target": [140, 140, 140, 140, 140, 140, 140, 140, null, null, null],
+      "actual": [120, 80, 50, 80, 80, 0, 60, 120, null, null, null]
     },
     {
       "line_id": "D",
@@ -119,32 +47,8 @@
       "style": "N/A",
       "item": "MENS TEE SHIRT",
       "mp": 28,
-      "target": [
-        200,
-        200,
-        200,
-        200,
-        200,
-        200,
-        200,
-        200,
-        null,
-        null,
-        null
-      ],
-      "actual": [
-        160,
-        120,
-        160,
-        170,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null
-      ]
+      "target": [200, 200, 200, 200, 200, 200, 200, 200, null, null, null],
+      "actual": [160, 120, 160, 170, 150, 0, 60, 150, null, null, null]
     }
   ]
 }
