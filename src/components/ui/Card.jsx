@@ -80,11 +80,11 @@ export function MetricCard({
         </div>
       </Card>
 
-      {/* Mobile comparison note (Outside Tile with 1px gap - One continuous line, 10px font, Italic, Regular weight, No shapes) */}
+      {/* Mobile comparison note (Outside Tile with 1px gap - Fluid multi-line / auto-wrapping, universal responsive font, No shapes) */}
       {comparison && (
-        <div className="md:hidden mt-[1px] px-0.5 py-0.5 flex items-center gap-1 text-[10px] leading-tight font-normal italic tracking-tight flex-nowrap whitespace-nowrap overflow-hidden">
+        <div className="md:hidden mt-[1px] px-1 py-0.5 text-[9.5px] sm:text-[10px] leading-[1.25] font-normal italic tracking-tight text-left">
           <span className={cn(
-            "font-normal italic tracking-tight inline-flex items-center gap-0.5 shrink-0",
+            "font-normal italic tracking-tight inline-flex items-center gap-0.5 mr-1",
             comparison.isPositive ? "text-emerald-400" : "text-rose-400"
           )}>
             {comparison.trend === 'up' && '▲ '}
@@ -92,7 +92,7 @@ export function MetricCard({
             {comparison.trend === 'neutral' && '• '}
             {comparison.highlight}
           </span>
-          <span className="text-[var(--color-text-muted)] font-normal italic truncate">
+          <span className="text-[var(--color-text-muted)] font-normal italic inline break-words">
             {comparison.label}
           </span>
         </div>

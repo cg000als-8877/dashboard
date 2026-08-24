@@ -14,22 +14,15 @@ import { DashboardSkeleton } from '@/components/ui/Skeletons';
 export function DashboardContent({ month, isArchive = false }) {
   const { stats, dailyTrends, insights, lines, loading, error } = useKpiData(month);
 
-  // Determine previous month for Month-over-Month telemetry comparison
+  // Determine previous month for Month-over-Month comparison (Live Dashboard only)
   let prevMonthKey = null;
   let prevMonthLabel = "July";
-  if (!month || month === 'live' || month === '2026-08') {
+  if (!isArchive && (!month || month === 'live' || month === '2026-08')) {
     prevMonthKey = '2026-07';
     prevMonthLabel = "July";
-  } else if (month && month !== '2026-07') {
-    try {
-      const d = parseISO(month + '-01');
-      const prevDate = subMonths(d, 1);
-      prevMonthKey = format(prevDate, 'yyyy-MM');
-      prevMonthLabel = format(prevDate, 'MMMM');
-    } catch (e) {}
   }
 
-  const { stats: prevStats } = useKpiData(prevMonthKey);
+  const { stats: prevStats, dailyTrends: prevDailyTrends } = useKpiData(prevMonthKey);
   const [interactiveDay, setInteractiveDay] = useState(null);
   const [showAnimation, setShowAnimation] = useState(true);
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
@@ -80,59 +73,94 @@ export function DashboardContent({ month, isArchive = false }) {
   const displayDay = interactiveDay !== null ? interactiveDay : currentCalendarDay;
   const currentDayData = dailyTrends && dailyTrends.length >= displayDay ? dailyTrends[displayDay - 1] : null;
 
-  // Calculate MoM Comparisons in Simple, Clear English
+  // ── OPTION A: LIKE-FOR-LIKE COMPARISON (Exact Same Elapsed Days in July) ──
+  let prevComparisonStats = prevStats;
+  if (prevDailyTrends && prevDailyTrends.length > 0 && stats?.workingDays > 0) {
+    const elapsedPrevDays = prevDailyTrends.slice(0, stats.workingDays);
+    let prevCost = 0;
+    let prevIncome = 0;
+    let prevProfit = 0;
+    let prevProduction = 0;
+
+    elapsedPrevDays.forEach(d => {
+      prevCost += d.cost || 0;
+      prevIncome += d.income || 0;
+      prevProfit += d.profit || 0;
+      prevProduction += d.production || 0;
+    });
+
+    prevComparisonStats = {
+      totalCost: prevCost,
+      totalIncome: prevIncome,
+      netProfit: prevProfit,
+      totalProduction: prevProduction,
+      workingDays: elapsedPrevDays.length,
+      averageDailyProfit: elapsedPrevDays.length > 0 ? prevProfit / elapsedPrevDays.length : 0
+    };
+  }
+
+  // Calculate MoM Comparisons in Simple, Clear English (Option A: Same Elapsed Period)
   let costComparison = null;
-  if (stats && prevStats?.totalCost > 0) {
-    const costDiff = stats.totalCost - prevStats.totalCost;
-    const costPct = Math.round((Math.abs(costDiff) / prevStats.totalCost) * 100);
+  if (stats && prevComparisonStats?.totalCost > 0) {
+    const costDiff = stats.totalCost - prevComparisonStats.totalCost;
+    const costPct = Math.round((Math.abs(costDiff) / prevComparisonStats.totalCost) * 100);
     const isLower = costDiff < 0;
     costComparison = {
       highlight: `${costPct}% ${isLower ? 'Lower' : 'Higher'}`,
-      label: `spending than ${prevMonthLabel}`,
+      label: `spending vs July (Day 1–${currentCalendarDay})`,
       trend: isLower ? 'down' : 'up',
       isPositive: isLower
     };
   }
 
   let incomeComparison = null;
-  if (stats && prevStats?.totalIncome > 0) {
-    const incomeDiff = stats.totalIncome - prevStats.totalIncome;
-    const incomePct = Math.round((Math.abs(incomeDiff) / prevStats.totalIncome) * 100);
+  if (stats && prevComparisonStats?.totalIncome > 0) {
+    const incomeDiff = stats.totalIncome - prevComparisonStats.totalIncome;
+    const incomePct = Math.round((Math.abs(incomeDiff) / prevComparisonStats.totalIncome) * 100);
     const isHigher = incomeDiff > 0;
     incomeComparison = {
       highlight: `${incomePct}% ${isHigher ? 'Higher' : 'Lower'}`,
-      label: `income than ${prevMonthLabel}`,
+      label: `income vs July (same period)`,
       trend: isHigher ? 'up' : 'down',
       isPositive: isHigher
     };
   }
 
   let netComparison = null;
-  if (stats && prevStats?.netProfit !== undefined && prevStats?.netProfit !== null) {
+  if (stats && prevComparisonStats?.netProfit !== undefined && prevComparisonStats?.netProfit !== null) {
     const currNet = stats.netProfit;
-    const prevNet = prevStats.netProfit;
+    const prevNet = prevComparisonStats.netProfit;
     const netDiff = currNet - prevNet;
     const isLessLoss = currNet > prevNet;
     const pct = Math.round((Math.abs(netDiff) / Math.abs(prevNet || 1)) * 100);
 
     if (currNet < 0 && prevNet < 0) {
-      netComparison = {
-        highlight: isLessLoss ? `${pct}% Less Loss` : `${pct}% More Loss`,
-        label: `compared to ${prevMonthLabel}`,
-        trend: isLessLoss ? 'up' : 'down',
-        isPositive: isLessLoss
-      };
+      if (pct === 0 || Math.abs(netDiff) < 5000) {
+        netComparison = {
+          highlight: `Same Deficit`,
+          label: `matching July (same period)`,
+          trend: 'neutral',
+          isPositive: true
+        };
+      } else {
+        netComparison = {
+          highlight: isLessLoss ? `${pct}% Less Loss` : `${pct}% More Loss`,
+          label: `compared to July (same period)`,
+          trend: isLessLoss ? 'up' : 'down',
+          isPositive: isLessLoss
+        };
+      }
     } else if (currNet >= 0) {
       netComparison = {
         highlight: `Profitable`,
-        label: `improved from ${prevMonthLabel}`,
+        label: `improved vs July (same period)`,
         trend: 'up',
         isPositive: true
       };
     } else {
       netComparison = {
         highlight: `In Loss`,
-        label: `down from ${prevMonthLabel}`,
+        label: `down vs July (same period)`,
         trend: 'down',
         isPositive: false
       };
@@ -140,10 +168,10 @@ export function DashboardContent({ month, isArchive = false }) {
   }
 
   let daysComparison = null;
-  if (stats && prevStats?.workingDays > 0) {
+  if (stats && prevComparisonStats?.workingDays > 0) {
     daysComparison = {
-      highlight: `${stats.workingDays} of ${prevStats.workingDays} Days`,
-      label: `recorded so far`,
+      highlight: `${stats.workingDays} of ${stats.workingDays} Days`,
+      label: `matching July elapsed pace`,
       trend: 'neutral',
       isPositive: true
     };
@@ -157,18 +185,28 @@ export function DashboardContent({ month, isArchive = false }) {
   };
 
   let avgDailyComparison = null;
-  if (stats && prevStats?.averageDailyProfit !== undefined && prevStats?.averageDailyProfit !== null) {
+  if (stats && prevComparisonStats?.averageDailyProfit !== undefined && prevComparisonStats?.averageDailyProfit !== null) {
     const currAvg = stats.averageDailyProfit;
-    const prevAvg = prevStats.averageDailyProfit;
+    const prevAvg = prevComparisonStats.averageDailyProfit;
     const avgDiff = currAvg - prevAvg;
     const diffK = Math.abs(Math.round(avgDiff / 1000));
     const isBetter = currAvg > prevAvg;
-    avgDailyComparison = {
-      highlight: isBetter ? `${diffK}k Less Loss/Day` : `${diffK}k More Loss/Day`,
-      label: `than ${prevMonthLabel} average`,
-      trend: isBetter ? 'up' : 'down',
-      isPositive: isBetter
-    };
+
+    if (diffK === 0) {
+      avgDailyComparison = {
+        highlight: `Same Daily Rate`,
+        label: `matching July run-rate`,
+        trend: 'neutral',
+        isPositive: true
+      };
+    } else {
+      avgDailyComparison = {
+        highlight: isBetter ? `${diffK}k Less Loss/Day` : `${diffK}k More Loss/Day`,
+        label: `vs July (same period)`,
+        trend: isBetter ? 'up' : 'down',
+        isPositive: isBetter
+      };
+    }
   }
 
   return (
@@ -212,35 +250,35 @@ export function DashboardContent({ month, isArchive = false }) {
             title="Total Cost" 
             value={<AnimatedNumber value={Math.round(stats.totalCost)} prefix="BDT " />} 
             color="warning"
-            comparison={costComparison}
+            comparison={isArchive ? null : costComparison}
           />
           <MetricCard 
             title="Total Income" 
             value={<AnimatedNumber value={Math.round(stats.totalIncome)} prefix="BDT " />}
             color="primary"
-            comparison={incomeComparison}
+            comparison={isArchive ? null : incomeComparison}
           />
           <MetricCard 
             title={stats.netProfit >= 0 ? "Net Profit" : "Net Loss"} 
             value={<AnimatedNumber value={Math.abs(Math.round(stats.netProfit))} prefix={stats.netProfit >= 0 ? "+BDT " : "BDT -"} />}
             color={stats.netProfit >= 0 ? 'success' : 'danger'}
-            comparison={netComparison}
+            comparison={isArchive ? null : netComparison}
           />
           <MetricCard 
             title="Working Days" 
             value={<AnimatedNumber value={stats.workingDays} suffix=" Days" />} 
-            comparison={daysComparison}
+            comparison={isArchive ? null : daysComparison}
           />
           <MetricCard 
             title="Production Lines" 
             value={<AnimatedNumber value={stats.activeLinesCount} suffix=" Active" />} 
-            comparison={linesComparison}
+            comparison={isArchive ? null : linesComparison}
           />
           <MetricCard 
             title={stats.averageDailyProfit >= 0 ? "Avg Daily Profit" : "Avg Daily Loss"} 
             value={<AnimatedNumber value={Math.abs(Math.round(stats.averageDailyProfit))} prefix={stats.averageDailyProfit >= 0 ? "+" : "-"} suffix=" / day" />}
             color={stats.averageDailyProfit >= 0 ? 'success' : 'danger'}
-            comparison={avgDailyComparison}
+            comparison={isArchive ? null : avgDailyComparison}
           />
         </div>
 
