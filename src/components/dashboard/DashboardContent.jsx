@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { format, parseISO } from 'date-fns';
+import { format, parseISO, subMonths } from 'date-fns';
 import { useKpiData } from '@/utils/useKpiData';
 import { MetricCard, Card } from '@/components/ui/Card';
 import { DailyPerformanceChart, IncomeVsCostChart } from '@/components/dashboard/DashboardCharts';
@@ -13,6 +13,23 @@ import { DashboardSkeleton } from '@/components/ui/Skeletons';
 
 export function DashboardContent({ month, isArchive = false }) {
   const { stats, dailyTrends, insights, lines, loading, error } = useKpiData(month);
+
+  // Determine previous month for Month-over-Month telemetry comparison
+  let prevMonthKey = null;
+  let prevMonthLabel = "July";
+  if (!month || month === 'live' || month === '2026-08') {
+    prevMonthKey = '2026-07';
+    prevMonthLabel = "July";
+  } else if (month && month !== '2026-07') {
+    try {
+      const d = parseISO(month + '-01');
+      const prevDate = subMonths(d, 1);
+      prevMonthKey = format(prevDate, 'yyyy-MM');
+      prevMonthLabel = format(prevDate, 'MMMM');
+    } catch (e) {}
+  }
+
+  const { stats: prevStats } = useKpiData(prevMonthKey);
   const [interactiveDay, setInteractiveDay] = useState(null);
   const [showAnimation, setShowAnimation] = useState(true);
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
@@ -63,20 +80,110 @@ export function DashboardContent({ month, isArchive = false }) {
   const displayDay = interactiveDay !== null ? interactiveDay : currentCalendarDay;
   const currentDayData = dailyTrends && dailyTrends.length >= displayDay ? dailyTrends[displayDay - 1] : null;
 
+  // Calculate MoM Comparisons in Simple, Clear English
+  let costComparison = null;
+  if (stats && prevStats?.totalCost > 0) {
+    const costDiff = stats.totalCost - prevStats.totalCost;
+    const costPct = Math.round((Math.abs(costDiff) / prevStats.totalCost) * 100);
+    const isLower = costDiff < 0;
+    costComparison = {
+      highlight: `${costPct}% ${isLower ? 'Lower' : 'Higher'}`,
+      label: `spending than ${prevMonthLabel}`,
+      trend: isLower ? 'down' : 'up',
+      isPositive: isLower
+    };
+  }
+
+  let incomeComparison = null;
+  if (stats && prevStats?.totalIncome > 0) {
+    const incomeDiff = stats.totalIncome - prevStats.totalIncome;
+    const incomePct = Math.round((Math.abs(incomeDiff) / prevStats.totalIncome) * 100);
+    const isHigher = incomeDiff > 0;
+    incomeComparison = {
+      highlight: `${incomePct}% ${isHigher ? 'Higher' : 'Lower'}`,
+      label: `income than ${prevMonthLabel}`,
+      trend: isHigher ? 'up' : 'down',
+      isPositive: isHigher
+    };
+  }
+
+  let netComparison = null;
+  if (stats && prevStats?.netProfit !== undefined && prevStats?.netProfit !== null) {
+    const currNet = stats.netProfit;
+    const prevNet = prevStats.netProfit;
+    const netDiff = currNet - prevNet;
+    const isLessLoss = currNet > prevNet;
+    const pct = Math.round((Math.abs(netDiff) / Math.abs(prevNet || 1)) * 100);
+
+    if (currNet < 0 && prevNet < 0) {
+      netComparison = {
+        highlight: isLessLoss ? `${pct}% Less Loss` : `${pct}% More Loss`,
+        label: `compared to ${prevMonthLabel}`,
+        trend: isLessLoss ? 'up' : 'down',
+        isPositive: isLessLoss
+      };
+    } else if (currNet >= 0) {
+      netComparison = {
+        highlight: `Profitable`,
+        label: `improved from ${prevMonthLabel}`,
+        trend: 'up',
+        isPositive: true
+      };
+    } else {
+      netComparison = {
+        highlight: `In Loss`,
+        label: `down from ${prevMonthLabel}`,
+        trend: 'down',
+        isPositive: false
+      };
+    }
+  }
+
+  let daysComparison = null;
+  if (stats && prevStats?.workingDays > 0) {
+    daysComparison = {
+      highlight: `${stats.workingDays} of ${prevStats.workingDays} Days`,
+      label: `recorded so far`,
+      trend: 'neutral',
+      isPositive: true
+    };
+  }
+
+  const linesComparison = {
+    highlight: `All 4 Lines`,
+    label: `active & producing`,
+    trend: 'neutral',
+    isPositive: true
+  };
+
+  let avgDailyComparison = null;
+  if (stats && prevStats?.averageDailyProfit !== undefined && prevStats?.averageDailyProfit !== null) {
+    const currAvg = stats.averageDailyProfit;
+    const prevAvg = prevStats.averageDailyProfit;
+    const avgDiff = currAvg - prevAvg;
+    const diffK = Math.abs(Math.round(avgDiff / 1000));
+    const isBetter = currAvg > prevAvg;
+    avgDailyComparison = {
+      highlight: isBetter ? `${diffK}k Less Loss/Day` : `${diffK}k More Loss/Day`,
+      label: `than ${prevMonthLabel} average`,
+      trend: isBetter ? 'up' : 'down',
+      isPositive: isBetter
+    };
+  }
+
   return (
     <>
-      <div className="space-y-8 animate-[fade-up_0.4s_ease-out_both] no-print">
-      {/* Titanic Animation (Live Dashboard Only) */}
-      {!isArchive && (
-        <div className="flex flex-col gap-2 relative z-10 -mt-10 md:-mt-8 -mx-4 md:-mx-8 md:w-[calc(100%+4rem)]">
-          <div className={`w-full transition-all duration-700 ease-in-out origin-top overflow-hidden border-none rounded-none ${showAnimation ? 'max-h-[800px] opacity-100 mb-2' : 'max-h-0 opacity-0 mb-0'}`}>
-            <TitanicAnimation netProfit={stats.netProfit} simDay={displayDay} />
+      <div className="space-y-6 animate-[fade-up_0.4s_ease-out_both] no-print">
+        {/* Titanic Animation (Live Dashboard Only) */}
+        {!isArchive && (
+          <div className="flex flex-col gap-2 relative z-10 -mt-10 md:-mt-8 -mx-4 md:-mx-8 md:w-[calc(100%+4rem)]">
+            <div className={`w-full transition-all duration-700 ease-in-out origin-top overflow-hidden border-none rounded-none ${showAnimation ? 'max-h-[800px] opacity-100 mb-2' : 'max-h-0 opacity-0 mb-0'}`}>
+              <TitanicAnimation netProfit={stats.netProfit} simDay={displayDay} />
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Hero Statistics */}
-      <div className={isArchive ? "mt-4" : "mt-0 md:mt-4"}>
+        {/* Hero Statistics Date Context */}
         {dateComponents && (
           <div className="flex justify-center mb-1 md:mb-2 w-full relative z-10">
             <span className="inline-flex items-baseline gap-1.5 text-xs md:text-sm font-medium tracking-widest text-[var(--color-text-secondary)] uppercase">
@@ -85,59 +192,62 @@ export function DashboardContent({ month, isArchive = false }) {
           </div>
         )}
 
-        {!isArchive && (
-          <div className="mb-3 md:mb-10 flex flex-col items-center justify-center relative z-10">
-            <div className="flex flex-col items-center relative z-10 text-center">
-
-              <h2 className="text-2xl md:text-4xl font-bold tracking-tighter uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] via-[var(--color-text-secondary)] to-[var(--color-text-muted)]">
-                Factory System Overview
-              </h2>
-            </div>
-            
-            <button 
-              onClick={() => setShowAnimation(!showAnimation)}
-              className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 items-center gap-2 px-4 py-2 bg-[var(--color-surface)] hover:bg-[var(--color-surface-hover)] border border-[var(--color-border)] rounded-xl text-xs font-medium uppercase tracking-widest text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)] transition-all active:scale-95"
-            >
-              {showAnimation ? 'Hide Visualizer' : 'Show Visualizer'}
-            </button>
+        {/* FACTORY SYSTEM OVERVIEW HEADER & TOGGLE */}
+        <div className="relative flex items-center justify-between mt-2 mb-4">
+          <div className="flex items-center gap-3">
+            <div className="h-5 w-1.5 bg-[var(--color-primary)] rounded-full shadow-[0_0_10px_var(--color-primary)]" />
+            <h2 className="text-xl md:text-2xl font-bold tracking-tight uppercase text-[var(--color-text-main)]">
+              Factory System Overview
+            </h2>
           </div>
-        )}
+          
+          <button 
+            onClick={() => setShowAnimation(!showAnimation)}
+            className="hidden md:flex items-center gap-2 px-3.5 py-1.5 bg-[var(--color-surface)] hover:bg-[var(--color-surface-hover)] border border-[var(--color-border)] rounded-xl text-xs font-medium uppercase tracking-wider text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)] transition-all active:scale-95 cursor-pointer"
+          >
+            {showAnimation ? 'Hide Visualizer' : 'Show Visualizer'}
+          </button>
+        </div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
+        {/* 6 KPI Metric Cards Grid */}
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-2.5 md:gap-5">
           <MetricCard 
             title="Total Cost" 
             value={<AnimatedNumber value={Math.round(stats.totalCost)} prefix="BDT " />} 
             color="warning"
+            comparison={costComparison}
           />
           <MetricCard 
             title="Total Income" 
             value={<AnimatedNumber value={Math.round(stats.totalIncome)} prefix="BDT " />}
             color="primary"
+            comparison={incomeComparison}
           />
           <MetricCard 
             title={stats.netProfit >= 0 ? "Net Profit" : "Net Loss"} 
             value={<AnimatedNumber value={Math.abs(Math.round(stats.netProfit))} prefix={stats.netProfit >= 0 ? "+BDT " : "BDT -"} />}
             color={stats.netProfit >= 0 ? 'success' : 'danger'}
+            comparison={netComparison}
           />
           <MetricCard 
             title="Working Days" 
             value={<AnimatedNumber value={stats.workingDays} suffix=" Days" />} 
+            comparison={daysComparison}
           />
           <MetricCard 
             title="Production Lines" 
             value={<AnimatedNumber value={stats.activeLinesCount} suffix=" Active" />} 
+            comparison={linesComparison}
           />
           <MetricCard 
             title={stats.averageDailyProfit >= 0 ? "Avg Daily Profit" : "Avg Daily Loss"} 
             value={<AnimatedNumber value={Math.abs(Math.round(stats.averageDailyProfit))} prefix={stats.averageDailyProfit >= 0 ? "+" : "-"} suffix=" / day" />}
             color={stats.averageDailyProfit >= 0 ? 'success' : 'danger'}
+            comparison={avgDailyComparison}
           />
         </div>
-      </div>
 
-
-
-      {/* PDF Download Action (Archive Only) - HIDDEN FOR NOW */}
+        {/* PDF Download Action (Archive Only) - HIDDEN FOR NOW */}
       {isArchive && (
         <div className="hidden justify-center md:justify-end mt-10 relative z-10">
           <button 
