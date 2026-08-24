@@ -34,9 +34,9 @@
         null
       ],
       "actual": [
-        null,
-        null,
-        null,
+        30,
+        60,
+        70,
         null,
         null,
         null,
@@ -67,14 +67,14 @@
       "item": "BOXER",
       "mp": 12,
       "target": [
-        350,
-        350,
-        350,
-        350,
-        350,
-        350,
-        350,
-        350,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
         null,
         null,
         null
@@ -126,9 +126,9 @@
         null
       ],
       "actual": [
-        null,
-        null,
-        null,
+        50,
+        40,
+        40,
         null,
         null,
         null,
