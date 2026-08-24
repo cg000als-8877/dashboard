@@ -129,19 +129,18 @@ export async function GET(request) {
     }
 
     if (date) {
-        // 2. If the user is requesting today's date, return the LIVE data immediately
-        if (liveData && liveData.date === date) {
-            return NextResponse.json(liveData);
-        }
-
-        // 3. Check local JSON files FIRST for historical dates — they are the authoritative backup
-        //    (Firebase auto-saves can be incomplete if saved mid-day; local files are manually maintained)
+        // 1. Check local JSON files FIRST (they are the authoritative recorded backup with custom notes/corrections)
         const filePath = path.join(archiveDir, `${date}.json`);
         try {
             const fileData = await fs.readFile(filePath, 'utf-8');
             return NextResponse.json(JSON.parse(fileData));
         } catch (e) {
-            // No local file — fall through to Firebase
+            // No local file — fall through to live or Firebase
+        }
+
+        // 2. If the user is requesting today's live date and no local archive exists, return the LIVE data
+        if (liveData && liveData.date === date) {
+            return NextResponse.json(liveData);
         }
 
         // 4. Fallback to Firebase if no local file exists
