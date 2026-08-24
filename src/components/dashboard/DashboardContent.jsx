@@ -193,17 +193,14 @@ export function DashboardContent({ month, isArchive = false }) {
         )}
 
         {/* FACTORY SYSTEM OVERVIEW HEADER & TOGGLE */}
-        <div className="relative flex items-center justify-between mt-2 mb-4">
-          <div className="flex items-center gap-3">
-            <div className="h-5 w-1.5 bg-[var(--color-primary)] rounded-full shadow-[0_0_10px_var(--color-primary)]" />
-            <h2 className="text-xl md:text-2xl font-bold tracking-tight uppercase text-[var(--color-text-main)]">
-              Factory System Overview
-            </h2>
-          </div>
+        <div className="relative flex items-center justify-center mt-3 mb-6">
+          <h2 className="text-[21px] md:text-[25px] font-bold tracking-tight uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] via-[var(--color-text-secondary)] to-[var(--color-text-muted)] text-center">
+            Factory System Overview
+          </h2>
           
           <button 
             onClick={() => setShowAnimation(!showAnimation)}
-            className="hidden md:flex items-center gap-2 px-3.5 py-1.5 bg-[var(--color-surface)] hover:bg-[var(--color-surface-hover)] border border-[var(--color-border)] rounded-xl text-xs font-medium uppercase tracking-wider text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)] transition-all active:scale-95 cursor-pointer"
+            className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 items-center gap-2 px-3.5 py-1.5 bg-[var(--color-surface)] hover:bg-[var(--color-surface-hover)] border border-[var(--color-border)] rounded-xl text-xs font-medium uppercase tracking-wider text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)] transition-all active:scale-95 cursor-pointer"
           >
             {showAnimation ? 'Hide Visualizer' : 'Show Visualizer'}
           </button>
@@ -284,12 +281,13 @@ export function DashboardContent({ month, isArchive = false }) {
         </div>
       )}
 
-      {/* Production Lines Horizontal Dashboard */}
-      <div className="mt-12 mb-10 relative z-10">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="h-4 w-1 bg-[var(--color-primary)] rounded-full shadow-[0_0_10px_var(--color-primary)]"></div>
-          <h2 className="text-xl font-bold tracking-widest uppercase text-[var(--color-text-main)]">Line Diagnostics</h2>
-        </div>
+        {/* Production Lines Horizontal Dashboard */}
+        <div className="mt-12 mb-10 relative z-10">
+          <div className="flex items-center justify-center mb-6">
+            <h2 className="text-[21px] md:text-[21px] font-bold tracking-widest uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] via-[var(--color-text-secondary)] to-[var(--color-text-muted)] text-center">
+              Line Diagnostics
+            </h2>
+          </div>
         <div className="flex flex-col gap-5">
           {lines.sort((a,b) => a.id.localeCompare(b.id)).map((line) => {
             return (
@@ -402,12 +400,13 @@ export function DashboardContent({ month, isArchive = false }) {
         </div>
       )}
 
-      {/* Charts */}
-      <div className="mt-14 relative z-10">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="h-4 w-1 bg-purple-500 rounded-full shadow-[0_0_10px_purple]"></div>
-          <h2 className="text-xl font-bold tracking-widest uppercase text-[var(--color-text-main)]">Performance Telemetry</h2>
-        </div>
+        {/* Charts */}
+        <div className="mt-14 relative z-10">
+          <div className="flex items-center justify-center mb-6">
+            <h2 className="text-[21px] md:text-[21px] font-bold tracking-widest uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] via-[var(--color-text-secondary)] to-[var(--color-text-muted)] text-center">
+              Performance Telemetry
+            </h2>
+          </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <DailyPerformanceChart data={dailyTrends} />
           <IncomeVsCostChart data={dailyTrends} />
