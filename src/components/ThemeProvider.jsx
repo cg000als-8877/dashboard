@@ -10,7 +10,7 @@ export const VISUAL_THEMES = [
   { id: 'amber-forge', name: 'Amber Forge', color: '#F59E0B' },
   { id: 'cyber-violet', name: 'Cyber Violet', color: '#A855F7' },
   { id: 'copper-steel', name: 'Copper Steel', color: '#EA580C' },
-  { id: 'cyberpunk', name: 'Cyberpunk', color: '#FF003C' },
+  { id: 'cyber-deck', name: 'Cyber Deck', color: '#00FFA3' },
   { id: 'obsidian-vercel', name: 'Obsidian Vercel', color: '#FFFFFF' },
   { id: 'electric-indigo', name: 'Electric Indigo', color: '#7C6CFF' },
   { id: 'verdant', name: 'Verdant', color: '#80B918' },

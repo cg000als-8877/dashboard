@@ -534,80 +534,135 @@ html[data-theme="copper-steel"][data-mode="light"] {
 }
 
 /* ═══════════════════════════════════════════
-   CYBERPUNK THEME — Neon Red × Electric Dark
-   Primary:  #FF003C  (Neon Red)
-   Income:   #FFE600  (Toxic Yellow / Cyber Gold)
-   Cost:     #00F5FF  (Electric Cyan)
-   Profit:   #39FF14  (Neon Green)
-   Danger:   #FF00A0  (Hot Magenta)
-   Bg Dark:  #0A0010  (Deep Void Purple-Black)
+   CYBER DECK — Telemetry Cockpit × Matrix Terminal
+   Exact extracted palette from cockpit HUD telemetry image:
+   - Primary:    #00FFA3 (Matrix Digital Green/Cyan Neon)
+   - Secondary:  #FF8C00 (Cockpit Tachometer Amber-Orange)
+   - Warning:    #FFB800 (Digital HUD Amber-Gold)
+   - Danger:     #FF2A55 (Laser HUD Red)
+   - Info:       #00E5FF (Laser Digital Cyan)
+   - Bg Dark:    #030708 (Deep Cockpit Carbon Black)
+   - Font:       Monospace (JetBrains Mono / Fira Code)
 ═══════════════════════════════════════════ */
-html[data-theme="cyberpunk"] {
-  /* Accent */
-  --color-primary: #FF003C;
-  --color-primary-glow: rgba(255, 0, 60, 0.45);
-  --color-primary-glow-hover: rgba(255, 0, 60, 0.7);
+html[data-theme="cyber-deck"] {
+  --color-primary: #00FFA3;
+  --color-on-primary: #02140D;
+  --color-primary-bright: #5CFFC2;
+  --color-primary-soft: #06261A;
+  --color-primary-glow: rgba(0, 255, 163, 0.40);
+  --color-primary-glow-hover: rgba(0, 255, 163, 0.70);
 
-  /* Success = Neon Green */
-  --color-success: #39FF14;
-  --color-success-text: #39FF14;
-  --color-success-glow: rgba(57, 255, 20, 0.4);
+  --color-secondary: #FF8C00;
+  --color-secondary-bright: #FFA834;
+  --color-secondary-soft: #2B1400;
 
-  /* Danger = Hot Magenta */
-  --color-danger: #FF00A0;
-  --color-danger-text: #FF00A0;
-  --color-danger-glow: rgba(255, 0, 160, 0.4);
+  --color-success: #00FF88;
+  --color-success-text: #00FFA3;
+  --color-success-glow: rgba(0, 255, 136, 0.35);
 
-  /* Warning/Cost = Electric Cyan */
-  --color-warning: #00F5FF;
-  --color-warning-glow: rgba(0, 245, 255, 0.4);
+  --color-danger: #FF2A55;
+  --color-danger-text: #FF5E7E;
+  --color-danger-glow: rgba(255, 42, 85, 0.40);
+
+  --color-warning: #FFB800;
+  --color-warning-text: #FFCA36;
+  --color-warning-glow: rgba(255, 184, 0, 0.40);
+
+  --color-info: #00E5FF;
+  --color-info-glow: rgba(0, 229, 255, 0.40);
+
+  /* Monospace hacker fonts applied dynamically */
+  --font-sans: var(--font-jetbrains-mono), 'JetBrains Mono', 'Fira Code', 'Roboto Mono', ui-monospace, monospace !important;
+  --font-display: var(--font-jetbrains-mono), 'JetBrains Mono', 'Fira Code', 'Roboto Mono', ui-monospace, monospace !important;
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', 'Fira Code', ui-monospace, monospace !important;
 }
 
-html[data-theme="cyberpunk"][data-mode="dark"] {
-  /* Backgrounds — deep void purple-black */
-  --color-bg-main: #06000F;
-  --color-bg-card: #0F0520;
-  --color-bg-card-hover: #160830;
+html[data-theme="cyber-deck"] *,
+html[data-theme="cyber-deck"] h1,
+html[data-theme="cyber-deck"] h2,
+html[data-theme="cyber-deck"] h3,
+html[data-theme="cyber-deck"] h4,
+html[data-theme="cyber-deck"] h5,
+html[data-theme="cyber-deck"] h6,
+html[data-theme="cyber-deck"] .font-display,
+html[data-theme="cyber-deck"] button,
+html[data-theme="cyber-deck"] span,
+html[data-theme="cyber-deck"] p,
+html[data-theme="cyber-deck"] a,
+html[data-theme="cyber-deck"] input,
+html[data-theme="cyber-deck"] select,
+html[data-theme="cyber-deck"] table,
+html[data-theme="cyber-deck"] th,
+html[data-theme="cyber-deck"] td {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', 'Fira Code', 'Roboto Mono', ui-monospace, monospace !important;
+}
 
-  /* Borders — neon red tint */
-  --color-border: rgba(255, 0, 60, 0.18);
+html[data-theme="cyber-deck"][data-mode="dark"] {
+  /* Backgrounds — deep cockpit terminal carbon black */
+  --color-bg-main: #030708;
+  --color-bg-card: #081014;
+  --color-bg-card-hover: #0F1C22;
+  --color-bg-elevated: #152730;
 
-  /* Text */
-  --color-text-main: #FFE9F0;
-  --color-text-secondary: #C084A0;
-  --color-text-muted: #7B4060;
+  /* High-tech matrix borders */
+  --color-border: rgba(0, 255, 163, 0.16);
+  --color-border-strong: rgba(0, 255, 163, 0.32);
+
+  /* Text — digital HUD green-white */
+  --color-text-main: #E6FFF7;
+  --color-text-secondary: #7DE3C5;
+  --color-text-muted: #3D786B;
+  --color-text-subtle: #244C43;
 
   /* Surfaces */
-  --color-surface: rgba(255, 0, 60, 0.04);
-  --color-surface-hover: rgba(255, 0, 60, 0.08);
-  --shadow-color: rgba(255, 0, 60, 0.3);
+  --color-surface: rgba(0, 255, 163, 0.045);
+  --color-surface-hover: rgba(0, 255, 163, 0.09);
+  --shadow-color: rgba(0, 255, 163, 0.22);
+
+  /* Buttons on-primary: high-contrast dark text on bright neon */
+  --color-on-primary: #02140D;
 }
 
-html[data-theme="cyberpunk"][data-mode="light"] {
-  /* Backgrounds — pale neon white */
-  --color-bg-main: #FFF0F4;
+html[data-theme="cyber-deck"][data-mode="light"] {
+  /* Backgrounds — clean high-tech mint white terminal */
+  --color-bg-main: #ECF8F4;
   --color-bg-card: #FFFFFF;
-  --color-bg-card-hover: #FFF5F8;
+  --color-bg-card-hover: #E0F4ED;
+  --color-bg-elevated: #D6EFE5;
 
   /* Borders */
-  --color-border: rgba(255, 0, 60, 0.15);
+  --color-border: rgba(0, 158, 96, 0.18);
+  --color-border-strong: rgba(0, 158, 96, 0.30);
 
-  /* Text */
-  --color-text-main: #1A0010;
-  --color-text-secondary: #7A0030;
-  --color-text-muted: #B05070;
+  /* Text — deep pine high-contrast */
+  --color-text-main: #021C14;
+  --color-text-secondary: #0D503B;
+  --color-text-muted: #2E735B;
+  --color-text-subtle: #5C9E86;
 
   /* Surfaces */
-  --color-surface: rgba(255, 0, 60, 0.04);
-  --color-surface-hover: rgba(255, 0, 60, 0.08);
-  --shadow-color: rgba(255, 0, 60, 0.15);
+  --color-surface: rgba(0, 158, 96, 0.04);
+  --color-surface-hover: rgba(0, 158, 96, 0.08);
+  --shadow-color: rgba(0, 158, 96, 0.10);
 
-  /* Success / Danger in light mode */
-  --color-success: #1A8C00;
-  --color-success-text: #1A8C00;
-  --color-danger: #CC0080;
-  --color-danger-text: #CC0080;
-  --color-warning: #007FA8;
+  /* Solid readable accents for Light Mode */
+  --color-primary: #009E60;
+  --color-on-primary: #FFFFFF;
+  --color-primary-bright: #00B36D;
+  --color-primary-soft: #DCF5EC;
+  --color-primary-glow: rgba(0, 158, 96, 0.20);
+
+  --color-secondary: #D97706;
+  --color-secondary-bright: #EA580C;
+  --color-secondary-soft: #FEF3C7;
+
+  --color-success: #059669;
+  --color-success-text: #047857;
+  --color-danger: #DC2626;
+  --color-danger-text: #B91C1C;
+  --color-warning: #D97706;
+  --color-warning-text: #B45309;
+  --color-info: #0284C7;
 }
 
 /* ═══════════════════════════════════════════
