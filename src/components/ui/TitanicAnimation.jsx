@@ -315,7 +315,7 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
 
   return (
     <div className="w-full flex flex-col gap-3">
-      <div className={`w-full relative aspect-[4/3] md:aspect-auto md:h-[500px] shadow-none border-none overflow-hidden ${isDay ? 'bg-[#e0f7fa]' : 'bg-[#050A15]'}`}>
+      <div className={`w-full relative min-h-[360px] sm:min-h-[420px] aspect-[4/3.8] sm:aspect-[4/3] md:aspect-auto md:h-[500px] shadow-none border-none overflow-hidden ${isDay ? 'bg-[#e0f7fa]' : 'bg-[#050A15]'}`}>
       
       <style>{`
         @keyframes ship-bob {
@@ -405,8 +405,8 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
       </div>
 
       {/* SVG Container */}
-      {/* 1200x1200 viewBox. Uses 'meet' to scale correctly on desktop, and makes the ship look farther away on mobile widescreen */}
-      <svg width="100%" height="100%" viewBox="0 0 1200 1200" preserveAspectRatio="xMidYMid meet" className="absolute inset-0 z-10 overflow-visible">
+      {/* 1200x1340 viewBox with top headroom. Uses 'meet' to scale correctly on all devices */}
+      <svg width="100%" height="100%" viewBox="0 -140 1200 1340" preserveAspectRatio="xMidYMid meet" className="absolute inset-0 z-10 overflow-visible">
         
         {/* SVG Clip Paths for Shattering */}
         <defs>
