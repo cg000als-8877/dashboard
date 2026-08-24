@@ -124,10 +124,10 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
 
   const renderMoonGroup = () => (
     <g>
-      <circle cx="1100" cy="80" r="45" fill="#f4f6f0" style={{ filter: 'drop-shadow(0 0 15px rgba(255,255,255,0.8))' }} />
-      <circle cx="1110" cy="70" r="8" fill="#e0e2db" opacity="0.6" />
-      <circle cx="1080" cy="90" r="12" fill="#e0e2db" opacity="0.4" />
-      <circle cx="1115" cy="100" r="6" fill="#e0e2db" opacity="0.5" />
+      <circle cx="1280" cy="50" r="45" fill="#f4f6f0" style={{ filter: 'drop-shadow(0 0 15px rgba(255,255,255,0.8))' }} />
+      <circle cx="1290" cy="40" r="8" fill="#e0e2db" opacity="0.6" />
+      <circle cx="1260" cy="60" r="12" fill="#e0e2db" opacity="0.4" />
+      <circle cx="1295" cy="70" r="6" fill="#e0e2db" opacity="0.5" />
       
       {Array.from({length: 15}).map((_, i) => (
         <path 
