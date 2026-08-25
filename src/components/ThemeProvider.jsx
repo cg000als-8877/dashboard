@@ -36,8 +36,28 @@ export function ThemeProvider({ children }) {
     const storedMode = localStorage.getItem('app-mode');
     const legacyTheme = localStorage.getItem('theme'); // backward compatibility
 
-    // 1. Visual Theme
-    if (storedVisualTheme && VISUAL_THEMES.some(t => t.id === storedVisualTheme)) {
+    // Check if current Bangladesh time (Asia/Dhaka) is between 11 PM and 2 AM (23:00 - 02:59)
+    const isBangladeshNightWindow = () => {
+      try {
+        const now = new Date();
+        const bdHourStr = new Intl.DateTimeFormat('en-US', {
+          timeZone: 'Asia/Dhaka',
+          hour: 'numeric',
+          hour12: false
+        }).format(now);
+        const bdHour = parseInt(bdHourStr, 10);
+        return bdHour === 23 || bdHour === 0 || bdHour === 1 || bdHour === 2;
+      } catch {
+        return false;
+      }
+    };
+
+    const isNight = isBangladeshNightWindow();
+
+    // 1. Visual Theme (auto Cyber Deck between 11 PM - 2 AM Bangladesh Time)
+    if (isNight && !sessionStorage.getItem('app-night-theme-overridden')) {
+      setVisualThemeState('cyber-deck');
+    } else if (storedVisualTheme && VISUAL_THEMES.some(t => t.id === storedVisualTheme)) {
       setVisualThemeState(storedVisualTheme);
     } else {
       setVisualThemeState('jungle-nebula');
@@ -80,9 +100,12 @@ export function ThemeProvider({ children }) {
     }
   }, [visualTheme, mode, mounted]);
 
-  const setVisualTheme = (themeId) => {
-    setVisualThemeState(themeId);
-    localStorage.setItem('app-visual-theme', themeId);
+  const setVisualTheme = (id) => {
+    if (VISUAL_THEMES.some(t => t.id === id)) {
+      setVisualThemeState(id);
+      localStorage.setItem('app-visual-theme', id);
+      sessionStorage.setItem('app-night-theme-overridden', 'true');
+    }
   };
 
   const setMode = (modeId) => {

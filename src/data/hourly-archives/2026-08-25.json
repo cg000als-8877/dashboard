@@ -1,0 +1,156 @@
+{
+  "date": "2026-08-25",
+  "timeLabels": [
+    "1ST",
+    "2ND",
+    "3RD",
+    "4TH",
+    "5TH",
+    "6TH",
+    "7TH",
+    "8TH",
+    "9TH",
+    "10TH",
+    "11TH"
+  ],
+  "lines": [
+    {
+      "line_id": "A",
+      "buyer": "FAMETEX",
+      "style": "N/A",
+      "item": "SHERPA JACKET",
+      "mp": 78,
+      "target": [
+        80,
+        80,
+        80,
+        80,
+        80,
+        80,
+        80,
+        80,
+        null,
+        null,
+        null
+      ],
+      "actual": [
+        35,
+        45,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "notes": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "line_id": "B",
+      "buyer": "HB",
+      "style": "N/A",
+      "item": "BOXER",
+      "mp": 12,
+      "target": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "actual": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "notes": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "line_id": "C",
+      "buyer": "HB",
+      "style": "N/A",
+      "item": "BOXER",
+      "mp": 21,
+      "target": [
+        350,
+        350,
+        350,
+        350,
+        350,
+        350,
+        350,
+        350,
+        null,
+        null,
+        null
+      ],
+      "actual": [
+        70,
+        100,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "notes": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    }
+  ]
+}
