@@ -40,13 +40,13 @@ export function MetricCard({
         <div className="flex justify-between items-start mb-1 md:mb-2">
           <h3 className="text-[10px] md:text-xs font-normal md:font-medium text-[var(--color-text-secondary)] uppercase tracking-widest leading-tight">{title}</h3>
         </div>
-        <div className="min-w-0 flex-1 flex flex-col justify-between">
+        <div className="min-w-0 flex-1 flex flex-col justify-start md:justify-between">
           <div>
-            <p className={cn("font-medium md:font-semibold tracking-tight whitespace-nowrap text-xl sm:text-2xl md:text-3xl lg:text-4xl", colors[color])}>
+            <p className={cn("font-medium md:font-semibold tracking-tight whitespace-nowrap text-xl sm:text-2xl md:text-3xl lg:text-4xl leading-tight", colors[color])}>
               {value}
             </p>
             {(subtitle || trendValue) && (
-              <div className="flex items-center gap-2 mt-2">
+              <div className="flex items-center gap-2 mt-1 md:mt-2">
                 {trend && (
                   <span className={cn(
                     "text-xs font-normal px-2 py-1 rounded-full",
@@ -60,11 +60,11 @@ export function MetricCard({
             )}
           </div>
 
-          {/* Desktop comparison note (Inside Tile - Standard size, Bold, No shapes) */}
+          {/* Comparison note (Inside Tile - Compact tight spacing on mobile, standard on desktop) */}
           {comparison && (
-            <div className="hidden md:flex items-center gap-1.5 mt-3 pt-2 border-t border-[var(--color-border)]/40 text-[12px] leading-normal flex-wrap">
+            <div className="flex items-center gap-1 sm:gap-1.5 mt-1 sm:mt-1.5 md:mt-3 pt-1 sm:pt-1.5 md:pt-2 border-t border-[var(--color-border)]/40 text-[9.5px] sm:text-[11px] md:text-[12px] leading-snug sm:leading-normal flex-wrap">
               <span className={cn(
-                "font-bold inline-flex items-center gap-1",
+                "font-bold inline-flex items-center gap-0.5 sm:gap-1 whitespace-nowrap",
                 comparison.isPositive ? "text-emerald-400" : "text-rose-400"
               )}>
                 {comparison.trend === 'up' && '▲ '}
@@ -72,31 +72,13 @@ export function MetricCard({
                 {comparison.trend === 'neutral' && '• '}
                 {comparison.highlight}
               </span>
-              <span className="text-[var(--color-text-secondary)] font-semibold">
+              <span className="text-[var(--color-text-secondary)] font-medium sm:font-semibold break-words">
                 {comparison.label}
               </span>
             </div>
           )}
         </div>
       </Card>
-
-      {/* Mobile comparison note (Outside Tile with 1px gap - Fluid multi-line / auto-wrapping, universal responsive font, No shapes) */}
-      {comparison && (
-        <div className="md:hidden mt-[1px] px-1 py-0.5 text-[9.5px] sm:text-[10px] leading-[1.25] font-normal italic tracking-tight text-left">
-          <span className={cn(
-            "font-normal italic tracking-tight inline-flex items-center gap-0.5 mr-1",
-            comparison.isPositive ? "text-emerald-400" : "text-rose-400"
-          )}>
-            {comparison.trend === 'up' && '▲ '}
-            {comparison.trend === 'down' && '▼ '}
-            {comparison.trend === 'neutral' && '• '}
-            {comparison.highlight}
-          </span>
-          <span className="text-[var(--color-text-muted)] font-normal italic inline break-words">
-            {comparison.label}
-          </span>
-        </div>
-      )}
     </div>
   );
 }
