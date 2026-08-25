@@ -36,8 +36,8 @@
       "actual": [
         35,
         45,
-        null,
-        null,
+        50,
+        40,
         null,
         null,
         null,
@@ -128,8 +128,8 @@
       "actual": [
         70,
         100,
-        null,
-        null,
+        100,
+        120,
         null,
         null,
         null,

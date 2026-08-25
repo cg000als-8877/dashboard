@@ -60,11 +60,11 @@ export function MetricCard({
             )}
           </div>
 
-          {/* Comparison note (Inside Tile - Compact tight spacing on mobile, standard on desktop) */}
+          {/* Comparison note (Inside Tile - Wraps into 2nd line on mobile so full sentence is 100% visible, single line on desktop) */}
           {comparison && (
-            <div className="flex items-center gap-1 sm:gap-1.5 mt-1 sm:mt-1.5 md:mt-3 pt-1 sm:pt-1.5 md:pt-2 border-t border-[var(--color-border)]/40 text-[9.5px] sm:text-[11px] md:text-[12px] leading-snug sm:leading-normal flex-wrap">
+            <div className="flex flex-wrap md:flex-nowrap items-baseline gap-x-1 gap-y-0.5 mt-1.5 md:mt-3 pt-1.5 md:pt-2 border-t border-[var(--color-border)]/40 text-[10px] sm:text-[11px] md:text-[12px] leading-tight md:leading-normal">
               <span className={cn(
-                "font-bold inline-flex items-center gap-0.5 sm:gap-1 whitespace-nowrap",
+                "font-bold inline-flex items-center gap-0.5 shrink-0 whitespace-nowrap",
                 comparison.isPositive ? "text-emerald-400" : "text-rose-400"
               )}>
                 {comparison.trend === 'up' && '▲ '}
@@ -72,7 +72,7 @@ export function MetricCard({
                 {comparison.trend === 'neutral' && '• '}
                 {comparison.highlight}
               </span>
-              <span className="text-[var(--color-text-secondary)] font-medium sm:font-semibold break-words">
+              <span className="text-[var(--color-text-secondary)] font-medium break-words">
                 {comparison.label}
               </span>
             </div>

@@ -100,6 +100,8 @@ export function DashboardContent({ month, isArchive = false }) {
   }
 
   // Calculate MoM Comparisons in Simple, Clear English (Option A: Same Elapsed Period)
+  const prevPeriodLabel = `July (1 to ${currentCalendarDay})`;
+
   let costComparison = null;
   if (stats && prevComparisonStats?.totalCost > 0) {
     const costDiff = stats.totalCost - prevComparisonStats.totalCost;
@@ -107,7 +109,7 @@ export function DashboardContent({ month, isArchive = false }) {
     const isLower = costDiff < 0;
     costComparison = {
       highlight: `${costPct}% ${isLower ? 'Lower' : 'Higher'}`,
-      label: `spending vs July (Day 1–${currentCalendarDay})`,
+      label: `spending than ${prevPeriodLabel}`,
       trend: isLower ? 'down' : 'up',
       isPositive: isLower
     };
@@ -120,7 +122,7 @@ export function DashboardContent({ month, isArchive = false }) {
     const isHigher = incomeDiff > 0;
     incomeComparison = {
       highlight: `${incomePct}% ${isHigher ? 'Higher' : 'Lower'}`,
-      label: `income vs July (same period)`,
+      label: `income vs ${prevPeriodLabel}`,
       trend: isHigher ? 'up' : 'down',
       isPositive: isHigher
     };
@@ -138,14 +140,14 @@ export function DashboardContent({ month, isArchive = false }) {
       if (pct === 0 || Math.abs(netDiff) < 5000) {
         netComparison = {
           highlight: `Same Deficit`,
-          label: `matching July (same period)`,
+          label: `matching ${prevPeriodLabel}`,
           trend: 'neutral',
           isPositive: true
         };
       } else {
         netComparison = {
           highlight: isLessLoss ? `${pct}% Less Loss` : `${pct}% More Loss`,
-          label: `compared to July (same period)`,
+          label: `compared to ${prevPeriodLabel}`,
           trend: isLessLoss ? 'up' : 'down',
           isPositive: isLessLoss
         };
@@ -153,14 +155,14 @@ export function DashboardContent({ month, isArchive = false }) {
     } else if (currNet >= 0) {
       netComparison = {
         highlight: `Profitable`,
-        label: `improved vs July (same period)`,
+        label: `improved vs ${prevPeriodLabel}`,
         trend: 'up',
         isPositive: true
       };
     } else {
       netComparison = {
         highlight: `In Loss`,
-        label: `down vs July (same period)`,
+        label: `down vs ${prevPeriodLabel}`,
         trend: 'down',
         isPositive: false
       };
@@ -171,7 +173,7 @@ export function DashboardContent({ month, isArchive = false }) {
   if (stats && prevComparisonStats?.workingDays > 0) {
     daysComparison = {
       highlight: `${stats.workingDays} of ${stats.workingDays} Days`,
-      label: `matching July elapsed pace`,
+      label: `matching ${prevPeriodLabel} pace`,
       trend: 'neutral',
       isPositive: true
     };
@@ -195,14 +197,14 @@ export function DashboardContent({ month, isArchive = false }) {
     if (diffK === 0) {
       avgDailyComparison = {
         highlight: `Same Daily Rate`,
-        label: `matching July run-rate`,
+        label: `matching ${prevPeriodLabel} run-rate`,
         trend: 'neutral',
         isPositive: true
       };
     } else {
       avgDailyComparison = {
         highlight: isBetter ? `${diffK}k Less Loss/Day` : `${diffK}k More Loss/Day`,
-        label: `vs July (same period)`,
+        label: `vs ${prevPeriodLabel}`,
         trend: isBetter ? 'up' : 'down',
         isPositive: isBetter
       };
