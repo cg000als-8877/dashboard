@@ -1318,3 +1318,45 @@ body {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+@keyframes wicked-laugh {
+  0%, 100% {
+    transform: rotate(0deg) scale(1) translateY(0);
+  }
+  20% {
+    transform: rotate(-10deg) scale(1.08) translateY(-4px);
+  }
+  40% {
+    transform: rotate(10deg) scale(0.96) translateY(2px);
+  }
+  60% {
+    transform: rotate(-8deg) scale(1.05) translateY(-3px);
+  }
+  80% {
+    transform: rotate(8deg) scale(0.98) translateY(1px);
+  }
+}
+
+@keyframes finger-point {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(6px, -2px) scale(1.18);
+  }
+}
+
+@keyframes pop-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.85) translateY(10px);
+  }
+  70% {
+    transform: scale(1.04) translateY(-2px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+

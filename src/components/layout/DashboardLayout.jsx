@@ -12,6 +12,7 @@ import { format, parseISO } from 'date-fns';
 import { Clock, LayoutDashboard, Factory, BarChart3, Ship, History, Palette, Sun, Moon, GitCompare, Coffee } from 'lucide-react';
 import { useMonth } from '@/components/providers/MonthProvider';
 import { useTheme } from '@/components/ThemeProvider';
+import { CanteenSecurityModal } from '@/components/ui/CanteenSecurityModal';
 
 const navItems = [
   { name: 'Dashboard', href: '/', icon: LayoutDashboard },
@@ -314,52 +315,16 @@ export default function DashboardLayout({ children }) {
           </div>
         </main>
 
-        {/* Canteen Modal Popup Dialog */}
-        {showCanteenModal && (
-          <>
-            <div 
-              className="fixed inset-0 z-[110] bg-black/60 backdrop-blur-sm animate-[fade-in_0.2s_ease-out_both]"
-              onClick={() => setShowCanteenModal(false)}
-            ></div>
-            <div className="fixed inset-0 flex items-center justify-center z-[120] p-4 pointer-events-none">
-              <div className="bg-[var(--color-bg-card)] border border-[var(--color-border)] w-full max-w-sm rounded-3xl shadow-2xl p-6 flex flex-col items-center gap-4 text-center pointer-events-auto animate-[fade-down_0.2s_ease-out_both]">
-                <div className="w-12 h-12 rounded-full bg-amber-500/10 text-amber-500 flex items-center justify-center shadow-inner">
-                  <Coffee size={22} />
-                </div>
-                <div className="space-y-1">
-                  <h3 className="text-sm font-extrabold text-[var(--color-text-main)] tracking-wider uppercase">
-                    BAPL Canteen
-                  </h3>
-                  <p className="text-xs text-[var(--color-text-secondary)] leading-relaxed px-2">
-                    Are you a member of the BAPL Canteen?
-                  </p>
-                </div>
-                <div className="grid grid-cols-2 gap-3 w-full mt-2">
-                  <button
-                    onClick={() => {
-                      setShowCanteenModal(false);
-                      window.open("https://baplc.vercel.app", "_blank");
-                    }}
-                    className="py-2.5 px-4 rounded-xl bg-[var(--color-primary)] hover:bg-[var(--color-primary)]/80 text-[var(--color-on-primary)] font-bold text-xs transition-all active:scale-95 shadow-sm cursor-pointer"
-                  >
-                    Yes
-                  </button>
-                  <button
-                    onClick={() => {
-                      setShowCanteenModal(false);
-                      if (pathname !== '/') {
-                        window.location.href = "/";
-                      }
-                    }}
-                    className="py-2.5 px-4 rounded-xl bg-[var(--color-surface)] border border-[var(--color-border)] hover:bg-[var(--color-surface-hover)] text-[var(--color-text-secondary)] font-bold text-xs transition-all active:scale-95 shadow-sm cursor-pointer"
-                  >
-                    No
-                  </button>
-                </div>
-              </div>
-            </div>
-          </>
-        )}
+        {/* Canteen Security & Verification Modal */}
+        <CanteenSecurityModal 
+          isOpen={showCanteenModal} 
+          onClose={() => setShowCanteenModal(false)} 
+          onRedirectHome={() => {
+            if (pathname !== '/') {
+              window.location.href = "/";
+            }
+          }}
+        />
       </div>
     </div>
   );
