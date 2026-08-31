@@ -17,7 +17,9 @@ import {
   ChevronDown,
   Palette, 
   GitCompare,
-  Layers
+  Layers,
+  Globe,
+  ExternalLink
 } from 'lucide-react';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -37,6 +39,7 @@ const navItems = [
   { name: 'Analytics', href: '/analytics', icon: BarChart3 },
   { name: 'Simulator', href: '/simulator', icon: Ship },
   { name: 'Archive', href: '/archive', icon: History },
+  { name: 'Byzid Profile', href: 'https://baplprofile.vercel.app/', icon: Globe, isExternal: true },
 ];
 
 const LINE_SUB_ITEMS = [
@@ -123,12 +126,14 @@ export default function Sidebar({ onClose }) {
 
             // Standard collapsed mode rendering
             if (isCollapsed) {
+              const linkProps = item.isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {};
               return (
                 <Link
                   key={item.name}
                   href={item.href}
                   onClick={onClose}
                   title={item.name}
+                  {...linkProps}
                   className={cn(
                     "flex items-center rounded-xl transition-all duration-300 relative group overflow-hidden justify-center p-2.5 my-1",
                     isActive 
@@ -198,15 +203,16 @@ export default function Sidebar({ onClose }) {
 
                   {/* Lines Sub-items List */}
                   <div className={cn(
-                    "overflow-hidden transition-all duration-300 ease-in-out pl-4 pr-1 space-y-0.5",
-                    isLinesExpanded ? "max-h-60 opacity-100 mt-1" : "max-h-0 opacity-0"
+                    "overflow-hidden transition-all duration-300 ease-in-out",
+                    isLinesExpanded ? "max-h-60 opacity-100 mt-1 mb-1" : "max-h-0 opacity-0"
                   )}>
-                    <div className="border-l-2 border-[var(--color-border)]/60 pl-2 space-y-0.5">
+                    <div className="pl-3 pr-1 py-1 space-y-0.5 ml-3 border-l border-[var(--color-border)]">
+                      {/* View All Lines Link */}
                       <Link
                         href="/lines"
                         onClick={onClose}
                         className={cn(
-                          "flex items-center justify-between px-2.5 py-1.5 rounded-lg text-[11px] transition-all",
+                          "flex items-center justify-between px-2.5 py-1.5 rounded-lg text-[11px] font-semibold transition-all group/sub",
                           pathname === '/lines'
                             ? "bg-[var(--color-primary)]/15 text-[var(--color-primary)] font-bold shadow-sm"
                             : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)]"
@@ -250,11 +256,13 @@ export default function Sidebar({ onClose }) {
             }
 
             // Standard navigation link
+            const linkProps = item.isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {};
             return (
               <Link
                 key={item.name}
                 href={item.href}
                 onClick={onClose}
+                {...linkProps}
                 className={cn(
                   "flex items-center rounded-xl transition-all duration-300 relative group overflow-hidden px-3 py-2 gap-3 mx-1 my-0.5",
                   isActive 
@@ -268,9 +276,12 @@ export default function Sidebar({ onClose }) {
                 )}>
                   <item.icon size={17} strokeWidth={isActive ? 2.5 : 2} />
                 </div>
-                <span className="text-[12px] tracking-wide whitespace-nowrap group-hover:translate-x-1 transition-transform duration-300">
+                <span className="text-[12px] tracking-wide whitespace-nowrap group-hover:translate-x-1 transition-transform duration-300 flex-1">
                   {item.name}
                 </span>
+                {item.isExternal && (
+                  <ExternalLink size={12} className="opacity-40 group-hover:opacity-100 group-hover:text-[var(--color-primary)] transition-all shrink-0" />
+                )}
                 {isActive && (
                   <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-3/5 bg-[var(--color-primary)] rounded-r-full shadow-[0_0_8px_var(--color-primary)]" />
                 )}

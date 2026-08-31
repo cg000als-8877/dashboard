@@ -9,7 +9,7 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { useKpiData } from '@/utils/useKpiData';
 import { format, parseISO } from 'date-fns';
-import { Clock, LayoutDashboard, Factory, BarChart3, Ship, History, Palette, Sun, Moon, GitCompare, Coffee } from 'lucide-react';
+import { Clock, LayoutDashboard, Factory, BarChart3, Ship, History, Palette, Sun, Moon, GitCompare, Coffee, Globe, ExternalLink } from 'lucide-react';
 import { useMonth } from '@/components/providers/MonthProvider';
 import { useTheme } from '@/components/ThemeProvider';
 import { CanteenSecurityModal } from '@/components/ui/CanteenSecurityModal';
@@ -189,20 +189,24 @@ export default function DashboardLayout({ children }) {
                   { name: 'Line B', href: '/lines/B', icon: Factory, color: '#3B82F6' },
                   { name: 'Line C', href: '/lines/C', icon: Factory, color: '#A855F7' },
                   { name: 'Line D', href: '/lines/D', icon: Factory, color: '#F59E0B' },
+                  { name: 'Byzid Profile', href: 'https://baplprofile.vercel.app/', icon: Globe, isExternal: true, color: '#38BDF8' },
                 ].map((item) => {
                   const Icon = item.icon;
                   const isButton = item.type === 'button';
-                  const isActive = !isButton && pathname === item.href;
+                  const isActive = !isButton && !item.isExternal && pathname === item.href;
                   
                   const content = (
                     <>
-                      <Icon size={14} style={item.color ? { color: item.color } : undefined} className={cn(!item.color && (isActive ? "text-[var(--color-primary)]" : "text-[var(--color-text-secondary)]"))} />
-                      <span>{item.name}</span>
+                      <Icon size={14} style={item.color ? { color: item.color } : undefined} className={cn("shrink-0", !item.color && (isActive ? "text-[var(--color-primary)]" : "text-[var(--color-text-secondary)]"))} />
+                      <span className="text-left leading-tight whitespace-nowrap">{item.name}</span>
+                      {item.isExternal && (
+                        <ExternalLink size={11} className="opacity-40 ml-auto shrink-0" />
+                      )}
                     </>
                   );
                   
                   const commonClass = cn(
-                    "w-full flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer",
+                    "w-full flex items-center justify-start gap-2.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer text-left",
                     isActive
                       ? "bg-[var(--color-primary)]/15 text-[var(--color-primary)] font-bold shadow-sm"
                       : "text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-main)]"
@@ -220,6 +224,21 @@ export default function DashboardLayout({ children }) {
                       >
                         {content}
                       </button>
+                    );
+                  }
+
+                  if (item.isExternal) {
+                    return (
+                      <a
+                        key={item.name}
+                        href={item.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() => setIsBurgerOpen(false)}
+                        className={commonClass}
+                      >
+                        {content}
+                      </a>
                     );
                   }
                   
