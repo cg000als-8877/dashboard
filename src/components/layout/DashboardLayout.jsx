@@ -54,7 +54,7 @@ export default function DashboardLayout({ children }) {
             <div className="flex flex-col">
               <span className="font-extrabold text-[12px] sm:text-[13px] tracking-wider uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] to-[var(--color-text-muted)] leading-tight whitespace-nowrap [filter:var(--shadow-text)]">BYZID APPARELS PVT LTD</span>
               <span className="text-[9px] italic text-[var(--color-text-muted)] mt-0.5 flex items-center gap-1">
-                <span>Updated:</span>
+                <span>LAST UPDATED:</span>
                 <span className="text-[var(--color-primary)] font-medium">{datePart}</span>
               </span>
             </div>
@@ -263,6 +263,7 @@ export default function DashboardLayout({ children }) {
           {navItems.filter(item => !['Simulator', 'Compare', 'Analytics'].includes(item.name)).map((item) => {
             const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
             const Icon = item.icon;
+            const isDashboard = item.name === 'Dashboard';
             
             return (
               <Link
@@ -271,8 +272,8 @@ export default function DashboardLayout({ children }) {
                 className={cn(
                   "flex flex-col items-center justify-center flex-1 py-0.5 px-0.5 transition-all duration-300 relative group active:scale-95",
                   isActive
-                    ? "text-[var(--color-primary)] font-extrabold"
-                    : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] font-bold"
+                    ? "text-[var(--color-primary)] font-black"
+                    : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] font-extrabold"
                 )}
               >
                 <div className="relative flex items-center justify-center">
@@ -280,16 +281,19 @@ export default function DashboardLayout({ children }) {
                     <div className="relative w-8 h-8 rounded-full flex items-center justify-center overflow-hidden shrink-0 shadow-sm border border-[var(--color-border)]/20">
                       <div className="absolute inset-[-50%] bg-[conic-gradient(from_0deg,transparent_15%,var(--color-primary)_50%,transparent_85%)] animate-[nav-border-spin_2s_linear_infinite]" />
                       <div className="absolute inset-[1.5px] rounded-full bg-[var(--color-bg-card)] flex items-center justify-center z-10">
-                        <Icon size={15} className="text-[var(--color-primary)] drop-shadow-[0_0_4px_var(--color-primary-glow)]" />
+                        <Icon size={15} strokeWidth={isDashboard ? 3.25 : 2.75} className="text-[var(--color-primary)] drop-shadow-[0_0_4px_var(--color-primary-glow)]" />
                       </div>
                     </div>
                   ) : (
                     <div className="w-8 h-8 rounded-full flex items-center justify-center text-[var(--color-text-secondary)] transition-colors group-hover:text-[var(--color-text-main)]">
-                      <Icon size={18} className="transition-transform duration-300 group-hover:scale-110" />
+                      <Icon size={18} strokeWidth={isDashboard ? 3 : 2.5} className="transition-transform duration-300 group-hover:scale-110" />
                     </div>
                   )}
                 </div>
-                <span className="text-[9px] font-bold uppercase tracking-tighter leading-none relative z-10 mt-1">{item.name}</span>
+                <span className={cn(
+                  "uppercase leading-none relative z-10 mt-1",
+                  isDashboard ? "text-[9.5px] font-black tracking-normal" : "text-[9px] font-bold tracking-tighter"
+                )}>{item.name}</span>
               </Link>
             );
           })}
