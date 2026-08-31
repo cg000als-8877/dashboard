@@ -10,6 +10,23 @@ import { RealTimeClock } from '@/components/ui/RealTimeClock';
 import { PrintableArchiveReport } from '@/components/report/PrintableArchiveReport';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { DashboardSkeleton } from '@/components/ui/Skeletons';
+import { cn } from '@/components/layout/Sidebar';
+
+// Helper function to render superscript ordinal suffixes (e.g. 1ˢᵗ, 23ʳᵈ, 30ᵗʰ)
+function renderOrdinal(dayStr) {
+  if (!dayStr) return null;
+  const match = String(dayStr).match(/^(\d+)([a-zA-Z]+)$/);
+  if (match) {
+    const [, num, suffix] = match;
+    return (
+      <span className="inline-flex items-baseline font-semibold">
+        <span>{num}</span>
+        <sup className="text-[68%] font-bold -top-[0.45em] ml-[0.5px]">{suffix}</sup>
+      </span>
+    );
+  }
+  return <span>{dayStr}</span>;
+}
 
 export function DashboardContent({ month, isArchive = false }) {
   const { stats, dailyTrends, insights, lines, loading, error } = useKpiData(month);
@@ -23,6 +40,7 @@ export function DashboardContent({ month, isArchive = false }) {
   }
 
   const { stats: prevStats, dailyTrends: prevDailyTrends } = useKpiData(prevMonthKey);
+  const [selectedCardMonth, setSelectedCardMonth] = useState('current'); // 'current' | 'prev'
   const [interactiveDay, setInteractiveDay] = useState(null);
   const [showAnimation, setShowAnimation] = useState(true);
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
@@ -226,8 +244,13 @@ export function DashboardContent({ month, isArchive = false }) {
         {/* Hero Statistics Date Context */}
         {dateComponents && (
           <div className="flex justify-center mb-1 md:mb-2 w-full relative z-10">
-            <span className="inline-flex items-baseline gap-1.5 text-xs md:text-sm font-medium tracking-widest text-[var(--color-text-secondary)] uppercase">
-              from {dateComponents.startDay} to {dateComponents.endDay} <span className="text-[110%] font-bold text-[var(--color-primary)]">{dateComponents.month}</span>, {dateComponents.year}
+            <span className="inline-flex items-baseline gap-1 text-xs md:text-sm font-medium tracking-normal sm:tracking-wide text-[var(--color-text-secondary)]">
+              <span>From</span>
+              {renderOrdinal(dateComponents.startDay)}
+              <span>to</span>
+              {renderOrdinal(dateComponents.endDay)}
+              <span className="font-bold text-[var(--color-primary)] ml-0.5">{dateComponents.month}</span>,
+              <span>{dateComponents.year}</span>
             </span>
           </div>
         )}
@@ -246,43 +269,85 @@ export function DashboardContent({ month, isArchive = false }) {
           </button>
         </div>
 
+        {/* Month Tab Switcher for 6 KPI Stat Cards (Live Dashboard Only) */}
+        {!isArchive && (
+          <div className="flex justify-center items-center w-full mb-3 md:mb-4">
+            <div className="inline-flex p-0.5 sm:p-1 bg-[#090D1A]/90 border border-white/10 rounded-xl gap-1 shadow-inner">
+              <button
+                type="button"
+                onClick={() => setSelectedCardMonth('current')}
+                className={cn(
+                  "flex items-center gap-1.5 px-2.5 sm:px-4 py-1 sm:py-1.5 rounded-lg text-[10px] sm:text-xs uppercase tracking-wider transition-all duration-200 cursor-pointer select-none",
+                  selectedCardMonth === 'current'
+                    ? "bg-[#1C253B] text-white font-bold border border-white/20 shadow-md"
+                    : "text-slate-400 hover:text-white hover:bg-white/5 font-medium"
+                )}
+              >
+                <span>AUGUST</span>
+                <span className="text-[8.5px] sm:text-[10px] text-rose-500 font-black tracking-wide">(LIVE)</span>
+                <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.9)] animate-pulse shrink-0" />
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setSelectedCardMonth('prev')}
+                className={cn(
+                  "px-2.5 sm:px-4 py-1 sm:py-1.5 rounded-lg text-[10px] sm:text-xs uppercase tracking-wider transition-all duration-200 cursor-pointer select-none",
+                  selectedCardMonth === 'prev'
+                    ? "bg-[#1C253B] text-white font-bold border border-white/20 shadow-md"
+                    : "text-slate-400 hover:text-white hover:bg-white/5 font-medium"
+                )}
+              >
+                JULY
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* 6 KPI Metric Cards Grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-2.5 md:gap-5">
-          <MetricCard 
-            title="Total Cost" 
-            value={<AnimatedNumber value={Math.round(stats.totalCost)} prefix="BDT " />} 
-            color="warning"
-            comparison={isArchive ? null : costComparison}
-          />
-          <MetricCard 
-            title="Total Income" 
-            value={<AnimatedNumber value={Math.round(stats.totalIncome)} prefix="BDT " />}
-            color="primary"
-            comparison={isArchive ? null : incomeComparison}
-          />
-          <MetricCard 
-            title={stats.netProfit >= 0 ? "Net Profit" : "Net Loss"} 
-            value={<AnimatedNumber value={Math.abs(Math.round(stats.netProfit))} prefix={stats.netProfit >= 0 ? "+BDT " : "BDT -"} />}
-            color={stats.netProfit >= 0 ? 'success' : 'danger'}
-            comparison={isArchive ? null : netComparison}
-          />
-          <MetricCard 
-            title="Working Days" 
-            value={<AnimatedNumber value={stats.workingDays} suffix=" Days" />} 
-            comparison={isArchive ? null : daysComparison}
-          />
-          <MetricCard 
-            title="Production Lines" 
-            value={<AnimatedNumber value={stats.activeLinesCount} suffix=" Active" />} 
-            comparison={isArchive ? null : linesComparison}
-          />
-          <MetricCard 
-            title={stats.averageDailyProfit >= 0 ? "Avg Daily Profit" : "Avg Daily Loss"} 
-            value={<AnimatedNumber value={Math.abs(Math.round(stats.averageDailyProfit))} prefix={stats.averageDailyProfit >= 0 ? "+" : "-"} suffix=" / day" />}
-            color={stats.averageDailyProfit >= 0 ? 'success' : 'danger'}
-            comparison={isArchive ? null : avgDailyComparison}
-          />
-        </div>
+        {(() => {
+          const isJuly = !isArchive && selectedCardMonth === 'prev' && !!prevStats;
+          const displayStats = isJuly ? prevStats : stats;
+
+          return (
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-2.5 md:gap-5">
+              <MetricCard 
+                title="Total Cost" 
+                value={<AnimatedNumber value={Math.round(displayStats.totalCost)} prefix="BDT " />} 
+                color="warning"
+                comparison={isArchive || isJuly ? null : costComparison}
+              />
+              <MetricCard 
+                title="Total Income" 
+                value={<AnimatedNumber value={Math.round(displayStats.totalIncome)} prefix="BDT " />}
+                color="primary"
+                comparison={isArchive || isJuly ? null : incomeComparison}
+              />
+              <MetricCard 
+                title={displayStats.netProfit >= 0 ? "Net Profit" : "Net Loss"} 
+                value={<AnimatedNumber value={Math.abs(Math.round(displayStats.netProfit))} prefix={displayStats.netProfit >= 0 ? "+BDT " : "BDT -"} />}
+                color={displayStats.netProfit >= 0 ? 'success' : 'danger'}
+                comparison={isArchive || isJuly ? null : netComparison}
+              />
+              <MetricCard 
+                title="Working Days" 
+                value={<AnimatedNumber value={displayStats.workingDays} suffix=" Days" />} 
+                comparison={isArchive || isJuly ? null : daysComparison}
+              />
+              <MetricCard 
+                title="Production Lines" 
+                value={<AnimatedNumber value={displayStats.activeLinesCount || 4} suffix=" Active" />} 
+                comparison={isArchive || isJuly ? null : linesComparison}
+              />
+              <MetricCard 
+                title={displayStats.averageDailyProfit >= 0 ? "Avg Daily Profit" : "Avg Daily Loss"} 
+                value={<AnimatedNumber value={Math.abs(Math.round(displayStats.averageDailyProfit))} prefix={displayStats.averageDailyProfit >= 0 ? "+" : "-"} suffix=" / day" />}
+                color={displayStats.averageDailyProfit >= 0 ? 'success' : 'danger'}
+                comparison={isArchive || isJuly ? null : avgDailyComparison}
+              />
+            </div>
+          );
+        })()}
 
         {/* PDF Download Action (Archive Only) - HIDDEN FOR NOW */}
       {isArchive && (
