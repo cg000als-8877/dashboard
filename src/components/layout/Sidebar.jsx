@@ -55,7 +55,7 @@ export default function Sidebar({ onClose }) {
   const { visualTheme, setVisualTheme, mode, setMode, VISUAL_THEMES, APPEARANCE_MODES } = useTheme();
   
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [isLinesExpanded, setIsLinesExpanded] = useState(() => pathname.startsWith('/lines'));
+  const [isLinesExpanded, setIsLinesExpanded] = useState(true);
   const [isThemesExpanded, setIsThemesExpanded] = useState(true);
 
   // Auto-expand lines dropdown if user navigates to a line page
@@ -75,8 +75,8 @@ export default function Sidebar({ onClose }) {
 
   return (
     <aside className={cn(
-      "flex flex-col transition-all duration-300 relative z-40",
-      isCollapsed ? "w-[72px]" : "w-[230px]"
+      "flex flex-col transition-all duration-300 relative z-40 h-full",
+      isCollapsed ? "w-[72px]" : "w-[240px]"
     )}>
       {/* Floating Toggle Button */}
       <button 
@@ -87,8 +87,8 @@ export default function Sidebar({ onClose }) {
         {isCollapsed ? <ChevronRight size={14} strokeWidth={2.5} /> : <ChevronLeft size={14} strokeWidth={2.5} />}
       </button>
 
-      {/* The main sidebar box */}
-      <div className="flex flex-col w-full h-fit max-h-[calc(100vh-32px)] bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-2xl shadow-[0_12px_40px_-10px_rgba(0,0,0,0.15)] overflow-hidden">
+      {/* The main sidebar box - full height attached to left edge */}
+      <div className="flex flex-col w-full h-full bg-[var(--color-bg-card)] border-r border-[var(--color-border)] shadow-none overflow-hidden">
         {/* Brand Header */}
         <div className={cn("py-4 flex flex-col shrink-0 border-b border-[var(--color-border)]/50 mx-3 mb-1", isCollapsed ? "px-0 items-center mx-2" : "px-2")}>
           <Link href="/" className={cn("flex flex-col group cursor-pointer w-fit", isCollapsed ? "items-center gap-1" : "gap-0.5")}>
@@ -427,7 +427,7 @@ export default function Sidebar({ onClose }) {
                     <span className="text-[10px] font-bold text-[var(--color-text-main)] tracking-wider">System Online</span>
                   </div>
                   <span className="text-[8px] text-[var(--color-text-muted)] font-bold bg-[var(--color-bg-card)] px-1.5 py-0.5 rounded-md border border-[var(--color-border)]">
-                    v2.0.4
+                    v8.0.9
                   </span>
                 </div>
               </div>

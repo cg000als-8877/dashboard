@@ -41,8 +41,8 @@ export default function DashboardLayout({ children }) {
 
   return (
     <div className="flex h-screen overflow-hidden w-full bg-[var(--color-bg-main)]">
-      {/* Desktop Floating Sidebar */}
-      <div className="hidden md:flex flex-col justify-center flex-shrink-0 z-40 relative h-full p-4">
+      {/* Desktop Attached Left Sidebar */}
+      <div className="hidden md:flex flex-col flex-shrink-0 z-40 relative h-full">
         <Sidebar onClose={() => {}} />
       </div>
 
