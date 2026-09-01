@@ -78,13 +78,14 @@ export default function Sidebar({ onClose }) {
       "flex flex-col transition-all duration-300 relative z-40 h-full",
       isCollapsed ? "w-[72px]" : "w-[240px]"
     )}>
-      {/* Floating Toggle Button */}
+      {/* Centered Minimal Sidebar Toggle */}
       <button 
         onClick={() => setIsCollapsed(!isCollapsed)}
-        className="hidden md:flex absolute -right-3.5 top-8 z-50 h-7 w-7 items-center justify-center rounded-full bg-[var(--color-bg-card)] border border-[var(--color-border)] shadow-md hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] text-[var(--color-text-secondary)] transition-all duration-300 hover:shadow-[0_0_12px_var(--color-primary-glow)] cursor-pointer"
-        title={isCollapsed ? "Expand Sidebar" : "Hide Sidebar"}
+        className="hidden md:flex absolute -right-2.5 top-1/2 -translate-y-1/2 z-50 h-8 w-5 items-center justify-center rounded-r-lg bg-[var(--color-bg-card)] border-y border-r border-[var(--color-border)] shadow-sm hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] text-[var(--color-text-muted)] transition-all duration-200 cursor-pointer"
+        title={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
+        aria-label={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
       >
-        {isCollapsed ? <ChevronRight size={14} strokeWidth={2.5} /> : <ChevronLeft size={14} strokeWidth={2.5} />}
+        {isCollapsed ? <ChevronRight size={11} strokeWidth={2.5} /> : <ChevronLeft size={11} strokeWidth={2.5} />}
       </button>
 
       {/* The main sidebar box - full height attached to left edge */}
@@ -288,35 +289,48 @@ export default function Sidebar({ onClose }) {
               </Link>
             );
           })}
+        </nav>
 
-          {/* ── EXPANDABLE THEME SELECTOR SECTION ──────────────────────── */}
+        {/* Footer Area with Theme Section directly above System Status */}
+        <div className={cn("p-2 flex flex-col gap-2 border-t border-[var(--color-border)] shrink-0 bg-[var(--color-bg-card)]", isCollapsed && "items-center px-1.5")}>
+          {/* Collapsed Theme Trigger */}
+          {isCollapsed && (
+            <button 
+              onClick={() => setMode(mode === 'dark' ? 'light' : 'dark')}
+              title="Toggle Appearance"
+              className="flex items-center justify-center p-2 rounded-xl hover:bg-[var(--color-surface-hover)] transition-all text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)] cursor-pointer"
+            >
+              {mode === 'dark' ? <Sun size={16} className="text-yellow-400" /> : <Moon size={16} className="text-indigo-400" />}
+            </button>
+          )}
+
+          {/* Expanded Theme & Style Section (Placed at bottom above status cards) */}
           {!isCollapsed && (
-            <div className="mt-3 pt-2.5 border-t border-[var(--color-border)]/60 px-1">
+            <div className="space-y-1.5">
               {/* Expandable Theme Trigger */}
               <button
                 onClick={() => setIsThemesExpanded(!isThemesExpanded)}
                 className={cn(
-                  "w-full flex items-center justify-between px-2.5 py-2 rounded-xl transition-all duration-300 group cursor-pointer",
+                  "w-full flex items-center justify-between px-2 py-1.5 rounded-lg transition-all duration-200 group cursor-pointer",
                   isThemesExpanded 
                     ? "bg-[var(--color-surface)] border border-[var(--color-border)]" 
                     : "hover:bg-[var(--color-surface-hover)] text-[var(--color-text-secondary)]"
                 )}
               >
-                <div className="flex items-center gap-2.5">
-                  <Palette size={15} className="text-[var(--color-primary)]" />
-                  <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-[var(--color-text-muted)] group-hover:text-[var(--color-text-main)]">
+                <div className="flex items-center gap-2">
+                  <Palette size={13} className="text-[var(--color-primary)] shrink-0" />
+                  <span className="text-[9.5px] font-bold uppercase tracking-wider text-[var(--color-text-muted)] group-hover:text-[var(--color-text-main)]">
                     Theme &amp; Style
                   </span>
                 </div>
 
                 <div className="flex items-center gap-1.5">
-                  {/* Current Active Dot Preview */}
                   <span 
                     className="w-2 h-2 rounded-full shrink-0 shadow-sm" 
                     style={{ backgroundColor: currentThemeObj.color, boxShadow: `0 0 6px ${currentThemeObj.color}88` }} 
                   />
                   <ChevronDown 
-                    size={13} 
+                    size={12} 
                     className={cn(
                       "text-[var(--color-text-muted)] transition-transform duration-300",
                       isThemesExpanded ? "rotate-180 text-[var(--color-primary)]" : ""
@@ -325,40 +339,41 @@ export default function Sidebar({ onClose }) {
                 </div>
               </button>
 
-              {/* Theme & Appearance Unfoldable Content */}
+              {/* Theme List & Appearance Modes */}
               <div className={cn(
-                "overflow-hidden transition-all duration-300 ease-in-out px-1 space-y-2.5",
-                isThemesExpanded ? "max-h-[220px] opacity-100 mt-2 pb-1" : "max-h-0 opacity-0"
+                "overflow-hidden transition-all duration-300 ease-in-out space-y-1.5",
+                isThemesExpanded ? "max-h-[220px] opacity-100 pb-0.5" : "max-h-0 opacity-0"
               )}>
-                {/* Visual Theme Palette Swatches (All in view - No Scrollbar) */}
-                <div className="bg-[var(--color-surface)]/50 border border-[var(--color-border)] rounded-xl p-2 space-y-1.5">
-                  <div className="flex items-center justify-between px-0.5 text-[9px] font-bold uppercase tracking-wider">
+                {/* Visual Themes with Name in a Serial List */}
+                <div className="bg-[var(--color-surface)]/60 border border-[var(--color-border)] rounded-lg p-1.5 space-y-1">
+                  <div className="flex items-center justify-between px-1 text-[8.5px] font-bold uppercase tracking-wider">
                     <span className="text-[var(--color-text-muted)]">Palettes ({VISUAL_THEMES.length})</span>
-                    <span className="text-[var(--color-primary)] font-extrabold">{currentThemeObj.name}</span>
+                    <span className="text-[var(--color-primary)] font-extrabold truncate max-w-[90px]">{currentThemeObj.name}</span>
                   </div>
 
-                  {/* Swatches Grid - All 11 themes visible at once */}
-                  <div className="grid grid-cols-6 gap-1.5 pt-0.5">
-                    {VISUAL_THEMES.map((t) => {
+                  {/* Serial Theme List */}
+                  <div className="max-h-32 overflow-y-auto space-y-0.5 pr-0.5 hide-scrollbar">
+                    {VISUAL_THEMES.map((t, idx) => {
                       const isSelected = visualTheme === t.id;
                       return (
                         <button
                           key={t.id}
                           onClick={() => setVisualTheme(t.id)}
-                          title={t.name}
                           className={cn(
-                            "h-6 w-full rounded-lg flex items-center justify-center transition-all duration-200 cursor-pointer relative group",
-                            isSelected 
-                              ? "ring-2 ring-[var(--color-primary)] ring-offset-2 ring-offset-[var(--color-bg-card)] scale-105 z-10" 
-                              : "hover:scale-110 opacity-75 hover:opacity-100"
+                            "w-full flex items-center gap-1.5 px-1.5 py-1 rounded-md text-[9.5px] font-semibold transition-all cursor-pointer text-left",
+                            isSelected
+                              ? "bg-[var(--color-primary)]/15 text-[var(--color-primary)] font-bold shadow-sm"
+                              : "text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-main)]"
                           )}
-                          style={{
-                            backgroundColor: t.color,
-                            boxShadow: isSelected ? `0 0 10px ${t.color}66` : undefined
-                          }}
                         >
+                          <span className="text-[8px] text-[var(--color-text-muted)] font-mono w-2.5 shrink-0">{idx + 1}.</span>
+                          <span 
+                            className="w-2 h-2 rounded-full shrink-0 shadow-sm" 
+                            style={{ backgroundColor: t.color, boxShadow: isSelected ? `0 0 6px ${t.color}` : undefined }} 
+                          />
+                          <span className="truncate flex-1">{t.name}</span>
                           {isSelected && (
-                            <div className="w-1.5 h-1.5 rounded-full bg-[var(--color-bg-card)] shadow-sm" />
+                            <span className="text-[7.5px] font-black uppercase tracking-wider text-[var(--color-primary)] shrink-0">Active</span>
                           )}
                         </button>
                       );
@@ -367,7 +382,7 @@ export default function Sidebar({ onClose }) {
                 </div>
 
                 {/* Appearance Mode Radio Group */}
-                <div className="grid grid-cols-2 gap-1 p-0.5 bg-[var(--color-surface)] rounded-xl border border-[var(--color-border)]">
+                <div className="grid grid-cols-2 gap-1 p-0.5 bg-[var(--color-surface)] rounded-lg border border-[var(--color-border)]">
                   {APPEARANCE_MODES.map((m) => {
                     const isSelected = mode === m.id;
                     return (
@@ -375,14 +390,14 @@ export default function Sidebar({ onClose }) {
                         key={m.id}
                         onClick={() => setMode(m.id)}
                         className={cn(
-                          "py-1 px-2 rounded-lg text-[10px] font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer",
+                          "py-0.5 px-1.5 rounded text-[9.5px] font-bold flex items-center justify-center gap-1 transition-all cursor-pointer",
                           isSelected
                             ? "bg-[var(--color-bg-card)] text-[var(--color-primary)] border border-[var(--color-primary)]/30 shadow-sm"
                             : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)]"
                         )}
                       >
                         <div className={cn(
-                          "w-2 h-2 rounded-full border flex items-center justify-center shrink-0",
+                          "w-1.5 h-1.5 rounded-full border flex items-center justify-center shrink-0",
                           isSelected ? "border-[var(--color-primary)] bg-[var(--color-primary)]" : "border-[var(--color-border)]"
                         )}>
                           {isSelected && <div className="w-0.5 h-0.5 rounded-full bg-[var(--color-primary)]" />}
@@ -395,41 +410,25 @@ export default function Sidebar({ onClose }) {
               </div>
             </div>
           )}
-        </nav>
-
-        {/* Footer Area */}
-        <div className={cn("p-2.5 flex flex-col gap-2 border-t border-[var(--color-border)] shrink-0", isCollapsed && "items-center px-2")}>
-          {/* Collapsed Theme Trigger */}
-          {isCollapsed && (
-            <button 
-              onClick={() => setMode(mode === 'dark' ? 'light' : 'dark')}
-              title="Toggle Appearance"
-              className="flex items-center justify-center p-2 rounded-xl hover:bg-[var(--color-surface-hover)] transition-all text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)] cursor-pointer"
-            >
-              {mode === 'dark' ? <Sun size={16} className="text-yellow-400" /> : <Moon size={16} className="text-indigo-400" />}
-            </button>
-          )}
 
           {/* Compact System Status */}
           {!isCollapsed && (
             <>
-              <div className="mx-1.5 px-0.5 flex items-center gap-1 text-[9px] italic text-[var(--color-text-muted)] tracking-wider">
+              <div className="mx-1 px-0.5 flex items-center gap-1 text-[8.5px] italic text-[var(--color-text-muted)] tracking-wider">
                 <span>Last Update:</span>
                 <span className="text-[var(--color-primary)] font-semibold not-italic">{updateDate || 'Loading...'}</span>
               </div>
-              <div className="mx-1 px-2.5 py-2 rounded-xl bg-[var(--color-surface)] border border-[var(--color-border)] flex flex-col gap-1 group hover:border-[var(--color-primary)]/40 transition-colors cursor-default relative overflow-hidden">
-                <div className="flex items-center justify-between relative z-10">
-                  <div className="flex items-center gap-1.5">
-                    <span className="relative flex h-2 w-2">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                    </span>
-                    <span className="text-[10px] font-bold text-[var(--color-text-main)] tracking-wider">System Online</span>
-                  </div>
-                  <span className="text-[8px] text-[var(--color-text-muted)] font-bold bg-[var(--color-bg-card)] px-1.5 py-0.5 rounded-md border border-[var(--color-border)]">
-                    v8.0.9
+              <div className="px-2 py-1.5 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)] flex items-center justify-between group hover:border-[var(--color-primary)]/40 transition-colors cursor-default relative overflow-hidden">
+                <div className="flex items-center gap-1.5 relative z-10">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                   </span>
+                  <span className="text-[9.5px] font-bold text-[var(--color-text-main)] tracking-wider">System Online</span>
                 </div>
+                <span className="text-[8px] text-[var(--color-text-muted)] font-bold bg-[var(--color-bg-card)] px-1.5 py-0.5 rounded border border-[var(--color-border)]">
+                  v8.0.9
+                </span>
               </div>
             </>
           )}
