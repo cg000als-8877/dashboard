@@ -68,7 +68,19 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false }) {
     }
   }
   
-  const itemName = activeRows.find(r => r.item)?.item || 'N/A';
+  const uniqueItems = Array.from(new Set(
+    activeRows
+      .filter(r => r.item && typeof r.item === 'string' && r.item.trim() !== '')
+      .flatMap(r => r.item.split(/[,/&]+/).map(s => s.trim()).filter(Boolean))
+  ));
+  const itemName = uniqueItems.length > 0
+    ? uniqueItems.join(', ')
+    : (activeRows.find(r => r.item)?.item || (
+        id.toLowerCase() === 'a' ? 'Flannel Shirt' :
+        id.toLowerCase() === 'b' ? 'Ladies Top' :
+        id.toLowerCase() === 'c' ? 'Ladies Bottom' :
+        id.toLowerCase() === 'd' ? "Men's Tshirt" : 'N/A'
+      ));
 
   const LINE_COLORS = {
     'a': '#10B981', // Emerald

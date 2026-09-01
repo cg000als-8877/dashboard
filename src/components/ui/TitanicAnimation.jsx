@@ -392,18 +392,6 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
       {/* Background Gradient */}
       <div className={`absolute inset-0 bg-gradient-to-b ${isDay ? 'from-[#4fc3f7] via-[#29b6f6] to-[#0288d1]' : 'from-[#02050A] via-[#050A15] to-[#121B2A]'} z-0`} />
 
-      {/* Desktop Status Text Overlay (Hidden on Mobile) */}
-      <div className="hidden md:block absolute bottom-6 left-6 z-20 right-6">
-        <h2 
-          className="drop-shadow-lg tracking-wide font-medium whitespace-nowrap"
-          style={{ fontSize: '1.25rem', color: isDay ? '#01579b' : 'white' }}
-        >
-          {isProfit && "🔥 Full Steam Ahead!"}
-          {isNeutral && "⚓ Anchored in Calm Waters."}
-          {isLoss && "⚠️ Mayday! We are sinking! We need profits to float."}
-        </h2>
-      </div>
-
       {/* SVG Container: 1200x1340 on Desktop, 2025x1350 (3:2) on Mobile */}
       <svg 
         width="100%" 

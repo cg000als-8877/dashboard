@@ -165,10 +165,12 @@ export default function ProductionLines() {
                     <p className="text-[10px] md:text-xs text-[var(--color-primary)] font-semibold tracking-tight uppercase mt-1">
                       <span className="text-[var(--color-text-muted)]">ITEM &mdash; </span>
                       {
-                        line.name.includes('A') ? 'Flannel Shirt' :
-                        line.name.includes('B') ? 'Ladies Top' :
-                        line.name.includes('C') ? 'Ladies Bottom' :
-                        line.name.includes('D') ? "Men's Tshirt" : 'Unknown'
+                        line.item || (line.items && line.items.length > 0 ? line.items.join(', ') : (line.today?.item || (
+                          line.name.includes('A') ? 'Flannel Shirt' :
+                          line.name.includes('B') ? 'Ladies Top' :
+                          line.name.includes('C') ? 'Ladies Bottom' :
+                          line.name.includes('D') ? "Men's Tshirt" : 'Unknown'
+                        )))
                       }
                     </p>
                   </div>
@@ -308,12 +310,6 @@ export default function ProductionLines() {
                   </Link>
                 </div>
               </div>
-              
-              {/* Decorative side accent */}
-              <div 
-                className="absolute top-0 left-0 w-1.5 h-full" 
-                style={{ backgroundColor: isProfitable ? '#10b981' : '#ff3b30' }}
-              />
             </Card>
           );
         })}

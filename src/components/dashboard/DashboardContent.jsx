@@ -42,7 +42,7 @@ export function DashboardContent({ month, isArchive = false }) {
   const { stats: prevStats, dailyTrends: prevDailyTrends } = useKpiData(prevMonthKey);
   const [selectedCardMonth, setSelectedCardMonth] = useState('current'); // 'current' | 'prev'
   const [interactiveDay, setInteractiveDay] = useState(null);
-  const [showAnimation, setShowAnimation] = useState(true);
+  const [showAnimation, setShowAnimation] = useState(false);
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
   const pdfRef = useRef(null);
 
@@ -300,21 +300,23 @@ export function DashboardContent({ month, isArchive = false }) {
           </div>
         )}
 
-        {/* FACTORY SYSTEM OVERVIEW HEADER & TOGGLE */}
-        <div className="relative flex items-center justify-center mt-3 mb-6 px-1 sm:px-0">
+        {/* Hide/Show Visuals Button (Above Factory System Overview Title, Center Aligned on Desktop & Mobile) */}
+        {!isArchive && (
+          <div className={`flex justify-center items-center ${!showAnimation ? 'mt-[2px] md:mt-0 mb-3' : 'mt-2 mb-3'}`}>
+            <button
+              onClick={() => setShowAnimation(!showAnimation)}
+              className="px-3 py-1 rounded-full border border-slate-700/70 text-slate-400 hover:text-slate-200 bg-transparent text-[10px] font-medium tracking-wider uppercase transition-all active:scale-95 cursor-pointer select-none"
+            >
+              {showAnimation ? 'Hide Visuals' : 'Show Visuals'}
+            </button>
+          </div>
+        )}
+
+        {/* FACTORY SYSTEM OVERVIEW HEADER */}
+        <div className="relative flex items-center justify-center mb-6 px-1 sm:px-0">
           <h2 className="text-[20px] sm:text-[23px] md:text-[27px] font-bold tracking-[0.12em] uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] via-[var(--color-text-secondary)] to-[var(--color-text-muted)] text-center">
             Factory System Overview
           </h2>
-          
-          {!isArchive && (
-            <button 
-              onClick={() => setShowAnimation(!showAnimation)}
-              className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 items-center gap-2 px-3.5 py-1.5 bg-[var(--color-surface)] hover:bg-[var(--color-surface-hover)] border border-[var(--color-border)] rounded-xl text-xs font-medium uppercase tracking-wider text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)] transition-all active:scale-95 cursor-pointer shadow-sm"
-            >
-              <Ship size={14} className={showAnimation ? "text-[var(--color-primary)]" : "opacity-70"} />
-              <span>{showAnimation ? 'Hide Visualizer' : 'Show Visualizer'}</span>
-            </button>
-          )}
         </div>
 
         {/* KPI Overview Section Wrapped in a Card */}
@@ -500,12 +502,12 @@ export function DashboardContent({ month, isArchive = false }) {
                     <div className="text-[10px] md:text-xs font-semibold tracking-tight uppercase flex items-center gap-1.5 mb-1 md:mb-1">
                       <span className="text-[var(--color-text-muted)]">ITEM :</span>
                       <span className="text-[var(--color-primary)]">
-                        {line.today?.item || (
+                        {line.item || (line.items && line.items.length > 0 ? line.items.join(', ') : (line.today?.item || (
                           line.name.includes('A') ? 'Flannel Shirt' :
                           line.name.includes('B') ? 'Ladies Top' :
                           line.name.includes('C') ? 'Ladies Bottom' :
                           line.name.includes('D') ? "Men's Tshirt" : 'Unknown'
-                        )}
+                        )))}
                       </span>
                     </div>
                   </div>

@@ -51,7 +51,8 @@ export function createKpiEngine(rawData) {
           daysActive: 0,
           averageCm: 0,
           totalCm: 0,
-          today: null // will store latest day data
+          today: null, // will store latest day data
+          itemsSet: new Set()
         };
       });
 
@@ -71,22 +72,45 @@ export function createKpiEngine(rawData) {
         line.totalCm += d.cm_per_dzn || 0;
         line.daysActive++;
 
+        if (d.item && typeof d.item === 'string' && d.item.trim() !== '') {
+          const splitItems = d.item.split(/[,/&]+/).map(s => s.trim()).filter(Boolean);
+          if (splitItems.length > 0) {
+            splitItems.forEach(it => line.itemsSet.add(it));
+          } else {
+            line.itemsSet.add(d.item.trim());
+          }
+        }
+
         if (d.date === latestDate) {
           line.today = d;
         }
       });
 
-      return Object.values(linesMap).map(line => ({
-        ...line,
-        totalIncome: Math.round(line.totalIncome),
-        totalCost: Math.round(line.totalCost),
-        netProfit: Math.round(line.netProfit),
-        totalProduction: Math.round(line.totalProduction),
-        totalWorkers: Math.round(line.totalWorkers),
-        totalCm: Math.round(line.totalCm),
-        averageWorkers: line.daysActive > 0 ? Math.round(line.totalWorkers / line.daysActive) : 0,
-        averageCm: line.daysActive > 0 ? Math.round(line.totalCm / line.daysActive) : 0,
-      }));
+      return Object.values(linesMap).map(line => {
+        const uniqueItems = Array.from(line.itemsSet);
+        const itemLabel = uniqueItems.length > 0
+          ? uniqueItems.join(', ')
+          : (line.today?.item || (
+              line.name.includes('A') ? 'Flannel Shirt' :
+              line.name.includes('B') ? 'Ladies Top' :
+              line.name.includes('C') ? 'Ladies Bottom' :
+              line.name.includes('D') ? "Men's Tshirt" : 'Unknown'
+            ));
+
+        return {
+          ...line,
+          items: uniqueItems,
+          item: itemLabel,
+          totalIncome: Math.round(line.totalIncome),
+          totalCost: Math.round(line.totalCost),
+          netProfit: Math.round(line.netProfit),
+          totalProduction: Math.round(line.totalProduction),
+          totalWorkers: Math.round(line.totalWorkers),
+          totalCm: Math.round(line.totalCm),
+          averageWorkers: line.daysActive > 0 ? Math.round(line.totalWorkers / line.daysActive) : 0,
+          averageCm: line.daysActive > 0 ? Math.round(line.totalCm / line.daysActive) : 0,
+        };
+      });
     },
 
     getDailyTrends() {
