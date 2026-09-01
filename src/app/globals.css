@@ -604,54 +604,104 @@ html[data-theme="cyber-violet"][data-mode="light"] {
 }
 
 /* ═══════════════════════════════════════════
-   COPPER STEEL — Industrial Rust × Dark Iron
-   Primary:  #EA580C  (Burnished Copper)
-   Cost:     #3B82F6  (Electric Blue — cool contrast)
-   Profit:   #22C55E  (Signal Green)
-   Danger:   #FF5A5F  (Warning Red)
-   Bg Dark:  #0A0805  (Dark Iron)
+   TERMINAL — Hacker CLI Matrix & Terminal Shell
+   - Primary (Prompt/Brand): #22C55E (Phosphor Green)
+   - Main Text:              #4ADE80 (Terminal Green)
+   - Secondary Text:         #9CA3AF (Terminal Grey)
+   - Profit / Optimal:       #3B82F6 (Profit Blue)
+   - Loss / Danger:          #EF4444 (Loss Red)
+   - Cost / Warning:         #EAB308 (Terminal Yellow)
+   - Bg Dark:                #050805 (CRT Terminal Pitch)
+   - Card Dark:              #0A110B (Terminal Shell Card)
 ═══════════════════════════════════════════ */
-html[data-theme="copper-steel"] {
-  --color-primary: #EA580C;
-  --color-primary-glow: rgba(234, 88, 12, 0.4);
-  --color-primary-glow-hover: rgba(234, 88, 12, 0.6);
-  --color-warning: #3B82F6;
-  --color-warning-glow: rgba(59, 130, 246, 0.4);
-  --color-success: #22C55E;
-  --color-success-text: #4ADE80;
-  --color-success-glow: rgba(34, 197, 94, 0.35);
-  --color-danger: #FF5A5F;
-  --color-danger-text: #FCA5A5;
-  --color-danger-glow: rgba(255, 90, 95, 0.35);
+html[data-theme="terminal"] {
+  --color-primary: #22C55E;
+  --color-on-primary: #050805;
+  --color-primary-bright: #4ADE80;
+  --color-primary-soft: #052E16;
+  --color-primary-glow: rgba(34, 197, 94, 0.35);
+  --color-primary-glow-hover: rgba(34, 197, 94, 0.6);
+
+  --color-secondary: #9CA3AF;
+  --color-secondary-bright: #E5E7EB;
+  --color-secondary-soft: #1F2937;
+
+  /* Profit Blue */
+  --color-success: #3B82F6;
+  --color-success-text: #60A5FA;
+  --color-success-glow: rgba(59, 130, 246, 0.35);
+
+  /* Loss Red */
+  --color-danger: #EF4444;
+  --color-danger-text: #F87171;
+  --color-danger-glow: rgba(239, 68, 68, 0.35);
+
+  /* Warning Yellow */
+  --color-warning: #EAB308;
+  --color-warning-text: #FACC15;
+  --color-warning-glow: rgba(234, 179, 8, 0.35);
+
+  --color-info: #38BDF8;
+
+  /* Monospace typography */
+  --font-sans: var(--font-jetbrains-mono), 'JetBrains Mono', 'Fira Code', 'Roboto Mono', ui-monospace, monospace !important;
+  --font-display: var(--font-jetbrains-mono), 'JetBrains Mono', 'Fira Code', 'Roboto Mono', ui-monospace, monospace !important;
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', 'Fira Code', ui-monospace, monospace !important;
 }
-html[data-theme="copper-steel"][data-mode="dark"] {
-  --color-bg-main: #0A0805;
-  --color-bg-card: #160F08;
-  --color-bg-card-hover: #1E150C;
-  --color-border: rgba(234, 88, 12, 0.2);
-  --color-text-main: #FFF4EE;
-  --color-text-secondary: #B87A5A;
-  --color-text-muted: #6B4A33;
-  --color-surface: rgba(234, 88, 12, 0.05);
-  --color-surface-hover: rgba(234, 88, 12, 0.1);
-  --shadow-color: rgba(234, 88, 12, 0.25);
+
+html[data-theme="terminal"] *,
+html[data-theme="terminal"] h1,
+html[data-theme="terminal"] h2,
+html[data-theme="terminal"] h3,
+html[data-theme="terminal"] h4,
+html[data-theme="terminal"] h5,
+html[data-theme="terminal"] h6,
+html[data-theme="terminal"] .font-display,
+html[data-theme="terminal"] button,
+html[data-theme="terminal"] span,
+html[data-theme="terminal"] p,
+html[data-theme="terminal"] a,
+html[data-theme="terminal"] input,
+html[data-theme="terminal"] select,
+html[data-theme="terminal"] table,
+html[data-theme="terminal"] th,
+html[data-theme="terminal"] td {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', 'Fira Code', 'Roboto Mono', ui-monospace, monospace !important;
+  letter-spacing: -0.015em;
 }
-html[data-theme="copper-steel"][data-mode="light"] {
-  --color-bg-main: #FFF5EE;
+
+html[data-theme="terminal"][data-mode="dark"] {
+  --color-bg-main: #050805;
+  --color-bg-card: #0A110B;
+  --color-bg-card-hover: #101C13;
+  --color-bg-elevated: #142318;
+  --color-border: rgba(34, 197, 94, 0.22);
+  --color-border-strong: rgba(34, 197, 94, 0.40);
+  --color-text-main: #4ADE80;
+  --color-text-secondary: #9CA3AF;
+  --color-text-muted: #6B7280;
+  --color-text-subtle: #4B5563;
+  --color-surface: rgba(34, 197, 94, 0.05);
+  --color-surface-hover: rgba(34, 197, 94, 0.10);
+  --shadow-color: rgba(0, 0, 0, 0.7);
+}
+
+html[data-theme="terminal"][data-mode="light"] {
+  --color-bg-main: #F0FDF4;
   --color-bg-card: #FFFFFF;
-  --color-bg-card-hover: #FFF8F5;
-  --color-border: rgba(234, 88, 12, 0.18);
-  --color-text-main: #1A0800;
-  --color-text-secondary: #9A3A00;
-  --color-text-muted: #C07040;
-  --color-surface: rgba(234, 88, 12, 0.05);
-  --color-surface-hover: rgba(234, 88, 12, 0.1);
-  --shadow-color: rgba(234, 88, 12, 0.15);
-  --color-success: #15803D;
-  --color-success-text: #15803D;
+  --color-bg-card-hover: #F7FEE7;
+  --color-border: rgba(22, 101, 52, 0.20);
+  --color-text-main: #14532D;
+  --color-text-secondary: #4B5563;
+  --color-text-muted: #6B7280;
+  --color-surface: rgba(22, 101, 52, 0.05);
+  --color-surface-hover: rgba(22, 101, 52, 0.1);
+  --shadow-color: rgba(20, 83, 45, 0.12);
+  --color-success: #2563EB;
+  --color-success-text: #1D4ED8;
   --color-danger: #DC2626;
-  --color-danger-text: #DC2626;
-  --color-warning: #1D4ED8;
+  --color-danger-text: #B91C1C;
+  --color-warning: #D97706;
 }
 
 /* ═══════════════════════════════════════════
