@@ -4,7 +4,7 @@ import { useKpiData } from '@/utils/useKpiData';
 import { MetricCard, Card } from '@/components/ui/Card';
 import { DailyPerformanceChart, IncomeVsCostChart } from '@/components/dashboard/DashboardCharts';
 import { TitanicAnimation } from '@/components/ui/TitanicAnimation';
-import { Sparkles, ArrowRight, Download, FileText } from 'lucide-react';
+import { Sparkles, ArrowRight, Download, FileText, Ship } from 'lucide-react';
 import Link from 'next/link';
 import { RealTimeClock } from '@/components/ui/RealTimeClock';
 import { PrintableArchiveReport } from '@/components/report/PrintableArchiveReport';
@@ -118,51 +118,91 @@ export function DashboardContent({ month, isArchive = false }) {
     let prevIncome = 0;
     let prevProfit = 0;
     let prevProduction = 0;
+    let prevWorkingDays = 0;
 
     elapsedPrevDays.forEach(d => {
       prevCost += d.cost || 0;
       prevIncome += d.income || 0;
       prevProfit += d.profit || 0;
       prevProduction += d.production || 0;
+      if ((d.production && d.production > 0) || (d.cost && d.cost > 0)) {
+        prevWorkingDays += 1;
+      }
     });
+
+    const activeDaysCount = prevWorkingDays > 0 ? prevWorkingDays : elapsedPrevDays.length;
+    const avgDailyProfit = activeDaysCount > 0 ? (prevProfit / activeDaysCount) : 0;
 
     prevComparisonStats = {
       totalCost: prevCost,
       totalIncome: prevIncome,
       netProfit: prevProfit,
       totalProduction: prevProduction,
-      workingDays: elapsedPrevDays.length,
-      averageDailyProfit: elapsedPrevDays.length > 0 ? prevProfit / elapsedPrevDays.length : 0
+      workingDays: activeDaysCount,
+      averageDailyProfit: avgDailyProfit
     };
   }
 
-  // Calculate MoM Comparisons in Simple, Clear English (Option A: Same Elapsed Period)
-  const prevPeriodLabel = `July (1 to ${currentCalendarDay})`;
+  if (!stats) return <DashboardSkeleton />;
+
+  // Contextual KPI delta computations (Dynamically matches the active date range of the month)
+  let prevPeriodLabel = isArchive ? "Previous Period" : "July";
+  if (!isArchive) {
+    if (dateComponents?.startDay && dateComponents?.endDay) {
+      prevPeriodLabel = dateComponents.startDay === dateComponents.endDay
+        ? `July (${dateComponents.startDay})`
+        : `July (${dateComponents.startDay}–${dateComponents.endDay})`;
+    }
+  }
 
   let costComparison = null;
   if (stats && prevComparisonStats?.totalCost > 0) {
-    const costDiff = stats.totalCost - prevComparisonStats.totalCost;
-    const costPct = Math.round((Math.abs(costDiff) / prevComparisonStats.totalCost) * 100);
-    const isLower = costDiff < 0;
-    costComparison = {
-      highlight: `${costPct}% ${isLower ? 'Lower' : 'Higher'}`,
-      label: `spending than ${prevPeriodLabel}`,
-      trend: isLower ? 'down' : 'up',
-      isPositive: isLower
-    };
+    const currCost = stats.totalCost;
+    const prevCost = prevComparisonStats.totalCost;
+    const costDiff = currCost - prevCost;
+    const isHigherCost = costDiff > 0;
+    const pct = Math.round((Math.abs(costDiff) / prevCost) * 100);
+    
+    if (pct === 0 || Math.abs(costDiff) < 5000) {
+      costComparison = {
+        highlight: `Flat (0%)`,
+        label: `matching ${prevPeriodLabel}`,
+        trend: 'neutral',
+        isPositive: true
+      };
+    } else {
+      costComparison = {
+        highlight: isHigherCost ? `+${pct}% Cost` : `-${pct}% Saved`,
+        label: `vs ${prevPeriodLabel}`,
+        trend: isHigherCost ? 'down' : 'up',
+        isPositive: !isHigherCost
+      };
+    }
   }
 
   let incomeComparison = null;
   if (stats && prevComparisonStats?.totalIncome > 0) {
-    const incomeDiff = stats.totalIncome - prevComparisonStats.totalIncome;
-    const incomePct = Math.round((Math.abs(incomeDiff) / prevComparisonStats.totalIncome) * 100);
-    const isHigher = incomeDiff > 0;
-    incomeComparison = {
-      highlight: `${incomePct}% ${isHigher ? 'Higher' : 'Lower'}`,
-      label: `income vs ${prevPeriodLabel}`,
-      trend: isHigher ? 'up' : 'down',
-      isPositive: isHigher
-    };
+    const currInc = stats.totalIncome;
+    const prevInc = prevComparisonStats.totalIncome;
+    const incDiff = currInc - prevInc;
+    const isHigherInc = incDiff > 0;
+    const pct = Math.round((Math.abs(incDiff) / prevInc) * 100);
+
+    if (pct === 0 || Math.abs(incDiff) < 5000) {
+      incomeComparison = {
+        highlight: `Flat (0%)`,
+        label: `matching ${prevPeriodLabel}`,
+        trend: 'neutral',
+        isPositive: true
+      };
+    } else {
+      incomeComparison = {
+        highlight: isHigherInc ? `+${pct}% Revenue` : `-${pct}% Lower`,
+        label: `vs ${prevPeriodLabel}`,
+        trend: isHigherInc ? 'up' : 'down',
+        isPositive: isHigherInc
+      };
+    }
   }
 
   let netComparison = null;
@@ -207,7 +247,7 @@ export function DashboardContent({ month, isArchive = false }) {
   }
 
   let daysComparison = null;
-  if (stats && prevComparisonStats?.workingDays > 0) {
+  if (stats?.workingDays > 0) {
     daysComparison = {
       highlight: `${stats.workingDays} of ${stats.workingDays} Days`,
       label: `matching ${prevPeriodLabel} pace`,
@@ -251,27 +291,30 @@ export function DashboardContent({ month, isArchive = false }) {
   return (
     <>
       <div className="space-y-6 animate-[fade-up_0.4s_ease-out_both] no-print">
-        {/* Titanic Animation (Live Dashboard Only) */}
+        {/* Titanic Animation (Live Dashboard Only) - 3:2 format, 0 top & left/right padding on mobile */}
         {!isArchive && showAnimation && (
-          <div className="flex flex-col gap-2 relative z-10 -mt-10 md:-mt-8 -mx-4 md:-mx-8 md:w-[calc(100%+4rem)]">
-            <div className="w-full transition-all duration-500 ease-in-out origin-top overflow-hidden border-none rounded-none max-h-[800px] opacity-100 mb-2 animate-[fade-down_0.3s_ease-out]">
+          <div className="flex flex-col relative z-10 -mt-10 md:-mt-8 -mx-4 md:-mx-8 w-[calc(100%+2rem)] md:w-[calc(100%+4rem)] overflow-hidden">
+            <div className="w-full transition-all duration-500 ease-in-out origin-top overflow-hidden border-none rounded-none opacity-100 mb-2 animate-[fade-down_0.3s_ease-out]">
               <TitanicAnimation netProfit={stats.netProfit} simDay={displayDay} />
             </div>
           </div>
         )}
 
         {/* FACTORY SYSTEM OVERVIEW HEADER & TOGGLE */}
-        <div className="relative flex items-center justify-center mt-3 mb-6">
-          <h2 className="text-[21px] md:text-[25px] font-bold tracking-tight uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] via-[var(--color-text-secondary)] to-[var(--color-text-muted)] text-center">
+        <div className="relative flex items-center justify-center mt-3 mb-6 px-1 sm:px-0">
+          <h2 className="text-[20px] sm:text-[23px] md:text-[27px] font-bold tracking-[0.12em] uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] via-[var(--color-text-secondary)] to-[var(--color-text-muted)] text-center">
             Factory System Overview
           </h2>
           
-          <button 
-            onClick={() => setShowAnimation(!showAnimation)}
-            className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 items-center gap-2 px-3.5 py-1.5 bg-[var(--color-surface)] hover:bg-[var(--color-surface-hover)] border border-[var(--color-border)] rounded-xl text-xs font-medium uppercase tracking-wider text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)] transition-all active:scale-95 cursor-pointer"
-          >
-            {showAnimation ? 'Hide Visualizer' : 'Show Visualizer'}
-          </button>
+          {!isArchive && (
+            <button 
+              onClick={() => setShowAnimation(!showAnimation)}
+              className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 items-center gap-2 px-3.5 py-1.5 bg-[var(--color-surface)] hover:bg-[var(--color-surface-hover)] border border-[var(--color-border)] rounded-xl text-xs font-medium uppercase tracking-wider text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)] transition-all active:scale-95 cursor-pointer shadow-sm"
+            >
+              <Ship size={14} className={showAnimation ? "text-[var(--color-primary)]" : "opacity-70"} />
+              <span>{showAnimation ? 'Hide Visualizer' : 'Show Visualizer'}</span>
+            </button>
+          )}
         </div>
 
         {/* KPI Overview Section Wrapped in a Card */}
@@ -419,7 +462,7 @@ export function DashboardContent({ month, isArchive = false }) {
         {/* Production Lines Horizontal Dashboard */}
         <div className="mt-12 mb-10 relative z-10">
           <div className="flex items-center justify-center mb-6">
-            <h2 className="text-[21px] md:text-[21px] font-bold tracking-widest uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] via-[var(--color-text-secondary)] to-[var(--color-text-muted)] text-center">
+            <h2 className="text-[20px] sm:text-[23px] md:text-[27px] font-bold tracking-[0.12em] uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] via-[var(--color-text-secondary)] to-[var(--color-text-muted)] text-center">
               Line Diagnostics
             </h2>
           </div>
@@ -434,7 +477,7 @@ export function DashboardContent({ month, isArchive = false }) {
                     
                     <div className="flex items-center justify-between mb-1.5 md:mb-2 w-full">
                       <div className="flex items-center gap-3">
-                        <h2 className="text-xl md:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[var(--color-text-main)] to-[var(--color-text-secondary)] [filter:var(--shadow-text)]">{line.name}</h2>
+                        <h2 className="text-[22px] md:text-[26px] font-bold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-[var(--color-text-main)] to-[var(--color-text-secondary)] [filter:var(--shadow-text)]">{line.name}</h2>
                         {/* Desktop Warning Light */}
                         <div className={`hidden lg:flex w-2.5 h-2.5 rounded-full shadow-lg ${
                           line.netProfit >= 0 
@@ -518,7 +561,7 @@ export function DashboardContent({ month, isArchive = false }) {
                 <Sparkles className="w-5 h-5" />
               </div>
               <div className="w-full">
-                <h3 className="text-[11px] font-bold text-[var(--color-text-secondary)] uppercase tracking-[0.2em] mb-4">
+                <h3 className="text-[13px] font-bold text-[var(--color-text-secondary)] uppercase tracking-[0.16em] mb-4">
                   System Intelligence
                 </h3>
                 <ul className="space-y-2.5 w-full">
@@ -538,7 +581,7 @@ export function DashboardContent({ month, isArchive = false }) {
         {/* Charts */}
         <div className="mt-14 relative z-10">
           <div className="flex items-center justify-center mb-6">
-            <h2 className="text-[21px] md:text-[21px] font-bold tracking-widest uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] via-[var(--color-text-secondary)] to-[var(--color-text-muted)] text-center">
+            <h2 className="text-[20px] sm:text-[23px] md:text-[27px] font-bold tracking-[0.12em] uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] via-[var(--color-text-secondary)] to-[var(--color-text-muted)] text-center">
               Performance Telemetry
             </h2>
           </div>

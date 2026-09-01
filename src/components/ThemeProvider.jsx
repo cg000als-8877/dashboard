@@ -3,10 +3,10 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
 export const VISUAL_THEMES = [
+  { id: 'ocean-dark', name: 'Ocean Dark', color: '#4F8CFF' },
   { id: 'lime-ivory', name: 'Lime Ivory', color: '#9BE52C' },
   { id: 'jungle-nebula', name: 'Jungle Nebula', color: '#57C27A' },
   { id: 'gen-z', name: 'Gen-Z Pink', color: '#FF007F' },
-  { id: 'ocean-dark', name: 'Ocean Dark', color: '#4F8CFF' },
   { id: 'amber-forge', name: 'Amber Forge', color: '#F59E0B' },
   { id: 'cyber-violet', name: 'Cyber Violet', color: '#A855F7' },
   { id: 'copper-steel', name: 'Copper Steel', color: '#EA580C' },
@@ -24,7 +24,7 @@ export const APPEARANCE_MODES = [
 const ThemeContext = createContext();
 
 export function ThemeProvider({ children }) {
-  const [visualTheme, setVisualThemeState] = useState('jungle-nebula');
+  const [visualTheme, setVisualThemeState] = useState('ocean-dark');
   const [mode, setModeState] = useState('dark');
   const [mounted, setMounted] = useState(false);
 
@@ -60,7 +60,7 @@ export function ThemeProvider({ children }) {
     } else if (storedVisualTheme && VISUAL_THEMES.some(t => t.id === storedVisualTheme)) {
       setVisualThemeState(storedVisualTheme);
     } else {
-      setVisualThemeState('jungle-nebula');
+      setVisualThemeState('ocean-dark');
     }
 
     // 2. Appearance Mode - always default to dark on first visit

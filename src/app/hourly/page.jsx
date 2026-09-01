@@ -331,7 +331,7 @@ export default function HourlyPage() {
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex flex-col items-center md:items-start text-center md:text-left">
-            <h1 className="text-xl md:text-5xl font-bold tracking-tighter uppercase mb-1 md:mb-2 bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] to-[var(--color-text-muted)] flex items-center gap-3">
+            <h1 className="text-[22px] sm:text-[26px] md:text-5xl font-bold tracking-[0.04em] uppercase mb-1 md:mb-2 bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] to-[var(--color-text-muted)] flex items-center gap-3">
               Hourly Tracking 
               {selectedDate && <span className="opacity-80">- {format(parseISO(selectedDate), 'dd MMM, yy')}</span>}
             </h1>

@@ -5,8 +5,11 @@ import path from 'path';
 
 export const dynamic = 'force-dynamic'; // Ensure it always fetches fresh data
 
+let cachedLivePayload = null;
+let lastLiveFetchTime = 0;
+const CACHE_TTL_MS = 10000; // 10s fresh cache
+
 export async function GET(request) {
-  console.log("=== API DATA ROUTE HIT ===", request.url);
   try {
     const { searchParams } = new URL(request.url);
     const month = searchParams.get('month');
@@ -35,15 +38,38 @@ export async function GET(request) {
         }
     }
 
-    // 2. Fetch live data directly from Google Sheets
-    const url = 'https://docs.google.com/spreadsheets/d/1sk_chMraCOx2frbK4RqUoU9M1XkGMAkjP2VgClhPJKo/export?format=xlsx';
-    const response = await fetch(url, { cache: 'no-store' });
-    if (!response.ok) {
-      throw new Error(`Failed to fetch from Google Sheets: ${response.statusText}`);
+    // 2. For live data, return in-memory cache if within TTL (10s)
+    const now = Date.now();
+    if (cachedLivePayload && (now - lastLiveFetchTime < CACHE_TTL_MS)) {
+      return NextResponse.json(cachedLivePayload);
     }
-    
-    const arrayBuffer = await response.arrayBuffer();
-    const fileBuffer = Buffer.from(arrayBuffer);
+
+    // 3. Fetch live data from Google Sheets with fallback
+    const url = 'https://docs.google.com/spreadsheets/d/1sk_chMraCOx2frbK4RqUoU9M1XkGMAkjP2VgClhPJKo/export?format=xlsx';
+    let fileBuffer;
+
+    try {
+      const response = await fetch(url, { cache: 'no-store' });
+      if (!response.ok) {
+        throw new Error(`Google Sheets HTTP ${response.status}: ${response.statusText}`);
+      }
+      const arrayBuffer = await response.arrayBuffer();
+      fileBuffer = Buffer.from(arrayBuffer);
+    } catch (fetchErr) {
+      console.warn("Live Google Sheets fetch failed, attempting cached/backup fallback:", fetchErr.message);
+      if (cachedLivePayload) {
+        return NextResponse.json(cachedLivePayload);
+      }
+      // Try disk cache backup
+      const backupPath = path.join(process.cwd(), 'src', 'data', 'live-backup.json');
+      try {
+        const backupData = await fs.readFile(backupPath, 'utf-8');
+        cachedLivePayload = JSON.parse(backupData);
+        return NextResponse.json(cachedLivePayload);
+      } catch (backupErr) {
+        throw fetchErr;
+      }
+    }
 
     // Read the workbook directly from the buffer
     const workbook = XLSX.read(fileBuffer, { type: 'buffer', cellComments: true });
@@ -237,6 +263,16 @@ export async function GET(request) {
       lines,
       dailyProduction
     };
+
+    // Update live cache
+    cachedLivePayload = payload;
+    lastLiveFetchTime = Date.now();
+
+    // Auto-backup live payload to local disk
+    try {
+      const backupPath = path.join(process.cwd(), 'src', 'data', 'live-backup.json');
+      await fs.writeFile(backupPath, JSON.stringify(payload, null, 2));
+    } catch (e) {}
 
     // Auto-backup current month to Firebase
     try {

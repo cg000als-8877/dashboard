@@ -19,11 +19,12 @@ export function useKpiData(monthOverride) {
   useEffect(() => {
     let isMounted = true;
 
-    async function fetchData() {
+    async function fetchData(retries = 2) {
       if (dataCache[targetMonth]) {
         if (isMounted) {
           setData(dataCache[targetMonth]);
           setLoading(false);
+          setError(null);
         }
         return;
       }
@@ -32,12 +33,15 @@ export function useKpiData(monthOverride) {
       try {
         if (!fetchPromises[targetMonth]) {
           const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 8000);
+          const timeoutId = setTimeout(() => controller.abort(), 30000); // 30s timeout
 
           fetchPromises[targetMonth] = fetch(`/api/data?month=${targetMonth}`, { signal: controller.signal })
-            .then(res => {
+            .then(async res => {
               clearTimeout(timeoutId);
-              if (!res.ok) throw new Error('Failed to fetch data');
+              if (!res.ok) {
+                const errData = await res.json().catch(() => ({}));
+                throw new Error(errData.error || `HTTP ${res.status}: Failed to fetch data`);
+              }
               return res.json();
             })
             .catch(err => {
@@ -66,11 +70,18 @@ export function useKpiData(monthOverride) {
 
         if (isMounted) {
           setData(processedData);
+          setError(null);
         }
       } catch (err) {
-        console.error(err);
+        console.error("useKpiData fetch error:", err);
         delete fetchPromises[targetMonth];
-        if (isMounted) setError(err.message);
+        if (retries > 0) {
+          setTimeout(() => {
+            if (isMounted) fetchData(retries - 1);
+          }, 800);
+          return;
+        }
+        if (isMounted) setError(err.message || 'Error loading data');
       } finally {
         if (isMounted) setLoading(false);
       }

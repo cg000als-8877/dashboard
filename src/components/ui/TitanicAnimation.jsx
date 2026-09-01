@@ -33,39 +33,39 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
   if (isLoss) {
     // Always use the day-based progression for both Dashboard and Simulator
     if (simDay < 21) {
-      frontY = backY = (simDay / 20) * 80;
-      frontRotate = backRotate = (simDay / 20) * 45;
+      frontY = backY = (simDay / 20) * 50;
+      frontRotate = backRotate = (simDay / 20) * 35;
     } else if (simDay === 21) {
-      frontY = backY = 80;
-      frontRotate = backRotate = 45;
+      frontY = backY = 50;
+      frontRotate = backRotate = 35;
     } else if (simDay < 24) {
       // THE SPLIT
       const progress = (simDay - 21) / 2; 
-      frontY = 100 + progress * 150; 
-      frontRotate = 45 - progress * 45; // Front goes horizontal (0 deg)
+      frontY = 60 + progress * 80; 
+      frontRotate = 35 - progress * 35; // Front goes horizontal (0 deg)
       frontX = progress * 80;
       
-      backY = 100 + progress * 50; 
-      backRotate = 45 + progress * 45; // Back goes vertical (90 deg)
+      backY = 60 + progress * 40; 
+      backRotate = 35 + progress * 35; // Back goes vertical (70 deg)
       backX = progress * -50;
     } else if (simDay < 27) {
       const progress = (simDay - 23) / 3; 
-      frontY = 250 + progress * 250; // Plunges to 500
+      frontY = 140 + progress * 60; // Sinks to 200
       frontRotate = 0;
       frontX = 80 + progress * 20;
       
-      backY = 150 + progress * 150; 
-      backRotate = 90;
+      backY = 100 + progress * 80; // Sinks to 180
+      backRotate = 70;
       backX = -50;
     } else {
       const progress = (simDay - 26) / 5; 
-      frontY = 500; // Do not sink past 500 to keep in frame
+      frontY = 200; // Sunk on ocean floor
       frontRotate = 0;
-      frontX = 100 + progress * 50; // Drift ends at 150
+      frontX = 100 + progress * 40;
       
-      backY = 300 + progress * 200; // Sinks to 500
-      backRotate = 90 - progress * 90; // Levels out to 0
-      backX = -50 - progress * 50; // Drifts to -100
+      backY = 180 + progress * 20; // Sinks to 200
+      backRotate = 70 - progress * 70; // Levels out to 0
+      backX = -50 - progress * 40;
     }
   }
 
@@ -124,10 +124,10 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
 
   const renderMoonGroup = () => (
     <g>
-      <circle cx="1650" cy="50" r="45" fill="#f4f6f0" style={{ filter: 'drop-shadow(0 0 15px rgba(255,255,255,0.8))' }} />
-      <circle cx="1660" cy="40" r="8" fill="#e0e2db" opacity="0.6" />
-      <circle cx="1630" cy="60" r="12" fill="#e0e2db" opacity="0.4" />
-      <circle cx="1665" cy="70" r="6" fill="#e0e2db" opacity="0.5" />
+      <circle cx="1050" cy="-10" r="45" fill="#f4f6f0" style={{ filter: 'drop-shadow(0 0 15px rgba(255,255,255,0.8))' }} />
+      <circle cx="1060" cy="-20" r="8" fill="#e0e2db" opacity="0.6" />
+      <circle cx="1030" cy="0" r="12" fill="#e0e2db" opacity="0.4" />
+      <circle cx="1065" cy="10" r="6" fill="#e0e2db" opacity="0.5" />
       
       {Array.from({length: 15}).map((_, i) => (
         <path 
@@ -314,8 +314,8 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
   );
 
   return (
-    <div className="w-full flex flex-col gap-3">
-      <div className={`w-full relative min-h-[360px] sm:min-h-[420px] aspect-[4/3.8] sm:aspect-[4/3] md:aspect-auto md:h-[500px] shadow-none border-none overflow-hidden ${isDay ? 'bg-[#e0f7fa]' : 'bg-[#050A15]'}`}>
+    <div className="w-full flex flex-col">
+      <div className={`w-full relative aspect-[3/2] md:aspect-auto md:h-[500px] shadow-none border-none overflow-hidden ${isDay ? 'bg-[#e0f7fa]' : 'bg-[#050A15]'}`}>
       
       <style>{`
         @keyframes ship-bob {
@@ -404,9 +404,14 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
         </h2>
       </div>
 
-      {/* SVG Container */}
-      {/* 1200x1340 viewBox with top headroom. Uses 'meet' to scale correctly on all devices */}
-      <svg width="100%" height="100%" viewBox="0 -140 1200 1340" preserveAspectRatio="xMidYMid meet" className="absolute inset-0 z-10 overflow-visible">
+      {/* SVG Container: 1350x900 viewBox (3:2 aspect ratio) perfectly frames sky, ship, waves & sea bottom */}
+      <svg 
+        width="100%" 
+        height="100%" 
+        viewBox="-100 -20 1350 900" 
+        preserveAspectRatio="xMidYMid meet" 
+        className="absolute inset-0 z-10 w-full h-full"
+      >
         
         {/* SVG Clip Paths for Shattering */}
         <defs>
@@ -511,7 +516,7 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
         )}
 
         {/* Global Shift to center the scene */}
-        <g transform="translate(0, 360)">
+        <g transform="translate(0, 180)">
           
           <rect x="-4000" y="210" width="8000" height="1200" fill={isDay ? "#01579b" : "#0c1627"} />
 
@@ -577,26 +582,26 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
             {isSimulation && simDay >= 28 && (
               <g>
                  {/* Front part bubbles */}
-                 <g transform="translate(1000, 950)">
-                   {Array.from({length: 80}).map((_, i) => (
+                 <g transform="translate(850, 420)">
+                   {Array.from({length: 40}).map((_, i) => (
                      <circle 
                        key={`fb-${i}`} 
-                       cx={(Math.random() - 0.5) * 400} 
-                       cy={(Math.random() - 0.5) * 100} 
-                       r={Math.random() * 8 + 2} 
+                       cx={(Math.random() - 0.5) * 200} 
+                       cy={(Math.random() - 0.5) * 60} 
+                       r={Math.random() * 6 + 2} 
                        fill="rgba(255, 255, 255, 0.7)"
                        style={{ animation: `hole-bubble ${1 + Math.random()}s infinite linear ${Math.random() * 2}s` }}
                      />
                    ))}
                  </g>
                  {/* Back part bubbles */}
-                 <g transform="translate(100, 950)">
-                   {Array.from({length: 60}).map((_, i) => (
+                 <g transform="translate(250, 420)">
+                   {Array.from({length: 30}).map((_, i) => (
                      <circle 
                        key={`bb-${i}`} 
-                       cx={(Math.random() - 0.5) * 300} 
-                       cy={(Math.random() - 0.5) * 100} 
-                       r={Math.random() * 6 + 2} 
+                       cx={(Math.random() - 0.5) * 150} 
+                       cy={(Math.random() - 0.5) * 60} 
+                       r={Math.random() * 5 + 2} 
                        fill="rgba(255, 255, 255, 0.6)"
                        style={{ animation: `hole-bubble ${1.5 + Math.random()}s infinite linear ${Math.random() * 2}s` }}
                      />
@@ -608,13 +613,13 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
 
           {/* Muddy Ocean Floor */}
           <g>
-            <path d="M -4000 760 Q -2000 730 0 770 T 2000 760 T 4000 770 L 4000 1400 L -4000 1400 Z" fill={isDay ? "#d7ccc8" : "#151710"} />
-            <path d="M -4000 790 Q -2000 750 0 800 T 2000 780 T 4000 790 L 4000 1400 L -4000 1400 Z" fill={isDay ? "#bcaaa4" : "#0d0f0a"} />
+            <path d="M -4000 480 Q -2000 450 0 490 T 2000 480 T 4000 490 L 4000 1200 L -4000 1200 Z" fill={isDay ? "#d7ccc8" : "#151710"} />
+            <path d="M -4000 510 Q -2000 470 0 520 T 2000 500 T 4000 510 L 4000 1200 L -4000 1200 Z" fill={isDay ? "#bcaaa4" : "#0d0f0a"} />
             
             {/* Seaweed / Grass */}
             {Array.from({length: 45}).map((_, i) => {
               const xPos = -400 + Math.random() * 2000;
-              const yPos = 770 + Math.random() * 50;
+              const yPos = 490 + Math.random() * 30;
               return (
                 <g key={`weed-${i}`}>
                   <path 
@@ -681,15 +686,6 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
         </g>
         </g>
       </svg>
-    </div>
-
-    {/* Mobile Status Text Overlay (Hidden on Desktop) */}
-    <div className="block md:hidden w-full text-center px-2">
-      <h2 className="text-[var(--color-text-secondary)] tracking-wide font-light italic text-xs">
-        {isProfit && "🔥 Full Steam Ahead!"}
-        {isNeutral && "⚓ Anchored in Calm Waters."}
-        {isLoss && "⚠️ Mayday! We are sinking! We need profits to float."}
-      </h2>
     </div>
   </div>
   );

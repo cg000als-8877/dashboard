@@ -20,7 +20,7 @@ export default function Analytics() {
     <div className="space-y-8 animate-[fade-up_0.4s_ease-out_both]">
       <header className="mb-10 relative z-10">
         <div className="absolute -top-10 -left-10 w-40 h-40 bg-[var(--color-primary)] opacity-10 rounded-full blur-3xl pointer-events-none"></div>
-        <h1 className="text-2xl md:text-4xl font-bold tracking-tighter uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] via-[var(--color-text-secondary)] to-[var(--color-text-muted)]">
+        <h1 className="text-[26px] md:text-[42px] font-bold tracking-[0.04em] uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] via-[var(--color-text-secondary)] to-[var(--color-text-muted)]">
           Analytics
         </h1>
         <p className="text-[var(--color-primary)] font-medium tracking-widest uppercase text-xs mt-2">Deep dive into financial and production metrics.</p>

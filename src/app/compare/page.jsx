@@ -318,8 +318,8 @@ export default function ComparePage() {
       
       {/* Page Header */}
       <header className="flex flex-col mb-4 relative z-10">
-        <h1 className="text-2xl md:text-4xl font-bold tracking-tight text-[var(--color-text-main)] font-display uppercase">Comparison Center</h1>
-        <p className="text-[var(--color-text-muted)] mt-1 text-xs md:text-sm">Cross-sectional analysis across production lines, dates, and historical archives.</p>
+        <h1 className="text-[26px] md:text-[42px] font-bold tracking-[0.04em] uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] via-[var(--color-text-secondary)] to-[var(--color-text-muted)] font-display">Comparison Center</h1>
+        <p className="text-[var(--color-primary)] font-medium tracking-wide uppercase text-[10px] md:text-xs mt-1 md:mt-2">Cross-sectional analysis across production lines, dates, and historical archives.</p>
       </header>
 
       {/* Selector Tabs */}

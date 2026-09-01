@@ -36,7 +36,7 @@ export default function ProductionLines() {
       {/* Page Header */}
       <header className="pt-4 md:pt-0 mb-6 relative z-10 flex flex-col items-center md:items-start text-center md:text-left">
         <div className="absolute -top-10 -left-10 w-40 h-40 bg-[var(--color-primary)] opacity-10 rounded-full blur-3xl pointer-events-none"></div>
-        <h1 className="text-xl md:text-4xl font-bold tracking-tighter uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] via-[var(--color-text-secondary)] to-[var(--color-text-muted)] mb-1 md:mb-2">
+        <h1 className="text-[22px] sm:text-[26px] md:text-[42px] font-bold tracking-[0.04em] uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] via-[var(--color-text-secondary)] to-[var(--color-text-muted)] mb-1 md:mb-2">
           Production Lines
         </h1>
         <p className="text-[var(--color-primary)] font-medium tracking-wide uppercase text-[10px] md:text-xs mt-1 md:mt-2">
