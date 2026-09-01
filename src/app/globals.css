@@ -93,12 +93,11 @@ html[data-mode="light"] .shimmer {
   --color-primary-glow-hover: rgba(87, 194, 122, 0.45);
 }
 
-/* Polished Theme & Mode Transitions (150ms-250ms) */
-:root, html, body, aside, nav, button, div, card, input, p, h1, h2, h3, span {
+/* Polished Theme & Mode Transitions (Scoped to structural containers) */
+body, aside, nav, header, main {
   transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
               color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
-              border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
-              box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+              border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ═══════════════════════════════════════════

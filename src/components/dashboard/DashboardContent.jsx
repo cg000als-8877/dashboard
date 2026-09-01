@@ -252,9 +252,9 @@ export function DashboardContent({ month, isArchive = false }) {
     <>
       <div className="space-y-6 animate-[fade-up_0.4s_ease-out_both] no-print">
         {/* Titanic Animation (Live Dashboard Only) */}
-        {!isArchive && (
+        {!isArchive && showAnimation && (
           <div className="flex flex-col gap-2 relative z-10 -mt-10 md:-mt-8 -mx-4 md:-mx-8 md:w-[calc(100%+4rem)]">
-            <div className={`w-full transition-all duration-700 ease-in-out origin-top overflow-hidden border-none rounded-none ${showAnimation ? 'max-h-[800px] opacity-100 mb-2' : 'max-h-0 opacity-0 mb-0'}`}>
+            <div className="w-full transition-all duration-500 ease-in-out origin-top overflow-hidden border-none rounded-none max-h-[800px] opacity-100 mb-2 animate-[fade-down_0.3s_ease-out]">
               <TitanicAnimation netProfit={stats.netProfit} simDay={displayDay} />
             </div>
           </div>

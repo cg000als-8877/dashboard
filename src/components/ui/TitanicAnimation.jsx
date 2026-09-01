@@ -96,7 +96,7 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
   }
 
   const stars = useMemo(() => {
-    return Array.from({ length: 400 }).map((_, i) => ({
+    return Array.from({ length: 60 }).map((_, i) => ({
       cx: Math.random() * 8000 - 4000,
       cy: Math.random() * 700, 
       r: Math.random() * 1.5 + 0.5,
