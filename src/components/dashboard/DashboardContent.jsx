@@ -87,6 +87,25 @@ export function DashboardContent({ month, isArchive = false }) {
     currentCalendarDay = parseInt(endDate.split('-')[2], 10);
   }
 
+  const prevStartDate = prevDailyTrends?.length > 0 ? prevDailyTrends[0].date : null;
+  const prevEndDate = prevDailyTrends?.length > 0 ? prevDailyTrends[prevDailyTrends.length - 1].date : null;
+  let prevDateComponents = null;
+  if (prevStartDate && prevEndDate) {
+    prevDateComponents = {
+      startDay: format(parseISO(prevStartDate), 'do'),
+      endDay: format(parseISO(prevEndDate), 'do'),
+      month: format(parseISO(prevEndDate), 'MMMM'),
+      year: format(parseISO(prevEndDate), 'yyyy')
+    };
+  } else if (!isArchive) {
+    prevDateComponents = {
+      startDay: '1st',
+      endDay: '31st',
+      month: 'July',
+      year: '2026'
+    };
+  }
+
   const maxDays = dailyTrends?.length || 1;
   const displayDay = interactiveDay !== null ? interactiveDay : currentCalendarDay;
   const currentDayData = dailyTrends && dailyTrends.length >= displayDay ? dailyTrends[displayDay - 1] : null;
@@ -241,20 +260,6 @@ export function DashboardContent({ month, isArchive = false }) {
           </div>
         )}
 
-        {/* Hero Statistics Date Context */}
-        {dateComponents && (
-          <div className="flex justify-center mb-1 md:mb-2 w-full relative z-10">
-            <span className="inline-flex items-baseline gap-1 text-xs md:text-sm font-medium tracking-normal sm:tracking-wide text-[var(--color-text-secondary)]">
-              <span>From</span>
-              {renderOrdinal(dateComponents.startDay)}
-              <span>to</span>
-              {renderOrdinal(dateComponents.endDay)}
-              <span className="font-bold text-[var(--color-primary)] ml-0.5">{dateComponents.month}</span>,
-              <span>{dateComponents.year}</span>
-            </span>
-          </div>
-        )}
-
         {/* FACTORY SYSTEM OVERVIEW HEADER & TOGGLE */}
         <div className="relative flex items-center justify-center mt-3 mb-6">
           <h2 className="text-[21px] md:text-[25px] font-bold tracking-tight uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] via-[var(--color-text-secondary)] to-[var(--color-text-muted)] text-center">
@@ -275,7 +280,7 @@ export function DashboardContent({ month, isArchive = false }) {
 
           {/* Month Tab Switcher for 6 KPI Stat Cards (Live Dashboard Only) */}
           {!isArchive && (
-            <div className="flex justify-center items-center w-full mb-3.5 md:mb-5 relative z-10">
+            <div className="flex justify-center items-center w-full mb-2 sm:mb-2.5 relative z-10">
               <div className="inline-flex p-0.5 sm:p-1 bg-[#090D1A]/90 border border-white/10 rounded-xl gap-1 shadow-inner">
                 <button
                   type="button"
@@ -307,6 +312,26 @@ export function DashboardContent({ month, isArchive = false }) {
               </div>
             </div>
           )}
+
+          {/* Dynamic Date Context (Inside Card under Month Tabs) */}
+          {(() => {
+            const isJuly = !isArchive && selectedCardMonth === 'prev';
+            const activeDateComp = isJuly ? prevDateComponents : dateComponents;
+            if (!activeDateComp) return null;
+
+            return (
+              <div className="flex justify-center items-center w-full mt-0.5 mb-2.5 sm:mb-3.5 relative z-10">
+                <span className="inline-flex items-baseline gap-1 text-[10px] sm:text-[11px] md:text-xs font-bold italic tracking-wide text-[var(--color-text-secondary)]">
+                  <span>From</span>
+                  {renderOrdinal(activeDateComp.startDay)}
+                  <span>to</span>
+                  {renderOrdinal(activeDateComp.endDay)}
+                  <span className="font-black text-[var(--color-primary)] ml-0.5 not-italic">{activeDateComp.month}</span>,
+                  <span>{activeDateComp.year}</span>
+                </span>
+              </div>
+            );
+          })()}
 
           {/* 6 KPI Metric Cards Grid */}
           {(() => {
