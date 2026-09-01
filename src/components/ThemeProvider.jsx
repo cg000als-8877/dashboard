@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
 export const VISUAL_THEMES = [
+  { id: 'nordic-slate', name: 'Nordic Slate', color: '#60A5FA' },
   { id: 'ocean-dark', name: 'Ocean Dark', color: '#4F8CFF' },
   { id: 'lime-ivory', name: 'Lime Ivory', color: '#9BE52C' },
   { id: 'jungle-nebula', name: 'Jungle Nebula', color: '#57C27A' },
@@ -24,7 +25,7 @@ export const APPEARANCE_MODES = [
 const ThemeContext = createContext();
 
 export function ThemeProvider({ children }) {
-  const [visualTheme, setVisualThemeState] = useState('ocean-dark');
+  const [visualTheme, setVisualThemeState] = useState('nordic-slate');
   const [mode, setModeState] = useState('dark');
   const [mounted, setMounted] = useState(false);
 
@@ -36,31 +37,11 @@ export function ThemeProvider({ children }) {
     const storedMode = localStorage.getItem('app-mode');
     const legacyTheme = localStorage.getItem('theme'); // backward compatibility
 
-    // Check if current Bangladesh time (Asia/Dhaka) is between 11 PM and 2 AM (23:00 - 02:59)
-    const isBangladeshNightWindow = () => {
-      try {
-        const now = new Date();
-        const bdHourStr = new Intl.DateTimeFormat('en-US', {
-          timeZone: 'Asia/Dhaka',
-          hour: 'numeric',
-          hour12: false
-        }).format(now);
-        const bdHour = parseInt(bdHourStr, 10);
-        return bdHour === 23 || bdHour === 0 || bdHour === 1 || bdHour === 2;
-      } catch {
-        return false;
-      }
-    };
-
-    const isNight = isBangladeshNightWindow();
-
-    // 1. Visual Theme (auto Cyber Deck between 11 PM - 2 AM Bangladesh Time)
-    if (isNight && !sessionStorage.getItem('app-night-theme-overridden')) {
-      setVisualThemeState('cyber-deck');
-    } else if (storedVisualTheme && VISUAL_THEMES.some(t => t.id === storedVisualTheme)) {
+    // 1. Visual Theme (default: Nordic Slate for all)
+    if (storedVisualTheme && VISUAL_THEMES.some(t => t.id === storedVisualTheme)) {
       setVisualThemeState(storedVisualTheme);
     } else {
-      setVisualThemeState('ocean-dark');
+      setVisualThemeState('nordic-slate');
     }
 
     // 2. Appearance Mode - always default to dark on first visit

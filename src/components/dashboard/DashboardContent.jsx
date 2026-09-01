@@ -305,7 +305,7 @@ export function DashboardContent({ month, isArchive = false }) {
           <div className={`flex justify-center items-center ${!showAnimation ? 'mt-[2px] md:mt-0 mb-3' : 'mt-2 mb-3'}`}>
             <button
               onClick={() => setShowAnimation(!showAnimation)}
-              className="px-3 py-1 rounded-full border border-slate-700/70 text-slate-400 hover:text-slate-200 bg-transparent text-[10px] font-medium tracking-wider uppercase transition-all active:scale-95 cursor-pointer select-none"
+              className="px-2 py-0.5 md:px-3 md:py-1 rounded-full border border-slate-700/60 text-slate-400 hover:text-slate-200 bg-transparent text-[8.5px] md:text-[10px] font-medium tracking-wider uppercase transition-all active:scale-95 cursor-pointer select-none leading-tight"
             >
               {showAnimation ? 'Hide Visuals' : 'Show Visuals'}
             </button>

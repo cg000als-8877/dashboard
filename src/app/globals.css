@@ -1,33 +1,33 @@
 @import "tailwindcss";
 
 @theme {
-  --color-bg-main: #0B0F17;
-  --color-bg-card: #131A24;
-  --color-bg-card-hover: #18212E;
+  --color-bg-main: #0B0F19;
+  --color-bg-card: #131B2B;
+  --color-bg-card-hover: #192338;
   
-  --color-border: rgba(255,255,255,0.06);
+  --color-border: rgba(255,255,255,0.08);
   
-  --color-primary: #4F8CFF;
-  --color-on-primary: #FFFFFF;
-  --color-success: #2ECC71;
-  --color-on-success: #FFFFFF;
-  --color-danger: #FF5A5F;
+  --color-primary: #60A5FA;
+  --color-on-primary: #0B0F19;
+  --color-success: #34D399;
+  --color-on-success: #0B0F19;
+  --color-danger: #F87171;
   --color-on-danger: #FFFFFF;
-  --color-warning: #F5A623;
-  --color-on-warning: #FFFFFF;
+  --color-warning: #FBBF24;
+  --color-on-warning: #0B0F19;
   
 
-  --color-text-main: #FFFFFF;
-  --color-text-secondary: #9BA7B4;
-  --color-text-muted: #6D7684;
+  --color-text-main: #F8FAFC;
+  --color-text-secondary: #94A3B8;
+  --color-text-muted: #64748B;
   --color-success-text: #34D399; /* emerald-400 */
-  --color-danger-text: #F87171; /* red-400 */
+  --color-danger-text: #FCA5A5; /* red-300 */
   
-  --color-primary-glow: rgba(79, 140, 255, 0.4);
-  --color-primary-glow-hover: rgba(79, 140, 255, 0.6);
-  --color-success-glow: rgba(46, 204, 113, 0.4);
-  --color-danger-glow: rgba(231, 76, 60, 0.4);
-  --color-warning-glow: rgba(241, 196, 15, 0.4);
+  --color-primary-glow: rgba(96, 165, 250, 0.15);
+  --color-primary-glow-hover: rgba(96, 165, 250, 0.25);
+  --color-success-glow: rgba(52, 211, 153, 0.15);
+  --color-danger-glow: rgba(248, 113, 113, 0.15);
+  --color-warning-glow: rgba(251, 191, 36, 0.15);
   
   --shadow-text: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
 
@@ -78,19 +78,19 @@ html[data-mode="light"] .shimmer {
 :root {
   background-color: var(--color-bg-main);
   color: var(--color-text-main);
-  --color-surface: rgba(0, 0, 0, 0.25);
-  --color-surface-hover: rgba(0, 0, 0, 0.4);
-  --color-on-primary: #FFFFFF;
-  --color-on-success: #FFFFFF;
+  --color-surface: rgba(255, 255, 255, 0.03);
+  --color-surface-hover: rgba(255, 255, 255, 0.06);
+  --color-on-primary: #0B0F19;
+  --color-on-success: #0B0F19;
   --color-on-danger: #FFFFFF;
-  --color-on-warning: #FFFFFF;
-  --shadow-color: rgba(0, 0, 0, 0.5);
+  --color-on-warning: #0B0F19;
+  --shadow-color: rgba(0, 0, 0, 0.45);
 
-  /* Default theme primary — Ocean Dark */
-  --color-primary: #4F8CFF;
-  --color-on-primary: #FFFFFF;
-  --color-primary-glow: rgba(79, 140, 255, 0.4);
-  --color-primary-glow-hover: rgba(79, 140, 255, 0.6);
+  /* Default theme primary — Nordic Slate */
+  --color-primary: #60A5FA;
+  --color-on-primary: #0B0F19;
+  --color-primary-glow: rgba(96, 165, 250, 0.15);
+  --color-primary-glow-hover: rgba(96, 165, 250, 0.25);
 }
 
 /* Polished Theme & Mode Transitions (Scoped to structural containers) */
@@ -98,6 +98,128 @@ body, aside, nav, header, main {
   transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
               color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
               border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ═══════════════════════════════════════════
+   NORDIC SLATE (Default Gentle Executive Theme)
+   Calm, soothing, high-legibility Scandinavian dark palette
+   - Zero eye fatigue, soft matte surfaces, distinct semantic colors
+   - Primary (Operations):  #60A5FA (Nordic Sky Blue)
+   - Secondary:             #A78BFA (Soft Heather Lilac)
+   - Revenue / Income:      #38BDF8 (Marine Azure)
+   - Cost / Expense:        #FBBF24 (Warm Honey Amber)
+   - Profit / Optimal:      #34D399 (Meadow Mint)
+   - Loss / Risk:           #F87171 (Gentle Coral Rose)
+   - Bg Dark:               #0B0F19 (Velvet Midnight Navy)
+   - Card Dark:             #131B2B (Matte Slate Glass)
+═══════════════════════════════════════════ */
+html[data-theme="nordic-slate"] {
+  --color-primary: #60A5FA;
+  --color-on-primary: #0B0F19;
+  --color-primary-bright: #93C5FD;
+  --color-primary-soft: #1E293B;
+  --color-primary-glow: rgba(96, 165, 250, 0.15);
+  --color-primary-glow-hover: rgba(96, 165, 250, 0.25);
+
+  --color-secondary: #A78BFA;
+  --color-secondary-bright: #C4B5FD;
+  --color-secondary-soft: #2E1065;
+
+  --color-success: #34D399;
+  --color-success-text: #34D399;
+  --color-success-glow: rgba(52, 211, 153, 0.15);
+
+  --color-danger: #F87171;
+  --color-danger-text: #FCA5A5;
+  --color-danger-glow: rgba(248, 113, 113, 0.15);
+
+  --color-warning: #FBBF24;
+  --color-warning-text: #FBBF24;
+  --color-warning-glow: rgba(251, 191, 36, 0.15);
+
+  --color-info: #38BDF8;
+}
+
+html[data-theme="nordic-slate"][data-mode="dark"] {
+  --color-bg-main: #0B0F19;
+  --color-bg-card: #131B2B;
+  --color-bg-card-hover: #192338;
+  --color-bg-elevated: #1E293B;
+
+  --color-surface: rgba(255, 255, 255, 0.03);
+  --color-surface-hover: rgba(255, 255, 255, 0.06);
+
+  --color-border: rgba(255, 255, 255, 0.08);
+  --color-border-strong: rgba(96, 165, 250, 0.20);
+
+  --color-text-main: #F8FAFC;
+  --color-text-secondary: #94A3B8;
+  --color-text-muted: #64748B;
+  --color-text-subtle: #475569;
+
+  --color-primary: #60A5FA;
+  --color-on-primary: #0B0F19;
+  --color-primary-bright: #93C5FD;
+  --color-primary-soft: #1E293B;
+  --color-primary-glow: rgba(96, 165, 250, 0.15);
+
+  --color-secondary: #A78BFA;
+  --color-secondary-bright: #C4B5FD;
+  --color-secondary-soft: #2E1065;
+
+  --color-success: #34D399;
+  --color-success-text: #34D399;
+
+  --color-danger: #F87171;
+  --color-danger-text: #FCA5A5;
+
+  --color-warning: #FBBF24;
+  --color-warning-text: #FBBF24;
+
+  --color-info: #38BDF8;
+
+  --shadow-color: rgba(0, 0, 0, 0.45);
+}
+
+html[data-theme="nordic-slate"][data-mode="light"] {
+  --color-bg-main: #F1F5F9;
+  --color-bg-card: #FFFFFF;
+  --color-bg-card-hover: #F8FAFC;
+  --color-bg-elevated: #FFFFFF;
+
+  --color-surface: rgba(37, 99, 235, 0.03);
+  --color-surface-hover: rgba(37, 99, 235, 0.06);
+
+  --color-border: rgba(15, 23, 42, 0.08);
+  --color-border-strong: rgba(37, 99, 235, 0.18);
+
+  --color-text-main: #0F172A;
+  --color-text-secondary: #334155;
+  --color-text-muted: #64748B;
+  --color-text-subtle: #94A3B8;
+
+  --color-primary: #2563EB;
+  --color-on-primary: #FFFFFF;
+  --color-primary-bright: #1D4ED8;
+  --color-primary-soft: #EFF6FF;
+  --color-primary-glow: rgba(37, 99, 235, 0.12);
+
+  --color-secondary: #7C3AED;
+  --color-secondary-bright: #6D28D9;
+  --color-secondary-soft: #F5F3FF;
+
+  --color-success: #059669;
+  --color-success-text: #047857;
+
+  --color-danger: #E11D48;
+  --color-danger-text: #BE123C;
+
+  --color-warning: #D97706;
+  --color-warning-text: #B45309;
+
+  --color-info: #0284C7;
+
+  --shadow-color: rgba(15, 23, 42, 0.06);
 }
 
 /* ═══════════════════════════════════════════

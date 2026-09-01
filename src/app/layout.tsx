@@ -35,7 +35,7 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" data-theme="jungle-nebula" data-mode="dark">
+    <html lang="en" data-theme="nordic-slate" data-mode="dark">
       <body className={`${inter.className} ${spaceGrotesk.variable} ${jetbrainsMono.variable} bg-[var(--color-bg-main)] text-[var(--color-text-main)]`}>
         <Suspense fallback={<div>Loading...</div>}>
           <ThemeProvider>
