@@ -321,12 +321,12 @@ export function DashboardContent({ month, isArchive = false }) {
 
             return (
               <div className="flex justify-center items-center w-full mt-0.5 mb-2.5 sm:mb-3.5 relative z-10">
-                <span className="inline-flex items-baseline gap-1 text-[10px] sm:text-[11px] md:text-xs font-bold italic tracking-wide text-[var(--color-text-secondary)]">
+                <span className="inline-flex items-baseline gap-1 text-[10px] sm:text-[11px] md:text-xs font-bold tracking-wide text-[var(--color-text-secondary)]">
                   <span>From</span>
                   {renderOrdinal(activeDateComp.startDay)}
                   <span>to</span>
                   {renderOrdinal(activeDateComp.endDay)}
-                  <span className="font-black text-[var(--color-primary)] ml-0.5 not-italic">{activeDateComp.month}</span>,
+                  <span className="font-extrabold text-[var(--color-primary)] ml-0.5">{activeDateComp.month},</span>
                   <span>{activeDateComp.year}</span>
                 </span>
               </div>
