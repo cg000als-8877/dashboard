@@ -305,7 +305,7 @@ export function DashboardContent({ month, isArchive = false }) {
           <div className={`flex justify-center items-center ${!showAnimation ? 'mt-[2px] md:mt-0 mb-3' : 'mt-2 mb-3'}`}>
             <button
               onClick={() => setShowAnimation(!showAnimation)}
-              className="px-2 py-0.5 md:px-3 md:py-1 rounded-full border border-slate-700/60 text-slate-400 hover:text-slate-200 bg-transparent text-[8.5px] md:text-[10px] font-medium tracking-wider uppercase transition-all active:scale-95 cursor-pointer select-none leading-tight"
+              className={`px-2 py-0.5 md:px-3 md:py-1 rounded-full border border-slate-700/60 text-slate-400 hover:text-slate-200 bg-transparent text-[8.5px] md:text-[10px] font-medium tracking-wider uppercase transition-all active:scale-95 cursor-pointer select-none leading-tight ${!showAnimation ? 'animate-slow-blink' : ''}`}
             >
               {showAnimation ? 'Hide Visuals' : 'Show Visuals'}
             </button>
@@ -447,18 +447,37 @@ export function DashboardContent({ month, isArchive = false }) {
         </div>
       )}
 
-      {/* July PDF Download Button (Archive Only) */}
-      {month === '2026-07' && (
-        <div className="flex justify-center mt-10 mb-2 relative z-10">
-          <button 
-            onClick={() => window.open('https://drive.google.com/file/d/1GWGOeDtG3mvxW7T8y0w64UHg75jBR-Bv/view?usp=sharing', '_blank')}
-            className="flex items-center gap-3 bg-[var(--color-danger)] hover:bg-red-500 text-white font-bold py-3 px-6 rounded-2xl transition-all [box-shadow:0_0_20px_var(--color-danger-glow)] hover:[box-shadow:0_0_30px_var(--color-danger-glow)] text-[10px] sm:text-xs uppercase tracking-widest active:scale-95"
-          >
-            <span>Download PDF of July Sheets</span>
-            <div className="w-[1px] h-5 bg-white/40 rounded-full mx-1"></div>
-            <FileText size={18} />
-          </button>
-        </div>
+      {/* Archive PDF Download Buttons */}
+      {isArchive && (
+        (() => {
+          const pdfLinks = {
+            '2026-07': {
+              url: 'https://drive.google.com/file/d/1GWGOeDtG3mvxW7T8y0w64UHg75jBR-Bv/view?usp=sharing',
+              label: 'Download PDF of July Sheets'
+            },
+            '2026-08': {
+              url: 'https://drive.google.com/file/d/1-Jug6L8J5_CttfrAyrh2NCFuV70g0pvu/view?usp=sharing',
+              label: 'Download PDF of August Sheets'
+            }
+          };
+
+          const activePdf = pdfLinks[month];
+          if (!activePdf) return null;
+
+          return (
+            <div className="flex justify-center mt-10 mb-2 relative z-10">
+              <button 
+                onClick={() => window.open(activePdf.url, '_blank')}
+                className="group flex items-center gap-3 bg-red-500 hover:bg-red-800 text-white font-bold py-3 px-6 rounded-2xl transition-all duration-200 [box-shadow:0_0_20px_rgba(239,68,68,0.4)] hover:[box-shadow:0_0_25px_rgba(153,27,27,0.6)] text-[10px] sm:text-xs uppercase tracking-widest active:scale-95 cursor-pointer min-w-[280px] sm:min-w-[320px] justify-center select-none"
+              >
+                <span className="group-hover:hidden transition-all duration-200">{activePdf.label}</span>
+                <span className="hidden group-hover:inline font-black tracking-[0.2em] text-white transition-all duration-200">Click to See</span>
+                <div className="w-[1px] h-5 bg-white/40 rounded-full mx-1"></div>
+                <FileText size={18} className="shrink-0 group-hover:scale-110 transition-transform" />
+              </button>
+            </div>
+          );
+        })()
       )}
 
         {/* Production Lines Horizontal Dashboard */}
@@ -492,7 +511,7 @@ export function DashboardContent({ month, isArchive = false }) {
                       <span className={`lg:hidden inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[8px] font-bold uppercase tracking-widest transition-all ${
                             line.netProfit >= 0 
                             ? 'bg-[var(--color-success-glow)] text-[var(--color-success-text)] border border-[rgba(16,185,129,0.2)]' 
-                            : 'bg-[var(--color-danger-glow)] text-[var(--color-danger-text)] border border-[rgba(255,59,48,0.4)] shadow-[0_0_10px_rgba(255,59,48,0.3)] animate-[pulse_0.6s_ease-in-out_infinite]'
+                            : 'bg-[var(--color-danger-glow)] text-[var(--color-danger-text)] border border-[rgba(255,59,48,0.4)] shadow-[0_0_10px_rgba(255,59,48,0.3)] animate-super-blink'
                           }`}>
                             <span className={`w-1.5 h-1.5 rounded-full ${line.netProfit >= 0 ? 'bg-emerald-400 shadow-[0_0_5px_#10b981] animate-pulse' : 'bg-red-500 shadow-[0_0_8px_#ff3b30]'}`}></span>
                             {line.netProfit >= 0 ? 'Optimal' : 'Critical'}
