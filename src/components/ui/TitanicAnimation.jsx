@@ -31,41 +31,72 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
   const isSplit = isLoss && simDay >= 22;
 
   if (isLoss) {
-    // Always use the day-based progression for both Dashboard and Simulator
-    if (simDay < 21) {
-      frontY = backY = (simDay / 20) * 50;
-      frontRotate = backRotate = (simDay / 20) * 35;
-    } else if (simDay === 21) {
-      frontY = backY = 50;
-      frontRotate = backRotate = 35;
-    } else if (simDay < 24) {
-      // THE SPLIT
-      const progress = (simDay - 21) / 2; 
-      frontY = 60 + progress * 80; 
-      frontRotate = 35 - progress * 35; // Front goes horizontal (0 deg)
-      frontX = progress * 80;
-      
-      backY = 60 + progress * 40; 
-      backRotate = 35 + progress * 35; // Back goes vertical (70 deg)
-      backX = progress * -50;
-    } else if (simDay < 27) {
-      const progress = (simDay - 23) / 3; 
-      frontY = 140 + progress * 60; // Sinks to 200
-      frontRotate = 0;
-      frontX = 80 + progress * 20;
-      
-      backY = 100 + progress * 80; // Sinks to 180
-      backRotate = 70;
-      backX = -50;
+    if (isMobile) {
+      // Mobile 3:2 Frame Balanced Sinking Progression
+      if (simDay < 21) {
+        frontY = backY = (simDay / 20) * 50;
+        frontRotate = backRotate = (simDay / 20) * 35;
+      } else if (simDay === 21) {
+        frontY = backY = 50;
+        frontRotate = backRotate = 35;
+      } else if (simDay < 24) {
+        const progress = (simDay - 21) / 2; 
+        frontY = 60 + progress * 80; 
+        frontRotate = 35 - progress * 35;
+        frontX = progress * 80;
+        backY = 60 + progress * 40; 
+        backRotate = 35 + progress * 35;
+        backX = progress * -50;
+      } else if (simDay < 27) {
+        const progress = (simDay - 23) / 3; 
+        frontY = 140 + progress * 60;
+        frontRotate = 0;
+        frontX = 80 + progress * 20;
+        backY = 100 + progress * 80;
+        backRotate = 70;
+        backX = -50;
+      } else {
+        const progress = (simDay - 26) / 5; 
+        frontY = 200;
+        frontRotate = 0;
+        frontX = 100 + progress * 40;
+        backY = 180 + progress * 20;
+        backRotate = 70 - progress * 70;
+        backX = -50 - progress * 40;
+      }
     } else {
-      const progress = (simDay - 26) / 5; 
-      frontY = 200; // Sunk on ocean floor
-      frontRotate = 0;
-      frontX = 100 + progress * 40;
-      
-      backY = 180 + progress * 20; // Sinks to 200
-      backRotate = 70 - progress * 70; // Levels out to 0
-      backX = -50 - progress * 40;
+      // Original Desktop Full Sinking Progression
+      if (simDay < 21) {
+        frontY = backY = (simDay / 20) * 80;
+        frontRotate = backRotate = (simDay / 20) * 45;
+      } else if (simDay === 21) {
+        frontY = backY = 80;
+        frontRotate = backRotate = 45;
+      } else if (simDay < 24) {
+        const progress = (simDay - 21) / 2; 
+        frontY = 100 + progress * 150; 
+        frontRotate = 45 - progress * 45;
+        frontX = progress * 80;
+        backY = 100 + progress * 50; 
+        backRotate = 45 + progress * 45;
+        backX = progress * -50;
+      } else if (simDay < 27) {
+        const progress = (simDay - 23) / 3; 
+        frontY = 250 + progress * 250;
+        frontRotate = 0;
+        frontX = 80 + progress * 20;
+        backY = 150 + progress * 150; 
+        backRotate = 90;
+        backX = -50;
+      } else {
+        const progress = (simDay - 26) / 5; 
+        frontY = 500;
+        frontRotate = 0;
+        frontX = 100 + progress * 50;
+        backY = 300 + progress * 200;
+        backRotate = 90 - progress * 90;
+        backX = -50 - progress * 50;
+      }
     }
   }
 
@@ -124,10 +155,10 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
 
   const renderMoonGroup = () => (
     <g>
-      <circle cx="1050" cy="-10" r="45" fill="#f4f6f0" style={{ filter: 'drop-shadow(0 0 15px rgba(255,255,255,0.8))' }} />
-      <circle cx="1060" cy="-20" r="8" fill="#e0e2db" opacity="0.6" />
-      <circle cx="1030" cy="0" r="12" fill="#e0e2db" opacity="0.4" />
-      <circle cx="1065" cy="10" r="6" fill="#e0e2db" opacity="0.5" />
+      <circle cx={isMobile ? "1050" : "1650"} cy={isMobile ? "-10" : "50"} r="45" fill="#f4f6f0" style={{ filter: 'drop-shadow(0 0 15px rgba(255,255,255,0.8))' }} />
+      <circle cx={isMobile ? "1060" : "1660"} cy={isMobile ? "-20" : "40"} r="8" fill="#e0e2db" opacity="0.6" />
+      <circle cx={isMobile ? "1030" : "1630"} cy={isMobile ? "0" : "60"} r="12" fill="#e0e2db" opacity="0.4" />
+      <circle cx={isMobile ? "1065" : "1665"} cy={isMobile ? "10" : "70"} r="6" fill="#e0e2db" opacity="0.5" />
       
       {Array.from({length: 15}).map((_, i) => (
         <path 
@@ -404,11 +435,11 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
         </h2>
       </div>
 
-      {/* SVG Container: 1350x900 viewBox (3:2 aspect ratio) perfectly frames sky, ship, waves & sea bottom */}
+      {/* SVG Container: 1200x1340 on Desktop, 1350x900 (3:2) on Mobile */}
       <svg 
         width="100%" 
         height="100%" 
-        viewBox="-100 -20 1350 900" 
+        viewBox={isMobile ? "-100 -20 1350 900" : "0 -140 1200 1340"} 
         preserveAspectRatio="xMidYMid meet" 
         className="absolute inset-0 z-10 w-full h-full"
       >
@@ -516,7 +547,7 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
         )}
 
         {/* Global Shift to center the scene */}
-        <g transform="translate(0, 180)">
+        <g transform={isMobile ? "translate(0, 180)" : "translate(0, 360)"}>
           
           <rect x="-4000" y="210" width="8000" height="1200" fill={isDay ? "#01579b" : "#0c1627"} />
 
@@ -582,7 +613,7 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
             {isSimulation && simDay >= 28 && (
               <g>
                  {/* Front part bubbles */}
-                 <g transform="translate(850, 420)">
+                 <g transform={isMobile ? "translate(850, 420)" : "translate(1000, 950)"}>
                    {Array.from({length: 40}).map((_, i) => (
                      <circle 
                        key={`fb-${i}`} 
@@ -595,7 +626,7 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
                    ))}
                  </g>
                  {/* Back part bubbles */}
-                 <g transform="translate(250, 420)">
+                 <g transform={isMobile ? "translate(250, 420)" : "translate(100, 950)"}>
                    {Array.from({length: 30}).map((_, i) => (
                      <circle 
                        key={`bb-${i}`} 
@@ -613,13 +644,13 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
 
           {/* Muddy Ocean Floor */}
           <g>
-            <path d="M -4000 480 Q -2000 450 0 490 T 2000 480 T 4000 490 L 4000 1200 L -4000 1200 Z" fill={isDay ? "#d7ccc8" : "#151710"} />
-            <path d="M -4000 510 Q -2000 470 0 520 T 2000 500 T 4000 510 L 4000 1200 L -4000 1200 Z" fill={isDay ? "#bcaaa4" : "#0d0f0a"} />
+            <path d={isMobile ? "M -4000 480 Q -2000 450 0 490 T 2000 480 T 4000 490 L 4000 1200 L -4000 1200 Z" : "M -4000 760 Q -2000 730 0 770 T 2000 760 T 4000 770 L 4000 1400 L -4000 1400 Z"} fill={isDay ? "#d7ccc8" : "#151710"} />
+            <path d={isMobile ? "M -4000 510 Q -2000 470 0 520 T 2000 500 T 4000 510 L 4000 1200 L -4000 1200 Z" : "M -4000 790 Q -2000 750 0 800 T 2000 780 T 4000 790 L 4000 1400 L -4000 1400 Z"} fill={isDay ? "#bcaaa4" : "#0d0f0a"} />
             
             {/* Seaweed / Grass */}
             {Array.from({length: 45}).map((_, i) => {
               const xPos = -400 + Math.random() * 2000;
-              const yPos = 490 + Math.random() * 30;
+              const yPos = isMobile ? (490 + Math.random() * 30) : (770 + Math.random() * 50);
               return (
                 <g key={`weed-${i}`}>
                   <path 
