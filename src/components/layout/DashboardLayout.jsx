@@ -9,7 +9,7 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { useKpiData } from '@/utils/useKpiData';
 import { format, parseISO } from 'date-fns';
-import { Clock, LayoutDashboard, Factory, BarChart3, Ship, History, Palette, Sun, Moon, GitCompare, Coffee, Globe, ExternalLink } from 'lucide-react';
+import { Clock, LayoutDashboard, Factory, BarChart3, Ship, History, Palette, Sun, Moon, GitCompare, Coffee, Globe, ExternalLink, Check } from 'lucide-react';
 import { useMonth } from '@/components/providers/MonthProvider';
 import { useTheme } from '@/components/ThemeProvider';
 import { CanteenSecurityModal } from '@/components/ui/CanteenSecurityModal';
@@ -48,20 +48,24 @@ export default function DashboardLayout({ children }) {
 
       <div className="flex flex-col flex-1 overflow-hidden relative w-full">
         {/* Mobile Top Header (Hidden on Desktop) */}
-        <header className="md:hidden fixed top-0 left-0 right-0 bg-[var(--color-bg-card)]/90 backdrop-blur-md z-50 flex items-center justify-between px-4 py-3 border-b border-[var(--color-border)] shadow-sm">
+        <header className="md:hidden fixed top-0 left-0 right-0 bg-[var(--color-bg-card)]/90 backdrop-blur-md z-50 flex items-center justify-between px-4 py-2.5 sm:py-3 border-b border-[var(--color-border)] shadow-sm">
           <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-surface)] to-transparent pointer-events-none"></div>
           <Link href="/" className="flex items-center gap-2 relative z-10 cursor-pointer">
             <div className="flex flex-col">
               <span className="font-extrabold text-[12px] sm:text-[13px] tracking-wider uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] to-[var(--color-text-muted)] leading-tight whitespace-nowrap [filter:var(--shadow-text)]">BYZID APPARELS PVT LTD</span>
-              <span className="text-[9px] italic text-[var(--color-text-muted)] mt-0.5 flex items-center gap-1">
-                <span>LAST UPDATED:</span>
+              <span className="text-[9px] italic text-[var(--color-text-muted)] mt-0.5 flex items-center gap-1 leading-tight">
+                <span>Last Updated :</span>
                 <span className="text-[var(--color-primary)] font-medium">{datePart}</span>
+              </span>
+              <span className="text-[8.5px] italic text-[var(--color-text-muted)] mt-0.5 flex items-center gap-1 leading-tight">
+                <span>Financial Data Analyst :</span>
+                <span className="text-[var(--color-text-secondary)] font-medium">Rofiqul Islam Zia</span>
               </span>
             </div>
           </Link>
           
           {/* Top Right Controls */}
-          <div className="flex items-center gap-2 relative z-50">
+          <div className="flex items-center gap-1.5 relative z-50">
             {/* Visual Theme Palette Toggle */}
             <button 
               onClick={() => {
@@ -69,15 +73,15 @@ export default function DashboardLayout({ children }) {
                 setIsBurgerOpen(false);
               }} 
               className={cn(
-                "p-2 rounded-xl transition-all duration-300 active:scale-95 border flex items-center justify-center shadow-sm",
+                "p-1.5 bg-transparent border-0 shadow-none outline-none transition-transform active:scale-90 flex items-center justify-center cursor-pointer",
                 isMobileMenuOpen 
-                  ? "bg-[var(--color-primary)]/20 text-[var(--color-primary)] border-[var(--color-primary)]/50 shadow-[0_0_12px_var(--color-primary-glow)]" 
-                  : "bg-[var(--color-surface)]/70 text-[var(--color-text-secondary)] border-[var(--color-border)] hover:text-[var(--color-text-main)]"
+                  ? "text-[var(--color-primary)]" 
+                  : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)]"
               )}
               aria-label="Open Theme Palette"
               title="Change Visual Theme"
             >
-              <Palette size={17} />
+              <Palette size={19} strokeWidth={2.2} />
             </button>
 
             {/* Light / Dark Mode Toggle Button */}
@@ -87,14 +91,14 @@ export default function DashboardLayout({ children }) {
                 setIsBurgerOpen(false);
                 setIsMobileMenuOpen(false);
               }}
-              className="p-2 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)]/70 text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)] hover:border-[var(--color-primary)]/30 transition-all active:scale-95 flex items-center justify-center shadow-sm"
+              className="p-1.5 bg-transparent border-0 shadow-none outline-none text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] transition-transform active:scale-90 flex items-center justify-center cursor-pointer"
               aria-label="Toggle Light/Dark Mode"
               title="Toggle Light/Dark Mode"
             >
               {mode === 'dark' ? (
-                <Sun size={17} className="text-amber-400 drop-shadow-[0_0_6px_rgba(251,191,36,0.6)]" />
+                <Sun size={19} strokeWidth={2.2} className="text-amber-400" />
               ) : (
-                <Moon size={17} className="text-indigo-400 drop-shadow-[0_0_6px_rgba(129,140,248,0.6)]" />
+                <Moon size={19} strokeWidth={2.2} className="text-indigo-400" />
               )}
             </button>
 
@@ -104,68 +108,74 @@ export default function DashboardLayout({ children }) {
           {isMobileMenuOpen && (
             <>
               <div className="fixed inset-0 z-[90] bg-black/40 backdrop-blur-[2px]" onClick={() => setIsMobileMenuOpen(false)}></div>
-              <div className="absolute top-14 right-3 w-60 bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-2xl shadow-2xl flex flex-col p-3 animate-[fade-down_0.2s_ease-out_both] z-[100] origin-top-right space-y-3">
-                <div>
-                  <p className="text-[9px] font-extrabold uppercase tracking-widest text-[var(--color-text-muted)] mb-1.5 px-1">
-                    Visual Theme
-                  </p>
-                  <div className="space-y-1">
-                    {VISUAL_THEMES.map((t) => {
-                      const isSelected = visualTheme === t.id;
-                      return (
-                        <button
-                          key={t.id}
-                          onClick={() => { setVisualTheme(t.id); setIsMobileMenuOpen(false); }}
-                          className={cn(
-                            "w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all",
-                            isSelected
-                              ? "bg-[var(--color-primary)]/15 text-[var(--color-primary)] font-bold shadow-sm"
-                              : "text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-main)]"
-                          )}
-                        >
-                          <div className="flex items-center gap-2">
-                            <div className={cn(
-                              "w-3 h-3 rounded-full border flex items-center justify-center shrink-0 transition-colors",
-                              isSelected ? "border-[var(--color-primary)] bg-[var(--color-primary)]" : "border-[var(--color-border)]"
-                            )}>
-                              {isSelected && <div className="w-1 h-1 rounded-full bg-[var(--color-on-primary)]" />}
-                            </div>
-                            <span>{t.name}</span>
-                          </div>
-                          <span 
-                            className="w-2 h-2 rounded-full shrink-0 shadow-sm" 
-                            style={{ backgroundColor: t.color }} 
-                          />
-                        </button>
-                      );
-                    })}
-                  </div>
+              <div className="absolute top-12 right-2.5 w-52 bg-[var(--color-bg-card)]/95 backdrop-blur-xl border border-[var(--color-border)] rounded-xl shadow-2xl flex flex-col p-2.5 animate-[fade-down_0.15s_ease-out_both] z-[100] origin-top-right">
+                
+                {/* Header with Title and Close Button */}
+                <div className="flex items-center justify-between pb-2 border-b border-[var(--color-border)]/60 mb-2">
+                  <span className="text-[10px] font-extrabold uppercase tracking-wider text-[var(--color-text-main)]">
+                    Theme & Mode
+                  </span>
+                  <button 
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="p-1 -mr-1 rounded-md text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface)] transition-colors cursor-pointer"
+                    aria-label="Close menu"
+                  >
+                    <X size={13} />
+                  </button>
                 </div>
 
-                <div>
-                  <p className="text-[9px] font-extrabold uppercase tracking-widest text-[var(--color-text-muted)] mb-1.5 px-1">
-                    Appearance Mode
-                  </p>
-                  <div className="grid grid-cols-2 gap-1 p-0.5 bg-[var(--color-surface)] rounded-xl border border-[var(--color-border)]">
-                    {APPEARANCE_MODES.map((m) => {
-                      const isSelected = mode === m.id;
-                      return (
-                        <button
-                          key={m.id}
-                          onClick={() => { setMode(m.id); setIsMobileMenuOpen(false); }}
-                          className={cn(
-                            "py-1.5 px-2 rounded-lg text-[10px] font-bold flex items-center justify-center gap-1.5 transition-all",
-                            isSelected
-                              ? "bg-[var(--color-bg-card)] text-[var(--color-primary)] border border-[var(--color-primary)]/30 shadow-sm"
-                              : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)]"
-                          )}
-                        >
-                          <span>{m.name}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
+                {/* Compact Appearance Mode Switcher */}
+                <div className="grid grid-cols-2 gap-1 p-0.5 bg-[var(--color-surface)] rounded-lg border border-[var(--color-border)]/60 mb-2">
+                  {APPEARANCE_MODES.map((m) => {
+                    const isSelected = mode === m.id;
+                    return (
+                      <button
+                        key={m.id}
+                        onClick={() => { setMode(m.id); }}
+                        className={cn(
+                          "py-1 rounded text-[9.5px] font-bold uppercase tracking-wider transition-all text-center flex items-center justify-center gap-1 cursor-pointer",
+                          isSelected
+                            ? "bg-[var(--color-bg-card)] text-[var(--color-primary)] shadow-xs"
+                            : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)]"
+                        )}
+                      >
+                        {m.id === 'light' ? <Sun size={10} /> : <Moon size={10} />}
+                        <span>{m.name}</span>
+                      </button>
+                    );
+                  })}
                 </div>
+
+                {/* Compressed Full Theme List (No scroll needed) */}
+                <div className="space-y-0.5 divide-y divide-[var(--color-border)]/20">
+                  {VISUAL_THEMES.map((t) => {
+                    const isSelected = visualTheme === t.id;
+                    return (
+                      <button
+                        key={t.id}
+                        onClick={() => { setVisualTheme(t.id); setIsMobileMenuOpen(false); }}
+                        className={cn(
+                          "w-full flex items-center justify-between px-2 py-1 rounded-md text-[10.5px] font-medium transition-colors cursor-pointer text-left",
+                          isSelected
+                            ? "bg-[var(--color-primary)]/15 text-[var(--color-primary)] font-bold"
+                            : "text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-main)]"
+                        )}
+                      >
+                        <div className="flex items-center gap-2 min-w-0">
+                          <span 
+                            className="w-2 h-2 rounded-full shrink-0 shadow-xs" 
+                            style={{ backgroundColor: t.color }} 
+                          />
+                          <span className="truncate">{t.name}</span>
+                        </div>
+                        {isSelected && (
+                          <Check size={11} className="text-[var(--color-primary)] shrink-0 ml-1.5" />
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+
               </div>
             </>
           )}
@@ -331,7 +341,7 @@ export default function DashboardLayout({ children }) {
 
         {/* Main Content */}
         <main 
-          className="flex-1 overflow-y-auto w-full pt-[65px] pb-16 md:pt-8 md:pb-8 p-4 md:p-8 relative hide-scrollbar md:[scrollbar-width:auto]"
+          className="flex-1 overflow-y-auto w-full pt-[74px] sm:pt-[76px] pb-16 md:pt-8 md:pb-8 p-4 md:p-8 relative hide-scrollbar md:[scrollbar-width:auto]"
         >
           <div className="w-full max-w-[1800px] mx-auto">
             {children}

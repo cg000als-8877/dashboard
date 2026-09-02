@@ -163,8 +163,8 @@ export function DashboardContent({ month, isArchive = false }) {
       };
     } else {
       costComparison = {
-        highlight: isHigherCost ? `+${pct}% Cost` : `-${pct}% Saved`,
-        label: `vs ${prevPeriodLabel}`,
+        highlight: isHigherCost ? `+${pct}% more Cost` : `-${pct}% less Cost`,
+        label: `compared to ${prevPeriodLabel}`,
         trend: isHigherCost ? 'down' : 'up',
         isPositive: !isHigherCost
       };
@@ -188,8 +188,8 @@ export function DashboardContent({ month, isArchive = false }) {
       };
     } else {
       incomeComparison = {
-        highlight: isHigherInc ? `+${pct}% Revenue` : `-${pct}% Lower`,
-        label: `vs ${prevPeriodLabel}`,
+        highlight: isHigherInc ? `+${pct}% more Revenue` : `-${pct}% less Revenue`,
+        label: `compared to ${prevPeriodLabel}`,
         trend: isHigherInc ? 'up' : 'down',
         isPositive: isHigherInc
       };
@@ -214,7 +214,7 @@ export function DashboardContent({ month, isArchive = false }) {
         };
       } else {
         netComparison = {
-          highlight: isLessLoss ? `${pct}% Less Loss` : `${pct}% More Loss`,
+          highlight: isLessLoss ? `-${pct}% less Loss` : `+${pct}% more Loss`,
           label: `compared to ${prevPeriodLabel}`,
           trend: isLessLoss ? 'up' : 'down',
           isPositive: isLessLoss
@@ -223,14 +223,14 @@ export function DashboardContent({ month, isArchive = false }) {
     } else if (currNet >= 0) {
       netComparison = {
         highlight: `Profitable`,
-        label: `improved vs ${prevPeriodLabel}`,
+        label: `improved compared to ${prevPeriodLabel}`,
         trend: 'up',
         isPositive: true
       };
     } else {
       netComparison = {
         highlight: `In Loss`,
-        label: `down vs ${prevPeriodLabel}`,
+        label: `down compared to ${prevPeriodLabel}`,
         trend: 'down',
         isPositive: false
       };
@@ -271,8 +271,8 @@ export function DashboardContent({ month, isArchive = false }) {
       };
     } else {
       avgDailyComparison = {
-        highlight: isBetter ? `${diffK}k Less Loss/Day` : `${diffK}k More Loss/Day`,
-        label: `vs ${prevPeriodLabel}`,
+        highlight: isBetter ? `-${diffK}k less Loss/Day` : `+${diffK}k more Loss/Day`,
+        label: `compared to ${prevPeriodLabel}`,
         trend: isBetter ? 'up' : 'down',
         isPositive: isBetter
       };
