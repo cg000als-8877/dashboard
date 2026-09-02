@@ -65,7 +65,7 @@ export function MetricCard({
             <div className="flex flex-wrap md:flex-nowrap items-baseline gap-x-1 gap-y-0.5 mt-1.5 md:mt-3 pt-1.5 md:pt-2 border-t border-[var(--color-border)]/40 text-[10px] sm:text-[11px] md:text-[12px] leading-tight md:leading-normal italic">
               <span className={cn(
                 "font-bold inline-flex items-center gap-0.5 shrink-0 whitespace-nowrap",
-                comparison.isPositive ? "text-emerald-400" : "text-rose-400"
+                comparison.isPositive ? "text-[var(--color-success-text)]" : "text-[var(--color-danger-text)]"
               )}>
                 {comparison.trend === 'up' && '▲ '}
                 {comparison.trend === 'down' && '▼ '}
