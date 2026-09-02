@@ -304,15 +304,19 @@ export function DashboardContent({ month, isArchive = false }) {
         )}
 
         {/* FACTORY FINANCIALS HEADER */}
-        <div className="relative flex items-center justify-center mb-6 px-1 sm:px-0">
-          <h2 className="text-[20px] sm:text-[23px] md:text-[27px] font-bold tracking-[0.12em] uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] via-[var(--color-text-secondary)] to-[var(--color-text-muted)] text-center">
+        <div className="relative flex flex-col items-center justify-center mb-4 sm:mb-5 px-1 sm:px-0">
+          <h2 className="text-[20px] sm:text-[23px] md:text-[27px] font-bold tracking-[0.12em] uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] via-[var(--color-text-secondary)] to-[var(--color-text-muted)] text-center leading-tight">
             Factory Financials
           </h2>
+          <p className="text-[10.5px] sm:text-[11.5px] md:text-xs text-[var(--color-text-muted)] font-medium tracking-normal text-center mt-0.5">
+            <span>Financial Data Analyst : </span>
+            <span className="text-[var(--color-text-secondary)] font-semibold">Rofiqul Islam Zia</span>
+          </p>
         </div>
 
-        {/* KPI Overview Section Wrapped in a Card */}
-        <div className="relative rounded-2xl md:rounded-3xl border border-[var(--color-border)]/70 bg-[var(--color-bg-card)]/50 backdrop-blur-md p-3 sm:p-5 md:p-6 shadow-xl overflow-hidden mb-6">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-28 bg-[var(--color-primary)]/5 rounded-full blur-3xl pointer-events-none" />
+        {/* KPI Overview Section (Unboxed on mobile to expand cards, card on desktop) */}
+        <div className="relative rounded-none md:rounded-3xl border-0 md:border md:border-[var(--color-border)]/70 bg-transparent md:bg-[var(--color-bg-card)]/50 backdrop-blur-none md:backdrop-blur-md p-0 md:p-6 shadow-none md:shadow-xl overflow-visible md:overflow-hidden mb-6 -mx-2 sm:mx-0">
+          <div className="hidden md:block absolute top-0 left-1/2 -translate-x-1/2 w-96 h-28 bg-[var(--color-primary)]/5 rounded-full blur-3xl pointer-events-none" />
 
           {/* Month Tab Switcher for 6 KPI Stat Cards (Live Dashboard Only) */}
           {!isArchive && (
@@ -395,7 +399,7 @@ export function DashboardContent({ month, isArchive = false }) {
             const displayStats = isAugust ? augustStats : (isJuly ? julyStats : stats);
 
             return (
-              <div className="grid grid-cols-2 lg:grid-cols-3 gap-2.5 md:gap-4 relative z-10">
+              <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-2.5 md:gap-4 relative z-10 px-0.5 sm:px-0">
                 <MetricCard 
                   title="Total Cost" 
                   value={<AnimatedNumber value={Math.round(displayStats.totalCost)} prefix="BDT " />} 

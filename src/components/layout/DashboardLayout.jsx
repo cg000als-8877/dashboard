@@ -57,10 +57,6 @@ export default function DashboardLayout({ children }) {
                 <span>Last Updated :</span>
                 <span className="text-[var(--color-primary)] font-medium">{datePart}</span>
               </span>
-              <span className="text-[8.5px] italic text-[var(--color-text-muted)] mt-0.5 flex items-center gap-1 leading-tight">
-                <span>Financial Data Analyst :</span>
-                <span className="text-[var(--color-text-secondary)] font-medium">Rofiqul Islam Zia</span>
-              </span>
             </div>
           </Link>
           
@@ -341,7 +337,7 @@ export default function DashboardLayout({ children }) {
 
         {/* Main Content */}
         <main 
-          className="flex-1 overflow-y-auto w-full pt-[74px] sm:pt-[76px] pb-16 md:pt-8 md:pb-8 p-4 md:p-8 relative hide-scrollbar md:[scrollbar-width:auto]"
+          className="flex-1 overflow-y-auto w-full pt-[65px] pb-16 md:pt-8 md:pb-8 p-4 md:p-8 relative hide-scrollbar md:[scrollbar-width:auto]"
         >
           <div className="w-full max-w-[1800px] mx-auto">
             {children}

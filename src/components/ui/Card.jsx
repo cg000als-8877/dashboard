@@ -36,7 +36,7 @@ export function MetricCard({
 
   return (
     <div className="flex flex-col w-full group/metric">
-      <Card hover data-color={color} data-metric-title={title} className="flex flex-col p-3 md:p-6 animate-[fade-up_0.5s_ease-out_both] flex-1">
+      <Card hover data-color={color} data-metric-title={title} className="flex flex-col p-2.5 sm:p-3.5 md:p-6 animate-[fade-up_0.5s_ease-out_both] flex-1">
         <div className="flex justify-between items-start mb-1 md:mb-2">
           <h3 className="text-[10px] md:text-xs font-normal md:font-medium text-[var(--color-text-secondary)] uppercase tracking-widest leading-tight">{title}</h3>
         </div>
