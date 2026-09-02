@@ -8,13 +8,6 @@ export const BANGLADESH_HOLIDAYS = {
     type: 'national',
     icon: '🇧🇩'
   },
-  '08-15': {
-    title: "National Mourning Day",
-    subtitle: "Public Holiday",
-    description: "Official public holiday in observance of National Mourning Day. Factory operations remain closed.",
-    type: 'national',
-    icon: '🖤'
-  },
   '12-16': {
     title: "Victory Day",
     subtitle: "Bijoy Dibosh",

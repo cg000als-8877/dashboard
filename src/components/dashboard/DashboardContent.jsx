@@ -31,16 +31,10 @@ function renderOrdinal(dayStr) {
 export function DashboardContent({ month, isArchive = false }) {
   const { stats, dailyTrends, insights, lines, loading, error } = useKpiData(month);
 
-  // Determine previous month for Month-over-Month comparison (Live Dashboard only)
-  let prevMonthKey = null;
-  let prevMonthLabel = "July";
-  if (!isArchive && (!month || month === 'live' || month === '2026-08')) {
-    prevMonthKey = '2026-07';
-    prevMonthLabel = "July";
-  }
-
-  const { stats: prevStats, dailyTrends: prevDailyTrends } = useKpiData(prevMonthKey);
-  const [selectedCardMonth, setSelectedCardMonth] = useState('current'); // 'current' | 'prev'
+  // For Live Dashboard: Load August ('2026-08') and July ('2026-07') archives for tabs & comparisons
+  const { stats: augustStats, dailyTrends: augustDailyTrends } = useKpiData('2026-08');
+  const { stats: julyStats, dailyTrends: julyDailyTrends } = useKpiData('2026-07');
+  const [selectedCardMonth, setSelectedCardMonth] = useState('current'); // 'current' | 'august' | 'july'
   const [interactiveDay, setInteractiveDay] = useState(null);
   const [showAnimation, setShowAnimation] = useState(false);
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
@@ -87,40 +81,35 @@ export function DashboardContent({ month, isArchive = false }) {
     currentCalendarDay = parseInt(endDate.split('-')[2], 10);
   }
 
-  const prevStartDate = prevDailyTrends?.length > 0 ? prevDailyTrends[0].date : null;
-  const prevEndDate = prevDailyTrends?.length > 0 ? prevDailyTrends[prevDailyTrends.length - 1].date : null;
-  let prevDateComponents = null;
-  if (prevStartDate && prevEndDate) {
-    prevDateComponents = {
-      startDay: format(parseISO(prevStartDate), 'do'),
-      endDay: format(parseISO(prevEndDate), 'do'),
-      month: format(parseISO(prevEndDate), 'MMMM'),
-      year: format(parseISO(prevEndDate), 'yyyy')
-    };
-  } else if (!isArchive) {
-    prevDateComponents = {
-      startDay: '1st',
-      endDay: '31st',
-      month: 'July',
-      year: '2026'
-    };
-  }
+  const augustDateComponents = {
+    startDay: '1st',
+    endDay: '31st',
+    month: 'August',
+    year: '2026'
+  };
+
+  const julyDateComponents = {
+    startDay: '1st',
+    endDay: '31st',
+    month: 'July',
+    year: '2026'
+  };
 
   const maxDays = dailyTrends?.length || 1;
   const displayDay = interactiveDay !== null ? interactiveDay : currentCalendarDay;
   const currentDayData = dailyTrends && dailyTrends.length >= displayDay ? dailyTrends[displayDay - 1] : null;
 
-  // ── OPTION A: LIKE-FOR-LIKE COMPARISON (Exact Same Elapsed Days in July) ──
-  let prevComparisonStats = prevStats;
-  if (prevDailyTrends && prevDailyTrends.length > 0 && stats?.workingDays > 0) {
-    const elapsedPrevDays = prevDailyTrends.slice(0, stats.workingDays);
+  // ── LIKE-FOR-LIKE COMPARISON WITH AUGUST (Exact Same Elapsed Working Days in August) ──
+  let augustComparisonStats = augustStats;
+  if (augustDailyTrends && augustDailyTrends.length > 0 && stats?.workingDays > 0) {
+    const elapsedAugustDays = augustDailyTrends.slice(0, stats.workingDays);
     let prevCost = 0;
     let prevIncome = 0;
     let prevProfit = 0;
     let prevProduction = 0;
     let prevWorkingDays = 0;
 
-    elapsedPrevDays.forEach(d => {
+    elapsedAugustDays.forEach(d => {
       prevCost += d.cost || 0;
       prevIncome += d.income || 0;
       prevProfit += d.profit || 0;
@@ -130,10 +119,10 @@ export function DashboardContent({ month, isArchive = false }) {
       }
     });
 
-    const activeDaysCount = prevWorkingDays > 0 ? prevWorkingDays : elapsedPrevDays.length;
+    const activeDaysCount = prevWorkingDays > 0 ? prevWorkingDays : elapsedAugustDays.length;
     const avgDailyProfit = activeDaysCount > 0 ? (prevProfit / activeDaysCount) : 0;
 
-    prevComparisonStats = {
+    augustComparisonStats = {
       totalCost: prevCost,
       totalIncome: prevIncome,
       netProfit: prevProfit,
@@ -143,15 +132,17 @@ export function DashboardContent({ month, isArchive = false }) {
     };
   }
 
+  const prevComparisonStats = augustComparisonStats;
+
   if (!stats) return <DashboardSkeleton />;
 
   // Contextual KPI delta computations (Dynamically matches the active date range of the month)
-  let prevPeriodLabel = isArchive ? "Previous Period" : "July";
+  let prevPeriodLabel = isArchive ? "Previous Period" : "August";
   if (!isArchive) {
     if (dateComponents?.startDay && dateComponents?.endDay) {
       prevPeriodLabel = dateComponents.startDay === dateComponents.endDay
-        ? `July (${dateComponents.startDay})`
-        : `July (${dateComponents.startDay}–${dateComponents.endDay})`;
+        ? `August (${dateComponents.startDay})`
+        : `August (${dateComponents.startDay}–${dateComponents.endDay})`;
     }
   }
 
@@ -337,17 +328,30 @@ export function DashboardContent({ month, isArchive = false }) {
                       : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)] font-medium"
                   )}
                 >
-                  <span>AUGUST</span>
+                  <span>SEPTEMBER</span>
                   <span className="text-[8.5px] sm:text-[10px] text-rose-500 font-black tracking-wide">(LIVE)</span>
                   <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.7)] animate-pulse shrink-0" />
                 </button>
 
                 <button
                   type="button"
-                  onClick={() => setSelectedCardMonth('prev')}
+                  onClick={() => setSelectedCardMonth('august')}
                   className={cn(
                     "px-2.5 sm:px-4 py-1 sm:py-1.5 rounded-lg text-[10px] sm:text-xs uppercase tracking-wider transition-all duration-200 cursor-pointer select-none",
-                    selectedCardMonth === 'prev'
+                    selectedCardMonth === 'august'
+                      ? "bg-[var(--color-bg-card)] text-[var(--color-text-main)] font-bold border border-[var(--color-border)] shadow-sm"
+                      : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)] font-medium"
+                  )}
+                >
+                  AUGUST
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setSelectedCardMonth('july')}
+                  className={cn(
+                    "px-2.5 sm:px-4 py-1 sm:py-1.5 rounded-lg text-[10px] sm:text-xs uppercase tracking-wider transition-all duration-200 cursor-pointer select-none",
+                    selectedCardMonth === 'july'
                       ? "bg-[var(--color-bg-card)] text-[var(--color-text-main)] font-bold border border-[var(--color-border)] shadow-sm"
                       : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)] font-medium"
                   )}
@@ -360,8 +364,14 @@ export function DashboardContent({ month, isArchive = false }) {
 
           {/* Dynamic Date Context (Inside Card under Month Tabs) */}
           {(() => {
-            const isJuly = !isArchive && selectedCardMonth === 'prev';
-            const activeDateComp = isJuly ? prevDateComponents : dateComponents;
+            let activeDateComp = dateComponents;
+            if (!isArchive) {
+              if (selectedCardMonth === 'august') {
+                activeDateComp = augustDateComponents;
+              } else if (selectedCardMonth === 'july') {
+                activeDateComp = julyDateComponents;
+              }
+            }
             if (!activeDateComp) return null;
 
             return (
@@ -380,8 +390,9 @@ export function DashboardContent({ month, isArchive = false }) {
 
           {/* 6 KPI Metric Cards Grid */}
           {(() => {
-            const isJuly = !isArchive && selectedCardMonth === 'prev' && !!prevStats;
-            const displayStats = isJuly ? prevStats : stats;
+            const isAugust = !isArchive && selectedCardMonth === 'august' && !!augustStats;
+            const isJuly = !isArchive && selectedCardMonth === 'july' && !!julyStats;
+            const displayStats = isAugust ? augustStats : (isJuly ? julyStats : stats);
 
             return (
               <div className="grid grid-cols-2 lg:grid-cols-3 gap-2.5 md:gap-4 relative z-10">
@@ -389,35 +400,77 @@ export function DashboardContent({ month, isArchive = false }) {
                   title="Total Cost" 
                   value={<AnimatedNumber value={Math.round(displayStats.totalCost)} prefix="BDT " />} 
                   color="warning"
-                  comparison={isArchive ? null : (isJuly ? { highlight: "July Total", label: "full month actual spending", trend: "neutral", isPositive: true } : costComparison)}
+                  comparison={isArchive ? null : (
+                    isAugust 
+                      ? { highlight: "August Total", label: "full month actual spending", trend: "neutral", isPositive: true }
+                      : (isJuly 
+                          ? { highlight: "July Total", label: "full month actual spending", trend: "neutral", isPositive: true }
+                          : costComparison
+                        )
+                  )}
                 />
                 <MetricCard 
                   title="Total Income" 
                   value={<AnimatedNumber value={Math.round(displayStats.totalIncome)} prefix="BDT " />}
                   color="primary"
-                  comparison={isArchive ? null : (isJuly ? { highlight: "July Total", label: "full month earned revenue", trend: "neutral", isPositive: true } : incomeComparison)}
+                  comparison={isArchive ? null : (
+                    isAugust 
+                      ? { highlight: "August Total", label: "full month earned revenue", trend: "neutral", isPositive: true }
+                      : (isJuly 
+                          ? { highlight: "July Total", label: "full month earned revenue", trend: "neutral", isPositive: true }
+                          : incomeComparison
+                        )
+                  )}
                 />
                 <MetricCard 
                   title={displayStats.netProfit >= 0 ? "Net Profit" : "Net Loss"} 
                   value={<AnimatedNumber value={Math.abs(Math.round(displayStats.netProfit))} prefix={displayStats.netProfit >= 0 ? "+BDT " : "BDT -"} />}
                   color={displayStats.netProfit >= 0 ? 'success' : 'danger'}
-                  comparison={isArchive ? null : (isJuly ? { highlight: "July Balance", label: displayStats.netProfit >= 0 ? "net monthly profit" : "net monthly loss", trend: "neutral", isPositive: displayStats.netProfit >= 0 } : netComparison)}
+                  comparison={isArchive ? null : (
+                    isAugust 
+                      ? { highlight: "August Balance", label: displayStats.netProfit >= 0 ? "net monthly profit" : "net monthly loss", trend: "neutral", isPositive: displayStats.netProfit >= 0 }
+                      : (isJuly 
+                          ? { highlight: "July Balance", label: displayStats.netProfit >= 0 ? "net monthly profit" : "net monthly loss", trend: "neutral", isPositive: displayStats.netProfit >= 0 }
+                          : netComparison
+                        )
+                  )}
                 />
                 <MetricCard 
                   title="Working Days" 
                   value={<AnimatedNumber value={displayStats.workingDays} suffix=" Days" />} 
-                  comparison={isArchive ? null : (isJuly ? { highlight: `${displayStats.workingDays} Days`, label: "total active factory days in July", trend: "neutral", isPositive: true } : daysComparison)}
+                  comparison={isArchive ? null : (
+                    isAugust 
+                      ? { highlight: `${displayStats.workingDays} Days`, label: "total active factory days in August", trend: "neutral", isPositive: true }
+                      : (isJuly 
+                          ? { highlight: `${displayStats.workingDays} Days`, label: "total active factory days in July", trend: "neutral", isPositive: true }
+                          : daysComparison
+                        )
+                  )}
                 />
                 <MetricCard 
                   title="Production Lines" 
                   value={<AnimatedNumber value={displayStats.activeLinesCount || 4} suffix=" Active" />} 
-                  comparison={isArchive ? null : (isJuly ? { highlight: "All 4 Lines", label: "active manufacturing operations", trend: "neutral", isPositive: true } : linesComparison)}
+                  comparison={isArchive ? null : (
+                    isAugust 
+                      ? { highlight: "All 4 Lines", label: "active manufacturing operations", trend: "neutral", isPositive: true }
+                      : (isJuly 
+                          ? { highlight: "All 4 Lines", label: "active manufacturing operations", trend: "neutral", isPositive: true }
+                          : linesComparison
+                        )
+                  )}
                 />
                 <MetricCard 
                   title={displayStats.averageDailyProfit >= 0 ? "Avg Daily Profit" : "Avg Daily Loss"} 
                   value={<AnimatedNumber value={Math.abs(Math.round(displayStats.averageDailyProfit))} prefix={displayStats.averageDailyProfit >= 0 ? "+" : "-"} suffix=" / day" />}
                   color={displayStats.averageDailyProfit >= 0 ? 'success' : 'danger'}
-                  comparison={isArchive ? null : (isJuly ? { highlight: "July Pace", label: "overall daily average rate", trend: "neutral", isPositive: displayStats.averageDailyProfit >= 0 } : avgDailyComparison)}
+                  comparison={isArchive ? null : (
+                    isAugust 
+                      ? { highlight: "August Pace", label: "overall daily average rate", trend: "neutral", isPositive: displayStats.averageDailyProfit >= 0 }
+                      : (isJuly 
+                          ? { highlight: "July Pace", label: "overall daily average rate", trend: "neutral", isPositive: displayStats.averageDailyProfit >= 0 }
+                          : avgDailyComparison
+                        )
+                  )}
                 />
               </div>
             );

@@ -14,7 +14,8 @@ import { getHolidayInfo } from '@/utils/holidays';
 // In-memory cache for instant page switching
 const hourlyCache = {
   dates: null,
-  data: {}
+  data: {},
+  dateTotals: {}
 };
 
 const LINE_META = {
@@ -192,11 +193,11 @@ function PrecisionProgressRing({ percentage }) {
         <div className="flex items-baseline gap-[1px]">
           <AnimatedNumber
             value={clampedPct}
-            className="text-[20px] font-black tracking-tighter leading-none text-[var(--color-primary)]"
+            className="text-[21px] font-black tracking-tighter leading-none text-[var(--color-primary)]"
           />
-          <span className="text-[9px] font-black text-[var(--color-primary)] leading-none mb-[1px]">%</span>
+          <span className="text-[10px] font-black text-[var(--color-primary)] leading-none mb-[1px]">%</span>
         </div>
-        <span className="text-[6px] font-extrabold uppercase tracking-[0.18em] text-[var(--color-text-muted)] mt-[2px]">
+        <span className="text-[7px] font-extrabold uppercase tracking-[0.18em] text-[var(--color-text-muted)] mt-[2px]">
           ACH
         </span>
       </div>
@@ -208,6 +209,7 @@ function PrecisionProgressRing({ percentage }) {
 export default function HourlyPage() {
   const dateInputRef = useRef(null);
   const [availableDates, setAvailableDates] = useState(hourlyCache.dates || []);
+  const [dateTotals, setDateTotals] = useState(hourlyCache.dateTotals || {});
   const [selectedDate, setSelectedDate] = useState(hourlyCache.dates ? hourlyCache.dates[0] : '');
   const [data, setData] = useState(selectedDate && hourlyCache.data[selectedDate] ? hourlyCache.data[selectedDate] : null);
   const [loading, setLoading] = useState(!data);
@@ -249,6 +251,9 @@ export default function HourlyPage() {
       if (hourlyCache.dates && hourlyCache.dates.length > 0) {
         if (isMounted) {
           setAvailableDates(hourlyCache.dates);
+          if (hourlyCache.dateTotals) {
+            setDateTotals(hourlyCache.dateTotals);
+          }
           const latest = hourlyCache.dates[0];
           setSelectedDate(latest);
           if (hourlyCache.data[latest]) {
@@ -266,6 +271,10 @@ export default function HourlyPage() {
         if (isMounted && json.availableDates && json.availableDates.length > 0) {
           hourlyCache.dates = json.availableDates;
           setAvailableDates(json.availableDates);
+          if (json.dateTotals) {
+            hourlyCache.dateTotals = json.dateTotals;
+            setDateTotals(json.dateTotals);
+          }
           if (!selectedDate) {
             setSelectedDate(json.availableDates[0]);
           }
@@ -331,9 +340,17 @@ export default function HourlyPage() {
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex flex-col items-center md:items-start text-center md:text-left">
-            <h1 className="text-[22px] sm:text-[26px] md:text-5xl font-bold tracking-[0.04em] uppercase mb-1 md:mb-2 bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] to-[var(--color-text-muted)] flex items-center gap-3">
-              Hourly Tracking 
-              {selectedDate && <span className="opacity-80">- {format(parseISO(selectedDate), 'dd MMM, yy')}</span>}
+            <h1 className="text-[20px] sm:text-[24px] md:text-5xl font-bold tracking-normal [letter-spacing:0] uppercase mb-1 md:mb-2 bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] to-[var(--color-text-muted)] flex flex-wrap items-center justify-center md:justify-start gap-2 md:gap-3">
+              {/* Mobile view only: LIVE PRODUCTION 02 SEP, 26 */}
+              <span className="md:hidden">
+                LIVE PRODUCTION{selectedDate ? ` ${format(parseISO(selectedDate), 'dd MMM, yy')}` : ''}
+              </span>
+
+              {/* Desktop view: Hourly Tracking - 02 Sep, 26 */}
+              <span className="hidden md:inline-flex items-center gap-3">
+                <span>Hourly Tracking</span>
+                {selectedDate && <span className="opacity-80 font-semibold">- {format(parseISO(selectedDate), 'dd MMM, yy')}</span>}
+              </span>
             </h1>
             <p className="text-[var(--color-text-secondary)] text-[10px] md:text-base tracking-wide font-medium flex items-center justify-center md:justify-start gap-1.5 md:gap-2">
               <Clock className="hidden md:block md:w-4 md:h-4 text-[var(--color-primary)]" />
@@ -401,7 +418,7 @@ export default function HourlyPage() {
                     }}
                     className="px-3 py-1.5 bg-[var(--color-primary)] text-[var(--color-on-primary)] text-xs font-bold rounded-lg shadow-sm hover:opacity-90 transition-opacity"
                   >
-                    Open Calendar Sheet
+                    Open Calendar
                   </button>
                   <input 
                     ref={dateInputRef}
@@ -469,7 +486,9 @@ export default function HourlyPage() {
                           {hInfo.isFriday ? 'Friday Rest' : 'Public Holiday'}
                         </span>
                       ) : (
-                        <span className="text-[10px] md:text-xs opacity-50 font-mono shrink-0 ml-2">{date}</span>
+                        <span className="text-[10px] md:text-xs font-bold font-mono tracking-wide shrink-0 ml-2 text-[var(--color-primary)]">
+                          TOTAL : {dateTotals[date] !== undefined ? dateTotals[date] : '—'}
+                        </span>
                       )}
                     </button>
                   );
@@ -575,28 +594,56 @@ export default function HourlyPage() {
                       </div>
 
                       {/* Mobile Pie Style Summary */}
-                      <div className="flex md:hidden w-full bg-[var(--color-bg-card)] rounded-2xl p-4 shadow-[0_4_15px_rgba(0,0,0,0.2)] border border-[var(--color-border)] items-center justify-between">
-                        <div className="flex flex-col gap-4">
-                          {/* Target */}
-                          <div className="flex items-center gap-3">
-                            <div className="w-1.5 h-8 bg-slate-400 dark:bg-gray-500 rounded-full" />
+                      <div className="flex md:hidden flex-col w-full bg-[var(--color-bg-card)] rounded-2xl p-4 shadow-[0_4_15px_rgba(0,0,0,0.2)] border border-[var(--color-border)] gap-3">
+                        <div className="flex items-center justify-between w-full">
+                          <div className="flex flex-col gap-3">
+                            {/* Target */}
                             <div className="flex flex-col">
                               <span className="text-[10px] uppercase tracking-widest text-[var(--color-text-secondary)] font-bold">Target</span>
                               <span className="text-xl font-black text-[var(--color-text-main)] leading-none mt-0.5"><AnimatedNumber value={factoryTotalTarget} /></span>
                             </div>
-                          </div>
-                          {/* Actual */}
-                          <div className="flex items-center gap-3">
-                            <div className="w-1.5 h-8 bg-[var(--color-primary)] rounded-full" />
+                            {/* Actual */}
                             <div className="flex flex-col">
                               <span className="text-[10px] uppercase tracking-widest text-[var(--color-text-secondary)] font-bold">Actual</span>
                               <span className="text-xl font-black text-[var(--color-primary)] leading-none mt-0.5"><AnimatedNumber value={factoryTotalActual} /></span>
                             </div>
                           </div>
+
+                          {/* Chronometer-Style Segmented Precision Gauge (No Glow) */}
+                          <PrecisionProgressRing percentage={factoryAchievement} />
                         </div>
 
-                        {/* Chronometer-Style Segmented Precision Gauge (No Glow) */}
-                        <PrecisionProgressRing percentage={factoryAchievement} />
+                        {/* Dynamic Line Production Totals */}
+                        {(() => {
+                          let activeHourText = '';
+                          if (data.lines && data.lines.length > 0) {
+                            for (let h = 10; h >= 0; h--) {
+                              const hasData = data.lines.some(l => l.actual && l.actual[h] !== null && l.actual[h] !== undefined);
+                              if (hasData) {
+                                const rawLabel = (data.timeLabels && data.timeLabels[h]) || `${h + 1}TH`;
+                                activeHourText = `${rawLabel.toLowerCase()} hour`;
+                                break;
+                              }
+                            }
+                          }
+
+                          const lineTotalsSummary = data.lines
+                            ? data.lines
+                                .slice()
+                                .sort((a, b) => a.line_id.localeCompare(b.line_id))
+                                .map(line => {
+                                  const lineActualTotal = line.actual ? line.actual.reduce((sum, val) => sum + (val || 0), 0) : 0;
+                                  return `Line ${line.line_id} ${lineActualTotal}`;
+                                })
+                                .join(', ')
+                            : '';
+
+                          return (
+                            <div className="pt-2.5 border-t border-[var(--color-border)]/60 text-[11.5px] sm:text-[13px] text-center text-[var(--color-text-muted)] italic font-bold tracking-wide leading-relaxed">
+                              Overall total result {activeHourText ? `${activeHourText} - ` : '- '}{lineTotalsSummary}
+                            </div>
+                          );
+                        })()}
                       </div>
                     </div>
                   </div>

@@ -174,14 +174,27 @@ export async function GET(request) {
             console.error('Firebase list failed, falling back to local files:', firebaseError);
         }
 
-        // Merge local files
+        // Merge local files and calculate totals
+        const dateTotals = {};
         try {
             const files = await fs.readdir(archiveDir);
-            files.forEach(f => {
+            for (const f of files) {
                 if (f.endsWith('.json')) {
-                    dateSet.add(f.replace('.json', ''));
+                    const dateKey = f.replace('.json', '');
+                    dateSet.add(dateKey);
+                    try {
+                        const fileContent = await fs.readFile(path.join(archiveDir, f), 'utf-8');
+                        const parsedJson = JSON.parse(fileContent);
+                        let totalActual = 0;
+                        if (parsedJson.lines) {
+                            parsedJson.lines.forEach(l => {
+                                if (l.actual) l.actual.forEach(a => totalActual += (a || 0));
+                            });
+                        }
+                        dateTotals[dateKey] = totalActual;
+                    } catch (readErr) {}
                 }
-            });
+            }
         } catch (e) {
             // Directory might not exist yet
         }
@@ -189,12 +202,23 @@ export async function GET(request) {
         let dates = Array.from(dateSet);
 
         // Inject the live date into the dropdown menu if it's new
-        if (liveData && liveData.date && !dates.includes(liveData.date)) {
-            dates.push(liveData.date);
+        if (liveData && liveData.date) {
+            if (!dates.includes(liveData.date)) {
+                dates.push(liveData.date);
+            }
+            if (dateTotals[liveData.date] === undefined) {
+                let liveActual = 0;
+                if (liveData.lines) {
+                    liveData.lines.forEach(l => {
+                        if (l.actual) l.actual.forEach(a => liveActual += (a || 0));
+                    });
+                }
+                dateTotals[liveData.date] = liveActual;
+            }
         }
 
         dates.sort((a, b) => b.localeCompare(a)); // Newest first
-        return NextResponse.json({ availableDates: dates });
+        return NextResponse.json({ availableDates: dates, dateTotals });
     }
   } catch (error) {
     console.error('Error in hourly API:', error);
