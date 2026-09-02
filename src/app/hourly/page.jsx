@@ -621,7 +621,11 @@ export default function HourlyPage() {
                               const hasData = data.lines.some(l => l.actual && l.actual[h] !== null && l.actual[h] !== undefined);
                               if (hasData) {
                                 const rawLabel = (data.timeLabels && data.timeLabels[h]) || `${h + 1}TH`;
-                                activeHourText = `${rawLabel.toLowerCase()} hour`;
+                                const formatted = rawLabel.replace(/^(\d+)(ST|ND|RD|TH|st|nd|rd|th)?/i, (_, num, sfx) => {
+                                  const s = (sfx || 'th').toLowerCase();
+                                  return `${num}${s}`;
+                                });
+                                activeHourText = `${formatted} Hour`;
                                 break;
                               }
                             }
@@ -633,14 +637,14 @@ export default function HourlyPage() {
                                 .sort((a, b) => a.line_id.localeCompare(b.line_id))
                                 .map(line => {
                                   const lineActualTotal = line.actual ? line.actual.reduce((sum, val) => sum + (val || 0), 0) : 0;
-                                  return `Line ${line.line_id} ${lineActualTotal}`;
+                                  return `Line ${line.line_id}: ${lineActualTotal.toLocaleString()}`;
                                 })
-                                .join(', ')
+                                .join(' | ')
                             : '';
 
                           return (
                             <div className="pt-2.5 border-t border-[var(--color-border)]/60 text-[11.5px] sm:text-[13px] text-center text-[var(--color-text-muted)] italic font-bold tracking-wide leading-relaxed">
-                              Overall total result {activeHourText ? `${activeHourText} - ` : '- '}{lineTotalsSummary}
+                              Live Line Totals {activeHourText ? `(${activeHourText}) ` : ''}— {lineTotalsSummary}
                             </div>
                           );
                         })()}
