@@ -291,7 +291,7 @@ export function DashboardContent({ month, isArchive = false }) {
           </div>
         )}
 
-        {/* Hide/Show Visuals Button (Above Factory System Overview Title, Center Aligned on Desktop & Mobile) */}
+        {/* Hide/Show Visuals Button (Above Factory Financials Title, Center Aligned on Desktop & Mobile) */}
         {!isArchive && (
           <div className={`flex justify-center items-center ${!showAnimation ? 'mt-[2px] md:mt-0 mb-3' : 'mt-2 mb-3'}`}>
             <button
@@ -303,10 +303,10 @@ export function DashboardContent({ month, isArchive = false }) {
           </div>
         )}
 
-        {/* FACTORY SYSTEM OVERVIEW HEADER */}
+        {/* FACTORY FINANCIALS HEADER */}
         <div className="relative flex items-center justify-center mb-6 px-1 sm:px-0">
           <h2 className="text-[20px] sm:text-[23px] md:text-[27px] font-bold tracking-[0.12em] uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] via-[var(--color-text-secondary)] to-[var(--color-text-muted)] text-center">
-            Factory System Overview
+            Factory Financials
           </h2>
         </div>
 
