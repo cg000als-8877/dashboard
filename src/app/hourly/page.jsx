@@ -631,20 +631,40 @@ export default function HourlyPage() {
                             }
                           }
 
-                          const lineTotalsSummary = data.lines
+                          const sortedLines = data.lines
                             ? data.lines
                                 .slice()
                                 .sort((a, b) => a.line_id.localeCompare(b.line_id))
-                                .map(line => {
-                                  const lineActualTotal = line.actual ? line.actual.reduce((sum, val) => sum + (val || 0), 0) : 0;
-                                  return `Line ${line.line_id}: ${lineActualTotal.toLocaleString()}`;
-                                })
-                                .join(' | ')
-                            : '';
+                            : [];
 
                           return (
                             <div className="pt-2.5 border-t border-[var(--color-border)]/60 text-[11.5px] sm:text-[13px] text-center text-[var(--color-text-muted)] italic font-bold tracking-wide leading-relaxed">
-                              Live Line Totals {activeHourText ? `(${activeHourText}) ` : ''}— {lineTotalsSummary}
+                              <span>Total Output </span>
+                              {activeHourText && (
+                                <span className="text-[var(--color-primary)] font-extrabold not-italic">
+                                  (Through {activeHourText})
+                                </span>
+                              )}
+                              <span> — </span>
+                              {sortedLines.map((line, idx) => {
+                                const lineActualTotal = line.actual ? line.actual.reduce((sum, val) => sum + (val || 0), 0) : 0;
+                                const meta = LINE_META[line.line_id.toUpperCase()] || { color: 'var(--color-primary)' };
+                                return (
+                                  <span key={line.line_id} className="inline-flex items-baseline">
+                                    <span style={{ color: meta.color }} className="font-extrabold not-italic">
+                                      Line {line.line_id}:
+                                    </span>
+                                    <span className="text-[var(--color-text-main)] font-extrabold ml-1 not-italic">
+                                      {lineActualTotal.toLocaleString()}
+                                    </span>
+                                    {idx < sortedLines.length - 1 && (
+                                      <span className="text-[var(--color-text-muted)]/70 mx-1.5 not-italic font-normal">
+                                        •
+                                      </span>
+                                    )}
+                                  </span>
+                                );
+                              })}
                             </div>
                           );
                         })()}
