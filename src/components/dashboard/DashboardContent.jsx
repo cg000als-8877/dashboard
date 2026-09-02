@@ -305,7 +305,7 @@ export function DashboardContent({ month, isArchive = false }) {
           <div className={`flex justify-center items-center ${!showAnimation ? 'mt-[2px] md:mt-0 mb-3' : 'mt-2 mb-3'}`}>
             <button
               onClick={() => setShowAnimation(!showAnimation)}
-              className={`px-2 py-0.5 md:px-3 md:py-1 rounded-full border border-slate-700/60 text-slate-400 hover:text-slate-200 bg-transparent text-[8.5px] md:text-[10px] font-medium tracking-wider uppercase transition-all active:scale-95 cursor-pointer select-none leading-tight ${!showAnimation ? 'animate-slow-blink' : ''}`}
+              className={`px-2 py-0.5 md:px-3 md:py-1 rounded-full border border-[var(--color-border)] text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:border-[var(--color-border-strong,var(--color-primary))] bg-transparent text-[8.5px] md:text-[10px] font-medium tracking-wider uppercase transition-all active:scale-95 cursor-pointer select-none leading-tight ${!showAnimation ? 'animate-slow-blink' : ''}`}
             >
               {showAnimation ? 'Hide Visuals' : 'Show Visuals'}
             </button>
@@ -326,20 +326,20 @@ export function DashboardContent({ month, isArchive = false }) {
           {/* Month Tab Switcher for 6 KPI Stat Cards (Live Dashboard Only) */}
           {!isArchive && (
             <div className="flex justify-center items-center w-full mb-2 sm:mb-2.5 relative z-10">
-              <div className="inline-flex p-0.5 sm:p-1 bg-[#090D1A]/90 border border-white/10 rounded-xl gap-1 shadow-inner">
+              <div className="inline-flex p-0.5 sm:p-1 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl gap-1 shadow-sm backdrop-blur-md">
                 <button
                   type="button"
                   onClick={() => setSelectedCardMonth('current')}
                   className={cn(
                     "flex items-center gap-1.5 px-2.5 sm:px-4 py-1 sm:py-1.5 rounded-lg text-[10px] sm:text-xs uppercase tracking-wider transition-all duration-200 cursor-pointer select-none",
                     selectedCardMonth === 'current'
-                      ? "bg-[#1C253B] text-white font-bold border border-white/20 shadow-md"
-                      : "text-slate-400 hover:text-white hover:bg-white/5 font-medium"
+                      ? "bg-[var(--color-bg-card)] text-[var(--color-text-main)] font-bold border border-[var(--color-border)] shadow-sm"
+                      : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)] font-medium"
                   )}
                 >
                   <span>AUGUST</span>
                   <span className="text-[8.5px] sm:text-[10px] text-rose-500 font-black tracking-wide">(LIVE)</span>
-                  <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.9)] animate-pulse shrink-0" />
+                  <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.7)] animate-pulse shrink-0" />
                 </button>
 
                 <button
@@ -348,8 +348,8 @@ export function DashboardContent({ month, isArchive = false }) {
                   className={cn(
                     "px-2.5 sm:px-4 py-1 sm:py-1.5 rounded-lg text-[10px] sm:text-xs uppercase tracking-wider transition-all duration-200 cursor-pointer select-none",
                     selectedCardMonth === 'prev'
-                      ? "bg-[#1C253B] text-white font-bold border border-white/20 shadow-md"
-                      : "text-slate-400 hover:text-white hover:bg-white/5 font-medium"
+                      ? "bg-[var(--color-bg-card)] text-[var(--color-text-main)] font-bold border border-[var(--color-border)] shadow-sm"
+                      : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)] font-medium"
                   )}
                 >
                   JULY
