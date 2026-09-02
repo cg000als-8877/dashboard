@@ -8,7 +8,7 @@ const quickThemes = [
   { id: 'nordic-slate', label: 'Nordic', color: '#60A5FA' },
   { id: 'ocean-dark', label: 'Ocean', color: '#4F8CFF' },
   { id: 'jungle-nebula', label: 'Jungle', color: '#57C27A' },
-  { id: 'cyber-deck', label: 'Cyber', color: '#00FFA3' },
+  { id: 'terminal', label: 'Terminal', color: '#22C55E' },
 ];
 
 export function ThemePicker() {
