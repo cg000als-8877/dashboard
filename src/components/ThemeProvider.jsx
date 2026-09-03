@@ -3,9 +3,9 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
 export const VISUAL_THEMES = [
-  { id: 'lime-ivory', name: 'Lime Ivory', color: '#9BE52C' },
-  { id: 'verdant', name: 'Verdant', color: '#80B918' },
   { id: 'nordic-slate', name: 'Nordic Slate', color: '#60A5FA' },
+  { id: 'verdant', name: 'Verdant', color: '#80B918' },
+  { id: 'lime-ivory', name: 'Lime Ivory', color: '#9BE52C' },
   { id: 'jungle-nebula', name: 'Jungle Nebula', color: '#57C27A' },
   { id: 'ocean-dark', name: 'Ocean Dark', color: '#4F8CFF' },
   { id: 'terminal', name: 'Terminal (Night Shift)', color: '#22C55E' },
@@ -22,9 +22,9 @@ export const APPEARANCE_MODES = [
 ];
 
 // Dynamic 28-day theme rotation schedule (7 days each, repeating indefinitely in a loop)
-// Phase 1 (Days 1–7):   Lime Ivory    ('lime-ivory')
+// Phase 1 (Days 1–7):   Nordic Slate  ('nordic-slate')
 // Phase 2 (Days 8–14):  Verdant       ('verdant')
-// Phase 3 (Days 15–21): Nordic Slate  ('nordic-slate')
+// Phase 3 (Days 15–21): Lime Ivory    ('lime-ivory')
 // Phase 4 (Days 22–28): Jungle Nebula ('jungle-nebula')
 export function getScheduledDefaultTheme() {
   try {
@@ -34,10 +34,10 @@ export function getScheduledDefaultTheme() {
     const cycleDay = ((diffDays % 28) + 28) % 28;
     const phase = Math.floor(cycleDay / 7);
 
-    const THEME_ROTATION = ['lime-ivory', 'verdant', 'nordic-slate', 'jungle-nebula'];
-    return THEME_ROTATION[phase] || 'lime-ivory';
+    const THEME_ROTATION = ['nordic-slate', 'verdant', 'lime-ivory', 'jungle-nebula'];
+    return THEME_ROTATION[phase] || 'nordic-slate';
   } catch {
-    return 'lime-ivory';
+    return 'nordic-slate';
   }
 }
 
@@ -55,7 +55,7 @@ export function ThemeProvider({ children }) {
     const storedVisualTheme = localStorage.getItem('app-visual-theme');
     const storedMode = localStorage.getItem('app-mode');
     const legacyTheme = localStorage.getItem('theme'); // backward compatibility
-    const hasActiveSchedule = localStorage.getItem('app-theme-rotation-active');
+    const activeScheduleVersion = localStorage.getItem('app-theme-rotation-v2');
 
     // Check if current Bangladesh time (Asia/Dhaka) is in Night Shift window (11 PM - 2 AM: 23:00 - 02:59)
     const isBangladeshNightWindow = () => {
@@ -79,9 +79,9 @@ export function ThemeProvider({ children }) {
     // 1. Visual Theme (Auto Terminal for Night Shift unless manually overridden)
     if (isNight && !sessionStorage.getItem('app-night-theme-overridden')) {
       setVisualThemeState('terminal');
-    } else if (!hasActiveSchedule) {
-      // First activation of 28-day schedule: default immediately to scheduled theme (Lime Ivory)
-      localStorage.setItem('app-theme-rotation-active', 'true');
+    } else if (!activeScheduleVersion) {
+      // Activate new rotation schedule (Nordic Slate default for next 7 days)
+      localStorage.setItem('app-theme-rotation-v2', 'true');
       localStorage.removeItem('app-visual-theme');
       setVisualThemeState(scheduledDefault);
     } else if (storedVisualTheme && VISUAL_THEMES.some(t => t.id === storedVisualTheme && t.id !== 'cyber-deck')) {
