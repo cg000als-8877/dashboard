@@ -867,9 +867,9 @@ export function DashboardContent({ month, isArchive = false }) {
                 <ul className="space-y-3 w-full divide-y divide-[var(--color-border)]/30">
                   {insights.map((insight, i) => (
                     <li key={i} className="flex items-start gap-2.5 pt-3 first:pt-0">
-                      <span className="text-[var(--color-primary)] font-black text-sm select-none shrink-0 leading-relaxed">•</span>
+                      <span className="text-[var(--color-text-muted)] font-black text-sm select-none shrink-0 leading-relaxed">•</span>
                       <span 
-                        className="text-xs sm:text-[13.5px] font-medium text-[var(--color-text-main)] leading-relaxed flex-1"
+                        className="text-xs sm:text-[13px] font-normal text-slate-400 dark:text-zinc-400 text-[var(--color-text-secondary)] leading-relaxed flex-1 [&>strong]:text-slate-300 [&>strong]:dark:text-zinc-300 [&>strong]:font-semibold"
                         dangerouslySetInnerHTML={{ __html: insight }}
                       />
                     </li>
