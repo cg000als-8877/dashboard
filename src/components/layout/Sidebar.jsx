@@ -42,16 +42,23 @@ const navItems = [
   { name: 'Byzid Profile', href: 'https://baplprofile.vercel.app/', icon: Globe, isExternal: true },
 ];
 
-const LINE_SUB_ITEMS = [
-  { id: 'A', name: 'Line A', href: '/lines/A', color: '#10B981', desc: 'Flannel Shirt' },
-  { id: 'B', name: 'Line B', href: '/lines/B', color: '#3B82F6', desc: 'Ladies Top' },
-  { id: 'C', name: 'Line C', href: '/lines/C', color: '#A855F7', desc: 'Ladies Bottom' },
-  { id: 'D', name: 'Line D', href: '/lines/D', color: '#F59E0B', desc: "Men's Tshirt" },
-];
+const LINE_COLORS = {
+  'A': '#10B981',
+  'B': '#3B82F6',
+  'C': '#A855F7',
+  'D': '#F59E0B'
+};
+
+const DEFAULT_LINE_ITEMS = {
+  'A': 'Sherpa Jacket',
+  'B': 'Boxer',
+  'C': 'Boxer',
+  'D': "Men's Tshirt"
+};
 
 export default function Sidebar({ onClose }) {
   const pathname = usePathname();
-  const { dailyTrends } = useKpiData();
+  const { dailyTrends, lines } = useKpiData();
   const { visualTheme, setVisualTheme, mode, setMode, VISUAL_THEMES, APPEARANCE_MODES } = useTheme();
   
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -223,12 +230,17 @@ export default function Sidebar({ onClose }) {
                         <Layers size={11} className="opacity-70" />
                       </Link>
 
-                      {LINE_SUB_ITEMS.map((line) => {
-                        const isLineActive = pathname === line.href;
+                      {['A', 'B', 'C', 'D'].map((lineId) => {
+                        const href = `/lines/${lineId}`;
+                        const isLineActive = pathname === href;
+                        const lineData = lines?.find(l => l.id?.toUpperCase() === lineId);
+                        const color = LINE_COLORS[lineId] || '#3B82F6';
+                        const itemDesc = lineData?.lastActiveDay?.item || lineData?.today?.item || lineData?.item || DEFAULT_LINE_ITEMS[lineId] || 'N/A';
+
                         return (
                           <Link
-                            key={line.id}
-                            href={line.href}
+                            key={lineId}
+                            href={href}
                             onClick={onClose}
                             className={cn(
                               "flex items-center justify-between px-2.5 py-1.5 rounded-lg text-[11px] font-semibold transition-all group/line",
@@ -237,15 +249,15 @@ export default function Sidebar({ onClose }) {
                                 : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)]"
                             )}
                           >
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-2 min-w-0">
                               <span 
                                 className="w-2 h-2 rounded-full shrink-0 shadow-sm transition-transform group-hover/line:scale-125" 
-                                style={{ backgroundColor: line.color, boxShadow: `0 0 6px ${line.color}66` }} 
+                                style={{ backgroundColor: color, boxShadow: `0 0 6px ${color}66` }} 
                               />
-                              <span>{line.name}</span>
+                              <span className="shrink-0">Line {lineId}</span>
                             </div>
-                            <span className="text-[9px] text-[var(--color-text-muted)] font-normal truncate max-w-[65px]">
-                              {line.desc}
+                            <span className="text-[9px] text-[var(--color-text-muted)] font-normal truncate max-w-[85px] text-right ml-1" title={itemDesc}>
+                              {itemDesc}
                             </span>
                           </Link>
                         );

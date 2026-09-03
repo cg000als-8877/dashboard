@@ -93,12 +93,13 @@ export function createKpiEngine(rawData) {
 
       return Object.values(linesMap).map(line => {
         const uniqueItems = Array.from(line.itemsSet);
-        const itemLabel = uniqueItems.length > 0
+        const runningItem = line.lastActiveDay?.item || line.today?.item || (uniqueItems.length > 0 ? uniqueItems[uniqueItems.length - 1] : null);
+        const itemLabel = runningItem || (uniqueItems.length > 0
           ? uniqueItems.join(', ')
-          : (line.today?.item || (
-              line.name.includes('A') ? 'Flannel Shirt' :
-              line.name.includes('B') ? 'Ladies Top' :
-              line.name.includes('C') ? 'Ladies Bottom' :
+          : (
+              line.name.includes('A') ? 'Sherpa Jacket' :
+              line.name.includes('B') ? 'Boxer' :
+              line.name.includes('C') ? 'Boxer' :
               line.name.includes('D') ? "Men's Tshirt" : 'Unknown'
             ));
 
