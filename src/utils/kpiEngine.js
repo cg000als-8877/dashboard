@@ -30,6 +30,7 @@ export function createKpiEngine(rawData) {
         netProfit: Math.round(netProfit),
         workingDays,
         activeLinesCount: activeLinesSet.size,
+        totalLinesCount: rawData.lines?.length || 4,
         averageDailyProfit: Math.round(averageDailyProfit),
         totalProduction: Math.round(totalProduction)
       };

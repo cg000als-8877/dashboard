@@ -285,8 +285,10 @@ export function DashboardContent({ month, isArchive = false }) {
     };
   }
 
+  const totalLines = stats?.totalLinesCount || lines?.length || 4;
+  const currentActiveLines = stats?.activeLinesCount !== undefined ? stats.activeLinesCount : 4;
   const linesComparison = {
-    highlight: `All 4 Lines`,
+    highlight: currentActiveLines === totalLines ? `All ${totalLines} Lines` : `${currentActiveLines} of ${totalLines} Lines`,
     label: `active & producing`,
     trend: 'neutral',
     isPositive: true
@@ -346,9 +348,10 @@ export function DashboardContent({ month, isArchive = false }) {
           <h2 className="text-[20px] sm:text-[23px] md:text-[27px] font-bold tracking-[0.12em] uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] via-[var(--color-text-secondary)] to-[var(--color-text-muted)] text-center leading-tight">
             Factory Financials
           </h2>
-          <p className="text-[10.5px] sm:text-[11.5px] md:text-xs text-[var(--color-text-muted)] font-medium tracking-normal text-center mt-0.5">
-            <span>Financial Data Analyst : </span>
-            <span className="text-[var(--color-text-secondary)] font-semibold">Rofiqul Islam Zia</span>
+          <p className="text-[10.5px] sm:text-[11.5px] md:text-xs text-[var(--color-text-muted)] font-medium tracking-normal text-center mt-0.5 flex items-center justify-center flex-wrap gap-1">
+            <span>Financial Data Analyst :</span>
+            <span className="text-[var(--color-primary)] font-bold">Rofiqul Islam Zia</span>
+            <span className="text-[var(--color-text-secondary)] font-semibold">(Merchandiser)</span>
           </p>
         </div>
 
@@ -491,15 +494,18 @@ export function DashboardContent({ month, isArchive = false }) {
                 />
                 <MetricCard 
                   title="Production Lines" 
-                  value={<AnimatedNumber value={displayStats.activeLinesCount || 4} suffix=" Active" />} 
-                  comparison={isArchive ? null : (
-                    isAugust 
-                      ? { highlight: "All 4 Lines", label: "active manufacturing operations", trend: "neutral", isPositive: true }
-                      : (isJuly 
-                          ? { highlight: "All 4 Lines", label: "active manufacturing operations", trend: "neutral", isPositive: true }
-                          : linesComparison
-                        )
-                  )}
+                  value={<AnimatedNumber value={displayStats.activeLinesCount !== undefined ? displayStats.activeLinesCount : 4} suffix=" Active" />} 
+                  comparison={isArchive ? null : (() => {
+                    const actCount = displayStats.activeLinesCount !== undefined ? displayStats.activeLinesCount : 4;
+                    const totCount = displayStats.totalLinesCount || totalLines || 4;
+                    const isAll = actCount === totCount;
+                    return {
+                      highlight: isAll ? `All ${totCount} Lines` : `${actCount} of ${totCount} Lines`,
+                      label: isAugust || isJuly ? "active manufacturing operations" : "active & producing",
+                      trend: "neutral",
+                      isPositive: true
+                    };
+                  })()}
                 />
                 <MetricCard 
                   title={displayStats.averageDailyProfit >= 0 ? "Avg Daily Profit" : "Avg Daily Loss"} 

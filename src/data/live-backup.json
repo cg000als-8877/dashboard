@@ -30,17 +30,27 @@
       "worker_count": 70,
       "per_head_cost": 1384,
       "total_cost": 96880,
-      "production_qty": 360,
-      "production_dzn": 30,
+      "production_qty": 420,
+      "production_dzn": 35,
       "cm_per_dzn": 1700,
-      "total_income": 51000,
-      "net_profit": -45880,
+      "total_income": 59500,
+      "net_profit": -37380,
       "status": "ACTIVE"
     },
     {
       "date": "2026-09-02",
       "line_id": "A",
-      "status": "HOLIDAY"
+      "style": "SHERPA SHIRT",
+      "item": "SHERPA SHIRT",
+      "worker_count": 25,
+      "per_head_cost": 1384,
+      "total_cost": 34600,
+      "production_qty": 130,
+      "production_dzn": 10.83333333,
+      "cm_per_dzn": 1700,
+      "total_income": 18416.66667,
+      "net_profit": -16183.33333,
+      "status": "ACTIVE"
     },
     {
       "date": "2026-09-03",
@@ -190,17 +200,27 @@
       "worker_count": 18,
       "per_head_cost": 1384,
       "total_cost": 24912,
-      "production_qty": 400,
-      "production_dzn": 33.33333333,
+      "production_qty": 230,
+      "production_dzn": 19.16666667,
       "cm_per_dzn": 150,
-      "total_income": 5000,
-      "net_profit": -19912,
+      "total_income": 2875,
+      "net_profit": -22037,
       "status": "ACTIVE"
     },
     {
       "date": "2026-09-02",
       "line_id": "B",
-      "status": "HOLIDAY"
+      "style": "",
+      "item": "BOXER",
+      "worker_count": 18,
+      "per_head_cost": 1384,
+      "total_cost": 24912,
+      "production_qty": 190,
+      "production_dzn": 15.83333333,
+      "cm_per_dzn": 150,
+      "total_income": 2375,
+      "net_profit": -22537,
+      "status": "ACTIVE"
     },
     {
       "date": "2026-09-03",
@@ -360,7 +380,17 @@
     {
       "date": "2026-09-02",
       "line_id": "C",
-      "status": "HOLIDAY"
+      "style": "",
+      "item": "BOXER",
+      "worker_count": 21,
+      "per_head_cost": 1384,
+      "total_cost": 29064,
+      "production_qty": 1200,
+      "production_dzn": 100,
+      "cm_per_dzn": 150,
+      "total_income": 15000,
+      "net_profit": -14064,
+      "status": "ACTIVE"
     },
     {
       "date": "2026-09-03",
@@ -505,17 +535,7 @@
     {
       "date": "2026-09-01",
       "line_id": "D",
-      "style": "ROV-26",
-      "item": "MENS TEE SHIRT",
-      "worker_count": 22,
-      "per_head_cost": 1038,
-      "total_cost": 22836,
-      "production_qty": 520,
-      "production_dzn": 43.33333333,
-      "cm_per_dzn": 250,
-      "total_income": 10833.33333,
-      "net_profit": -12002.66667,
-      "status": "ACTIVE"
+      "status": "HOLIDAY"
     },
     {
       "date": "2026-09-02",

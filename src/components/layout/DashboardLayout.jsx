@@ -103,8 +103,8 @@ export default function DashboardLayout({ children }) {
           {/* Theme & Appearance Selector Popover Modal */}
           {isMobileMenuOpen && (
             <>
-              <div className="fixed inset-0 z-[90] bg-black/40 backdrop-blur-[2px]" onClick={() => setIsMobileMenuOpen(false)}></div>
-              <div className="absolute top-12 right-2.5 w-52 bg-[var(--color-bg-card)]/95 backdrop-blur-xl border border-[var(--color-border)] rounded-xl shadow-2xl flex flex-col p-2.5 animate-[fade-down_0.15s_ease-out_both] z-[100] origin-top-right">
+              <div className="fixed inset-0 z-[90] bg-black/50" onClick={() => setIsMobileMenuOpen(false)}></div>
+              <div className="absolute top-12 right-2.5 w-52 bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-xl shadow-2xl flex flex-col p-2.5 animate-[fade-down_0.15s_ease-out_both] z-[100] origin-top-right">
                 
                 {/* Header with Title and Close Button */}
                 <div className="flex items-center justify-between pb-2 border-b border-[var(--color-border)]/60 mb-2">
