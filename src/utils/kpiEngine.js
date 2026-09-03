@@ -81,6 +81,10 @@ export function createKpiEngine(rawData) {
           }
         }
 
+        if (d.production_qty !== undefined && d.production_qty !== null && d.status !== 'HOLIDAY') {
+          line.lastActiveDay = d;
+        }
+
         if (d.date === latestDate) {
           line.today = d;
         }
@@ -97,6 +101,14 @@ export function createKpiEngine(rawData) {
               line.name.includes('D') ? "Men's Tshirt" : 'Unknown'
             ));
 
+        const lastDay = line.lastActiveDay || line.today || null;
+        const lastDayOutput = lastDay ? Math.round(lastDay.production_qty || 0) : 0;
+        const lastDayIncome = lastDay ? Math.round(lastDay.total_income || 0) : 0;
+        const lastDayCost = lastDay ? Math.round(lastDay.total_cost || 0) : 0;
+        const lastDayProfit = lastDay ? Math.round(lastDay.net_profit !== undefined ? lastDay.net_profit : (lastDayIncome - lastDayCost)) : 0;
+        const lastDayCostRecovery = lastDayCost > 0 ? ((lastDayIncome / lastDayCost) * 100).toFixed(1) : '0.0';
+        const monthCostRecovery = line.totalCost > 0 ? ((line.totalIncome / line.totalCost) * 100).toFixed(1) : '0.0';
+
         return {
           ...line,
           items: uniqueItems,
@@ -109,6 +121,14 @@ export function createKpiEngine(rawData) {
           totalCm: Math.round(line.totalCm),
           averageWorkers: line.daysActive > 0 ? Math.round(line.totalWorkers / line.daysActive) : 0,
           averageCm: line.daysActive > 0 ? Math.round(line.totalCm / line.daysActive) : 0,
+          monthCostRecovery,
+          lastDay,
+          lastDayDate: lastDay?.date || null,
+          lastDayOutput,
+          lastDayIncome,
+          lastDayCost,
+          lastDayProfit,
+          lastDayCostRecovery
         };
       });
     },
