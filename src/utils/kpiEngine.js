@@ -164,53 +164,104 @@ export function createKpiEngine(rawData) {
       
       const insights = [];
 
-      if (lines.length === 0) return ["No data available to generate insights."];
+      if (lines.length === 0) return ["No operational data available to generate system intelligence."];
 
       // Sort lines by various metrics
       const sortedByProfit = [...lines].sort((a, b) => b.netProfit - a.netProfit);
       const sortedByProduction = [...lines].sort((a, b) => b.totalProduction - a.totalProduction);
       const sortedByCost = [...lines].sort((a, b) => b.totalCost - a.totalCost);
-      const sortedByCm = [...lines].sort((a, b) => parseFloat(b.averageCm) - parseFloat(a.averageCm));
+      const sortedByCm = [...lines].sort((a, b) => parseFloat(b.averageCm || 0) - parseFloat(a.averageCm || 0));
+      const sortedByRecovery = [...lines].sort((a, b) => parseFloat(b.monthCostRecovery || 0) - parseFloat(a.monthCostRecovery || 0));
 
       const bestLine = sortedByProfit[0];
       const worstLine = sortedByProfit[sortedByProfit.length - 1];
       const highestProducer = sortedByProduction[0];
-      const highestCost = sortedByCost[0];
+      const highestCostLine = sortedByCost[0];
       const highestCm = sortedByCm[0];
+      const lowestCm = sortedByCm[sortedByCm.length - 1];
+      const highestRecoveryLine = sortedByRecovery[0];
+      const lowestRecoveryLine = sortedByRecovery[sortedByRecovery.length - 1];
 
-      // 1. Overall Profitability
-      if (stats.netProfit > 0) {
-        insights.push(`The factory is profitable with a net gain of BDT ${stats.netProfit.toLocaleString()}.`);
-      } else if (stats.netProfit < 0) {
-        insights.push(`CRITICAL: The factory is operating at a net loss of BDT ${Math.abs(stats.netProfit).toLocaleString()}. Immediate action required.`);
-      }
-
-      // 2. Top Performer
-      if (bestLine && bestLine.netProfit > 0) {
-        const percentage = stats.netProfit > 0 ? ((bestLine.netProfit / stats.netProfit) * 100).toFixed(1) : 0;
-        insights.push(`${bestLine.name} is the top performer, generating BDT ${bestLine.netProfit.toLocaleString()} in profit${percentage > 0 ? ` (${percentage}% of total profit)` : ''}.`);
-      }
-
-      // 3. Lowest Performer / Losses
-      if (worstLine && worstLine.netProfit < 0) {
-        insights.push(`${worstLine.name} is operating at a loss of BDT ${Math.abs(worstLine.netProfit).toLocaleString()}, heavily impacting overall margins.`);
-      }
-
-      // 4. Production Volume
-      if (highestProducer) {
-        insights.push(`${highestProducer.name} led production volume with ${highestProducer.totalProduction.toLocaleString()} units manufactured.`);
-      }
-
-      // 5. Cost Alert
-      if (highestCost) {
-        insights.push(`${highestCost.name} incurred the highest operational costs (BDT ${highestCost.totalCost.toLocaleString()}).`);
-      }
-
-      // 6. CM (Cost of Making) Insight
-      if (highestCm && highestCm.averageCm > 0) {
-        insights.push(`${highestCm.name} achieved the highest average CM per dozen at BDT ${highestCm.averageCm}.`);
-      }
+      const overallCostRecovery = stats.totalCost > 0 ? ((stats.totalIncome / stats.totalCost) * 100).toFixed(1) : '0.0';
+      const volShare = stats.totalProduction > 0 && highestProducer ? Math.round((highestProducer.totalProduction / stats.totalProduction) * 100) : 0;
+      const costShare = stats.totalCost > 0 && highestCostLine ? Math.round((highestCostLine.totalCost / stats.totalCost) * 100) : 0;
       
+      // Calculate latest active day totals across lines
+      let lastDayTotalOutput = 0;
+      let lastDayTotalIncome = 0;
+      let lastDayTotalCost = 0;
+      let lastActiveDate = null;
+      lines.forEach(l => {
+        lastDayTotalOutput += (l.lastDayOutput || 0);
+        lastDayTotalIncome += (l.lastDayIncome || 0);
+        lastDayTotalCost += (l.lastDayCost || 0);
+        if (l.lastDayDate && !lastActiveDate) lastActiveDate = l.lastDayDate;
+      });
+
+      // Breakeven production estimation
+      const avgIncomePerPcs = stats.totalProduction > 0 ? (stats.totalIncome / stats.totalProduction) : 0;
+      const breakevenSurgeQty = avgIncomePerPcs > 0 && stats.netProfit < 0 ? Math.round(Math.abs(stats.netProfit) / (stats.workingDays || 1) / avgIncomePerPcs) : 0;
+      const breakevenPct = stats.totalIncome > 0 && stats.totalCost > 0 ? Math.round(((stats.totalCost - stats.totalIncome) / stats.totalIncome) * 100) : 0;
+
+      // 1. Overall Financial Status & Deficit
+      if (stats.netProfit < 0) {
+        insights.push(`<strong>CRITICAL LOSS ALERT:</strong> Factory operating at a net loss of <span class="text-rose-400 font-bold">BDT ${Math.abs(stats.netProfit).toLocaleString()}</span>, with total revenue of <span class="text-[var(--color-primary)] font-bold">BDT ${stats.totalIncome.toLocaleString()}</span> unrecovered against <span class="text-amber-400 font-bold">BDT ${stats.totalCost.toLocaleString()}</span> in expenses.`);
+      } else {
+        insights.push(`<strong>FINANCIAL SURPLUS:</strong> Factory generating net profit of <span class="text-emerald-400 font-bold">+BDT ${stats.netProfit.toLocaleString()}</span> with total revenue of <span class="text-[var(--color-primary)] font-bold">BDT ${stats.totalIncome.toLocaleString()}</span> surpassing operational expenditure.`);
+      }
+
+      // 2. Daily Run-Rate & Cash Burn
+      if (stats.averageDailyProfit < 0) {
+        insights.push(`<strong>DAILY CASH BURN:</strong> Current burn run-rate is <span class="text-rose-400 font-bold">-BDT ${Math.abs(stats.averageDailyProfit).toLocaleString()} / day</span> across <span class="text-[var(--color-primary)] font-bold">${stats.workingDays} active production day(s)</span>.`);
+      } else {
+        insights.push(`<strong>DAILY PROFIT RUN-RATE:</strong> Operating with an average daily profit of <span class="text-emerald-400 font-bold">+BDT ${stats.averageDailyProfit.toLocaleString()} / day</span> across <span class="text-[var(--color-primary)] font-bold">${stats.workingDays} active day(s)</span>.`);
+      }
+
+      // 3. Factory-Wide Cost Recovery Shortfall
+      insights.push(`<strong>COST RECOVERY GAP:</strong> Overall factory cost recovery stands at <span class="text-amber-400 font-bold">${overallCostRecovery}%</span>, leaving a <span class="text-rose-400 font-bold">${Math.max(0, (100 - parseFloat(overallCostRecovery))).toFixed(1)}% recovery deficit</span> to reach zero-loss breakeven.`);
+
+      // 4. Volume Leadership
+      if (highestProducer) {
+        insights.push(`<strong>VOLUME LEADERSHIP:</strong> <span class="text-[var(--color-primary)] font-bold">${highestProducer.name}</span> (${highestProducer.item || 'Active'}) leads factory output with <span class="text-emerald-400 font-bold">${highestProducer.totalProduction.toLocaleString()} PCS</span> manufactured (${volShare}% of total output).`);
+      }
+
+      // 5. Major Deficit / Loss Contributor
+      if (worstLine && worstLine.netProfit < 0) {
+        insights.push(`<strong>HIGHEST DEFICIT CONTRIBUTOR:</strong> <span class="text-rose-400 font-bold">${worstLine.name}</span> (${worstLine.item || 'Active'}) accounts for the largest deficit at <span class="text-rose-400 font-bold">-BDT ${Math.abs(worstLine.netProfit).toLocaleString()}</span> with <span class="text-amber-400 font-bold">${worstLine.monthCostRecovery || '0.0'}% cost recovery</span>.`);
+      }
+
+      // 6. Expenditure & Overhead Concentration
+      if (highestCostLine) {
+        insights.push(`<strong>OVERHEAD CONCENTRATION:</strong> <span class="text-[var(--color-primary)] font-bold">${highestCostLine.name}</span> incurred highest operational cost of <span class="text-amber-400 font-bold">BDT ${highestCostLine.totalCost.toLocaleString()}</span> (${costShare}% of factory total).`);
+      }
+
+      // 7. CM Rate Spread & Pricing Yield
+      if (highestCm && highestCm.averageCm > 0) {
+        insights.push(`<strong>CM REVENUE SPREAD:</strong> Highest earning style is on <span class="text-[var(--color-primary)] font-bold">${highestCm.name}</span> at <span class="text-emerald-400 font-bold">BDT ${highestCm.averageCm}/Dzn</span>, compared to <span class="text-amber-400 font-bold">BDT ${lowestCm?.averageCm || '250'}/Dzn</span> on baseline styles.`);
+      }
+
+      // 8. Line Efficiency Disparity
+      if (highestRecoveryLine && lowestRecoveryLine) {
+        insights.push(`<strong>LINE EFFICIENCY SPREAD:</strong> Line recovery rates range from <span class="text-rose-400 font-bold">${lowestRecoveryLine.monthCostRecovery || '0.0'}% (${lowestRecoveryLine.name})</span> to <span class="text-emerald-400 font-bold">${highestRecoveryLine.monthCostRecovery || '0.0'}% (${highestRecoveryLine.name})</span>, requiring floor re-balancing.`);
+      }
+
+      // 9. Latest Production Day Telemetry
+      if (lastDayTotalOutput > 0) {
+        insights.push(`<strong>LATEST DAY PRODUCTION:</strong> Across active lines, latest daily output reached <span class="text-[var(--color-primary)] font-bold">${lastDayTotalOutput.toLocaleString()} PCS</span> generating <span class="text-emerald-400 font-bold">BDT ${lastDayTotalIncome.toLocaleString()}</span> against <span class="text-amber-400 font-bold">BDT ${lastDayTotalCost.toLocaleString()}</span> cost.`);
+      }
+
+      // 10. Breakeven Production Surge Target
+      if (breakevenSurgeQty > 0) {
+        insights.push(`<strong>BREAKEVEN OUTPUT TARGET:</strong> To fully offset daily loss at current CM rates, daily output must increase by <span class="text-emerald-400 font-bold">+${breakevenSurgeQty.toLocaleString()} PCS/day</span> (+${breakevenPct}% revenue surge).`);
+      }
+
+      // 11. Active Line Capacity
+      const activeRunningItems = lines.filter(l => (l.totalProduction || 0) > 0).map(l => `${l.name} (${l.item || 'N/A'})`).join(', ');
+      insights.push(`<strong>ACTIVE LINE CAPACITY:</strong> <span class="text-[var(--color-primary)] font-bold">${stats.activeLinesCount} of ${stats.totalLinesCount || 4} lines</span> actively logged production: <span class="text-[var(--color-text-secondary)] font-semibold">${activeRunningItems || 'All Lines'}</span>.`);
+
+      // 12. Strategic Executive Directive
+      insights.push(`<strong>STRATEGIC DIRECTIVE:</strong> Prioritize production acceleration on high-CM styles while right-sizing manpower allocation on high-deficit lines to eliminate unrecovered labor burn.`);
+
       return insights;
     }
   };

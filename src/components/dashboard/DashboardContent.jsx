@@ -311,7 +311,7 @@ export function DashboardContent({ month, isArchive = false }) {
       };
     } else {
       avgDailyComparison = {
-        highlight: isBetter ? `-${diffK}k less Loss/Day` : `+${diffK}k more Loss/Day`,
+        highlight: isBetter ? `-${diffK}k less Loss per Day` : `+${diffK}k more Loss per Day`,
         label: `compared to ${prevPeriodLabel}`,
         trend: isBetter ? 'up' : 'down',
         isPositive: isBetter
@@ -679,14 +679,13 @@ export function DashboardContent({ month, isArchive = false }) {
                         type="button"
                         onClick={() => setSelectedMobileLine(lineId)}
                         className={cn(
-                          "py-2 rounded-lg text-xs font-black uppercase transition-all duration-200 cursor-pointer select-none text-center flex items-center justify-center gap-1",
+                          "py-2 rounded-lg text-xs font-black uppercase transition-all duration-200 cursor-pointer select-none text-center flex items-center justify-center",
                           isSelected
                             ? "bg-[var(--color-bg-card)] shadow-sm border border-[var(--color-border)]"
                             : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)]"
                         )}
                         style={isSelected ? { color: meta.color, borderColor: `${meta.color}60` } : {}}
                       >
-                        <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: meta.color }} />
                         <span>LINE {lineId}</span>
                       </button>
                     );
@@ -711,16 +710,14 @@ export function DashboardContent({ month, isArchive = false }) {
                           {/* Line Top Header: Name, Status Badge, Item, Month Efficiency */}
                           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[var(--color-border)]/50 pb-3">
                             <div className="flex items-center justify-between sm:justify-start gap-3">
-                              <div className="flex items-center gap-2.5">
-                                <span className="w-2.5 h-2.5 rounded-full shadow-md shrink-0" style={{ backgroundColor: meta.color }} />
+                              <div className="flex items-center">
                                 <h2 className="text-[20px] md:text-[24px] font-bold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-[var(--color-text-main)] to-[var(--color-text-secondary)] [filter:var(--shadow-text)]">
                                   {line.name}
                                 </h2>
                               </div>
                               
                               {line.netProfit >= 0 ? (
-                                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[8.5px] md:text-[9px] font-bold uppercase tracking-widest bg-[var(--color-success-glow)] text-[var(--color-success-text)] border border-[rgba(16,185,129,0.2)]">
-                                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_5px_#10b981] animate-pulse" />
+                                <span className="inline-flex items-center px-2 py-0.5 rounded text-[8.5px] md:text-[9px] font-bold uppercase tracking-widest bg-[var(--color-success-glow)] text-[var(--color-success-text)] border border-[rgba(16,185,129,0.2)]">
                                   Optimal
                                 </span>
                               ) : (
@@ -796,8 +793,7 @@ export function DashboardContent({ month, isArchive = false }) {
                           {/* Last Recorded Day Input & Cost Recovery Efficiency */}
                           <div className="bg-[var(--color-surface)]/70 border border-[var(--color-border)] rounded-xl p-2.5 sm:p-3.5">
                             <div className="flex items-center justify-between mb-2">
-                              <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-[var(--color-text-secondary)] flex items-center gap-1.5">
-                                <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-primary)]" />
+                              <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-[var(--color-text-secondary)] flex items-center">
                                 <span>Last Day Input ({lastDayDateStr})</span>
                               </span>
                               <span className="text-[9.5px] sm:text-[10.5px] font-bold text-[var(--color-text-muted)]">
@@ -845,8 +841,8 @@ export function DashboardContent({ month, isArchive = false }) {
                           </Link>
 
                         </div>
-                        {/* Decorative side accent */}
-                        <div className="absolute top-0 left-0 w-1.5 h-full" style={{ backgroundColor: meta.color }}></div>
+                        {/* Decorative side accent - Desktop view only */}
+                        <div className="hidden md:block absolute top-0 left-0 w-1.5 h-full" style={{ backgroundColor: meta.color }}></div>
                       </Card>
                     </div>
                   );
@@ -868,11 +864,14 @@ export function DashboardContent({ month, isArchive = false }) {
                 <h3 className="text-[13px] font-bold text-[var(--color-text-secondary)] uppercase tracking-[0.16em] mb-4">
                   System Intelligence
                 </h3>
-                <ul className="space-y-2.5 w-full">
+                <ul className="space-y-3 w-full divide-y divide-[var(--color-border)]/30">
                   {insights.map((insight, i) => (
-                    <li key={i} className="flex items-start gap-3 bg-[var(--color-surface)] p-3 rounded-lg border border-[var(--color-border)]">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-primary)] mt-1.5 shrink-0"></span>
-                      <span className="text-sm font-medium text-[var(--color-text-main)] leading-relaxed">{insight}</span>
+                    <li key={i} className="flex items-start gap-2.5 pt-3 first:pt-0">
+                      <span className="text-[var(--color-primary)] font-black text-sm select-none shrink-0 leading-relaxed">•</span>
+                      <span 
+                        className="text-xs sm:text-[13.5px] font-medium text-[var(--color-text-main)] leading-relaxed flex-1"
+                        dangerouslySetInnerHTML={{ __html: insight }}
+                      />
                     </li>
                   ))}
                 </ul>

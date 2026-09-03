@@ -249,11 +249,7 @@ export default function Sidebar({ onClose }) {
                                 : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)]"
                             )}
                           >
-                            <div className="flex items-center gap-2 min-w-0">
-                              <span 
-                                className="w-2 h-2 rounded-full shrink-0 shadow-sm transition-transform group-hover/line:scale-125" 
-                                style={{ backgroundColor: color, boxShadow: `0 0 6px ${color}66` }} 
-                              />
+                            <div className="flex items-center min-w-0">
                               <span className="shrink-0">Line {lineId}</span>
                             </div>
                             <span className="text-[9px] text-[var(--color-text-muted)] font-normal truncate max-w-[85px] text-right ml-1" title={itemDesc}>

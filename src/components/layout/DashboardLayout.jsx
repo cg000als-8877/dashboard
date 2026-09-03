@@ -337,7 +337,7 @@ export default function DashboardLayout({ children }) {
 
         {/* Main Content */}
         <main 
-          className="flex-1 overflow-y-auto w-full pt-[65px] pb-16 md:pt-8 md:pb-8 p-4 md:p-8 relative hide-scrollbar md:[scrollbar-width:auto]"
+          className="flex-1 overflow-y-auto w-full pt-[65px] pb-[calc(7.5rem+env(safe-area-inset-bottom))] md:pt-8 md:pb-8 p-4 md:p-8 relative hide-scrollbar md:[scrollbar-width:auto]"
         >
           <div className="w-full max-w-[1800px] mx-auto">
             {children}

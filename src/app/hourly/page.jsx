@@ -868,7 +868,6 @@ export default function HourlyPage() {
                                   color: lMeta.onColor
                                 } : {}}
                               >
-                                {isTabActive && <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-bg-card)] animate-pulse"></span>}
                                 LINE {l.line_id}
                               </button>
                             );
