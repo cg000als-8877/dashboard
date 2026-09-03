@@ -4,13 +4,27 @@ import { useKpiData } from '@/utils/useKpiData';
 import { MetricCard, Card } from '@/components/ui/Card';
 import { DailyPerformanceChart, IncomeVsCostChart } from '@/components/dashboard/DashboardCharts';
 import { TitanicAnimation } from '@/components/ui/TitanicAnimation';
-import { Sparkles, ArrowRight, Download, FileText, Ship } from 'lucide-react';
+import { Sparkles, ArrowRight, Download, FileText, Ship, Siren } from 'lucide-react';
 import Link from 'next/link';
 import { RealTimeClock } from '@/components/ui/RealTimeClock';
 import { PrintableArchiveReport } from '@/components/report/PrintableArchiveReport';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { DashboardSkeleton } from '@/components/ui/Skeletons';
 import { cn } from '@/components/layout/Sidebar';
+
+// High-speed emergency ambulance siren beacon
+function AmbulanceBeacon() {
+  return (
+    <span className="relative flex items-center justify-center shrink-0 w-3.5 h-3.5 mr-0.5">
+      {/* Outer pulsing red emergency halo */}
+      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-80 duration-200" />
+      {/* Rotating emergency strobe ring */}
+      <span className="animate-spin absolute inline-flex h-4 w-4 rounded-full border border-red-300/60 border-t-white" style={{ animationDuration: '0.35s' }} />
+      {/* High-visibility Siren icon with rapid red/white strobe flash */}
+      <Siren className="relative w-3.5 h-3.5 text-white drop-shadow-[0_0_8px_#ff0000] animate-[pulse_0.2s_infinite]" />
+    </span>
+  );
+}
 
 // Helper function to render superscript ordinal suffixes (e.g. 1ˢᵗ, 23ʳᵈ, 30ᵗʰ)
 function renderOrdinal(dayStr) {
@@ -698,18 +712,17 @@ export function DashboardContent({ month, isArchive = false }) {
                                 </h2>
                               </div>
                               
-                              <span className={cn(
-                                "inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[8.5px] md:text-[9px] font-bold uppercase tracking-widest transition-all",
-                                line.netProfit >= 0 
-                                  ? 'bg-[var(--color-success-glow)] text-[var(--color-success-text)] border border-[rgba(16,185,129,0.2)]' 
-                                  : 'bg-[var(--color-danger-glow)] text-[var(--color-danger-text)] border border-[rgba(255,59,48,0.4)] shadow-[0_0_10px_rgba(255,59,48,0.3)]'
-                              )}>
-                                <span className={cn(
-                                  "w-1.5 h-1.5 rounded-full",
-                                  line.netProfit >= 0 ? 'bg-emerald-400 shadow-[0_0_5px_#10b981] animate-pulse' : 'bg-red-500 shadow-[0_0_8px_#ff3b30]'
-                                )} />
-                                {line.netProfit >= 0 ? 'Optimal' : 'Critical'}
-                              </span>
+                              {line.netProfit >= 0 ? (
+                                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[8.5px] md:text-[9px] font-bold uppercase tracking-widest bg-[var(--color-success-glow)] text-[var(--color-success-text)] border border-[rgba(16,185,129,0.2)]">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_5px_#10b981] animate-pulse" />
+                                  Optimal
+                                </span>
+                              ) : (
+                                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[8.5px] md:text-[9.5px] font-black uppercase tracking-widest transition-all animate-emergency-strobe cursor-default shadow-lg">
+                                  <AmbulanceBeacon />
+                                  <span>Critical</span>
+                                </span>
+                              )}
                             </div>
 
                             <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] md:text-xs">
@@ -734,7 +747,7 @@ export function DashboardContent({ month, isArchive = false }) {
                           {/* Cumulative Month Performance Grid */}
                           <div>
                             <p className="text-[9.5px] uppercase tracking-wider font-bold text-[var(--color-text-muted)] mb-1.5">
-                              Month Total Summary (August)
+                              Month Total Summary ({activeMonthName})
                             </p>
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3">
                               <div className="bg-[var(--color-surface)] p-2.5 md:p-3 rounded-xl border border-[var(--color-border)] shadow-xs">
