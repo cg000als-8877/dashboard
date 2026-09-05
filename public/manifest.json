@@ -1,12 +1,14 @@
 {
-  "name": "BAPL",
-  "short_name": "BAPL",
-  "description": "Production & Telemetry Dashboard for BAPL",
+  "name": "Byzid Apparels (Pvt) Ltd",
+  "short_name": "BAPL Dashboard",
+  "description": "Production, Telemetry & Financial Dashboard for Byzid Apparels (Pvt) Ltd",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#0B0F17",
   "theme_color": "#0B0F17",
-  "orientation": "any",
+  "orientation": "portrait-primary",
+  "categories": ["business", "productivity", "utilities"],
   "icons": [
     {
       "src": "/logo.png",

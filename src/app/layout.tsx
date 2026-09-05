@@ -4,6 +4,8 @@ import DashboardLayout from "@/components/layout/DashboardLayout";
 import { MonthProvider } from "@/components/providers/MonthProvider";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { ClientAutoRefresh } from "@/components/providers/ClientAutoRefresh";
+import { PwaManager } from "@/components/providers/PwaManager";
+import { AppWelcomeSplash } from "@/components/ui/AppWelcomeSplash";
 import { Suspense } from "react";
 
 const inter = Inter({ 
@@ -27,6 +29,11 @@ export const metadata = {
   title: "Byzid Apparels (Pvt) Ltd",
   description: "Dashboard for Factory Operations",
   manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "BAPL Dashboard"
+  },
   icons: {
     icon: '/logo.png',
     apple: '/logo.png'
@@ -41,9 +48,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <ThemeProvider>
             <MonthProvider>
               <ClientAutoRefresh />
-              <DashboardLayout>
-                {children}
-              </DashboardLayout>
+              <PwaManager>
+                <AppWelcomeSplash />
+                <DashboardLayout>
+                  {children}
+                </DashboardLayout>
+              </PwaManager>
             </MonthProvider>
           </ThemeProvider>
         </Suspense>
