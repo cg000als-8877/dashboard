@@ -848,7 +848,15 @@ export function DashboardContent({ month, isArchive = false }) {
 
                           {/* View Full Details CTA Button with Line Specific Colors */}
                           <Link
-                            href={isArchive ? `/archive/${month}/lines/${line.id}` : `/lines/${line.id}`}
+                            href={
+                              isArchive
+                                ? `/archive/${month}/lines/${line.id}`
+                                : selectedCardMonth === 'august'
+                                  ? `/archive/2026-08/lines/${line.id}`
+                                  : selectedCardMonth === 'july'
+                                    ? `/archive/2026-07/lines/${line.id}`
+                                    : `/lines/${line.id}`
+                            }
                             className={cn(
                               "w-full py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer select-none group",
                               meta.btnClass

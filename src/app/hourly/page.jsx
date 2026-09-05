@@ -1038,24 +1038,25 @@ export default function HourlyPage() {
                               }}
                             >
                               {/* Line Header */}
-                              <div className="bg-[var(--color-surface)]/50 border-b border-[var(--color-border)] shrink-0 p-3 flex items-center justify-between">
-                                <div className="flex items-center gap-2">
+                              <div className="bg-[var(--color-surface)]/50 border-b border-[var(--color-border)] shrink-0 p-3 flex items-center justify-between md:justify-center">
+                                <div className="flex items-center gap-2 justify-center">
                                   <div 
-                                    className="text-white px-3 py-1 rounded-full text-xs font-black tracking-wider border shadow-sm"
+                                    className="text-white px-3 py-1 rounded-full text-xs font-black tracking-wider border shadow-[0_2px_10px_var(--line-glow)] md:shadow-none"
                                     style={{
                                       backgroundColor: meta.color,
                                       borderColor: `${meta.color}50`,
-                                      boxShadow: `0 2px 10px ${meta.glow}`
+                                      '--line-glow': meta.glow
                                     }}
                                   >
                                     LINE {line.line_id}
                                   </div>
-                                  <span className="text-xs font-bold text-[var(--color-text-main)] truncate max-w-[150px]">
+                                  <span className="text-xs font-bold text-[var(--color-text-main)] truncate max-w-[150px] md:max-w-[200px]">
                                     {line.item || 'Active Style'}
                                   </span>
                                 </div>
 
-                                <div className="text-right">
+                                {/* Target / Act - Shown on mobile, hidden on desktop */}
+                                <div className="text-right md:hidden">
                                   <span className="text-[9px] uppercase tracking-wider text-[var(--color-text-muted)] font-extrabold block">
                                     Target / Act
                                   </span>
