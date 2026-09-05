@@ -7,7 +7,7 @@ export function InstallAppModal({ isOpen, isIOS, onInstall, onDismiss }) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[9985] flex items-end sm:items-center justify-center p-3 sm:p-4 bg-black/75 backdrop-blur-md animate-[fade-in_0.25s_ease-out]">
+    <div className="fixed inset-0 z-[9985] flex items-end sm:items-center justify-center p-3 sm:p-4 bg-black/75 backdrop-blur-md animate-[fade-in_0.25s_ease-out] md:hidden">
       <div 
         className="bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-3xl p-5 sm:p-7 max-w-sm sm:max-w-md w-full shadow-2xl relative overflow-hidden animate-[fade-up_0.35s_cubic-bezier(0.16,1,0.3,1)]"
         style={{

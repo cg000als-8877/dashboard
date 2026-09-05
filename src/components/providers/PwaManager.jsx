@@ -82,17 +82,27 @@ export function PwaManager({ children }) {
       });
     }
 
-    // 4. Handle Android/Chrome beforeinstallprompt event
+    // Check if user is visiting from a mobile device (Android / iOS / Phone / Tablet)
+    const isMobileDevice = () => {
+      const ua = window.navigator.userAgent.toLowerCase();
+      const isMobileUA = /android|iphone|ipad|ipod|blackberry|iemobile|opera mini|mobile/i.test(ua);
+      const isTouchAndSmall = ('ontouchstart' in window || navigator.maxTouchPoints > 0) && window.innerWidth < 1024;
+      return isMobileUA || isTouchAndSmall;
+    };
+
+    const isMobile = isMobileDevice();
+
+    // 4. Handle Android/Chrome beforeinstallprompt event (Mobile only)
     const handleBeforeInstallPrompt = (e) => {
       e.preventDefault();
       setDeferredPrompt(e);
 
-      // Offer install prompt if not dismissed recently
+      // Offer install prompt ONLY on mobile devices if not dismissed recently
       const lastDismissed = localStorage.getItem('bapl_install_dismissed');
       const now = Date.now();
       const THREE_DAYS_MS = 3 * 24 * 60 * 60 * 1000;
 
-      if (!isApp && (!lastDismissed || now - parseInt(lastDismissed, 10) > THREE_DAYS_MS)) {
+      if (isMobile && !isApp && (!lastDismissed || now - parseInt(lastDismissed, 10) > THREE_DAYS_MS)) {
         // Delay showing prompt slightly after launch/welcome screen
         setTimeout(() => {
           setShowInstallModal(true);
@@ -102,8 +112,8 @@ export function PwaManager({ children }) {
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
 
-    // 5. For iOS users visiting in browser, offer guided install prompt
-    if (isAppleDevice && !isApp) {
+    // 5. For iOS users visiting on mobile browser, offer guided install prompt
+    if (isMobile && isAppleDevice && !isApp) {
       const lastDismissed = localStorage.getItem('bapl_install_dismissed');
       const now = Date.now();
       const THREE_DAYS_MS = 3 * 24 * 60 * 60 * 1000;
