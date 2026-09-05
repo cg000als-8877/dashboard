@@ -26,20 +26,88 @@ function AmbulanceBeacon() {
   );
 }
 
-// Helper function to render superscript ordinal suffixes (e.g. 1ˢᵗ, 23ʳᵈ, 30ᵗʰ)
-function renderOrdinal(dayStr) {
-  if (!dayStr) return null;
-  const match = String(dayStr).match(/^(\d+)([a-zA-Z]+)$/);
-  if (match) {
-    const [, num, suffix] = match;
-    return (
-      <span className="inline-flex items-baseline font-semibold">
-        <span>{num}</span>
-        <sup className="text-[68%] font-bold -top-[0.45em] ml-[0.5px]">{suffix}</sup>
-      </span>
-    );
+// Formats date range as e.g. FROM "01 SEP TO 02 SEP, 2026" with highlight (all uppercase)
+function formatDateRangeInfo(startDateStr, endDateStr, overrideMonth, overrideYear) {
+  if (overrideMonth && overrideYear) {
+    const isAug = overrideMonth.toLowerCase().startsWith('aug');
+    const isJul = overrideMonth.toLowerCase().startsWith('jul');
+    if (isAug) {
+      return {
+        isRange: true,
+        startDay: '01',
+        endDay: '31',
+        startMonthShort: 'AUG',
+        endMonthShort: 'AUG',
+        year: overrideYear
+      };
+    }
+    if (isJul) {
+      return {
+        isRange: true,
+        startDay: '01',
+        endDay: '31',
+        startMonthShort: 'JUL',
+        endMonthShort: 'JUL',
+        year: overrideYear
+      };
+    }
   }
-  return <span>{dayStr}</span>;
+
+  if (!startDateStr || !endDateStr) {
+    const m = (overrideMonth || 'SEP').slice(0, 3).toUpperCase();
+    return {
+      isRange: false,
+      startDay: '01',
+      endDay: '01',
+      startMonthShort: m,
+      endMonthShort: m,
+      year: overrideYear || '2026'
+    };
+  }
+
+  try {
+    const startD = parseISO(startDateStr);
+    const endD = parseISO(endDateStr);
+    const startDay = format(startD, 'dd');
+    const endDay = format(endD, 'dd');
+    const startMonthShort = format(startD, 'MMM').toUpperCase();
+    const endMonthShort = format(endD, 'MMM').toUpperCase();
+    const year = format(endD, 'yyyy');
+    const isRange = startDateStr !== endDateStr;
+
+    return {
+      isRange,
+      startDay,
+      endDay,
+      startMonthShort,
+      endMonthShort,
+      year
+    };
+  } catch (e) {
+    return {
+      isRange: false,
+      startDay: '01',
+      endDay: '01',
+      startMonthShort: 'SEP',
+      endMonthShort: 'SEP',
+      year: '2026'
+    };
+  }
+}
+
+function DashboardDateRange({ dateInfo, className = "" }) {
+  if (!dateInfo) return null;
+  const { isRange, startDay, endDay, startMonthShort, endMonthShort, year } = dateInfo;
+
+  return (
+    <span className={cn("inline-flex items-center justify-center whitespace-nowrap text-[11px] sm:text-[12px] md:text-[13px] font-medium tracking-wide text-[var(--color-text-muted)] leading-tight uppercase", className)}>
+      <span>FROM&nbsp;</span>
+      <span className="font-extrabold text-[var(--color-primary)] tracking-wide">
+        {isRange ? `${startDay} ${startMonthShort} TO ${endDay} ${endMonthShort}` : `${startDay} ${endMonthShort}`}
+      </span>
+      <span>,&nbsp;{year}</span>
+    </span>
+  );
 }
 
 const LINE_CARD_META = {
@@ -409,26 +477,22 @@ export function DashboardContent({ month, isArchive = false }) {
 
           {/* Dynamic Date Context (Inside Card under Month Tabs) */}
           {(() => {
-            let activeDateComp = dateComponents;
+            let activeDateInfo = null;
             if (!isArchive) {
               if (selectedCardMonth === 'august') {
-                activeDateComp = augustDateComponents;
+                activeDateInfo = formatDateRangeInfo(null, null, 'august', '2026');
               } else if (selectedCardMonth === 'july') {
-                activeDateComp = julyDateComponents;
+                activeDateInfo = formatDateRangeInfo(null, null, 'july', '2026');
+              } else {
+                activeDateInfo = formatDateRangeInfo(startDate, endDate);
               }
+            } else {
+              activeDateInfo = formatDateRangeInfo(startDate, endDate, dateComponents?.month, dateComponents?.year);
             }
-            if (!activeDateComp) return null;
 
             return (
               <div className="flex justify-center items-center w-full mt-0.5 mb-2.5 sm:mb-3.5 relative z-10">
-                <span className="inline-flex items-baseline gap-1 text-[10px] sm:text-[11px] md:text-xs font-bold tracking-wide text-[var(--color-text-secondary)]">
-                  <span>From</span>
-                  {renderOrdinal(activeDateComp.startDay)}
-                  <span>to</span>
-                  {renderOrdinal(activeDateComp.endDay)}
-                  <span className="font-extrabold text-[var(--color-primary)] ml-0.5">{activeDateComp.month},</span>
-                  <span>{activeDateComp.year}</span>
-                </span>
+                <DashboardDateRange dateInfo={activeDateInfo} />
               </div>
             );
           })()}
@@ -591,68 +655,17 @@ export function DashboardContent({ month, isArchive = false }) {
             ? (dateComponents?.month || 'Archive')
             : (selectedCardMonth === 'august' ? 'August' : (selectedCardMonth === 'july' ? 'July' : (dateComponents?.month || 'September')));
 
-          const activeDateSubtitle = (() => {
+          const activeDateInfo = (() => {
             if (isArchive) {
-              if (dateComponents?.startDay === dateComponents?.endDay) {
-                return (
-                  <>
-                    <span>Updated for</span>
-                    <span className="font-bold text-[var(--color-primary)]">{dateComponents?.startDay}</span>
-                    <span>{dateComponents?.month}, {dateComponents?.year}</span>
-                  </>
-                );
-              }
-              return (
-                <>
-                  <span>From</span>
-                  <span className="font-bold text-[var(--color-primary)]">{dateComponents?.startDay || '1st'}</span>
-                  <span>to</span>
-                  <span className="font-bold text-[var(--color-primary)]">{dateComponents?.endDay || '31st'}</span>
-                  <span>{dateComponents?.month || ''}, {dateComponents?.year || '2026'}</span>
-                </>
-              );
+              return formatDateRangeInfo(startDate, endDate, dateComponents?.month, dateComponents?.year);
             }
             if (selectedCardMonth === 'august') {
-              return (
-                <>
-                  <span>From</span>
-                  <span className="font-bold text-[var(--color-primary)]">1st</span>
-                  <span>to</span>
-                  <span className="font-bold text-[var(--color-primary)]">31st</span>
-                  <span>August, 2026</span>
-                </>
-              );
+              return formatDateRangeInfo(null, null, 'august', '2026');
             }
             if (selectedCardMonth === 'july') {
-              return (
-                <>
-                  <span>From</span>
-                  <span className="font-bold text-[var(--color-primary)]">1st</span>
-                  <span>to</span>
-                  <span className="font-bold text-[var(--color-primary)]">31st</span>
-                  <span>July, 2026</span>
-                </>
-              );
+              return formatDateRangeInfo(null, null, 'july', '2026');
             }
-            // Live current month (September)
-            if (dateComponents?.startDay === dateComponents?.endDay) {
-              return (
-                <>
-                  <span>Updated for</span>
-                  <span className="font-bold text-[var(--color-primary)]">{dateComponents?.startDay || '1st'}</span>
-                  <span>{dateComponents?.month || 'September'}, {dateComponents?.year || '2026'}</span>
-                </>
-              );
-            }
-            return (
-              <>
-                <span>From</span>
-                <span className="font-bold text-[var(--color-primary)]">{dateComponents?.startDay || '1st'}</span>
-                <span>to</span>
-                <span className="font-bold text-[var(--color-primary)]">{dateComponents?.endDay || '1st'}</span>
-                <span>{dateComponents?.month || 'September'}, {dateComponents?.year || '2026'}</span>
-              </>
-            );
+            return formatDateRangeInfo(startDate, endDate);
           })();
 
           return (
@@ -662,9 +675,9 @@ export function DashboardContent({ month, isArchive = false }) {
                 <h2 className="text-[20px] sm:text-[23px] md:text-[27px] font-bold tracking-tight uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] via-[var(--color-text-secondary)] to-[var(--color-text-muted)] text-center leading-tight">
                   LINE SUMMARY {activeMonthName.toUpperCase()}
                 </h2>
-                <p className="text-[11px] sm:text-[12.5px] md:text-[13px] text-[var(--color-text-muted)] font-medium tracking-normal mt-1 flex items-center justify-center gap-1.5">
-                  {activeDateSubtitle}
-                </p>
+                <div className="mt-1 flex items-center justify-center">
+                  <DashboardDateRange dateInfo={activeDateInfo} />
+                </div>
               </div>
 
               {/* Mobile Tab Series Side by Side (LINE A, LINE B, LINE C, LINE D) */}
@@ -699,6 +712,7 @@ export function DashboardContent({ month, isArchive = false }) {
                   const meta = LINE_CARD_META[line.id.toUpperCase()] || LINE_CARD_META['A'];
                   const isHiddenOnMobile = selectedMobileLine !== line.id;
                   const lastDayDateStr = line.lastDayDate ? format(parseISO(line.lastDayDate), 'do MMMM, yyyy') : (dateComponents?.endDay ? `${dateComponents.endDay} ${dateComponents.month}, ${dateComponents.year}` : '1st September, 2026');
+                  const isLiveCurrent = !isArchive && selectedCardMonth === 'current';
 
                   return (
                     <div key={line.id} className={cn("w-full", isHiddenOnMobile && "hidden md:block")}>
@@ -720,10 +734,14 @@ export function DashboardContent({ month, isArchive = false }) {
                                 <span className="inline-flex items-center px-2 py-0.5 rounded text-[8.5px] md:text-[9px] font-bold uppercase tracking-widest bg-[var(--color-success-glow)] text-[var(--color-success-text)] border border-[rgba(16,185,129,0.2)]">
                                   Optimal
                                 </span>
-                              ) : (
+                              ) : isLiveCurrent ? (
                                 <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[8.5px] md:text-[9.5px] font-black uppercase tracking-widest transition-all animate-emergency-strobe cursor-default shadow-lg">
                                   <AmbulanceBeacon />
                                   <span>Critical</span>
+                                </span>
+                              ) : (
+                                <span className="inline-flex items-center px-2 py-0.5 rounded text-[8.5px] md:text-[9px] font-bold uppercase tracking-widest bg-rose-500/15 text-rose-400 border border-rose-500/30">
+                                  Critical
                                 </span>
                               )}
                             </div>

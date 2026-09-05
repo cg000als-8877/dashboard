@@ -32,14 +32,14 @@ export function cn(...inputs) {
 }
 
 const navItems = [
-  { name: 'Dashboard', href: '/', icon: LayoutDashboard },
-  { name: 'Hourly', href: '/hourly', icon: Clock },
-  { name: 'Lines', href: '/lines', icon: Factory, isExpandable: true },
-  { name: 'Compare', href: '/compare', icon: GitCompare },
-  { name: 'Analytics', href: '/analytics', icon: BarChart3 },
-  { name: 'Simulator', href: '/simulator', icon: Ship },
-  { name: 'Archive', href: '/archive', icon: History },
-  { name: 'Byzid Profile', href: 'https://baplprofile.vercel.app/', icon: Globe, isExternal: true },
+  { name: 'Dashboard', key: 'navDashboard', href: '/', icon: LayoutDashboard },
+  { name: 'Hourly', key: 'navHourly', href: '/hourly', icon: Clock },
+  { name: 'Lines', key: 'navLines', href: '/lines', icon: Factory, isExpandable: true },
+  { name: 'Compare', key: 'navCompare', href: '/compare', icon: GitCompare },
+  { name: 'Analytics', key: 'navAnalytics', href: '/analytics', icon: BarChart3 },
+  { name: 'Simulator', key: 'navSimulator', href: '/simulator', icon: Ship },
+  { name: 'Archive', key: 'navArchive', href: '/archive', icon: History },
+  { name: 'Byzid Profile', key: 'navProfile', href: 'https://baplprofile.vercel.app/', icon: Globe, isExternal: true },
 ];
 
 const LINE_COLORS = {
@@ -98,7 +98,7 @@ export default function Sidebar({ onClose }) {
       {/* The main sidebar box - full height attached to left edge */}
       <div className="flex flex-col w-full h-full bg-[var(--color-bg-card)] border-r border-[var(--color-border)] shadow-none overflow-hidden">
         {/* Brand Header */}
-        <div className={cn("py-4 flex flex-col shrink-0 border-b border-[var(--color-border)]/50 mx-3 mb-1", isCollapsed ? "px-0 items-center mx-2" : "px-2")}>
+        <div className={cn("py-3.5 flex items-center justify-between shrink-0 border-b border-[var(--color-border)]/50 mx-3 mb-1", isCollapsed ? "px-0 justify-center mx-2 flex-col gap-2" : "px-2")}>
           <Link href="/" className={cn("flex flex-col group cursor-pointer w-fit", isCollapsed ? "items-center gap-1" : "gap-0.5")}>
             {isCollapsed ? (
               <Ship size={24} className="text-[var(--color-text-main)] group-hover:text-[var(--color-primary)] transition-colors" />

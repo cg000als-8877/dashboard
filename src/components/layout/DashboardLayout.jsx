@@ -15,13 +15,13 @@ import { useTheme } from '@/components/ThemeProvider';
 import { CanteenSecurityModal } from '@/components/ui/CanteenSecurityModal';
 
 const navItems = [
-  { name: 'Dashboard', href: '/', icon: LayoutDashboard },
-  { name: 'Hourly', href: '/hourly', icon: Clock },
-  { name: 'Lines', href: '/lines', icon: Factory },
-  { name: 'Compare', href: '/compare', icon: GitCompare },
-  { name: 'Analytics', href: '/analytics', icon: BarChart3 },
-  { name: 'Simulator', href: '/simulator', icon: Ship },
-  { name: 'Archive', href: '/archive', icon: History },
+  { name: 'Dashboard', key: 'navDashboard', href: '/', icon: LayoutDashboard },
+  { name: 'Hourly', key: 'navHourly', href: '/hourly', icon: Clock },
+  { name: 'Lines', key: 'navLines', href: '/lines', icon: Factory },
+  { name: 'Compare', key: 'navCompare', href: '/compare', icon: GitCompare },
+  { name: 'Analytics', key: 'navAnalytics', href: '/analytics', icon: BarChart3 },
+  { name: 'Simulator', key: 'navSimulator', href: '/simulator', icon: Ship },
+  { name: 'Archive', key: 'navArchive', href: '/archive', icon: History },
 ];
 
 export default function DashboardLayout({ children }) {
@@ -33,7 +33,7 @@ export default function DashboardLayout({ children }) {
   const [isBurgerOpen, setIsBurgerOpen] = useState(false);
   const [showCanteenModal, setShowCanteenModal] = useState(false);
 
-  let datePart = "Loading...";
+  let datePart = 'Loading...';
   if (dailyTrends && dailyTrends.length > 0) {
     const endDate = dailyTrends[dailyTrends.length - 1].date;
     datePart = format(parseISO(endDate), 'do MMMM, yyyy');
@@ -48,11 +48,13 @@ export default function DashboardLayout({ children }) {
 
       <div className="flex flex-col flex-1 overflow-hidden relative w-full">
         {/* Mobile Top Header (Hidden on Desktop) */}
-        <header className="md:hidden fixed top-0 left-0 right-0 bg-[var(--color-bg-card)]/90 backdrop-blur-md z-50 flex items-center justify-between px-4 py-2.5 sm:py-3 border-b border-[var(--color-border)] shadow-sm">
+        <header className="md:hidden fixed top-0 left-0 right-0 bg-[var(--color-bg-card)]/90 backdrop-blur-md z-50 flex items-center justify-between px-3.5 py-2.5 sm:py-3 border-b border-[var(--color-border)] shadow-sm">
           <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-surface)] to-transparent pointer-events-none"></div>
           <Link href="/" className="flex items-center gap-2 relative z-10 cursor-pointer">
             <div className="flex flex-col">
-              <span className="font-extrabold text-[12px] sm:text-[13px] tracking-wider uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] to-[var(--color-text-muted)] leading-tight whitespace-nowrap [filter:var(--shadow-text)]">BYZID APPARELS PVT LTD</span>
+              <span className="font-extrabold text-[12px] sm:text-[13px] tracking-wider uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] to-[var(--color-text-muted)] leading-tight whitespace-nowrap [filter:var(--shadow-text)]">
+                BYZID APPARELS PVT LTD
+              </span>
               <span className="text-[9px] italic text-[var(--color-text-muted)] mt-0.5 flex items-center gap-1 leading-tight">
                 <span>Last Updated :</span>
                 <span className="text-[var(--color-primary)] font-medium">{datePart}</span>
@@ -331,7 +333,9 @@ export default function DashboardLayout({ children }) {
                 </div>
               )}
             </div>
-            <span className="text-[9px] font-bold uppercase tracking-tighter leading-none relative z-10 mt-1">OTHERS</span>
+            <span className="text-[9px] font-bold uppercase tracking-tighter leading-none relative z-10 mt-1">
+              OTHERS
+            </span>
           </button>
         </nav>
 
