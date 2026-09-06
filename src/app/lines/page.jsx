@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useKpiData } from '@/utils/useKpiData';
 import { Card } from '@/components/ui/Card';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
@@ -18,7 +18,13 @@ import {
   AlertTriangle,
   Clock,
   Shirt,
-  DollarSign
+  DollarSign,
+  Users,
+  Target,
+  Trophy,
+  Zap,
+  Activity,
+  BarChart2
 } from 'lucide-react';
 
 // Formats date range as e.g. FROM "01 SEP TO 02 SEP, 2026" with highlight (all uppercase)
@@ -141,9 +147,56 @@ export default function ProductionLinesPage() {
   const [selectedMobileLine, setSelectedMobileLine] = useState('A');
 
   // Load datasets for Live (September), August archive, and July archive
-  const { stats: liveStats, dailyTrends: liveDailyTrends, lines: liveLines, loading: liveLoading, error: liveError } = useKpiData('live');
-  const { stats: augustStats, dailyTrends: augustDailyTrends, lines: augustLines, loading: augustLoading } = useKpiData('2026-08');
-  const { stats: julyStats, dailyTrends: julyDailyTrends, lines: julyLines, loading: julyLoading } = useKpiData('2026-07');
+  const { rawEngine: liveEngine, stats: liveStats, dailyTrends: liveDailyTrends, lines: liveLines, loading: liveLoading, error: liveError } = useKpiData('live');
+  const { rawEngine: augustEngine, stats: augustStats, dailyTrends: augustDailyTrends, lines: augustLines, loading: augustLoading } = useKpiData('2026-08');
+  const { rawEngine: julyEngine, stats: julyStats, dailyTrends: julyDailyTrends, lines: julyLines, loading: julyLoading } = useKpiData('2026-07');
+
+  // Active dataset determination
+  const isAugust = selectedMonthTab === 'august';
+  const isJuly = selectedMonthTab === 'july';
+  const isLive = selectedMonthTab === 'current';
+
+  const currentStats = isAugust ? (augustStats || liveStats) : (isJuly ? (julyStats || liveStats) : liveStats);
+  const currentLines = isAugust ? (augustLines || liveLines || []) : (isJuly ? (julyLines || liveLines || []) : (liveLines || []));
+  const currentEngine = isAugust ? augustEngine : (isJuly ? julyEngine : liveEngine);
+  const activeMonthName = isAugust ? 'AUGUST' : (isJuly ? 'JULY' : 'SEPTEMBER');
+
+  const startDate = liveDailyTrends?.length > 0 ? liveDailyTrends[0].date : null;
+  const endDate = liveDailyTrends?.length > 0 ? liveDailyTrends[liveDailyTrends.length - 1].date : null;
+
+  const activeDateInfo = useMemo(() => {
+    if (isAugust) return formatDateRangeInfo(null, null, 'august', '2026');
+    if (isJuly) return formatDateRangeInfo(null, null, 'july', '2026');
+    return formatDateRangeInfo(startDate, endDate);
+  }, [isAugust, isJuly, startDate, endDate]);
+
+  // Compute Floor Leadership Rankings across lines (Only active lines with actual production and costs qualify)
+  const floorRankings = useMemo(() => {
+    if (!currentLines || currentLines.length === 0) return {};
+    const activeLines = currentLines.filter(l => (l.totalProduction || 0) > 0 || (l.totalCost || 0) > 0);
+    if (activeLines.length === 0) return {};
+
+    // Top Output requires > 0 production
+    const sortedByOutput = [...activeLines]
+      .filter(l => (l.totalProduction || 0) > 0)
+      .sort((a, b) => (b.totalProduction || 0) - (a.totalProduction || 0));
+
+    // Profit Leader MUST have strictly positive profit (> 0) and active production
+    const sortedByProfit = [...activeLines]
+      .filter(l => (l.netProfit || 0) > 0 && (l.totalProduction || 0) > 0)
+      .sort((a, b) => (b.netProfit || 0) - (a.netProfit || 0));
+
+    // Top Efficiency requires positive cost recovery and active production
+    const sortedByRecovery = [...activeLines]
+      .filter(l => parseFloat(l.monthCostRecovery || 0) > 0 && (l.totalProduction || 0) > 0)
+      .sort((a, b) => parseFloat(b.monthCostRecovery || 0) - parseFloat(a.monthCostRecovery || 0));
+
+    return {
+      topOutputId: sortedByOutput[0]?.id || null,
+      topProfitId: sortedByProfit[0]?.id || null,
+      topRecoveryId: sortedByRecovery[0]?.id || null
+    };
+  }, [currentLines]);
 
   if (liveLoading && !liveStats) {
     return <LinesSkeleton />;
@@ -157,29 +210,13 @@ export default function ProductionLinesPage() {
     );
   }
 
-  // Active dataset determination
-  const isAugust = selectedMonthTab === 'august';
-  const isJuly = selectedMonthTab === 'july';
-  const isLive = selectedMonthTab === 'current';
-
-  const currentStats = isAugust ? (augustStats || liveStats) : (isJuly ? (julyStats || liveStats) : liveStats);
-  const currentLines = isAugust ? (augustLines || liveLines || []) : (isJuly ? (julyLines || liveLines || []) : (liveLines || []));
-  const activeMonthName = isAugust ? 'AUGUST' : (isJuly ? 'JULY' : 'SEPTEMBER');
-
-  const startDate = liveDailyTrends?.length > 0 ? liveDailyTrends[0].date : null;
-  const endDate = liveDailyTrends?.length > 0 ? liveDailyTrends[liveDailyTrends.length - 1].date : null;
-
-  const activeDateInfo = (() => {
-    if (isAugust) return formatDateRangeInfo(null, null, 'august', '2026');
-    if (isJuly) return formatDateRangeInfo(null, null, 'july', '2026');
-    return formatDateRangeInfo(startDate, endDate);
-  })();
-
-  const profitableCount = currentLines.filter(l => (l.netProfit || 0) >= 0).length;
-  const criticalCount = currentLines.filter(l => (l.netProfit || 0) < 0).length;
+  const activeFloorLines = currentLines.filter(l => (l.totalProduction || 0) > 0 || (l.totalCost || 0) > 0);
+  const profitableCount = activeFloorLines.filter(l => (l.netProfit || 0) >= 0).length;
+  const criticalCount = activeFloorLines.filter(l => (l.netProfit || 0) < 0).length;
+  const inactiveCount = currentLines.filter(l => (l.totalProduction || 0) === 0 && (l.totalCost || 0) === 0).length;
 
   return (
-    <div className="space-y-6 sm:space-y-8 animate-[fade-up_0.4s_ease-out_both] pb-10">
+    <div className="space-y-6 sm:space-y-8 animate-[fade-up_0.4s_ease-out_both] pb-12">
       
       {/* ── 1. PAGE HEADER & TITLE ───────────────────────────────────── */}
       <div className="relative flex flex-col items-center justify-center text-center pt-2 sm:pt-4">
@@ -187,10 +224,10 @@ export default function ProductionLinesPage() {
           Production Lines
         </h1>
         <p className="text-[11px] sm:text-xs text-[var(--color-text-muted)] font-medium tracking-wide uppercase mt-1">
-          Real-time performance, output, and financial summaries for all factory lines
+          Real-time performance, output, worker telemetry, and unit economics for all factory lines
         </p>
 
-        {/* Month Switcher Tabs (Matching Dashboard Style) */}
+        {/* Month Switcher Tabs */}
         <div className="flex justify-center items-center w-full mt-4 mb-2 relative z-10">
           <div className="inline-flex p-1 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl gap-1 shadow-sm backdrop-blur-md">
             <button
@@ -257,13 +294,20 @@ export default function ProductionLinesPage() {
                 <span className="text-[10px] uppercase font-bold tracking-widest text-[var(--color-text-muted)]">
                   Floor Status ({activeMonthName})
                 </span>
-                <div className="flex items-center gap-2 mt-1">
-                  <span className="inline-flex items-center gap-1 text-[10px] sm:text-xs font-bold text-[var(--color-success-text)] bg-[var(--color-success-glow)] px-2.5 py-0.5 rounded-md border border-[rgba(16,185,129,0.2)]">
-                    <CheckCircle2 size={12} /> {profitableCount} Optimal Lines
-                  </span>
+                <div className="flex items-center gap-2 mt-1 flex-wrap">
+                  {profitableCount > 0 && (
+                    <span className="inline-flex items-center gap-1 text-[10px] sm:text-xs font-bold text-[var(--color-success-text)] bg-[var(--color-success-glow)] px-2.5 py-0.5 rounded-md border border-[rgba(16,185,129,0.2)]">
+                      <CheckCircle2 size={12} /> {profitableCount} Optimal
+                    </span>
+                  )}
                   {criticalCount > 0 && (
                     <span className="inline-flex items-center gap-1 text-[10px] sm:text-xs font-bold text-rose-400 bg-rose-500/15 px-2.5 py-0.5 rounded-md border border-rose-500/30">
                       <AlertTriangle size={12} /> {criticalCount} Critical
+                    </span>
+                  )}
+                  {inactiveCount > 0 && (
+                    <span className="inline-flex items-center gap-1 text-[10px] sm:text-xs font-bold text-zinc-400 bg-zinc-500/15 px-2.5 py-0.5 rounded-md border border-zinc-500/30">
+                      <Clock size={12} /> {inactiveCount} Inactive
                     </span>
                   )}
                 </div>
@@ -360,8 +404,42 @@ export default function ProductionLinesPage() {
         {currentLines.sort((a,b) => a.id.localeCompare(b.id)).map((line) => {
           const meta = LINE_CARD_META[line.id.toUpperCase()] || LINE_CARD_META['A'];
           const isHiddenOnMobile = selectedMobileLine !== line.id;
-          const isProfitable = (line.netProfit || 0) >= 0;
+          
+          // Accurate active vs inactive vs profitability checks
+          const isInactive = (line.totalProduction || 0) === 0 && (line.totalCost || 0) === 0;
+          const isProfitable = !isInactive && (line.netProfit || 0) >= 0;
           const lastDayDateStr = line.lastDayDate ? format(parseISO(line.lastDayDate), 'dd MMM, yyyy') : '02 Sep, 2026';
+
+          // Extract last 7 active production entries for 7-day sparkline
+          const lineHistory = (currentEngine?.kpiData?.dailyProduction || [])
+            .filter(d => d.line_id === line.id && d.status === 'ACTIVE' && (d.production_qty || 0) > 0)
+            .sort((a, b) => a.date.localeCompare(b.date))
+            .slice(-7);
+
+          const maxSparklineQty = lineHistory.length > 0 
+            ? Math.max(...lineHistory.map(h => h.production_qty || 0), 1)
+            : 1000;
+
+          // Unit economics & productivity calculations
+          const lastDay = line.lastDay || null;
+          const lastDayOutput = line.lastDayOutput || 0;
+          const lastDayCost = line.lastDayCost || 0;
+          const lastDayIncome = line.lastDayIncome || 0;
+          const workerCount = lastDay?.worker_count || line.averageWorkers || 0;
+          const pcsPerOperator = (workerCount > 0 && lastDayOutput > 0) 
+            ? (lastDayOutput / workerCount).toFixed(1) 
+            : '0.0';
+
+          const cmPerDzn = lastDay?.cm_per_dzn || 1200;
+          const cmPerPc = cmPerDzn / 12;
+          const breakEvenTarget = (lastDayCost > 0 && cmPerPc > 0)
+            ? Math.round(lastDayCost / cmPerPc)
+            : 0;
+
+          // Floor Leadership Badges (Only for active producing lines)
+          const isTopProfit = !isInactive && floorRankings.topProfitId === line.id;
+          const isTopOutput = !isInactive && !isTopProfit && floorRankings.topOutputId === line.id;
+          const isTopRecovery = !isInactive && !isTopProfit && !isTopOutput && floorRankings.topRecoveryId === line.id;
 
           // Target line details URL
           const detailsUrl = isAugust 
@@ -401,18 +479,42 @@ export default function ProductionLinesPage() {
                       </h2>
                     </div>
 
-                    {/* Clean Status Badge without Dots */}
-                    {isProfitable ? (
-                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-widest bg-[var(--color-success-glow)] text-[var(--color-success-text)] border border-[rgba(16,185,129,0.25)]">
-                        <CheckCircle2 size={11} />
-                        <span>Optimal</span>
-                      </span>
-                    ) : (
-                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-widest bg-rose-500/15 text-rose-400 border border-rose-500/30">
-                        <AlertTriangle size={11} />
-                        <span>Critical</span>
-                      </span>
-                    )}
+                    {/* Clean Status & Leadership Badges (Without Dots) */}
+                    <div className="flex items-center gap-1.5 flex-wrap justify-end">
+                      {isTopProfit ? (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-wider bg-amber-500/15 text-amber-400 border border-amber-500/30">
+                          <Trophy size={11} />
+                          <span>Profit Leader</span>
+                        </span>
+                      ) : isTopOutput ? (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-wider bg-blue-500/15 text-blue-400 border border-blue-500/30">
+                          <Zap size={11} />
+                          <span>Top Output</span>
+                        </span>
+                      ) : isTopRecovery ? (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-wider bg-purple-500/15 text-purple-400 border border-purple-500/30">
+                          <Activity size={11} />
+                          <span>Top Efficiency</span>
+                        </span>
+                      ) : null}
+
+                      {isInactive ? (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-widest bg-zinc-500/15 text-zinc-400 border border-zinc-500/30">
+                          <Clock size={11} />
+                          <span>No Production</span>
+                        </span>
+                      ) : isProfitable ? (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-widest bg-[var(--color-success-glow)] text-[var(--color-success-text)] border border-[rgba(16,185,129,0.25)]">
+                          <CheckCircle2 size={11} />
+                          <span>Optimal</span>
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-widest bg-rose-500/15 text-rose-400 border border-rose-500/30">
+                          <AlertTriangle size={11} />
+                          <span>Critical</span>
+                        </span>
+                      )}
+                    </div>
 
                   </div>
 
@@ -422,19 +524,38 @@ export default function ProductionLinesPage() {
                       <div className="flex items-center gap-1.5 font-semibold text-[var(--color-text-muted)]">
                         <Shirt size={13} className="text-[var(--color-primary)]" />
                         <span>Active Item:</span>
-                        <span className="text-[var(--color-text-main)] font-bold truncate max-w-[150px] sm:max-w-[190px]">
-                          {line.item || 'Standard Garment'}
+                        <span className="text-[var(--color-text-main)] font-bold truncate max-w-[140px] sm:max-w-[180px]">
+                          {isInactive ? 'Standby / Idle' : (line.item || 'Standard Garment')}
                         </span>
                       </div>
                       <div className="flex items-center gap-1 font-bold text-xs">
-                        <span className="text-[var(--color-text-muted)] text-[10px] uppercase">Efficiency:</span>
+                        <span className="text-[var(--color-text-muted)] text-[10px] uppercase">Cost Recovery:</span>
                         <span className={cn(
                           "font-extrabold",
-                          parseFloat(line.monthCostRecovery || 0) >= 100 ? "text-emerald-400" : "text-amber-400"
+                          isInactive 
+                            ? "text-[var(--color-text-muted)]" 
+                            : parseFloat(line.monthCostRecovery || 0) >= 100 
+                              ? "text-emerald-400" 
+                              : "text-amber-400"
                         )}>
                           {line.monthCostRecovery || '0.0'}%
                         </span>
                       </div>
+                    </div>
+
+                    {/* Progress Bar towards 100% Cost Recovery */}
+                    <div className="w-full bg-[var(--color-surface)] h-2 rounded-full overflow-hidden border border-[var(--color-border)]/40 relative">
+                      <div 
+                        className={cn(
+                          "h-full rounded-full transition-all duration-500",
+                          isInactive
+                            ? "bg-zinc-600/30"
+                            : parseFloat(line.monthCostRecovery || 0) >= 100 
+                              ? "bg-gradient-to-r from-emerald-500 to-teal-400" 
+                              : "bg-gradient-to-r from-amber-500 to-rose-400"
+                        )}
+                        style={{ width: `${isInactive ? 0 : Math.min(parseFloat(line.monthCostRecovery || 0), 100)}%` }}
+                      />
                     </div>
                   </div>
 
@@ -477,23 +598,29 @@ export default function ProductionLinesPage() {
                         </p>
                       </div>
 
-                      {/* Net Profit / Loss */}
+                      {/* Net Profit / Loss / Balance */}
                       <div className={cn(
                         "p-2.5 rounded-xl border shadow-xs",
-                        isProfitable 
-                          ? "border-[rgba(16,185,129,0.25)] bg-[var(--color-success-glow)]/30" 
-                          : "border-[rgba(255,59,48,0.25)] bg-[var(--color-danger-glow)]/30"
+                        isInactive
+                          ? "border-[var(--color-border)] bg-[var(--color-surface)]"
+                          : isProfitable 
+                            ? "border-[rgba(16,185,129,0.25)] bg-[var(--color-success-glow)]/30" 
+                            : "border-[rgba(255,59,48,0.25)] bg-[var(--color-danger-glow)]/30"
                       )}>
                         <p className="text-[9px] text-[var(--color-text-muted)] font-medium uppercase tracking-wider mb-0.5">
-                          {isProfitable ? "Net Profit" : "Net Loss"}
+                          {isInactive ? "Net Balance" : isProfitable ? "Net Profit" : "Net Loss"}
                         </p>
                         <p className={cn(
                           "text-sm sm:text-base font-black",
-                          isProfitable ? "text-[var(--color-success-text)]" : "text-[var(--color-danger-text)]"
+                          isInactive
+                            ? "text-[var(--color-text-muted)]"
+                            : isProfitable 
+                              ? "text-[var(--color-success-text)]" 
+                              : "text-[var(--color-danger-text)]"
                         )}>
                           <AnimatedNumber 
                             value={Math.abs(Math.round(line.netProfit || 0))} 
-                            prefix={isProfitable ? "+BDT " : "BDT -"} 
+                            prefix={isInactive ? "BDT " : isProfitable ? "+BDT " : "BDT -"} 
                           />
                         </p>
                       </div>
@@ -501,19 +628,85 @@ export default function ProductionLinesPage() {
                     </div>
                   </div>
 
-                  {/* Latest Recorded Day Snapshot */}
-                  <div className="bg-[var(--color-surface)]/70 border border-[var(--color-border)] rounded-xl p-3 mt-auto">
+                  {/* ── 5. RECENT 7-DAY OUTPUT SPARKLINE ────────────────────── */}
+                  {lineHistory.length > 0 ? (
+                    <div className="bg-[var(--color-surface)]/50 border border-[var(--color-border)]/60 rounded-xl p-3">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-[9.5px] font-bold uppercase tracking-wider text-[var(--color-text-muted)] flex items-center gap-1">
+                          <BarChart2 size={12} className="text-[var(--color-primary)]" />
+                          <span>Recent Output Trend</span>
+                        </span>
+                        <span className="text-[9.5px] font-bold text-[var(--color-text-secondary)]">
+                          Last {lineHistory.length} Days
+                        </span>
+                      </div>
+
+                      {/* Mini Bar Sparkline */}
+                      <div className="flex items-end gap-1.5 h-12 pt-1 pb-0.5 px-1 bg-[var(--color-bg-card)]/60 rounded-lg border border-[var(--color-border)]/40">
+                        {lineHistory.map((day, idx) => {
+                          const heightPct = Math.max(Math.round(((day.production_qty || 0) / maxSparklineQty) * 100), 12);
+                          const dayLabel = format(parseISO(day.date), 'dd MMM');
+                          const isDayProfitable = (day.net_profit !== undefined ? day.net_profit : ((day.total_income || 0) - (day.total_cost || 0))) >= 0;
+
+                          return (
+                            <div 
+                              key={day.date || idx}
+                              className="flex-1 flex flex-col items-center justify-end h-full group relative cursor-default"
+                            >
+                              {/* Hover Tooltip */}
+                              <div className="absolute -top-7 opacity-0 group-hover:opacity-100 transition-opacity bg-[var(--color-bg-card)] border border-[var(--color-border)] text-[9px] font-bold px-1.5 py-0.5 rounded shadow-lg whitespace-nowrap pointer-events-none z-20">
+                                {dayLabel}: {day.production_qty} pcs
+                              </div>
+
+                              <div 
+                                className={cn(
+                                  "w-full rounded-t transition-all duration-300",
+                                  isDayProfitable 
+                                    ? "bg-emerald-500/70 group-hover:bg-emerald-400" 
+                                    : "bg-blue-500/70 group-hover:bg-blue-400"
+                                )}
+                                style={{ height: `${heightPct}%` }}
+                              />
+                            </div>
+                          );
+                        })}
+                      </div>
+
+                      <div className="flex items-center justify-between text-[8.5px] text-[var(--color-text-muted)] mt-1 px-1">
+                        <span>{format(parseISO(lineHistory[0].date), 'dd MMM')}</span>
+                        <span>{format(parseISO(lineHistory[lineHistory.length - 1].date), 'dd MMM')}</span>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="bg-[var(--color-surface)]/30 border border-[var(--color-border)]/40 rounded-xl p-3 flex items-center justify-between text-xs text-[var(--color-text-muted)]">
+                      <span className="flex items-center gap-1.5 uppercase font-bold text-[9.5px]">
+                        <BarChart2 size={12} className="text-[var(--color-text-muted)]" />
+                        <span>Recent Output Trend</span>
+                      </span>
+                      <span className="text-[9.5px] italic">No active production recorded</span>
+                    </div>
+                  )}
+
+                  {/* ── 6. TELEMETRY & PRODUCTIVITY SNAPSHOT ────────────────── */}
+                  <div className="bg-[var(--color-surface)]/70 border border-[var(--color-border)] rounded-xl p-3">
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-text-secondary)] flex items-center gap-1">
                         <Clock size={12} className="text-[var(--color-primary)]" />
-                        <span>Last Day Input ({lastDayDateStr})</span>
+                        <span>Last Day ({lastDayDateStr})</span>
                       </span>
                       <span className="text-[10px] font-bold text-[var(--color-text-muted)]">
-                        Recovery: <strong className={cn(parseFloat(line.lastDayCostRecovery || 0) >= 100 ? "text-emerald-400" : "text-amber-400")}>{line.lastDayCostRecovery || '0.0'}%</strong>
+                        Recovery: <strong className={cn(
+                          isInactive 
+                            ? "text-[var(--color-text-muted)]" 
+                            : parseFloat(line.lastDayCostRecovery || 0) >= 100 
+                              ? "text-emerald-400" 
+                              : "text-amber-400"
+                        )}>{line.lastDayCostRecovery || '0.0'}%</strong>
                       </span>
                     </div>
 
-                    <div className="grid grid-cols-3 gap-2 text-center">
+                    {/* Main 3 Day Numbers */}
+                    <div className="grid grid-cols-3 gap-2 text-center mb-2.5">
                       <div className="bg-[var(--color-bg-card)] p-2 rounded-lg border border-[var(--color-border)]/60">
                         <p className="text-[8.5px] text-[var(--color-text-muted)] font-medium uppercase">Day Output</p>
                         <p className="text-xs sm:text-sm font-bold text-[var(--color-text-main)]">
@@ -532,25 +725,61 @@ export default function ProductionLinesPage() {
                         <p className="text-[8.5px] text-[var(--color-text-muted)] font-medium uppercase">Day Net</p>
                         <p className={cn(
                           "text-xs sm:text-sm font-bold",
-                          (line.lastDayProfit || 0) >= 0 ? "text-[var(--color-success-text)]" : "text-[var(--color-danger-text)]"
+                          isInactive || ((line.lastDayOutput || 0) === 0 && (line.lastDayCost || 0) === 0)
+                            ? "text-[var(--color-text-muted)]"
+                            : (line.lastDayProfit || 0) >= 0 
+                              ? "text-[var(--color-success-text)]" 
+                              : "text-[var(--color-danger-text)]"
                         )}>
                           BDT {(line.lastDayProfit || 0).toLocaleString()}
                         </p>
                       </div>
                     </div>
+
+                    {/* Break-Even Target & Productivity Grid */}
+                    <div className="grid grid-cols-2 gap-2 pt-2 border-t border-[var(--color-border)]/50 text-[10px]">
+                      <div className="flex items-center gap-1.5 text-[var(--color-text-muted)]">
+                        <Target size={12} className="text-amber-400 shrink-0" />
+                        <span>Break-Even:</span>
+                        <span className="font-bold text-[var(--color-text-main)]">
+                          {breakEvenTarget > 0 ? `${breakEvenTarget} PCS` : 'N/A'}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center gap-1.5 text-[var(--color-text-muted)] justify-end">
+                        <Users size={12} className="text-blue-400 shrink-0" />
+                        <span>Operator Output:</span>
+                        <span className="font-bold text-[var(--color-text-main)]">
+                          {pcsPerOperator} <span className="text-[8.5px] text-[var(--color-text-muted)]">P/Head</span>
+                        </span>
+                      </div>
+                    </div>
+
                   </div>
 
-                  {/* View Full Details CTA Button */}
-                  <Link
-                    href={detailsUrl}
-                    className={cn(
-                      "w-full py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer select-none group mt-1",
-                      meta.btnClass
+                  {/* ── 7. ACTION BUTTONS (VIEW DETAILS & HOURLY LINK) ─────────── */}
+                  <div className="flex flex-col sm:flex-row items-center gap-2 mt-auto pt-1">
+                    <Link
+                      href={detailsUrl}
+                      className={cn(
+                        "w-full flex-1 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer select-none group",
+                        meta.btnClass
+                      )}
+                    >
+                      <span>View Full Details</span>
+                      <ArrowRight size={15} className="group-hover:translate-x-1 transition-transform" />
+                    </Link>
+
+                    {isLive && (
+                      <Link
+                        href="/hourly"
+                        className="w-full sm:w-auto py-2.5 px-3.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-[var(--color-surface)] hover:bg-[var(--color-surface-hover)] border border-[var(--color-border)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)] transition-colors flex items-center justify-center gap-1.5"
+                      >
+                        <Clock size={13} className="text-[var(--color-primary)]" />
+                        <span>Hourly Flow</span>
+                      </Link>
                     )}
-                  >
-                    <span>View Full Details</span>
-                    <ArrowRight size={15} className="group-hover:translate-x-1 transition-transform" />
-                  </Link>
+                  </div>
 
                 </div>
               </Card>
