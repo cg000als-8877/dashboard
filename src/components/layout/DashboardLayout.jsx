@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Fragment } from 'react';
+import { useState } from 'react';
 import Sidebar from './Sidebar';
 import { Menu, X } from 'lucide-react';
 import { cn } from './Sidebar';
@@ -13,6 +13,7 @@ import { Clock, LayoutDashboard, Factory, BarChart3, Ship, History, Palette, Sun
 import { useMonth } from '@/components/providers/MonthProvider';
 import { useTheme } from '@/components/ThemeProvider';
 import { CanteenSecurityModal } from '@/components/ui/CanteenSecurityModal';
+import { MobileHourlyTicker } from '@/components/dashboard/MobileHourlyTicker';
 
 const navItems = [
   { name: 'Dashboard', key: 'navDashboard', href: '/', icon: LayoutDashboard },
@@ -39,6 +40,8 @@ export default function DashboardLayout({ children }) {
     datePart = format(parseISO(endDate), 'do MMMM, yyyy');
   }
 
+  const isDashboard = pathname === '/';
+
   return (
     <div className="flex h-screen overflow-hidden w-full bg-[var(--color-bg-main)]">
       {/* Desktop Attached Left Sidebar */}
@@ -48,136 +51,141 @@ export default function DashboardLayout({ children }) {
 
       <div className="flex flex-col flex-1 overflow-hidden relative w-full">
         {/* Mobile Top Header (Hidden on Desktop) */}
-        <header className="md:hidden fixed top-0 left-0 right-0 bg-[var(--color-bg-card)]/90 backdrop-blur-md z-50 flex items-center justify-between px-3.5 py-2.5 sm:py-3 border-b border-[var(--color-border)] shadow-sm">
-          <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-surface)] to-transparent pointer-events-none"></div>
-          <Link href="/" className="flex items-center gap-2 relative z-10 cursor-pointer">
-            <div className="flex flex-col">
-              <span className="font-extrabold text-[12px] sm:text-[13px] tracking-wider uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] to-[var(--color-text-muted)] leading-tight whitespace-nowrap [filter:var(--shadow-text)]">
-                BYZID APPARELS PVT LTD
-              </span>
-              <span className="text-[9px] italic text-[var(--color-text-muted)] mt-0.5 flex items-center gap-1 leading-tight">
-                <span>Last Updated :</span>
-                <span className="text-[var(--color-primary)] font-medium">{datePart}</span>
-              </span>
-            </div>
-          </Link>
-          
-          {/* Top Right Controls */}
-          <div className="flex items-center gap-1.5 relative z-50">
-            {/* Visual Theme Palette Toggle */}
-            <button 
-              onClick={() => {
-                setIsMobileMenuOpen(!isMobileMenuOpen);
-                setIsBurgerOpen(false);
-              }} 
-              className={cn(
-                "p-1.5 bg-transparent border-0 shadow-none outline-none transition-transform active:scale-90 flex items-center justify-center cursor-pointer",
-                isMobileMenuOpen 
-                  ? "text-[var(--color-primary)]" 
-                  : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)]"
-              )}
-              aria-label="Open Theme Palette"
-              title="Change Visual Theme"
-            >
-              <Palette size={19} strokeWidth={2.2} />
-            </button>
+        <header className="md:hidden fixed top-0 left-0 right-0 bg-[var(--color-bg-card)]/95 backdrop-blur-md z-50 flex flex-col border-b border-[var(--color-border)] shadow-sm">
+          {/* Marquee Ticker placed directly ABOVE Byzid Apparels TITLE on dashboard */}
+          {isDashboard && <MobileHourlyTicker />}
 
-            {/* Light / Dark Mode Toggle Button */}
-            <button 
-              onClick={() => {
-                toggleTheme();
-                setIsBurgerOpen(false);
-                setIsMobileMenuOpen(false);
-              }}
-              className="p-1.5 bg-transparent border-0 shadow-none outline-none text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] transition-transform active:scale-90 flex items-center justify-center cursor-pointer"
-              aria-label="Toggle Light/Dark Mode"
-              title="Toggle Light/Dark Mode"
-            >
-              {mode === 'dark' ? (
-                <Sun size={19} strokeWidth={2.2} className="text-amber-400" />
-              ) : (
-                <Moon size={19} strokeWidth={2.2} className="text-indigo-400" />
-              )}
-            </button>
-
-          </div>
-
-          {/* Theme & Appearance Selector Popover Modal */}
-          {isMobileMenuOpen && (
-            <>
-              <div className="fixed inset-0 z-[90] bg-black/50" onClick={() => setIsMobileMenuOpen(false)}></div>
-              <div className="absolute top-12 right-2.5 w-52 bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-xl shadow-2xl flex flex-col p-2.5 animate-[fade-down_0.15s_ease-out_both] z-[100] origin-top-right">
-                
-                {/* Header with Title and Close Button */}
-                <div className="flex items-center justify-between pb-2 border-b border-[var(--color-border)]/60 mb-2">
-                  <span className="text-[10px] font-extrabold uppercase tracking-wider text-[var(--color-text-main)]">
-                    Theme & Mode
-                  </span>
-                  <button 
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="p-1 -mr-1 rounded-md text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface)] transition-colors cursor-pointer"
-                    aria-label="Close menu"
-                  >
-                    <X size={13} />
-                  </button>
-                </div>
-
-                {/* Compact Appearance Mode Switcher */}
-                <div className="grid grid-cols-2 gap-1 p-0.5 bg-[var(--color-surface)] rounded-lg border border-[var(--color-border)]/60 mb-2">
-                  {APPEARANCE_MODES.map((m) => {
-                    const isSelected = mode === m.id;
-                    return (
-                      <button
-                        key={m.id}
-                        onClick={() => { setMode(m.id); }}
-                        className={cn(
-                          "py-1 rounded text-[9.5px] font-bold uppercase tracking-wider transition-all text-center flex items-center justify-center gap-1 cursor-pointer",
-                          isSelected
-                            ? "bg-[var(--color-bg-card)] text-[var(--color-primary)] shadow-xs"
-                            : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)]"
-                        )}
-                      >
-                        {m.id === 'light' ? <Sun size={10} /> : <Moon size={10} />}
-                        <span>{m.name}</span>
-                      </button>
-                    );
-                  })}
-                </div>
-
-                {/* Compressed Full Theme List (No scroll needed) */}
-                <div className="space-y-0.5 divide-y divide-[var(--color-border)]/20">
-                  {VISUAL_THEMES.map((t) => {
-                    const isSelected = visualTheme === t.id;
-                    return (
-                      <button
-                        key={t.id}
-                        onClick={() => { setVisualTheme(t.id); setIsMobileMenuOpen(false); }}
-                        className={cn(
-                          "w-full flex items-center justify-between px-2 py-1 rounded-md text-[10.5px] font-medium transition-colors cursor-pointer text-left",
-                          isSelected
-                            ? "bg-[var(--color-primary)]/15 text-[var(--color-primary)] font-bold"
-                            : "text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-main)]"
-                        )}
-                      >
-                        <div className="flex items-center gap-2 min-w-0">
-                          <span 
-                            className="w-2 h-2 rounded-full shrink-0 shadow-xs" 
-                            style={{ backgroundColor: t.color }} 
-                          />
-                          <span className="truncate">{t.name}</span>
-                        </div>
-                        {isSelected && (
-                          <Check size={11} className="text-[var(--color-primary)] shrink-0 ml-1.5" />
-                        )}
-                      </button>
-                    );
-                  })}
-                </div>
-
+          <div className="flex items-center justify-between px-3.5 py-2.5 sm:py-3 relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-surface)] to-transparent pointer-events-none"></div>
+            <Link href="/" className="flex items-center gap-2 relative z-10 cursor-pointer">
+              <div className="flex flex-col">
+                <span className="font-extrabold text-[12px] sm:text-[13px] tracking-wider uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] to-[var(--color-text-muted)] leading-tight whitespace-nowrap [filter:var(--shadow-text)]">
+                  BYZID APPARELS PVT LTD
+                </span>
+                <span className="text-[9px] italic text-[var(--color-text-muted)] mt-0.5 flex items-center gap-1 leading-tight">
+                  <span>Last Updated :</span>
+                  <span className="text-[var(--color-primary)] font-medium">{datePart}</span>
+                </span>
               </div>
-            </>
-          )}
+            </Link>
+            
+            {/* Top Right Controls */}
+            <div className="flex items-center gap-1.5 relative z-50">
+              {/* Visual Theme Palette Toggle */}
+              <button 
+                onClick={() => {
+                  setIsMobileMenuOpen(!isMobileMenuOpen);
+                  setIsBurgerOpen(false);
+                }} 
+                className={cn(
+                  "p-1.5 bg-transparent border-0 shadow-none outline-none transition-transform active:scale-90 flex items-center justify-center cursor-pointer",
+                  isMobileMenuOpen 
+                    ? "text-[var(--color-primary)]" 
+                    : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)]"
+                )}
+                aria-label="Open Theme Palette"
+                title="Change Visual Theme"
+              >
+                <Palette size={19} strokeWidth={2.2} />
+              </button>
+
+              {/* Light / Dark Mode Toggle Button */}
+              <button 
+                onClick={() => {
+                  toggleTheme();
+                  setIsBurgerOpen(false);
+                  setIsMobileMenuOpen(false);
+                }}
+                className="p-1.5 bg-transparent border-0 shadow-none outline-none text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] transition-transform active:scale-90 flex items-center justify-center cursor-pointer"
+                aria-label="Toggle Light/Dark Mode"
+                title="Toggle Light/Dark Mode"
+              >
+                {mode === 'dark' ? (
+                  <Sun size={19} strokeWidth={2.2} className="text-amber-400" />
+                ) : (
+                  <Moon size={19} strokeWidth={2.2} className="text-indigo-400" />
+                )}
+              </button>
+            </div>
+
+            {/* Theme & Appearance Selector Popover Modal */}
+            {isMobileMenuOpen && (
+              <>
+                <div className="fixed inset-0 z-[90] bg-black/50" onClick={() => setIsMobileMenuOpen(false)}></div>
+                <div className="absolute top-12 right-2.5 w-52 bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-xl shadow-2xl flex flex-col p-2.5 animate-[fade-down_0.15s_ease-out_both] z-[100] origin-top-right">
+                  
+                  {/* Header with Title and Close Button */}
+                  <div className="flex items-center justify-between pb-2 border-b border-[var(--color-border)]/60 mb-2">
+                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-[var(--color-text-main)]">
+                      Theme & Mode
+                    </span>
+                    <button 
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="p-1 -mr-1 rounded-md text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface)] transition-colors cursor-pointer"
+                      aria-label="Close menu"
+                    >
+                      <X size={13} />
+                    </button>
+                  </div>
+
+                  {/* Compact Appearance Mode Switcher */}
+                  <div className="grid grid-cols-2 gap-1 p-0.5 bg-[var(--color-surface)] rounded-lg border border-[var(--color-border)]/60 mb-2">
+                    {APPEARANCE_MODES.map((m) => {
+                      const isSelected = mode === m.id;
+                      return (
+                        <button
+                          key={m.id}
+                          onClick={() => { setMode(m.id); }}
+                          className={cn(
+                            "py-1 rounded text-[9.5px] font-bold uppercase tracking-wider transition-all text-center flex items-center justify-center gap-1 cursor-pointer",
+                            isSelected
+                              ? "bg-[var(--color-bg-card)] text-[var(--color-primary)] shadow-xs"
+                              : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)]"
+                          )}
+                        >
+                          {m.id === 'light' ? <Sun size={10} /> : <Moon size={10} />}
+                          <span>{m.name}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {/* Compressed Full Theme List */}
+                  <div className="space-y-0.5 divide-y divide-[var(--color-border)]/20 max-h-[220px] overflow-y-auto">
+                    {VISUAL_THEMES.map((t) => {
+                      const isSelected = visualTheme === t.id;
+                      return (
+                        <button
+                          key={t.id}
+                          onClick={() => { setVisualTheme(t.id); setIsMobileMenuOpen(false); }}
+                          className={cn(
+                            "w-full flex items-center justify-between px-2 py-1 rounded-md text-[10.5px] font-medium transition-colors cursor-pointer text-left",
+                            isSelected
+                              ? "bg-[var(--color-primary)]/15 text-[var(--color-primary)] font-bold"
+                              : "text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-main)]"
+                          )}
+                        >
+                          <div className="flex items-center gap-2 min-w-0">
+                            <span 
+                              className="w-2 h-2 rounded-full shrink-0 shadow-xs" 
+                              style={{ backgroundColor: t.color }} 
+                            />
+                            <span className="truncate">{t.name}</span>
+                          </div>
+                          {isSelected && (
+                            <Check size={11} className="text-[var(--color-primary)] shrink-0 ml-1.5" />
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                </div>
+              </>
+            )}
+          </div>
         </header>
+
 
         {/* Quick Navigation Hamburger Popover Modal (Slides up from bottom right) */}
         {isBurgerOpen && (
@@ -271,11 +279,11 @@ export default function DashboardLayout({ children }) {
           {navItems.filter(item => !['Simulator', 'Compare', 'Analytics'].includes(item.name)).map((item) => {
             const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
             const Icon = item.icon;
-            const isDashboard = item.name === 'Dashboard';
+            const isDashboardItem = item.name === 'Dashboard';
             
             return (
               <Link
-                key={`mobile-bottom-${item.name}`}
+                key={'mobile-bottom-' + item.name}
                 href={item.href}
                 className={cn(
                   "flex flex-col items-center justify-center flex-1 py-0.5 px-0.5 transition-all duration-300 relative group active:scale-95",
@@ -289,18 +297,18 @@ export default function DashboardLayout({ children }) {
                     <div className="relative w-8 h-8 rounded-full flex items-center justify-center overflow-hidden shrink-0 shadow-sm border border-[var(--color-border)]/20">
                       <div className="absolute inset-[-50%] bg-[conic-gradient(from_0deg,transparent_15%,var(--color-primary)_50%,transparent_85%)] animate-[nav-border-spin_2s_linear_infinite]" />
                       <div className="absolute inset-[1.5px] rounded-full bg-[var(--color-bg-card)] flex items-center justify-center z-10">
-                        <Icon size={15} strokeWidth={isDashboard ? 3.25 : 2.75} className="text-[var(--color-primary)] drop-shadow-[0_0_4px_var(--color-primary-glow)]" />
+                        <Icon size={15} strokeWidth={isDashboardItem ? 3.25 : 2.75} className="text-[var(--color-primary)] drop-shadow-[0_0_4px_var(--color-primary-glow)]" />
                       </div>
                     </div>
                   ) : (
                     <div className="w-8 h-8 rounded-full flex items-center justify-center text-[var(--color-text-secondary)] transition-colors group-hover:text-[var(--color-text-main)]">
-                      <Icon size={18} strokeWidth={isDashboard ? 3 : 2.5} className="transition-transform duration-300 group-hover:scale-110" />
+                      <Icon size={18} strokeWidth={isDashboardItem ? 3 : 2.5} className="transition-transform duration-300 group-hover:scale-110" />
                     </div>
                   )}
                 </div>
                 <span className={cn(
                   "uppercase leading-none relative z-10 mt-1",
-                  isDashboard ? "text-[9.5px] font-black tracking-normal" : "text-[9px] font-bold tracking-tighter"
+                  isDashboardItem ? "text-[9.5px] font-black tracking-normal" : "text-[9px] font-bold tracking-tighter"
                 )}>{item.name}</span>
               </Link>
             );
@@ -341,7 +349,10 @@ export default function DashboardLayout({ children }) {
 
         {/* Main Content */}
         <main 
-          className="flex-1 overflow-y-auto w-full pt-[65px] pb-[calc(7.5rem+env(safe-area-inset-bottom))] md:pt-8 md:pb-8 p-4 md:p-8 relative hide-scrollbar md:[scrollbar-width:auto]"
+          className={cn(
+            "flex-1 overflow-y-auto w-full pb-[calc(7.5rem+env(safe-area-inset-bottom))] md:pt-8 md:pb-8 p-4 md:p-8 relative hide-scrollbar md:[scrollbar-width:auto]",
+            isDashboard ? "pt-[92px]" : "pt-[65px]"
+          )}
         >
           <div className="w-full max-w-[1800px] mx-auto">
             {children}
