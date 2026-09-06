@@ -102,10 +102,15 @@ function DashboardDateRange({ dateInfo, className = "" }) {
   return (
     <span className={cn("inline-flex items-center justify-center whitespace-nowrap text-[11px] sm:text-[12px] md:text-[13px] font-medium tracking-wide text-[var(--color-text-muted)] leading-tight uppercase", className)}>
       <span>FROM&nbsp;</span>
-      <span className="font-extrabold text-[var(--color-primary)] tracking-wide">
-        {isRange ? `${startDay} ${startMonthShort} TO ${endDay} ${endMonthShort}` : `${startDay} ${endMonthShort}`}
-      </span>
-      <span>,&nbsp;{year}</span>
+      {isRange ? (
+        <>
+          <span className="font-extrabold text-[var(--color-primary)] tracking-wide">{startDay} {startMonthShort}</span>
+          <span>&nbsp;TO&nbsp;</span>
+          <span className="font-extrabold text-[var(--color-primary)] tracking-wide">{endDay} {endMonthShort}, {year}</span>
+        </>
+      ) : (
+        <span className="font-extrabold text-[var(--color-primary)] tracking-wide">{startDay} {endMonthShort}, {year}</span>
+      )}
     </span>
   );
 }
@@ -713,6 +718,8 @@ export function DashboardContent({ month, isArchive = false }) {
                   const isHiddenOnMobile = selectedMobileLine !== line.id;
                   const lastDayDateStr = line.lastDayDate ? format(parseISO(line.lastDayDate), 'do MMMM, yyyy') : (dateComponents?.endDay ? `${dateComponents.endDay} ${dateComponents.month}, ${dateComponents.year}` : '1st September, 2026');
                   const isLiveCurrent = !isArchive && selectedCardMonth === 'current';
+                  const isInactive = (line.totalProduction || 0) === 0 && (line.totalCost || 0) === 0;
+                  const isProfitable = !isInactive && (line.netProfit || 0) >= 0;
 
                   return (
                     <div key={line.id} className={cn("w-full", isHiddenOnMobile && "hidden md:block")}>
@@ -730,7 +737,11 @@ export function DashboardContent({ month, isArchive = false }) {
                                 </h2>
                               </div>
                               
-                              {line.netProfit >= 0 ? (
+                              {isInactive ? (
+                                <span className="inline-flex items-center px-2 py-0.5 rounded text-[8.5px] md:text-[9px] font-bold uppercase tracking-widest bg-zinc-500/15 text-zinc-400 border border-zinc-500/30">
+                                  Idle
+                                </span>
+                              ) : isProfitable ? (
                                 <span className="inline-flex items-center px-2 py-0.5 rounded text-[8.5px] md:text-[9px] font-bold uppercase tracking-widest bg-[var(--color-success-glow)] text-[var(--color-success-text)] border border-[rgba(16,185,129,0.2)]">
                                   Optimal
                                 </span>
@@ -750,14 +761,18 @@ export function DashboardContent({ month, isArchive = false }) {
                               <div className="font-semibold tracking-tight uppercase flex items-center gap-1.5">
                                 <span className="text-[var(--color-text-muted)]">ITEM :</span>
                                 <span className="text-[var(--color-primary)] font-bold">
-                                  {line.item || 'Unknown'}
+                                  {isInactive ? 'Standby / Idle' : (line.item || 'Unknown')}
                                 </span>
                               </div>
                               <div className="font-semibold tracking-tight uppercase flex items-center gap-1.5">
                                 <span className="text-[var(--color-text-muted)]">Month Efficiency :</span>
                                 <span className={cn(
                                   "font-extrabold",
-                                  parseFloat(line.monthCostRecovery || 0) >= 100 ? "text-emerald-400" : "text-amber-400"
+                                  isInactive 
+                                    ? "text-[var(--color-text-muted)]"
+                                    : parseFloat(line.monthCostRecovery || 0) >= 100 
+                                      ? "text-emerald-400" 
+                                      : "text-amber-400"
                                 )}>
                                   {line.monthCostRecovery || '0.0'}%
                                 </span>
@@ -795,14 +810,24 @@ export function DashboardContent({ month, isArchive = false }) {
 
                               <div className={cn(
                                 "p-2.5 md:p-3 rounded-xl border shadow-xs",
-                                line.netProfit >= 0 ? 'border-[rgba(16,185,129,0.2)] bg-[var(--color-success-glow)]/40' : 'border-[rgba(255,59,48,0.2)] bg-[var(--color-danger-glow)]/40'
+                                isInactive
+                                  ? 'border-[var(--color-border)] bg-[var(--color-surface)]'
+                                  : isProfitable 
+                                    ? 'border-[rgba(16,185,129,0.2)] bg-[var(--color-success-glow)]/40' 
+                                    : 'border-[rgba(255,59,48,0.2)] bg-[var(--color-danger-glow)]/40'
                               )}>
-                                <p className="text-[9px] md:text-[9.5px] text-[var(--color-text-muted)] font-medium uppercase tracking-wider mb-0.5">{line.netProfit >= 0 ? 'Net Profit' : 'Net Loss'}</p>
+                                <p className="text-[9px] md:text-[9.5px] text-[var(--color-text-muted)] font-medium uppercase tracking-wider mb-0.5">
+                                  {isInactive ? 'Net Balance' : isProfitable ? 'Net Profit' : 'Net Loss'}
+                                </p>
                                 <p className={cn(
                                   "text-sm md:text-lg font-bold [filter:var(--shadow-text)]",
-                                  line.netProfit >= 0 ? 'text-[var(--color-success-text)]' : 'text-[var(--color-danger-text)]'
+                                  isInactive
+                                    ? 'text-[var(--color-text-muted)]'
+                                    : isProfitable 
+                                      ? 'text-[var(--color-success-text)]' 
+                                      : 'text-[var(--color-danger-text)]'
                                 )}>
-                                  <AnimatedNumber value={Math.round(line.netProfit)} prefix="BDT " />
+                                  <AnimatedNumber value={Math.round(line.netProfit || 0)} prefix="BDT " />
                                 </p>
                               </div>
                             </div>
@@ -815,7 +840,7 @@ export function DashboardContent({ month, isArchive = false }) {
                                 <span>Last Day Input ({lastDayDateStr})</span>
                               </span>
                               <span className="text-[9.5px] sm:text-[10.5px] font-bold text-[var(--color-text-muted)]">
-                                Cost Recovery : <span className={cn("font-extrabold", parseFloat(line.lastDayCostRecovery || 0) >= 100 ? "text-emerald-400" : "text-amber-400")}>{line.lastDayCostRecovery || '0.0'}%</span>
+                                Cost Recovery : <span className={cn("font-extrabold", isInactive ? "text-[var(--color-text-muted)]" : (parseFloat(line.lastDayCostRecovery || 0) >= 100 ? "text-emerald-400" : "text-amber-400"))}>{line.lastDayCostRecovery || '0.0'}%</span>
                               </span>
                             </div>
 
@@ -835,10 +860,16 @@ export function DashboardContent({ month, isArchive = false }) {
                               </div>
 
                               <div className="bg-[var(--color-bg-card)] p-2 rounded-lg border border-[var(--color-border)]/60 text-center">
-                                <p className="text-[8.5px] sm:text-[9px] text-[var(--color-text-muted)] font-medium uppercase">Day Net {line.lastDayProfit >= 0 ? 'Profit' : 'Loss'}</p>
+                                <p className="text-[8.5px] sm:text-[9px] text-[var(--color-text-muted)] font-medium uppercase">
+                                  Day Net {isInactive ? 'Balance' : (line.lastDayProfit >= 0 ? 'Profit' : 'Loss')}
+                                </p>
                                 <p className={cn(
                                   "text-xs sm:text-sm md:text-base font-bold",
-                                  line.lastDayProfit >= 0 ? "text-[var(--color-success-text)]" : "text-[var(--color-danger-text)]"
+                                  isInactive || ((line.lastDayOutput || 0) === 0 && (line.lastDayCost || 0) === 0)
+                                    ? "text-[var(--color-text-muted)]"
+                                    : line.lastDayProfit >= 0 
+                                      ? "text-[var(--color-success-text)]" 
+                                      : "text-[var(--color-danger-text)]"
                                 )}>
                                   BDT {(line.lastDayProfit || 0).toLocaleString()}
                                 </p>

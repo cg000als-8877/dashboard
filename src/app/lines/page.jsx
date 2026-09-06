@@ -103,10 +103,15 @@ function LinesDateRange({ dateInfo, className = "" }) {
   return (
     <span className={cn("inline-flex items-center justify-center whitespace-nowrap text-[11px] sm:text-[12px] md:text-[13px] font-medium tracking-wide text-[var(--color-text-muted)] leading-tight uppercase", className)}>
       <span>FROM&nbsp;</span>
-      <span className="font-extrabold text-[var(--color-primary)] tracking-wide">
-        {isRange ? `${startDay} ${startMonthShort} TO ${endDay} ${endMonthShort}` : `${startDay} ${endMonthShort}`}
-      </span>
-      <span>,&nbsp;{year}</span>
+      {isRange ? (
+        <>
+          <span className="font-extrabold text-[var(--color-primary)] tracking-wide">{startDay} {startMonthShort}</span>
+          <span>&nbsp;TO&nbsp;</span>
+          <span className="font-extrabold text-[var(--color-primary)] tracking-wide">{endDay} {endMonthShort}, {year}</span>
+        </>
+      ) : (
+        <span className="font-extrabold text-[var(--color-primary)] tracking-wide">{startDay} {endMonthShort}, {year}</span>
+      )}
     </span>
   );
 }
