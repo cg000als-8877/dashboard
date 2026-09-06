@@ -3,6 +3,7 @@ import "./globals.css";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { MonthProvider } from "@/components/providers/MonthProvider";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { DensityProvider } from "@/components/providers/DensityProvider";
 import { ClientAutoRefresh } from "@/components/providers/ClientAutoRefresh";
 import { PwaManager } from "@/components/providers/PwaManager";
 import { AppWelcomeSplash } from "@/components/ui/AppWelcomeSplash";
@@ -47,13 +48,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Suspense fallback={<div>Loading...</div>}>
           <ThemeProvider>
             <MonthProvider>
-              <ClientAutoRefresh />
-              <PwaManager>
-                <AppWelcomeSplash />
-                <DashboardLayout>
-                  {children}
-                </DashboardLayout>
-              </PwaManager>
+              <DensityProvider>
+                <ClientAutoRefresh />
+                <PwaManager>
+                  <AppWelcomeSplash />
+                  <DashboardLayout>
+                    {children}
+                  </DashboardLayout>
+                </PwaManager>
+              </DensityProvider>
             </MonthProvider>
           </ThemeProvider>
         </Suspense>

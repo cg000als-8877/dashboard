@@ -2,9 +2,12 @@ import React from 'react';
 import Link from 'next/link';
 import { ArrowLeft, ChevronRight } from 'lucide-react';
 import { useKpiData } from '@/utils/useKpiData';
+import { useDensity } from '@/components/providers/DensityProvider';
+import { DensitySwitcher } from '@/components/ui/DensitySwitcher';
 
 export function LineDetailsContent({ id, month, backUrl, isEmbed = false }) {
   const { dailyTrends, lines, rawEngine, loading, error } = useKpiData(month);
+  const { density } = useDensity();
 
   if (loading) {
     return (
@@ -90,6 +93,19 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false }) {
   };
   const lineAccentColor = LINE_COLORS[id.toLowerCase()] || 'var(--color-primary)';
 
+  // Density-specific spacing and styles
+  const isCompact = density === 'compact';
+  const isDetailed = density === 'detailed';
+
+  const summaryPadding = isCompact ? 'p-3.5 md:p-5' : isDetailed ? 'p-5 md:p-8' : 'p-4 md:p-6';
+  const summaryGap = isCompact ? 'gap-2.5 lg:gap-3.5' : isDetailed ? 'gap-3 lg:gap-5' : 'gap-3 lg:gap-4';
+  const summaryCellPadding = isCompact ? 'p-3 lg:p-3.5' : isDetailed ? 'p-4 lg:p-5' : 'p-3.5 lg:p-4';
+  const summaryValSize = isCompact ? 'text-base md:text-xl' : isDetailed ? 'text-lg md:text-2xl' : 'text-base md:text-xl';
+  
+  const tableThPadding = isCompact ? 'px-3 py-2 text-[9px] md:text-[10px]' : isDetailed ? 'px-5 py-4 text-[10px] md:text-[11px]' : 'px-4 py-3 text-[10px] md:text-[11px]';
+  const tableTdPadding = isCompact ? 'px-3 py-1.5 text-xs' : isDetailed ? 'px-5 py-3.5 text-sm' : 'px-4 py-2.5 text-sm';
+  const tableTotalPadding = isCompact ? 'px-3 py-2 text-sm' : isDetailed ? 'px-5 py-3.5 text-[16px]' : 'px-4 py-3 text-sm md:text-base';
+
   return (
     <div 
       className={`space-y-6 animate-[fade-up_0.4s_ease-out_both] ${isEmbed ? '' : 'p-2 md:p-0'}`} 
@@ -102,82 +118,94 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false }) {
     >
       
       {!isEmbed && (
-        <header className="flex flex-col gap-2 mb-6 md:mb-8 relative z-10">
-          {/* Breadcrumb Trail */}
-          <nav className="flex items-center gap-1.5 text-[10px] md:text-xs font-semibold uppercase tracking-wider text-[var(--color-text-muted)]">
-            <Link href="/" className="hover:text-[var(--color-primary)] transition-colors">Dashboard</Link>
-            <ChevronRight size={12} className="opacity-60" />
-            <Link href={backUrl} className="hover:text-[var(--color-primary)] transition-colors">Lines</Link>
-            <ChevronRight size={12} className="opacity-60" />
-            <span className="text-[var(--color-primary)] font-bold">Line {id.toUpperCase()}</span>
-            <ChevronRight size={12} className="opacity-60" />
-            <span className="text-[var(--color-text-main)] font-bold">Telemetry</span>
-          </nav>
+        <header className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 md:mb-8 relative z-10">
+          <div className="flex flex-col gap-2">
+            {/* Breadcrumb Trail */}
+            <nav className="flex items-center gap-1.5 text-[10px] md:text-xs font-semibold uppercase tracking-wider text-[var(--color-text-muted)]">
+              <Link href="/" className="hover:text-[var(--color-primary)] transition-colors">Dashboard</Link>
+              <ChevronRight size={12} className="opacity-60" />
+              <Link href={backUrl} className="hover:text-[var(--color-primary)] transition-colors">Lines</Link>
+              <ChevronRight size={12} className="opacity-60" />
+              <span className="text-[var(--color-primary)] font-bold">Line {id.toUpperCase()}</span>
+              <ChevronRight size={12} className="opacity-60" />
+              <span className="text-[var(--color-text-main)] font-bold">Telemetry</span>
+            </nav>
 
-          <div className="flex items-center gap-3 md:gap-5 mt-1">
-            <Link 
-              href={backUrl} 
-              className="p-2 md:p-3 rounded-xl bg-[var(--color-surface)] hover:bg-[var(--color-surface-hover)] border border-[var(--color-border)] text-[var(--color-text-main)] transition-all hover:scale-105 active:scale-95 shadow-[0_0_15px_rgba(0,0,0,0.5)]"
-            >
-              <ArrowLeft className="w-4 h-4 md:w-5 md:h-5" />
-            </Link>
-            <div>
-              <h1 className="text-lg md:text-3xl font-semibold md:font-bold tracking-tighter uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] via-[var(--color-text-secondary)] to-[var(--color-text-muted)] leading-tight">
-                Line {id.toUpperCase()} Telemetry
-              </h1>
-              <p className="text-[var(--color-primary)] font-medium tracking-widest uppercase text-[9px] md:text-xs mt-0.5 md:mt-1">Detailed breakdown synced from source records.</p>
+            <div className="flex items-center gap-3 md:gap-5 mt-1">
+              <Link 
+                href={backUrl} 
+                className="p-2 md:p-3 rounded-xl bg-[var(--color-surface)] hover:bg-[var(--color-surface-hover)] border border-[var(--color-border)] text-[var(--color-text-main)] transition-all hover:scale-105 active:scale-95 shadow-[0_0_15px_rgba(0,0,0,0.5)]"
+              >
+                <ArrowLeft className="w-4 h-4 md:w-5 md:h-5" />
+              </Link>
+              <div>
+                <h1 className="text-lg md:text-3xl font-semibold md:font-bold tracking-tighter uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] via-[var(--color-text-secondary)] to-[var(--color-text-muted)] leading-tight">
+                  Line {id.toUpperCase()} Telemetry
+                </h1>
+                <p className="text-[var(--color-primary)] font-medium tracking-widest uppercase text-[9px] md:text-xs mt-0.5 md:mt-1">Detailed breakdown synced from source records.</p>
+              </div>
             </div>
+          </div>
+
+          {/* Density Switcher */}
+          <div className="flex items-center gap-2 self-start md:self-auto">
+            <DensitySwitcher />
           </div>
         </header>
       )}
 
       {isEmbed && (
-        <div className="flex items-center gap-2 md:gap-3 mb-4 md:mb-6 mt-8 md:mt-12 pt-8 md:pt-12 border-t border-[var(--color-border)]">
-          <div className="h-4 md:h-6 w-1.5 md:w-2 bg-[var(--color-primary)] rounded-full shadow-[0_0_10px_var(--color-primary)]"></div>
-          <h2 className="text-lg md:text-3xl font-bold tracking-widest uppercase text-[var(--color-text-main)]">Line {id.toUpperCase()} Telemetry Details</h2>
+        <div className="flex items-center justify-between gap-3 mb-4 md:mb-6 mt-8 md:mt-12 pt-8 md:pt-12 border-t border-[var(--color-border)]">
+          <div className="flex items-center gap-2 md:gap-3">
+            <div className="h-4 md:h-6 w-1.5 md:w-2 bg-[var(--color-primary)] rounded-full shadow-[0_0_10px_var(--color-primary)]"></div>
+            <h2 className="text-lg md:text-3xl font-bold tracking-widest uppercase text-[var(--color-text-main)]">Line {id.toUpperCase()} Telemetry Details</h2>
+          </div>
+          <DensitySwitcher />
         </div>
       )}
 
-      {/* Beautiful Summary Card */}
-      <div className="relative bg-[var(--color-bg-card)] p-5 md:p-8 rounded-3xl border border-[var(--color-border)] shadow-sm mb-10 overflow-hidden">
-        <h3 className="text-xs md:text-sm font-semibold md:font-bold text-[var(--color-text-secondary)] uppercase tracking-widest mb-6 flex items-center gap-2">
-          Operations Summary <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-primary)] shadow-[0_0_8px_var(--color-primary)] animate-pulse"></span>
-        </h3>
-        <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-3 lg:gap-5 relative z-10">
-          <div className="bg-[var(--color-surface)] p-4 lg:p-5 rounded-2xl border border-[var(--color-border)] shadow-inner transition-transform hover:-translate-y-1 duration-300">
+      {/* Summary Card */}
+      <div className={`relative bg-[var(--color-bg-card)] ${summaryPadding} rounded-3xl border border-[var(--color-border)] shadow-sm mb-8 overflow-hidden`}>
+        <div className="flex items-center justify-between mb-5">
+          <h3 className="text-xs md:text-sm font-semibold md:font-bold text-[var(--color-text-secondary)] uppercase tracking-widest">
+            Operations Summary
+          </h3>
+        </div>
+        <div className={`grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 ${summaryGap} relative z-10`}>
+          <div className={`bg-[var(--color-surface)] ${summaryCellPadding} rounded-2xl border border-[var(--color-border)] shadow-inner transition-transform hover:-translate-y-0.5 duration-300`}>
             <p className="text-[10px] text-[var(--color-text-muted)] font-medium uppercase tracking-widest mb-1">Date Range</p>
-            <p className="text-sm md:text-lg font-semibold md:font-bold text-[var(--color-text-main)] leading-tight">{dateRange}</p>
+            <p className="text-sm md:text-base font-semibold md:font-bold text-[var(--color-text-main)] leading-tight">{dateRange}</p>
           </div>
-          <div className="bg-[var(--color-surface)] p-4 lg:p-5 rounded-2xl border border-[var(--color-border)] shadow-inner transition-transform hover:-translate-y-1 duration-300">
+          <div className={`bg-[var(--color-surface)] ${summaryCellPadding} rounded-2xl border border-[var(--color-border)] shadow-inner transition-transform hover:-translate-y-0.5 duration-300`}>
             <p className="text-[10px] text-[var(--color-text-muted)] font-medium uppercase tracking-widest mb-1">Item</p>
-            <p className="text-sm md:text-lg font-semibold md:font-bold text-[var(--color-primary)] leading-tight">{itemName}</p>
+            <p className="text-sm md:text-base font-semibold md:font-bold text-[var(--color-primary)] leading-tight truncate">{itemName}</p>
           </div>
-          <div className="bg-[var(--color-surface)] p-4 lg:p-5 rounded-2xl border border-[var(--color-border)] shadow-inner transition-transform hover:-translate-y-1 duration-300">
+          <div className={`bg-[var(--color-surface)] ${summaryCellPadding} rounded-2xl border border-[var(--color-border)] shadow-inner transition-transform hover:-translate-y-0.5 duration-300`}>
             <p className="text-[10px] text-[var(--color-text-muted)] font-medium uppercase tracking-widest mb-1">Production</p>
-            <p className="text-lg md:text-2xl font-semibold md:font-bold text-[var(--color-text-main)] leading-tight">{Math.round(parseFloat(totalProduction)).toLocaleString()}</p>
+            <p className={`${summaryValSize} font-semibold md:font-bold text-[var(--color-text-main)] leading-tight`}>{Math.round(parseFloat(totalProduction)).toLocaleString()}</p>
           </div>
-          <div className="bg-[var(--color-surface)] p-4 lg:p-5 rounded-2xl border border-[var(--color-border)] shadow-inner transition-transform hover:-translate-y-1 duration-300">
+          <div className={`bg-[var(--color-surface)] ${summaryCellPadding} rounded-2xl border border-[var(--color-border)] shadow-inner transition-transform hover:-translate-y-0.5 duration-300`}>
             <p className="text-[10px] text-[var(--color-text-muted)] font-medium uppercase tracking-widest mb-1">Total Cost</p>
-            <p className="text-lg md:text-2xl font-semibold md:font-bold text-amber-500 leading-tight">{Math.round(parseFloat(totalCost)).toLocaleString()}</p>
+            <p className={`${summaryValSize} font-semibold md:font-bold text-amber-500 leading-tight`}>{Math.round(parseFloat(totalCost)).toLocaleString()}</p>
           </div>
-          <div className="bg-[var(--color-surface)] p-4 lg:p-5 rounded-2xl border border-[var(--color-border)] shadow-inner transition-transform hover:-translate-y-1 duration-300">
+          <div className={`bg-[var(--color-surface)] ${summaryCellPadding} rounded-2xl border border-[var(--color-border)] shadow-inner transition-transform hover:-translate-y-0.5 duration-300`}>
             <p className="text-[10px] text-[var(--color-text-muted)] font-medium uppercase tracking-widest mb-1">Total Income</p>
-            <p className="text-lg md:text-2xl font-semibold md:font-bold text-[var(--color-text-main)] leading-tight">{Math.round(parseFloat(totalIncome)).toLocaleString()}</p>
+            <p className={`${summaryValSize} font-semibold md:font-bold text-[var(--color-text-main)] leading-tight`}>{Math.round(parseFloat(totalIncome)).toLocaleString()}</p>
           </div>
-          <div className={`bg-[var(--color-surface)] p-4 lg:p-5 rounded-2xl border shadow-inner transition-transform hover:-translate-y-1 duration-300 ${parseFloat(totalNetProfitLoss) >= 0 ? 'border-[rgba(16,185,129,0.15)] bg-gradient-to-b from-[rgba(16,185,129,0.05)] to-transparent' : 'border-[rgba(255,59,48,0.15)] bg-gradient-to-b from-[rgba(255,59,48,0.05)] to-transparent'}`}>
+          <div className={`bg-[var(--color-surface)] ${summaryCellPadding} rounded-2xl border shadow-inner transition-transform hover:-translate-y-0.5 duration-300 ${parseFloat(totalNetProfitLoss) >= 0 ? 'border-[rgba(16,185,129,0.15)] bg-gradient-to-b from-[rgba(16,185,129,0.05)] to-transparent' : 'border-[rgba(255,59,48,0.15)] bg-gradient-to-b from-[rgba(255,59,48,0.05)] to-transparent'}`}>
             <p className="text-[10px] text-[var(--color-text-muted)] font-medium uppercase tracking-widest mb-1">
               {parseFloat(totalNetProfitLoss) >= 0 ? 'Net Profit' : 'Net Loss'}
             </p>
-            <p className={`text-lg md:text-2xl font-semibold md:font-bold leading-tight [filter:var(--shadow-text)] ${parseFloat(totalNetProfitLoss) >= 0 ? 'text-[var(--color-success-text)]' : 'text-[var(--color-danger-text)]'}`}>
+            <p className={`${summaryValSize} font-semibold md:font-bold leading-tight [filter:var(--shadow-text)] ${parseFloat(totalNetProfitLoss) >= 0 ? 'text-[var(--color-success-text)]' : 'text-[var(--color-danger-text)]'}`}>
               {Math.round(parseFloat(totalNetProfitLoss)).toLocaleString()}
             </p>
           </div>
         </div>
       </div>
 
-      {/* Modern Dark-Themed Table */}
-      <div className="w-full max-h-[70vh] overflow-auto bg-[var(--color-bg-card)] rounded-3xl shadow-sm border border-[var(--color-border)] hide-scrollbar relative">
-        <table className="w-full text-sm text-left border-collapse table-auto relative">
+      {/* Modern Themed Table */}
+      <div className="w-full max-h-[75vh] overflow-auto bg-[var(--color-bg-card)] rounded-3xl shadow-sm border border-[var(--color-border)] hide-scrollbar relative">
+        <table className="w-full text-left border-collapse table-auto relative">
           <thead className="sticky top-0 z-20">
             <tr className="bg-[var(--color-bg-card)] shadow-sm border-b border-[var(--color-border)]">
               {['Date', 'Line', 'Style', 'Item', 'Workers', 'Per Head Cost', 'Total Cost', 'Prod Qty', 'Prod DZN', 'CM/DZN', 'Total Income', 'Net Profit'].map((headerText, colIndex) => {
@@ -187,7 +215,7 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false }) {
                   <th 
                     key={colIndex} 
                     className={`
-                      px-5 py-4 text-[10px] md:text-[11px] uppercase tracking-widest font-semibold md:font-bold text-transparent bg-clip-text bg-gradient-to-br from-[var(--color-primary)] to-indigo-300 leading-tight
+                      ${tableThPadding} uppercase tracking-widest font-semibold md:font-bold text-transparent bg-clip-text bg-gradient-to-br from-[var(--color-primary)] to-indigo-300 leading-tight
                       ${isNumericCol ? 'text-center' : 'text-left'}
                       ${isTightCol ? 'w-[1%] whitespace-nowrap' : 'whitespace-nowrap md:whitespace-normal break-words'}
                     `}
@@ -234,7 +262,7 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false }) {
                       <td 
                         key={cellIndex} 
                         className={`
-                          px-5 py-3.5 text-[var(--color-text-main)] font-light
+                          ${tableTdPadding} text-[var(--color-text-main)] font-light
                           ${isTightCol ? 'w-[1%] whitespace-nowrap' : 'whitespace-nowrap md:whitespace-normal break-words'}
                           ${isNumber ? "text-center font-mono tracking-wide" : ""}
                           ${isNegative ? "!text-red-400 font-medium" : ""} 
@@ -250,13 +278,13 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false }) {
             })}
             
             {/* Total Row */}
-            <tr className="bg-[var(--color-surface)]">
-              <td colSpan={6} className="px-5 py-3.5 text-right font-bold text-[var(--color-text-main)] text-[16px] tracking-wide">TOTAL</td>
-              <td className="px-5 py-3.5 text-center font-mono font-bold text-amber-500 text-[16px] tracking-wide">{Math.round(totalCost).toLocaleString()}</td>
-              <td className="px-5 py-3.5 text-center font-mono font-bold text-[var(--color-text-main)] text-[16px] tracking-wide">{Math.round(totalProduction).toLocaleString()}</td>
+            <tr className="bg-[var(--color-surface)] font-bold">
+              <td colSpan={6} className={`${tableTotalPadding} text-right text-[var(--color-text-main)] tracking-wide`}>TOTAL</td>
+              <td className={`${tableTotalPadding} text-center font-mono text-amber-500 tracking-wide`}>{Math.round(totalCost).toLocaleString()}</td>
+              <td className={`${tableTotalPadding} text-center font-mono text-[var(--color-text-main)] tracking-wide`}>{Math.round(totalProduction).toLocaleString()}</td>
               <td colSpan={2}></td>
-              <td className="px-5 py-3.5 text-center font-mono font-bold text-[var(--color-text-main)] text-[16px] tracking-wide">{Math.round(totalIncome).toLocaleString()}</td>
-              <td className={`px-5 py-3.5 text-center font-mono font-bold text-[16px] tracking-wide ${totalNetProfitLoss >= 0 ? "text-[var(--color-success-text)] bg-[var(--color-success-glow)] [box-shadow:inset_0_0_10px_var(--color-success-glow)]" : "text-[var(--color-danger-text)] bg-[var(--color-danger-glow)] [box-shadow:inset_0_0_10px_var(--color-danger-glow)]"}`}>
+              <td className={`${tableTotalPadding} text-center font-mono text-[var(--color-text-main)] tracking-wide`}>{Math.round(totalIncome).toLocaleString()}</td>
+              <td className={`${tableTotalPadding} text-center font-mono tracking-wide ${totalNetProfitLoss >= 0 ? "text-[var(--color-success-text)] bg-[var(--color-success-glow)] [box-shadow:inset_0_0_10px_var(--color-success-glow)]" : "text-[var(--color-danger-text)] bg-[var(--color-danger-glow)] [box-shadow:inset_0_0_10px_var(--color-danger-glow)]"}`}>
                 {Math.round(totalNetProfitLoss).toLocaleString()}
               </td>
             </tr>
