@@ -5,8 +5,10 @@ import { useDensity } from '@/components/providers/DensityProvider';
 import { cn } from '@/components/layout/Sidebar';
 import { LayoutGrid, Table2, Layers } from 'lucide-react';
 
-export function DensitySwitcher({ className = "" }) {
-  const { density, setDensity } = useDensity();
+export function DensitySwitcher({ value, onChange, className = "" }) {
+  const globalDensity = useDensity();
+  const density = value || globalDensity.density;
+  const setDensity = onChange || globalDensity.setDensity;
 
   const options = [
     { id: 'compact', label: 'Compact', icon: Table2 },
@@ -40,3 +42,4 @@ export function DensitySwitcher({ className = "" }) {
     </div>
   );
 }
+

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, ChevronRight } from 'lucide-react';
 import { useKpiData } from '@/utils/useKpiData';
@@ -7,7 +7,22 @@ import { DensitySwitcher } from '@/components/ui/DensitySwitcher';
 
 export function LineDetailsContent({ id, month, backUrl, isEmbed = false }) {
   const { dailyTrends, lines, rawEngine, loading, error } = useKpiData(month);
-  const { density } = useDensity();
+  const { density: globalDensity } = useDensity();
+  const [density, setDensityState] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('telemetry_density');
+      if (stored && ['compact', 'normal', 'detailed'].includes(stored)) return stored;
+      if (window.innerWidth < 768) return 'compact';
+    }
+    return 'compact';
+  });
+
+  const setDensity = (newDensity) => {
+    setDensityState(newDensity);
+    try {
+      localStorage.setItem('telemetry_density', newDensity);
+    } catch (e) {}
+  };
 
   if (loading) {
     return (
@@ -149,7 +164,7 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false }) {
 
           {/* Density Switcher */}
           <div className="flex items-center gap-2 self-start md:self-auto">
-            <DensitySwitcher />
+            <DensitySwitcher value={density} onChange={setDensity} />
           </div>
         </header>
       )}
@@ -160,7 +175,7 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false }) {
             <div className="h-4 md:h-6 w-1.5 md:w-2 bg-[var(--color-primary)] rounded-full shadow-[0_0_10px_var(--color-primary)]"></div>
             <h2 className="text-lg md:text-3xl font-bold tracking-widest uppercase text-[var(--color-text-main)]">Line {id.toUpperCase()} Telemetry Details</h2>
           </div>
-          <DensitySwitcher />
+          <DensitySwitcher value={density} onChange={setDensity} />
         </div>
       )}
 

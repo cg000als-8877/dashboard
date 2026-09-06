@@ -153,7 +153,22 @@ const LINE_CARD_META = {
 export default function ProductionLinesPage() {
   const [selectedMonthTab, setSelectedMonthTab] = useState('current'); // 'current' | 'august' | 'july'
   const [selectedMobileLine, setSelectedMobileLine] = useState('A');
-  const { density } = useDensity();
+  const { density: globalDensity } = useDensity();
+  const [density, setDensityState] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('lines_density');
+      if (stored && ['compact', 'normal', 'detailed'].includes(stored)) return stored;
+      if (window.innerWidth < 768) return 'detailed';
+    }
+    return 'detailed';
+  });
+
+  const setDensity = (newDensity) => {
+    setDensityState(newDensity);
+    try {
+      localStorage.setItem('lines_density', newDensity);
+    } catch (e) {}
+  };
 
   // Load datasets for Live (September), August archive, and July archive
   const { rawEngine: liveEngine, stats: liveStats, dailyTrends: liveDailyTrends, lines: liveLines, loading: liveLoading, error: liveError } = useKpiData('live');
@@ -280,7 +295,7 @@ export default function ProductionLinesPage() {
             </button>
           </div>
 
-          <DensitySwitcher />
+          <DensitySwitcher value={density} onChange={setDensity} />
         </div>
 
         {/* Unified Date Range Subtitle */}
