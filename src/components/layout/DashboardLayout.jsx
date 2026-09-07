@@ -15,6 +15,7 @@ import { useTheme } from '@/components/ThemeProvider';
 import { CanteenSecurityModal } from '@/components/ui/CanteenSecurityModal';
 import { MobileHourlyTicker } from '@/components/dashboard/MobileHourlyTicker';
 import { BackgroundCanvas } from '@/components/ui/BackgroundCanvas';
+import { MobileBottomNav } from '@/components/layout/MobileBottomNav';
 
 const navItems = [
   { name: 'Dashboard', key: 'navDashboard', href: '/', icon: LayoutDashboard },
@@ -268,7 +269,7 @@ export default function DashboardLayout({ children }) {
         {isBurgerOpen && (
           <>
             <div className="fixed inset-0 z-[90] bg-black/40 backdrop-blur-[2px]" onClick={() => setIsBurgerOpen(false)}></div>
-            <div className="fixed bottom-14 right-3 w-48 bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-2xl shadow-2xl flex flex-col p-2 animate-[fade-up_0.2s_ease-out_both] z-[100] origin-bottom-right">
+            <div className="fixed bottom-[74px] right-3 sm:right-4 w-48 bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-2xl shadow-2xl flex flex-col p-2 animate-[fade-up_0.2s_ease-out_both] z-[100] origin-bottom-right">
               <p className="text-[9px] font-extrabold uppercase tracking-widest text-[var(--color-text-muted)] mb-2 px-2.5 pt-1.5">
                 Quick Navigation
               </p>
@@ -351,78 +352,15 @@ export default function DashboardLayout({ children }) {
           </>
         )}
 
-        {/* Mobile Bottom Fixed Navigation Bar */}
-        <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[var(--color-bg-card)]/95 backdrop-blur-xl border-t border-[var(--color-border)] shadow-[0_-4px_20px_rgba(0,0,0,0.25)] px-1 py-1.5 flex items-center justify-around animate-[fade-in_0.3s_ease-out]">
-          {navItems.filter(item => !['Simulator', 'Compare', 'Analytics'].includes(item.name)).map((item) => {
-            const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
-            const Icon = item.icon;
-            const isDashboardItem = item.name === 'Dashboard';
-            
-            return (
-              <Link
-                key={'mobile-bottom-' + item.name}
-                href={item.href}
-                className={cn(
-                  "flex flex-col items-center justify-center flex-1 py-0.5 px-0.5 transition-all duration-300 relative group active:scale-95",
-                  isActive
-                    ? "text-[var(--color-primary)] font-black"
-                    : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] font-extrabold"
-                )}
-              >
-                <div className="relative flex items-center justify-center">
-                  {isActive ? (
-                    <div className="relative w-8 h-8 rounded-full flex items-center justify-center overflow-hidden shrink-0 shadow-sm border border-[var(--color-border)]/20">
-                      <div className="absolute inset-[-50%] bg-[conic-gradient(from_0deg,transparent_15%,var(--color-primary)_50%,transparent_85%)] animate-[nav-border-spin_2s_linear_infinite]" />
-                      <div className="absolute inset-[1.5px] rounded-full bg-[var(--color-bg-card)] flex items-center justify-center z-10">
-                        <Icon size={15} strokeWidth={isDashboardItem ? 3.25 : 2.75} className="text-[var(--color-primary)] drop-shadow-[0_0_4px_var(--color-primary-glow)]" />
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="w-8 h-8 rounded-full flex items-center justify-center text-[var(--color-text-secondary)] transition-colors group-hover:text-[var(--color-text-main)]">
-                      <Icon size={18} strokeWidth={isDashboardItem ? 3 : 2.5} className="transition-transform duration-300 group-hover:scale-110" />
-                    </div>
-                  )}
-                </div>
-                <span className={cn(
-                  "uppercase leading-none relative z-10 mt-1",
-                  isDashboardItem ? "text-[9.5px] font-black tracking-normal" : "text-[9px] font-bold tracking-tighter"
-                )}>{item.name}</span>
-              </Link>
-            );
-          })}
-
-          {/* OTHERS tab button */}
-          <button
-            onClick={() => {
-              setIsBurgerOpen(!isBurgerOpen);
-              setIsMobileMenuOpen(false);
-            }}
-            className={cn(
-              "flex flex-col items-center justify-center flex-1 py-0.5 px-0.5 transition-all duration-300 relative group active:scale-95 cursor-pointer",
-              isBurgerOpen
-                ? "text-[var(--color-primary)] font-extrabold"
-                : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] font-bold"
-            )}
-          >
-            <div className="relative flex items-center justify-center">
-              {isBurgerOpen ? (
-                <div className="relative w-8 h-8 rounded-full flex items-center justify-center overflow-hidden shrink-0 shadow-sm border border-[var(--color-border)]/20">
-                  <div className="absolute inset-[-50%] bg-[conic-gradient(from_0deg,transparent_15%,var(--color-primary)_50%,transparent_85%)] animate-[nav-border-spin_2s_linear_infinite]" />
-                  <div className="absolute inset-[1.5px] rounded-full bg-[var(--color-bg-card)] flex items-center justify-center z-10">
-                    <X size={15} className="text-[var(--color-primary)] drop-shadow-[0_0_4px_var(--color-primary-glow)]" />
-                  </div>
-                </div>
-              ) : (
-                <div className="w-8 h-8 rounded-full flex items-center justify-center text-[var(--color-text-secondary)] transition-colors group-hover:text-[var(--color-text-main)]">
-                  <Menu size={18} className="transition-transform duration-300 group-hover:scale-110" />
-                </div>
-              )}
-            </div>
-            <span className="text-[9px] font-bold uppercase tracking-tighter leading-none relative z-10 mt-1">
-              OTHERS
-            </span>
-          </button>
-        </nav>
+        {/* Scooped Floating Mobile Bottom Navigation Bar */}
+        <MobileBottomNav 
+          isOthersOpen={isBurgerOpen}
+          onToggleOthers={() => {
+            setIsBurgerOpen(!isBurgerOpen);
+            setIsMobileMenuOpen(false);
+          }}
+          onOthersClose={() => setIsBurgerOpen(false)}
+        />
 
         {/* Main Content */}
         <main 

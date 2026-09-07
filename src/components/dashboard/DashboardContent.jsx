@@ -711,8 +711,8 @@ export function DashboardContent({ month, isArchive = false }) {
                 </div>
               </div>
 
-              {/* Line Cards Grid / List */}
-              <div className="flex flex-col gap-4 sm:gap-5">
+              {/* Line Cards Grid (2 Column, 2 Row: Line A & B top, Line C & D bottom on Desktop) */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-4 md:gap-5">
                 {activeLines.sort((a,b) => a.id.localeCompare(b.id)).map((line) => {
                   const meta = LINE_CARD_META[line.id.toUpperCase()] || LINE_CARD_META['A'];
                   const isHiddenOnMobile = selectedMobileLine !== line.id;
@@ -722,20 +722,21 @@ export function DashboardContent({ month, isArchive = false }) {
                   const isProfitable = !isInactive && (line.netProfit || 0) >= 0;
 
                   return (
-                    <div key={line.id} className={cn("w-full", isHiddenOnMobile && "hidden md:block")}>
-                      <Card className="relative overflow-hidden w-full p-0">
-                        <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-surface)] to-transparent pointer-events-none rounded-[inherit]"></div>
+                    <div key={line.id} className={cn("w-full flex flex-col", isHiddenOnMobile && "hidden md:flex")}>
+                      <Card className="relative overflow-hidden w-full h-full p-0 flex flex-col justify-between border border-[var(--color-border)] hover:border-[var(--color-primary)]/40 transition-all duration-300">
+                        <div className="absolute inset-0 bg-gradient-to-b from-[var(--color-surface)] to-transparent pointer-events-none rounded-[inherit]"></div>
                         
-                        <div className="flex flex-col gap-3.5 p-3.5 sm:p-5 relative z-10">
+                        {/* Top Decorative Line Color Strip */}
+                        <div className="absolute top-0 left-0 right-0 h-1" style={{ backgroundColor: meta.color }}></div>
+
+                        <div className="flex flex-col gap-3.5 p-3.5 sm:p-5 pt-4.5 relative z-10 flex-1 justify-between">
                           
                           {/* Line Top Header: Name, Status Badge, Item, Month Efficiency */}
                           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[var(--color-border)]/50 pb-3">
                             <div className="flex items-center justify-between sm:justify-start gap-3">
-                              <div className="flex items-center">
-                                <h2 className="text-[20px] md:text-[24px] font-bold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-[var(--color-text-main)] to-[var(--color-text-secondary)] [filter:var(--shadow-text)]">
-                                  {line.name}
-                                </h2>
-                              </div>
+                              <h2 className="text-[20px] sm:text-[22px] md:text-[24px] font-black tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-[var(--color-text-main)] to-[var(--color-text-secondary)] [filter:var(--shadow-text)]">
+                                {line.name}
+                              </h2>
                               
                               {isInactive ? (
                                 <span className="inline-flex items-center px-2 py-0.5 rounded text-[8.5px] md:text-[9px] font-bold uppercase tracking-widest bg-zinc-500/15 text-zinc-400 border border-zinc-500/30">
@@ -757,15 +758,15 @@ export function DashboardContent({ month, isArchive = false }) {
                               )}
                             </div>
 
-                            <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] md:text-xs">
-                              <div className="font-semibold tracking-tight uppercase flex items-center gap-1.5">
-                                <span className="text-[var(--color-text-muted)]">ITEM :</span>
+                            <div className="flex flex-wrap items-center gap-x-3 sm:gap-x-4 gap-y-1 text-[11px] md:text-xs">
+                              <div className="font-semibold tracking-tight uppercase flex items-center gap-1">
+                                <span className="text-[var(--color-text-muted)] text-[10px]">ITEM :</span>
                                 <span className="text-[var(--color-primary)] font-bold">
                                   {isInactive ? 'Standby / Idle' : (line.item || 'Unknown')}
                                 </span>
                               </div>
-                              <div className="font-semibold tracking-tight uppercase flex items-center gap-1.5">
-                                <span className="text-[var(--color-text-muted)]">Month Efficiency :</span>
+                              <div className="font-semibold tracking-tight uppercase flex items-center gap-1">
+                                <span className="text-[var(--color-text-muted)] text-[10px]">Efficiency :</span>
                                 <span className={cn(
                                   "font-extrabold",
                                   isInactive 
@@ -780,47 +781,47 @@ export function DashboardContent({ month, isArchive = false }) {
                             </div>
                           </div>
 
-                          {/* Cumulative Month Performance Grid */}
+                          {/* Cumulative Month Performance Grid (4-Card Row on Large / 2-Col on Tablet) */}
                           <div>
                             <p className="text-[9.5px] uppercase tracking-wider font-bold text-[var(--color-text-muted)] mb-1.5">
                               Month Total Summary ({activeMonthName})
                             </p>
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3">
-                              <div className="bg-[var(--color-surface)] p-2.5 md:p-3 rounded-xl border border-[var(--color-border)] shadow-xs">
-                                <p className="text-[9px] md:text-[9.5px] text-[var(--color-text-muted)] font-medium uppercase tracking-wider mb-0.5">Production</p>
-                                <p className="text-sm md:text-lg font-bold text-[var(--color-text-main)]">
+                            <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 md:gap-2.5">
+                              <div className="bg-[var(--color-surface)] p-2.5 sm:p-3 rounded-xl border border-[var(--color-border)] shadow-xs">
+                                <p className="text-[9px] text-[var(--color-text-muted)] font-medium uppercase tracking-wider mb-0.5">Production</p>
+                                <p className="text-sm md:text-base lg:text-lg font-bold text-[var(--color-text-main)] truncate">
                                   <AnimatedNumber value={line.totalProduction} />
-                                  <span className="text-[10px] text-[var(--color-text-muted)] ml-1">PCS</span>
+                                  <span className="text-[10px] text-[var(--color-text-muted)] ml-0.5">PCS</span>
                                 </p>
                               </div>
                               
-                              <div className="bg-[var(--color-surface)] p-2.5 md:p-3 rounded-xl border border-[var(--color-border)] shadow-xs">
-                                <p className="text-[9px] md:text-[9.5px] text-[var(--color-text-muted)] font-medium uppercase tracking-wider mb-0.5">Income</p>
-                                <p className="text-sm md:text-lg font-bold text-[var(--color-primary)]">
+                              <div className="bg-[var(--color-surface)] p-2.5 sm:p-3 rounded-xl border border-[var(--color-border)] shadow-xs">
+                                <p className="text-[9px] text-[var(--color-text-muted)] font-medium uppercase tracking-wider mb-0.5">Income</p>
+                                <p className="text-sm md:text-base lg:text-lg font-bold text-[var(--color-primary)] truncate">
                                   <AnimatedNumber value={Math.round(line.totalIncome)} prefix="BDT " />
                                 </p>
                               </div>
 
-                              <div className="bg-[var(--color-surface)] p-2.5 md:p-3 rounded-xl border border-[var(--color-border)] shadow-xs">
-                                <p className="text-[9px] md:text-[9.5px] text-[var(--color-text-muted)] font-medium uppercase tracking-wider mb-0.5">Cost</p>
-                                <p className="text-sm md:text-lg font-bold text-amber-500">
+                              <div className="bg-[var(--color-surface)] p-2.5 sm:p-3 rounded-xl border border-[var(--color-border)] shadow-xs">
+                                <p className="text-[9px] text-[var(--color-text-muted)] font-medium uppercase tracking-wider mb-0.5">Cost</p>
+                                <p className="text-sm md:text-base lg:text-lg font-bold text-amber-500 truncate">
                                   <AnimatedNumber value={Math.round(line.totalCost)} prefix="BDT " />
                                 </p>
                               </div>
 
                               <div className={cn(
-                                "p-2.5 md:p-3 rounded-xl border shadow-xs",
+                                "p-2.5 sm:p-3 rounded-xl border shadow-xs",
                                 isInactive
                                   ? 'border-[var(--color-border)] bg-[var(--color-surface)]'
                                   : isProfitable 
                                     ? 'border-[rgba(16,185,129,0.2)] bg-[var(--color-success-glow)]/40' 
                                     : 'border-[rgba(255,59,48,0.2)] bg-[var(--color-danger-glow)]/40'
                               )}>
-                                <p className="text-[9px] md:text-[9.5px] text-[var(--color-text-muted)] font-medium uppercase tracking-wider mb-0.5">
+                                <p className="text-[9px] text-[var(--color-text-muted)] font-medium uppercase tracking-wider mb-0.5 truncate">
                                   {isInactive ? 'Net Balance' : isProfitable ? 'Net Profit' : 'Net Loss'}
                                 </p>
                                 <p className={cn(
-                                  "text-sm md:text-lg font-bold [filter:var(--shadow-text)]",
+                                  "text-sm md:text-base lg:text-lg font-bold [filter:var(--shadow-text)] truncate",
                                   isInactive
                                     ? 'text-[var(--color-text-muted)]'
                                     : isProfitable 
@@ -834,37 +835,37 @@ export function DashboardContent({ month, isArchive = false }) {
                           </div>
 
                           {/* Last Recorded Day Input & Cost Recovery Efficiency */}
-                          <div className="bg-[var(--color-surface)]/70 border border-[var(--color-border)] rounded-xl p-2.5 sm:p-3.5">
+                          <div className="bg-[var(--color-surface)]/70 border border-[var(--color-border)] rounded-xl p-2.5 sm:p-3">
                             <div className="flex items-center justify-between mb-2">
-                              <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-[var(--color-text-secondary)] flex items-center">
-                                <span>Last Day Input ({lastDayDateStr})</span>
+                              <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-[var(--color-text-secondary)] truncate">
+                                Last Day Input ({lastDayDateStr})
                               </span>
-                              <span className="text-[9.5px] sm:text-[10.5px] font-bold text-[var(--color-text-muted)]">
-                                Cost Recovery : <span className={cn("font-extrabold", isInactive ? "text-[var(--color-text-muted)]" : (parseFloat(line.lastDayCostRecovery || 0) >= 100 ? "text-emerald-400" : "text-amber-400"))}>{line.lastDayCostRecovery || '0.0'}%</span>
+                              <span className="text-[9.5px] sm:text-[10.5px] font-bold text-[var(--color-text-muted)] shrink-0">
+                                Cost Recovery: <span className={cn("font-extrabold", isInactive ? "text-[var(--color-text-muted)]" : (parseFloat(line.lastDayCostRecovery || 0) >= 100 ? "text-emerald-400" : "text-amber-400"))}>{line.lastDayCostRecovery || '0.0'}%</span>
                               </span>
                             </div>
 
                             <div className="grid grid-cols-3 gap-2">
                               <div className="bg-[var(--color-bg-card)] p-2 rounded-lg border border-[var(--color-border)]/60 text-center">
                                 <p className="text-[8.5px] sm:text-[9px] text-[var(--color-text-muted)] font-medium uppercase">Day Output</p>
-                                <p className="text-xs sm:text-sm md:text-base font-bold text-[var(--color-text-main)]">
+                                <p className="text-xs sm:text-sm md:text-base font-bold text-[var(--color-text-main)] truncate">
                                   {(line.lastDayOutput || 0).toLocaleString()} <span className="text-[9px] text-[var(--color-text-muted)]">PCS</span>
                                 </p>
                               </div>
 
                               <div className="bg-[var(--color-bg-card)] p-2 rounded-lg border border-[var(--color-border)]/60 text-center">
                                 <p className="text-[8.5px] sm:text-[9px] text-[var(--color-text-muted)] font-medium uppercase">Day Income</p>
-                                <p className="text-xs sm:text-sm md:text-base font-bold text-[var(--color-primary)]">
+                                <p className="text-xs sm:text-sm md:text-base font-bold text-[var(--color-primary)] truncate">
                                   BDT {(line.lastDayIncome || 0).toLocaleString()}
                                 </p>
                               </div>
 
                               <div className="bg-[var(--color-bg-card)] p-2 rounded-lg border border-[var(--color-border)]/60 text-center">
-                                <p className="text-[8.5px] sm:text-[9px] text-[var(--color-text-muted)] font-medium uppercase">
+                                <p className="text-[8.5px] sm:text-[9px] text-[var(--color-text-muted)] font-medium uppercase truncate">
                                   Day Net {isInactive ? 'Balance' : (line.lastDayProfit >= 0 ? 'Profit' : 'Loss')}
                                 </p>
                                 <p className={cn(
-                                  "text-xs sm:text-sm md:text-base font-bold",
+                                  "text-xs sm:text-sm md:text-base font-bold truncate",
                                   isInactive || ((line.lastDayOutput || 0) === 0 && (line.lastDayCost || 0) === 0)
                                     ? "text-[var(--color-text-muted)]"
                                     : line.lastDayProfit >= 0 
@@ -889,7 +890,7 @@ export function DashboardContent({ month, isArchive = false }) {
                                     : `/lines/${line.id}`
                             }
                             className={cn(
-                              "w-full py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer select-none group",
+                              "w-full py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer select-none group mt-0.5",
                               meta.btnClass
                             )}
                           >
@@ -898,8 +899,6 @@ export function DashboardContent({ month, isArchive = false }) {
                           </Link>
 
                         </div>
-                        {/* Decorative side accent - Desktop view only */}
-                        <div className="hidden md:block absolute top-0 left-0 w-1.5 h-full" style={{ backgroundColor: meta.color }}></div>
                       </Card>
                     </div>
                   );
