@@ -50,12 +50,17 @@ export function getScheduledDefaultTheme() {
   }
 }
 
+export function getDefaultBgEffect() {
+  if (typeof window === 'undefined') return 'spotlight';
+  return window.innerWidth < 768 ? 'aurora' : 'spotlight';
+}
+
 const ThemeContext = createContext();
 
 export function ThemeProvider({ children }) {
   const [visualTheme, setVisualThemeState] = useState(getScheduledDefaultTheme);
   const [mode, setModeState] = useState('dark');
-  const [bgEffect, setBgEffectState] = useState('hybrid');
+  const [bgEffect, setBgEffectState] = useState('spotlight');
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -68,10 +73,22 @@ export function ThemeProvider({ children }) {
     const legacyTheme = localStorage.getItem('theme'); // backward compatibility
     const activeScheduleVersion = localStorage.getItem('app-theme-rotation-v2');
 
-    // 0. Background Effect
+    // 0. Background Effect (Default: 'aurora' on Mobile < 768px, 'spotlight' on PC/Desktop >= 768px)
+    const isMobile = window.innerWidth < 768;
+    const defaultBg = isMobile ? 'aurora' : 'spotlight';
     if (storedBgEffect && BG_EFFECTS.some(b => b.id === storedBgEffect)) {
       setBgEffectState(storedBgEffect);
+    } else {
+      setBgEffectState(defaultBg);
     }
+
+    // Responsive background listener when user hasn't explicitly locked a custom preference
+    const handleResize = () => {
+      if (!localStorage.getItem('app-bg-effect')) {
+        setBgEffectState(window.innerWidth < 768 ? 'aurora' : 'spotlight');
+      }
+    };
+    window.addEventListener('resize', handleResize);
 
     // Check if current Bangladesh time (Asia/Dhaka) is in Night Shift window (11 PM - 2 AM: 23:00 - 02:59)
     const isBangladeshNightWindow = () => {
@@ -126,8 +143,14 @@ export function ThemeProvider({ children }) {
 
     if (mediaQuery.addEventListener) {
       mediaQuery.addEventListener('change', handleSystemChange);
-      return () => mediaQuery.removeEventListener('change', handleSystemChange);
     }
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      if (mediaQuery.removeEventListener) {
+        mediaQuery.removeEventListener('change', handleSystemChange);
+      }
+    };
   }, []);
 
   useEffect(() => {
