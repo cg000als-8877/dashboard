@@ -19,27 +19,29 @@ function AnimatedWatchIcon({ isHourly, isClicked }) {
       height="24" 
       viewBox="0 0 24 24" 
       fill="none" 
-      stroke="currentColor" 
+      stroke="#CBD5E1" 
       strokeWidth="2.2" 
       strokeLinecap="round" 
       strokeLinejoin="round"
       className={cn(
-        "transition-transform duration-300",
+        "transition-transform duration-300 text-slate-300",
         isClicked ? "scale-115 rotate-12" : "group-hover:scale-110"
       )}
     >
       {/* Top Watch Strap */}
       <path 
         d="m16.2 6.6-.8-3.4a2 2 0 0 0-2-1.5h-2.8a2 2 0 0 0-2 1.5l-.8 3.4" 
+        stroke="#94A3B8"
         strokeWidth="1.8"
-        className="opacity-75"
+        className="opacity-90"
       />
       
       {/* Bottom Watch Strap */}
       <path 
         d="m7.8 17.4.8 3.4a2 2 0 0 0 2 1.5h2.8a2 2 0 0 0 2-1.5l.8-3.4" 
+        stroke="#94A3B8"
         strokeWidth="1.8"
-        className="opacity-75"
+        className="opacity-90"
       />
       
       {/* Watch Dial Face (Enlarged) */}
@@ -47,8 +49,9 @@ function AnimatedWatchIcon({ isHourly, isClicked }) {
         cx="12" 
         cy="12" 
         r="7.2" 
-        fill={isHourly ? "currentColor" : "none"} 
-        fillOpacity={isHourly ? 0.25 : 0}
+        stroke="#CBD5E1"
+        fill={isHourly ? "#CBD5E1" : "none"} 
+        fillOpacity={isHourly ? 0.22 : 0}
         strokeWidth="2.2"
       />
 
@@ -58,6 +61,7 @@ function AnimatedWatchIcon({ isHourly, isClicked }) {
         y1="12" 
         x2="15" 
         y2="9.5" 
+        stroke="#E2E8F0"
         strokeWidth="2.2"
         style={{ transformOrigin: '12px 12px' }}
         className={cn(
@@ -71,6 +75,7 @@ function AnimatedWatchIcon({ isHourly, isClicked }) {
         y1="12" 
         x2="12" 
         y2="6.2" 
+        stroke="#E2E8F0"
         strokeWidth="2"
         style={{ transformOrigin: '12px 12px' }}
         className={cn(
@@ -83,7 +88,7 @@ function AnimatedWatchIcon({ isHourly, isClicked }) {
       />
 
       {/* Center Watch Pin */}
-      <circle cx="12" cy="12" r="1.3" fill="currentColor" />
+      <circle cx="12" cy="12" r="1.3" fill="#E2E8F0" />
     </svg>
   );
 }
@@ -132,7 +137,7 @@ export function MobileBottomNav({ isOthersOpen, onToggleOthers, onOthersClose })
             href="/hourly"
             onClick={handleHourlyClick}
             className={cn(
-              "relative w-10 h-10 rounded-full transition-all duration-300 active:scale-95 flex items-center justify-center cursor-pointer group border-2 border-[var(--color-bg-card)] bg-[var(--color-primary)] text-[var(--color-on-primary)] shadow-[0_10px_24px_rgba(0,0,0,0.7)]",
+              "relative w-10 h-10 rounded-full transition-all duration-300 active:scale-95 flex items-center justify-center cursor-pointer group border-2 border-[var(--color-bg-card)] bg-[var(--color-primary)] text-white shadow-[0_10px_24px_rgba(0,0,0,0.7)]",
               isHourly
                 ? "shadow-[0_0_22px_var(--color-primary-glow-hover)] ring-2 ring-[var(--color-primary)] ring-offset-1 ring-offset-[var(--color-bg-card)] scale-105"
                 : "hover:scale-105 shadow-[0_6px_18px_var(--color-primary-glow)]"
