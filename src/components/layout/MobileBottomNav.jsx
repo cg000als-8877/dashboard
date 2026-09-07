@@ -15,8 +15,8 @@ import { cn } from './Sidebar';
 function AnimatedWatchIcon({ isHourly, isClicked }) {
   return (
     <svg 
-      width="19" 
-      height="19" 
+      width="24" 
+      height="24" 
       viewBox="0 0 24 24" 
       fill="none" 
       stroke="currentColor" 
@@ -30,23 +30,23 @@ function AnimatedWatchIcon({ isHourly, isClicked }) {
     >
       {/* Top Watch Strap */}
       <path 
-        d="m16.13 7.66-.81-4.05a2 2 0 0 0-2-1.61h-2.68a2 2 0 0 0-2 1.61l-.78 4.05" 
+        d="m16.2 6.6-.8-3.4a2 2 0 0 0-2-1.5h-2.8a2 2 0 0 0-2 1.5l-.8 3.4" 
         strokeWidth="1.8"
         className="opacity-75"
       />
       
       {/* Bottom Watch Strap */}
       <path 
-        d="m7.88 16.36.8 4a2 2 0 0 0 2 1.61h2.72a2 2 0 0 0 2-1.61l.81-4.05" 
+        d="m7.8 17.4.8 3.4a2 2 0 0 0 2 1.5h2.8a2 2 0 0 0 2-1.5l.8-3.4" 
         strokeWidth="1.8"
         className="opacity-75"
       />
       
-      {/* Watch Dial Face */}
+      {/* Watch Dial Face (Enlarged) */}
       <circle 
         cx="12" 
         cy="12" 
-        r="6.5" 
+        r="7.2" 
         fill={isHourly ? "currentColor" : "none"} 
         fillOpacity={isHourly ? 0.25 : 0}
         strokeWidth="2.2"
@@ -56,9 +56,9 @@ function AnimatedWatchIcon({ isHourly, isClicked }) {
       <line 
         x1="12" 
         y1="12" 
-        x2="14.2" 
-        y2="10" 
-        strokeWidth="2.1"
+        x2="15" 
+        y2="9.5" 
+        strokeWidth="2.2"
         style={{ transformOrigin: '12px 12px' }}
         className={cn(
           isHourly ? "animate-[spin_10s_linear_infinite]" : ""
@@ -70,8 +70,8 @@ function AnimatedWatchIcon({ isHourly, isClicked }) {
         x1="12" 
         y1="12" 
         x2="12" 
-        y2="7.2" 
-        strokeWidth="1.9"
+        y2="6.2" 
+        strokeWidth="2"
         style={{ transformOrigin: '12px 12px' }}
         className={cn(
           isClicked 
@@ -83,7 +83,7 @@ function AnimatedWatchIcon({ isHourly, isClicked }) {
       />
 
       {/* Center Watch Pin */}
-      <circle cx="12" cy="12" r="1.1" fill="currentColor" />
+      <circle cx="12" cy="12" r="1.3" fill="currentColor" />
     </svg>
   );
 }
@@ -105,14 +105,18 @@ export function MobileBottomNav({ isOthersOpen, onToggleOthers, onOthersClose })
   };
 
   return (
-    <div className="md:hidden fixed bottom-3 inset-x-0 mx-auto w-[86%] max-w-[335px] z-50 pointer-events-auto select-none font-sans animate-[fade-up_0.3s_ease-out]">
-      <div className="relative w-full h-[54px] flex items-center justify-center">
+    <div className="md:hidden fixed bottom-3 inset-x-0 mx-auto w-[94%] max-w-[390px] z-50 pointer-events-auto select-none font-sans animate-[fade-up_0.3s_ease-out]">
+      <div className="relative w-full h-[56px] flex items-center justify-center">
+        
+        {/* Deep Black Ambient Depth Shadows */}
+        <div className="absolute inset-x-3 -bottom-2 h-14 bg-black/90 blur-xl rounded-full pointer-events-none -z-10" />
+        <div className="absolute inset-x-6 -bottom-1 h-10 bg-black/95 blur-md rounded-full pointer-events-none -z-10" />
         
         {/* Deep Background Pill with Smooth Curved Center Scoop SVG */}
         <svg
           viewBox="0 0 500 70"
           preserveAspectRatio="none"
-          className="absolute inset-0 w-full h-full drop-shadow-[0_12px_32px_rgba(0,0,0,0.5)]"
+          className="absolute inset-0 w-full h-full drop-shadow-[0_18px_38px_rgba(0,0,0,0.95)] filter drop-shadow-[0_6px_18px_rgba(0,0,0,0.85)]"
         >
           <path
             d="M 35 0 L 204 0 C 218 0, 224 32, 250 32 C 276 32, 282 0, 296 0 L 465 0 A 35 35 0 0 1 500 35 A 35 35 0 0 1 465 70 L 35 70 A 35 35 0 0 1 0 35 A 35 35 0 0 1 35 0 Z"
@@ -123,14 +127,14 @@ export function MobileBottomNav({ isOthersOpen, onToggleOthers, onOthersClose })
         </svg>
 
         {/* Floating Center Elevated Circle ("HOURLY") */}
-        <div className="absolute -top-[22px] left-1/2 -translate-x-1/2 z-30 flex flex-col items-center">
+        <div className="absolute -top-[23px] left-1/2 -translate-x-1/2 z-30 flex flex-col items-center">
           <Link
             href="/hourly"
             onClick={handleHourlyClick}
             className={cn(
-              "relative w-9 h-9 rounded-full transition-all duration-300 active:scale-95 flex items-center justify-center cursor-pointer group border-2 border-[var(--color-bg-card)] bg-[var(--color-primary)] text-[var(--color-on-primary)]",
+              "relative w-10 h-10 rounded-full transition-all duration-300 active:scale-95 flex items-center justify-center cursor-pointer group border-2 border-[var(--color-bg-card)] bg-[var(--color-primary)] text-[var(--color-on-primary)] shadow-[0_10px_24px_rgba(0,0,0,0.7)]",
               isHourly
-                ? "shadow-[0_0_20px_var(--color-primary-glow-hover)] ring-2 ring-[var(--color-primary)] ring-offset-1 ring-offset-[var(--color-bg-card)] scale-105"
+                ? "shadow-[0_0_22px_var(--color-primary-glow-hover)] ring-2 ring-[var(--color-primary)] ring-offset-1 ring-offset-[var(--color-bg-card)] scale-105"
                 : "hover:scale-105 shadow-[0_6px_18px_var(--color-primary-glow)]"
             )}
             aria-label="Hourly Output"
@@ -140,7 +144,7 @@ export function MobileBottomNav({ isOthersOpen, onToggleOthers, onOthersClose })
         </div>
 
         {/* 5 Navigation Columns */}
-        <nav className="relative z-20 grid grid-cols-5 w-full h-full items-center px-1">
+        <nav className="relative z-20 grid grid-cols-5 w-full h-full items-center px-1.5">
           
           {/* 1. DASHBOARD */}
           <Link
@@ -149,8 +153,8 @@ export function MobileBottomNav({ isOthersOpen, onToggleOthers, onOthersClose })
             className="flex flex-col items-center justify-center h-full group active:scale-95 transition-transform cursor-pointer"
           >
             <LayoutDashboard 
-              size={16}
-              strokeWidth={isDashboard ? 2.5 : 2}
+              size={18}
+              strokeWidth={isDashboard ? 2.6 : 2}
               fill={isDashboard ? "currentColor" : "none"}
               className={cn(
                 "mb-0.5 transition-colors",
@@ -159,8 +163,8 @@ export function MobileBottomNav({ isOthersOpen, onToggleOthers, onOthersClose })
             />
             <span 
               className={cn(
-                "text-[7.5px] sm:text-[8px] uppercase font-bold tracking-tight leading-none transition-colors",
-                isDashboard ? "text-[var(--color-primary)] font-black" : "text-[var(--color-text-muted)] group-hover:text-[var(--color-text-main)]"
+                "text-[8.5px] uppercase tracking-wide leading-none transition-colors",
+                isDashboard ? "text-[var(--color-primary)] font-black" : "text-[var(--color-text-muted)] font-extrabold group-hover:text-[var(--color-text-main)]"
               )}
             >
               DASHBOARD
@@ -174,8 +178,8 @@ export function MobileBottomNav({ isOthersOpen, onToggleOthers, onOthersClose })
             className="flex flex-col items-center justify-center h-full group active:scale-95 transition-transform cursor-pointer"
           >
             <Factory 
-              size={16}
-              strokeWidth={isLines ? 2.5 : 2}
+              size={18}
+              strokeWidth={isLines ? 2.6 : 2}
               fill={isLines ? "currentColor" : "none"}
               className={cn(
                 "mb-0.5 transition-colors",
@@ -184,8 +188,8 @@ export function MobileBottomNav({ isOthersOpen, onToggleOthers, onOthersClose })
             />
             <span 
               className={cn(
-                "text-[7.5px] sm:text-[8px] uppercase font-bold tracking-tight leading-none transition-colors",
-                isLines ? "text-[var(--color-primary)] font-black" : "text-[var(--color-text-muted)] group-hover:text-[var(--color-text-main)]"
+                "text-[8.5px] uppercase tracking-wide leading-none transition-colors",
+                isLines ? "text-[var(--color-primary)] font-black" : "text-[var(--color-text-muted)] font-extrabold group-hover:text-[var(--color-text-main)]"
               )}
             >
               LINES
@@ -195,13 +199,13 @@ export function MobileBottomNav({ isOthersOpen, onToggleOthers, onOthersClose })
           {/* 3. HOURLY (Center Column Label below cutout) */}
           <Link
             href="/hourly"
-            onClick={() => onOthersClose?.()}
+            onClick={handleHourlyClick}
             className="flex flex-col items-center justify-end h-full pb-1.5 group active:scale-95 transition-transform cursor-pointer"
           >
             <span 
               className={cn(
-                "text-[7.5px] sm:text-[8px] uppercase font-black tracking-tight leading-none transition-colors",
-                isHourly ? "text-[var(--color-primary)]" : "text-[var(--color-text-secondary)] group-hover:text-[var(--color-text-main)]"
+                "text-[8.5px] uppercase tracking-wide leading-none transition-colors",
+                isHourly ? "text-[var(--color-primary)] font-black" : "text-[var(--color-text-secondary)] font-black group-hover:text-[var(--color-text-main)]"
               )}
             >
               HOURLY
@@ -215,8 +219,8 @@ export function MobileBottomNav({ isOthersOpen, onToggleOthers, onOthersClose })
             className="flex flex-col items-center justify-center h-full group active:scale-95 transition-transform cursor-pointer"
           >
             <History 
-              size={16}
-              strokeWidth={isArchive ? 2.5 : 2}
+              size={18}
+              strokeWidth={isArchive ? 2.6 : 2}
               fill={isArchive ? "currentColor" : "none"}
               className={cn(
                 "mb-0.5 transition-colors",
@@ -225,8 +229,8 @@ export function MobileBottomNav({ isOthersOpen, onToggleOthers, onOthersClose })
             />
             <span 
               className={cn(
-                "text-[7.5px] sm:text-[8px] uppercase font-bold tracking-tight leading-none transition-colors",
-                isArchive ? "text-[var(--color-primary)] font-black" : "text-[var(--color-text-muted)] group-hover:text-[var(--color-text-main)]"
+                "text-[8.5px] uppercase tracking-wide leading-none transition-colors",
+                isArchive ? "text-[var(--color-primary)] font-black" : "text-[var(--color-text-muted)] font-extrabold group-hover:text-[var(--color-text-main)]"
               )}
             >
               ARCHIVE
@@ -241,21 +245,21 @@ export function MobileBottomNav({ isOthersOpen, onToggleOthers, onOthersClose })
           >
             {isOthers ? (
               <X 
-                size={16}
+                size={18}
                 strokeWidth={2.6}
                 className="mb-0.5 text-[var(--color-primary)] transition-transform duration-200 rotate-90"
               />
             ) : (
               <MoreHorizontal 
-                size={16}
-                strokeWidth={2}
+                size={18}
+                strokeWidth={2.2}
                 className="mb-0.5 text-[var(--color-text-muted)] group-hover:text-[var(--color-text-main)] transition-colors"
               />
             )}
             <span 
               className={cn(
-                "text-[7.5px] sm:text-[8px] uppercase font-bold tracking-tight leading-none transition-colors",
-                isOthers ? "text-[var(--color-primary)] font-black" : "text-[var(--color-text-muted)] group-hover:text-[var(--color-text-main)]"
+                "text-[8.5px] uppercase tracking-wide leading-none transition-colors",
+                isOthers ? "text-[var(--color-primary)] font-black" : "text-[var(--color-text-muted)] font-extrabold group-hover:text-[var(--color-text-main)]"
               )}
             >
               OTHERS
