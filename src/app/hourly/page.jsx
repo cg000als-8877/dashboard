@@ -1234,7 +1234,7 @@ export default function HourlyPage() {
                     <Sparkles className="w-5 h-5" />
                   </div>
                   <div className="w-full">
-                    <h3 className="text-[13px] font-bold text-[var(--color-text-secondary)] uppercase tracking-[0.16em] mb-4">
+                    <h3 className="text-[13px] font-bold text-[var(--color-text-main)] uppercase tracking-[0.16em] mb-4">
                       System Intelligence
                     </h3>
 
@@ -1297,30 +1297,30 @@ export default function HourlyPage() {
                       const insights = [];
 
                       if (overallAchieve >= 90) {
-                        insights.push(`<strong>PEAK FACTORY VELOCITY:</strong> Total floor achievement stands at <span class="text-emerald-400 font-bold">${overallAchieve.toFixed(1)}%</span> with <span class="text-[var(--color-primary)] font-bold">${totalActual.toLocaleString()} PCS</span> produced against <span class="text-amber-400 font-bold">${totalTarget.toLocaleString()} PCS</span> target.`);
+                        insights.push(`<strong>PEAK FACTORY VELOCITY:</strong> Total floor achievement stands at <span class="text-emerald-600 dark:text-emerald-400 font-bold">${overallAchieve.toFixed(1)}%</span> with <span class="text-[var(--color-primary)] font-bold">${totalActual.toLocaleString()} PCS</span> produced against <span class="text-amber-600 dark:text-amber-400 font-bold">${totalTarget.toLocaleString()} PCS</span> target.`);
                       } else {
-                        insights.push(`<strong>HOURLY TARGET DEFICIT:</strong> Total floor achievement currently stands at <span class="text-amber-400 font-bold">${overallAchieve.toFixed(1)}%</span> (${totalActual.toLocaleString()} of <span class="text-rose-400 font-bold">${totalTarget.toLocaleString()} PCS</span> target), leaving a gap of <span class="text-rose-400 font-bold">${Math.max(0, totalTarget - totalActual).toLocaleString()} units</span>.`);
+                        insights.push(`<strong>HOURLY TARGET DEFICIT:</strong> Total floor achievement currently stands at <span class="text-amber-600 dark:text-amber-400 font-bold">${overallAchieve.toFixed(1)}%</span> (${totalActual.toLocaleString()} of <span class="text-rose-600 dark:text-rose-400 font-bold">${totalTarget.toLocaleString()} PCS</span> target), leaving a gap of <span class="text-rose-600 dark:text-rose-400 font-bold">${Math.max(0, totalTarget - totalActual).toLocaleString()} units</span>.`);
                       }
 
                       if (topProducer && topProducer.act > 0) {
                         const share = totalActual > 0 ? Math.round((topProducer.act / totalActual) * 100) : 0;
-                        insights.push(`<strong>VOLUME LEADERSHIP:</strong> <span class="text-[var(--color-primary)] font-bold">Line ${topProducer.id}</span> (${topProducer.item}) generated the highest output with <span class="text-emerald-400 font-bold">${topProducer.act.toLocaleString()} PCS</span> (${share}% of total daily volume).`);
+                        insights.push(`<strong>VOLUME LEADERSHIP:</strong> <span class="text-[var(--color-primary)] font-bold">Line ${topProducer.id}</span> (${topProducer.item}) generated the highest output with <span class="text-emerald-600 dark:text-emerald-400 font-bold">${topProducer.act.toLocaleString()} PCS</span> (${share}% of total daily volume).`);
                       }
 
                       if (bestLine && bestLine.achieve > 0) {
-                        insights.push(`<strong>TOP PERFORMING LINE:</strong> <span class="text-[var(--color-primary)] font-bold">Line ${bestLine.id}</span> leads floor efficiency with an achievement rate of <span class="text-emerald-400 font-bold">${bestLine.achieve.toFixed(1)}%</span>.`);
+                        insights.push(`<strong>TOP PERFORMING LINE:</strong> <span class="text-[var(--color-primary)] font-bold">Line ${bestLine.id}</span> leads floor efficiency with an achievement rate of <span class="text-emerald-600 dark:text-emerald-400 font-bold">${bestLine.achieve.toFixed(1)}%</span>.`);
                       }
 
                       if (peakHourIdx !== -1 && maxHourOutput > 0) {
-                        insights.push(`<strong>PEAK PRODUCTION WINDOW:</strong> Highest output velocity recorded at <span class="text-[var(--color-primary)] font-bold">${data.timeLabels[peakHourIdx]}</span> delivering <span class="text-emerald-400 font-bold">${maxHourOutput.toLocaleString()} units</span> across active lines.`);
+                        insights.push(`<strong>PEAK PRODUCTION WINDOW:</strong> Highest output velocity recorded at <span class="text-[var(--color-primary)] font-bold">${data.timeLabels[peakHourIdx]}</span> delivering <span class="text-emerald-600 dark:text-emerald-400 font-bold">${maxHourOutput.toLocaleString()} units</span> across active lines.`);
                       }
 
                       if (mostConsistent && mostConsistent.consistency > 0) {
-                        insights.push(`<strong>CONSISTENCY BENCHMARK:</strong> <span class="text-[var(--color-primary)] font-bold">Line ${mostConsistent.id}</span> demonstrated greatest pacing stability, meeting hourly targets in <span class="text-emerald-400 font-bold">${mostConsistent.consistency.toFixed(0)}%</span> of active shift hours.`);
+                        insights.push(`<strong>CONSISTENCY BENCHMARK:</strong> <span class="text-[var(--color-primary)] font-bold">Line ${mostConsistent.id}</span> demonstrated greatest pacing stability, meeting hourly targets in <span class="text-emerald-600 dark:text-emerald-400 font-bold">${mostConsistent.consistency.toFixed(0)}%</span> of active shift hours.`);
                       }
 
                       if (worstLine && worstLine.tgt > 0 && worstLine.id !== bestLine?.id) {
-                        insights.push(`<strong>CRITICAL FLOOR BOTTLENECK:</strong> <span class="text-rose-400 font-bold">Line ${worstLine.id}</span> requires immediate floor pacing, running at the lowest achievement rate of <span class="text-rose-400 font-bold">${worstLine.achieve.toFixed(1)}%</span>.`);
+                        insights.push(`<strong>CRITICAL FLOOR BOTTLENECK:</strong> <span class="text-rose-600 dark:text-rose-400 font-bold">Line ${worstLine.id}</span> requires immediate floor pacing, running at the lowest achievement rate of <span class="text-rose-600 dark:text-rose-400 font-bold">${worstLine.achieve.toFixed(1)}%</span>.`);
                       }
 
                       insights.push(`<strong>TACTICAL DIRECTIVE:</strong> Re-balance line bottlenecks and maintain hourly piece pacing to sustain floor targets into final shift hours.`);
@@ -1329,9 +1329,9 @@ export default function HourlyPage() {
                         <ul className="space-y-3 w-full divide-y divide-[var(--color-border)]/30">
                           {insights.map((insight, i) => (
                             <li key={i} className="flex items-start gap-2.5 pt-3 first:pt-0">
-                              <span className="text-[var(--color-text-muted)] font-black text-sm select-none shrink-0 leading-relaxed">•</span>
+                              <span className="text-[var(--color-primary)] font-black text-sm select-none shrink-0 leading-relaxed">•</span>
                               <span 
-                                className="text-xs sm:text-[13px] font-normal text-slate-400 dark:text-zinc-400 text-[var(--color-text-secondary)] leading-relaxed flex-1 [&>strong]:text-slate-300 [&>strong]:dark:text-zinc-300 [&>strong]:font-semibold"
+                                className="text-xs sm:text-[13.5px] font-medium text-[var(--color-text-secondary)] leading-relaxed flex-1 [&>strong]:text-[var(--color-text-main)] [&>strong]:font-bold"
                                 dangerouslySetInnerHTML={{ __html: insight }}
                               />
                             </li>
