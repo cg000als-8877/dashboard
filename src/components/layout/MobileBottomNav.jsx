@@ -11,6 +11,7 @@ import {
   X
 } from 'lucide-react';
 import { cn } from './Sidebar';
+import { useTheme } from '@/components/ThemeProvider';
 
 function AnimatedWatchIcon({ isHourly, isClicked }) {
   return (
@@ -96,6 +97,8 @@ function AnimatedWatchIcon({ isHourly, isClicked }) {
 export function MobileBottomNav({ isOthersOpen, onToggleOthers, onOthersClose }) {
   const pathname = usePathname();
   const [clickedHourly, setClickedHourly] = useState(false);
+  const { mode } = useTheme();
+  const isLight = mode === 'light';
 
   const isDashboard = pathname === '/';
   const isLines = pathname === '/lines' || pathname.startsWith('/lines/');
@@ -113,15 +116,26 @@ export function MobileBottomNav({ isOthersOpen, onToggleOthers, onOthersClose })
     <div className="md:hidden fixed bottom-3 inset-x-0 mx-auto w-[94%] max-w-[390px] z-50 pointer-events-auto select-none font-sans animate-[fade-up_0.3s_ease-out]">
       <div className="relative w-full h-[56px] flex items-center justify-center">
         
-        {/* Deep Black Ambient Depth Shadows */}
-        <div className="absolute inset-x-3 -bottom-2 h-14 bg-black/90 blur-xl rounded-full pointer-events-none -z-10" />
-        <div className="absolute inset-x-6 -bottom-1 h-10 bg-black/95 blur-md rounded-full pointer-events-none -z-10" />
+        {/* Ambient Depth Shadows (Deep in Dark Mode, Soft & Airy in Day Mode) */}
+        {!isLight ? (
+          <>
+            <div className="absolute inset-x-3 -bottom-2 h-14 bg-black/90 blur-xl rounded-full pointer-events-none -z-10" />
+            <div className="absolute inset-x-6 -bottom-1 h-10 bg-black/95 blur-md rounded-full pointer-events-none -z-10" />
+          </>
+        ) : (
+          <div className="absolute inset-x-4 -bottom-1 h-8 bg-black/10 blur-md rounded-full pointer-events-none -z-10" />
+        )}
         
         {/* Deep Background Pill with Smooth Curved Center Scoop SVG */}
         <svg
           viewBox="0 0 500 70"
           preserveAspectRatio="none"
-          className="absolute inset-0 w-full h-full drop-shadow-[0_18px_38px_rgba(0,0,0,0.95)] filter drop-shadow-[0_6px_18px_rgba(0,0,0,0.85)]"
+          className={cn(
+            "absolute inset-0 w-full h-full",
+            isLight 
+              ? "drop-shadow-[0_8px_20px_rgba(0,0,0,0.12)] filter drop-shadow-[0_2px_6px_rgba(0,0,0,0.06)]" 
+              : "drop-shadow-[0_18px_38px_rgba(0,0,0,0.95)] filter drop-shadow-[0_6px_18px_rgba(0,0,0,0.85)]"
+          )}
         >
           <path
             d="M 35 0 L 204 0 C 218 0, 224 32, 250 32 C 276 32, 282 0, 296 0 L 465 0 A 35 35 0 0 1 500 35 A 35 35 0 0 1 465 70 L 35 70 A 35 35 0 0 1 0 35 A 35 35 0 0 1 35 0 Z"
@@ -137,7 +151,10 @@ export function MobileBottomNav({ isOthersOpen, onToggleOthers, onOthersClose })
             href="/hourly"
             onClick={handleHourlyClick}
             className={cn(
-              "relative w-10 h-10 rounded-full transition-all duration-300 active:scale-95 flex items-center justify-center cursor-pointer group border-2 border-[var(--color-bg-card)] bg-[var(--color-primary)] text-white shadow-[0_10px_24px_rgba(0,0,0,0.7)]",
+              "relative w-10 h-10 rounded-full transition-all duration-300 active:scale-95 flex items-center justify-center cursor-pointer group border-2 border-[var(--color-bg-card)] bg-[var(--color-primary)] text-white",
+              isLight 
+                ? "shadow-[0_4px_12px_rgba(0,0,0,0.15)]" 
+                : "shadow-[0_10px_24px_rgba(0,0,0,0.7)]",
               isHourly
                 ? "shadow-[0_0_22px_var(--color-primary-glow-hover)] ring-2 ring-[var(--color-primary)] ring-offset-1 ring-offset-[var(--color-bg-card)] scale-105"
                 : "hover:scale-105 shadow-[0_6px_18px_var(--color-primary-glow)]"
