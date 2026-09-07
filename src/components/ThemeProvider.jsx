@@ -21,6 +21,15 @@ export const APPEARANCE_MODES = [
   { id: 'dark', name: 'Dark' }
 ];
 
+export const BG_EFFECTS = [
+  { id: 'hybrid', name: 'Aurora + Grid', tag: 'Hybrid', desc: 'Floating ambient orbs + blueprint cyber grid' },
+  { id: 'aurora', name: 'Ambient Aurora', tag: 'Orbs', desc: 'Organic glowing orbs matching active theme' },
+  { id: 'grid', name: 'Cyber Grid', tag: 'Matrix', desc: 'Technical CAD matrix with radial vignette' },
+  { id: 'spotlight', name: 'Interactive Spotlight', tag: 'Spotlight', desc: 'Mouse-following radiant halo & ambient pulse' },
+  { id: 'grain', name: 'Velvet Frosted Grain', tag: 'Velvet', desc: 'Deep multi-stop gradient with fine grain texture' },
+  { id: 'solid', name: 'Minimal Solid', tag: 'Clean', desc: 'Classic clean solid background' },
+];
+
 // Dynamic 28-day theme rotation schedule (7 days each, repeating indefinitely in a loop)
 // Phase 1 (Days 1–7):   Nordic Slate  ('nordic-slate')
 // Phase 2 (Days 8–14):  Verdant       ('verdant')
@@ -46,6 +55,7 @@ const ThemeContext = createContext();
 export function ThemeProvider({ children }) {
   const [visualTheme, setVisualThemeState] = useState(getScheduledDefaultTheme);
   const [mode, setModeState] = useState('dark');
+  const [bgEffect, setBgEffectState] = useState('hybrid');
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -54,8 +64,14 @@ export function ThemeProvider({ children }) {
     // Read persisted choices or fallbacks
     const storedVisualTheme = localStorage.getItem('app-visual-theme');
     const storedMode = localStorage.getItem('app-mode');
+    const storedBgEffect = localStorage.getItem('app-bg-effect');
     const legacyTheme = localStorage.getItem('theme'); // backward compatibility
     const activeScheduleVersion = localStorage.getItem('app-theme-rotation-v2');
+
+    // 0. Background Effect
+    if (storedBgEffect && BG_EFFECTS.some(b => b.id === storedBgEffect)) {
+      setBgEffectState(storedBgEffect);
+    }
 
     // Check if current Bangladesh time (Asia/Dhaka) is in Night Shift window (11 PM - 2 AM: 23:00 - 02:59)
     const isBangladeshNightWindow = () => {
@@ -118,6 +134,7 @@ export function ThemeProvider({ children }) {
     if (mounted) {
       document.documentElement.setAttribute('data-theme', visualTheme);
       document.documentElement.setAttribute('data-mode', mode);
+      document.documentElement.setAttribute('data-bg-effect', bgEffect);
 
       if (mode === 'light') {
         document.documentElement.classList.add('light-mode');
@@ -125,7 +142,7 @@ export function ThemeProvider({ children }) {
         document.documentElement.classList.remove('light-mode');
       }
     }
-  }, [visualTheme, mode, mounted]);
+  }, [visualTheme, mode, bgEffect, mounted]);
 
   const setVisualTheme = (id) => {
     if (VISUAL_THEMES.some(t => t.id === id)) {
@@ -141,6 +158,13 @@ export function ThemeProvider({ children }) {
     localStorage.setItem('theme', modeId); // legacy sync
   };
 
+  const setBgEffect = (bgId) => {
+    if (BG_EFFECTS.some(b => b.id === bgId)) {
+      setBgEffectState(bgId);
+      localStorage.setItem('app-bg-effect', bgId);
+    }
+  };
+
   const toggleTheme = () => {
     setMode(mode === 'dark' ? 'light' : 'dark');
   };
@@ -154,6 +178,9 @@ export function ThemeProvider({ children }) {
         setMode, 
         theme: mode, 
         toggleTheme,
+        bgEffect,
+        setBgEffect,
+        BG_EFFECTS,
         VISUAL_THEMES,
         APPEARANCE_MODES
       }}

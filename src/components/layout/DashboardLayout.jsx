@@ -9,11 +9,12 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { useKpiData } from '@/utils/useKpiData';
 import { format, parseISO } from 'date-fns';
-import { Clock, LayoutDashboard, Factory, BarChart3, Ship, History, Palette, Sun, Moon, GitCompare, Coffee, Globe, ExternalLink, Check } from 'lucide-react';
+import { Clock, LayoutDashboard, Factory, BarChart3, Ship, History, Palette, Sun, Moon, GitCompare, Coffee, Globe, ExternalLink, Check, Sparkles } from 'lucide-react';
 import { useMonth } from '@/components/providers/MonthProvider';
 import { useTheme } from '@/components/ThemeProvider';
 import { CanteenSecurityModal } from '@/components/ui/CanteenSecurityModal';
 import { MobileHourlyTicker } from '@/components/dashboard/MobileHourlyTicker';
+import { BackgroundCanvas } from '@/components/ui/BackgroundCanvas';
 
 const navItems = [
   { name: 'Dashboard', key: 'navDashboard', href: '/', icon: LayoutDashboard },
@@ -29,10 +30,22 @@ export default function DashboardLayout({ children }) {
   const pathname = usePathname();
   const { dailyTrends } = useKpiData();
   const { selectedMonth, setSelectedMonth } = useMonth();
-  const { visualTheme, setVisualTheme, mode, setMode, toggleTheme, VISUAL_THEMES, APPEARANCE_MODES } = useTheme();
+  const { 
+    visualTheme, 
+    setVisualTheme, 
+    mode, 
+    setMode, 
+    toggleTheme, 
+    bgEffect, 
+    setBgEffect, 
+    BG_EFFECTS, 
+    VISUAL_THEMES, 
+    APPEARANCE_MODES 
+  } = useTheme();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isBurgerOpen, setIsBurgerOpen] = useState(false);
   const [showCanteenModal, setShowCanteenModal] = useState(false);
+  const [mobileThemeTab, setMobileThemeTab] = useState('palette'); // 'palette' | 'background'
 
   let datePart = 'Loading...';
   if (dailyTrends && dailyTrends.length > 0) {
@@ -43,13 +56,16 @@ export default function DashboardLayout({ children }) {
   const isDashboard = pathname === '/';
 
   return (
-    <div className="flex h-screen overflow-hidden w-full bg-[var(--color-bg-main)]">
+    <div className="flex h-screen overflow-hidden w-full bg-[var(--color-bg-main)] relative">
+      {/* Ambient Visual Background FX Layer */}
+      <BackgroundCanvas />
+
       {/* Desktop Attached Left Sidebar */}
       <div className="hidden md:flex flex-col flex-shrink-0 z-40 relative h-full">
         <Sidebar onClose={() => {}} />
       </div>
 
-      <div className="flex flex-col flex-1 overflow-hidden relative w-full">
+      <div className="flex flex-col flex-1 overflow-hidden relative w-full z-10">
         {/* Mobile Top Header (Hidden on Desktop) */}
         <header className="md:hidden fixed top-0 left-0 right-0 bg-[var(--color-bg-card)]/95 backdrop-blur-md z-50 flex flex-col border-b border-[var(--color-border)] shadow-sm">
           {/* Marquee Ticker placed directly ABOVE Byzid Apparels TITLE on dashboard */}
@@ -112,12 +128,12 @@ export default function DashboardLayout({ children }) {
             {isMobileMenuOpen && (
               <>
                 <div className="fixed inset-0 z-[90] bg-black/50" onClick={() => setIsMobileMenuOpen(false)}></div>
-                <div className="absolute top-12 right-2.5 w-52 bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-xl shadow-2xl flex flex-col p-2.5 animate-[fade-down_0.15s_ease-out_both] z-[100] origin-top-right">
+                <div className="absolute top-12 right-2.5 w-60 bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-2xl shadow-2xl flex flex-col p-3 animate-[fade-down_0.15s_ease-out_both] z-[100] origin-top-right">
                   
                   {/* Header with Title and Close Button */}
                   <div className="flex items-center justify-between pb-2 border-b border-[var(--color-border)]/60 mb-2">
                     <span className="text-[10px] font-extrabold uppercase tracking-wider text-[var(--color-text-main)]">
-                      Theme & Mode
+                      Appearance &amp; Style
                     </span>
                     <button 
                       onClick={() => setIsMobileMenuOpen(false)}
@@ -150,35 +166,96 @@ export default function DashboardLayout({ children }) {
                     })}
                   </div>
 
-                  {/* Compressed Full Theme List */}
-                  <div className="space-y-0.5 divide-y divide-[var(--color-border)]/20 max-h-[220px] overflow-y-auto">
-                    {VISUAL_THEMES.map((t) => {
-                      const isSelected = visualTheme === t.id;
-                      return (
-                        <button
-                          key={t.id}
-                          onClick={() => { setVisualTheme(t.id); setIsMobileMenuOpen(false); }}
-                          className={cn(
-                            "w-full flex items-center justify-between px-2 py-1 rounded-md text-[10.5px] font-medium transition-colors cursor-pointer text-left",
-                            isSelected
-                              ? "bg-[var(--color-primary)]/15 text-[var(--color-primary)] font-bold"
-                              : "text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-main)]"
-                          )}
-                        >
-                          <div className="flex items-center gap-2 min-w-0">
-                            <span 
-                              className="w-2 h-2 rounded-full shrink-0 shadow-xs" 
-                              style={{ backgroundColor: t.color }} 
-                            />
-                            <span className="truncate">{t.name}</span>
-                          </div>
-                          {isSelected && (
-                            <Check size={11} className="text-[var(--color-primary)] shrink-0 ml-1.5" />
-                          )}
-                        </button>
-                      );
-                    })}
+                  {/* Tab Selector: Palettes vs Background FX */}
+                  <div className="grid grid-cols-2 gap-1 p-0.5 bg-[var(--color-surface)] rounded-lg border border-[var(--color-border)]/40 mb-2">
+                    <button
+                      onClick={() => setMobileThemeTab('palette')}
+                      className={cn(
+                        "py-1 rounded text-[9px] font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-1 cursor-pointer",
+                        mobileThemeTab === 'palette'
+                          ? "bg-[var(--color-bg-card)] text-[var(--color-primary)] shadow-xs"
+                          : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)]"
+                      )}
+                    >
+                      <Palette size={10} />
+                      <span>Palette</span>
+                    </button>
+                    <button
+                      onClick={() => setMobileThemeTab('background')}
+                      className={cn(
+                        "py-1 rounded text-[9px] font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-1 cursor-pointer",
+                        mobileThemeTab === 'background'
+                          ? "bg-[var(--color-bg-card)] text-[var(--color-primary)] shadow-xs"
+                          : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)]"
+                      )}
+                    >
+                      <Sparkles size={10} />
+                      <span>Background</span>
+                    </button>
                   </div>
+
+                  {/* Tab 1: Palette List */}
+                  {mobileThemeTab === 'palette' && (
+                    <div className="space-y-0.5 divide-y divide-[var(--color-border)]/20 max-h-[200px] overflow-y-auto pr-0.5">
+                      {VISUAL_THEMES.map((t) => {
+                        const isSelected = visualTheme === t.id;
+                        return (
+                          <button
+                            key={t.id}
+                            onClick={() => { setVisualTheme(t.id); }}
+                            className={cn(
+                              "w-full flex items-center justify-between px-2 py-1 rounded-md text-[10.5px] font-medium transition-colors cursor-pointer text-left",
+                              isSelected
+                                ? "bg-[var(--color-primary)]/15 text-[var(--color-primary)] font-bold"
+                                : "text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-main)]"
+                            )}
+                          >
+                            <div className="flex items-center gap-2 min-w-0">
+                              <span 
+                                className="w-2.5 h-2.5 rounded-full shrink-0 shadow-xs" 
+                                style={{ backgroundColor: t.color }} 
+                              />
+                              <span className="truncate">{t.name}</span>
+                            </div>
+                            {isSelected && (
+                              <Check size={11} className="text-[var(--color-primary)] shrink-0 ml-1.5" />
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
+
+                  {/* Tab 2: Background Effects List */}
+                  {mobileThemeTab === 'background' && (
+                    <div className="space-y-1 max-h-[200px] overflow-y-auto pr-0.5">
+                      {BG_EFFECTS.map((b) => {
+                        const isSelected = bgEffect === b.id;
+                        return (
+                          <button
+                            key={b.id}
+                            onClick={() => { setBgEffect(b.id); }}
+                            className={cn(
+                              "w-full flex flex-col gap-0.5 px-2 py-1.5 rounded-lg text-left transition-all cursor-pointer border",
+                              isSelected
+                                ? "bg-[var(--color-primary)]/15 text-[var(--color-primary)] border-[var(--color-primary)]/40 shadow-xs"
+                                : "bg-[var(--color-surface)] text-[var(--color-text-secondary)] border-[var(--color-border)] hover:text-[var(--color-text-main)] hover:border-[var(--color-primary)]/30"
+                            )}
+                          >
+                            <div className="flex items-center justify-between">
+                              <span className="text-[10px] font-bold text-[var(--color-text-main)]">{b.name}</span>
+                              {isSelected ? (
+                                <span className="text-[8px] font-extrabold uppercase tracking-wider text-[var(--color-primary)] px-1 py-0.2 bg-[var(--color-primary)]/20 rounded">Active</span>
+                              ) : (
+                                <span className="text-[8px] text-[var(--color-text-muted)] uppercase tracking-wider">{b.tag}</span>
+                              )}
+                            </div>
+                            <span className="text-[8px] text-[var(--color-text-muted)] line-clamp-1 leading-tight">{b.desc}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
 
                 </div>
               </>

@@ -19,7 +19,8 @@ import {
   GitCompare,
   Layers,
   Globe,
-  ExternalLink
+  ExternalLink,
+  Sparkles
 } from 'lucide-react';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -59,11 +60,22 @@ const DEFAULT_LINE_ITEMS = {
 export default function Sidebar({ onClose }) {
   const pathname = usePathname();
   const { dailyTrends, lines } = useKpiData();
-  const { visualTheme, setVisualTheme, mode, setMode, VISUAL_THEMES, APPEARANCE_MODES } = useTheme();
+  const { 
+    visualTheme, 
+    setVisualTheme, 
+    mode, 
+    setMode, 
+    bgEffect, 
+    setBgEffect, 
+    BG_EFFECTS, 
+    VISUAL_THEMES, 
+    APPEARANCE_MODES 
+  } = useTheme();
   
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isLinesExpanded, setIsLinesExpanded] = useState(true);
   const [isThemesExpanded, setIsThemesExpanded] = useState(true);
+  const [sidebarThemeTab, setSidebarThemeTab] = useState('palette'); // 'palette' | 'background'
 
   // Auto-expand lines dropdown if user navigates to a line page
   useEffect(() => {
@@ -350,44 +362,114 @@ export default function Sidebar({ onClose }) {
               {/* Theme List & Appearance Modes */}
               <div className={cn(
                 "overflow-hidden transition-all duration-300 ease-in-out space-y-1.5",
-                isThemesExpanded ? "max-h-[220px] opacity-100 pb-0.5" : "max-h-0 opacity-0"
+                isThemesExpanded ? "max-h-[260px] opacity-100 pb-0.5" : "max-h-0 opacity-0"
               )}>
-                {/* Visual Themes with Name in a Serial List */}
-                <div className="bg-[var(--color-surface)]/60 border border-[var(--color-border)] rounded-lg p-1.5 space-y-1">
-                  <div className="flex items-center justify-between px-1 text-[8.5px] font-bold uppercase tracking-wider">
-                    <span className="text-[var(--color-text-muted)]">Palettes ({VISUAL_THEMES.length})</span>
-                    <span className="text-[var(--color-primary)] font-extrabold truncate max-w-[90px]">{currentThemeObj.name}</span>
-                  </div>
-
-                  {/* Serial Theme List */}
-                  <div className="max-h-32 overflow-y-auto space-y-0.5 pr-0.5 hide-scrollbar">
-                    {VISUAL_THEMES.map((t, idx) => {
-                      const isSelected = visualTheme === t.id;
-                      return (
-                        <button
-                          key={t.id}
-                          onClick={() => setVisualTheme(t.id)}
-                          className={cn(
-                            "w-full flex items-center gap-1.5 px-1.5 py-1 rounded-md text-[9.5px] font-semibold transition-all cursor-pointer text-left",
-                            isSelected
-                              ? "bg-[var(--color-primary)]/15 text-[var(--color-primary)] font-bold shadow-sm"
-                              : "text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-main)]"
-                          )}
-                        >
-                          <span className="text-[8px] text-[var(--color-text-muted)] font-mono w-2.5 shrink-0">{idx + 1}.</span>
-                          <span 
-                            className="w-2 h-2 rounded-full shrink-0 shadow-sm" 
-                            style={{ backgroundColor: t.color, boxShadow: isSelected ? `0 0 6px ${t.color}` : undefined }} 
-                          />
-                          <span className="truncate flex-1">{t.name}</span>
-                          {isSelected && (
-                            <span className="text-[7.5px] font-black uppercase tracking-wider text-[var(--color-primary)] shrink-0">Active</span>
-                          )}
-                        </button>
-                      );
-                    })}
-                  </div>
+                {/* Segmented Tab Switch: Palettes vs Backgrounds */}
+                <div className="grid grid-cols-2 gap-1 p-0.5 bg-[var(--color-surface)] rounded-lg border border-[var(--color-border)]">
+                  <button
+                    onClick={() => setSidebarThemeTab('palette')}
+                    className={cn(
+                      "py-0.5 px-1 rounded text-[8.5px] font-bold uppercase tracking-wider flex items-center justify-center gap-1 transition-all cursor-pointer",
+                      sidebarThemeTab === 'palette'
+                        ? "bg-[var(--color-bg-card)] text-[var(--color-primary)] shadow-xs"
+                        : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)]"
+                    )}
+                  >
+                    <Palette size={10} />
+                    <span>Palettes</span>
+                  </button>
+                  <button
+                    onClick={() => setSidebarThemeTab('background')}
+                    className={cn(
+                      "py-0.5 px-1 rounded text-[8.5px] font-bold uppercase tracking-wider flex items-center justify-center gap-1 transition-all cursor-pointer",
+                      sidebarThemeTab === 'background'
+                        ? "bg-[var(--color-bg-card)] text-[var(--color-primary)] shadow-xs"
+                        : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)]"
+                    )}
+                  >
+                    <Sparkles size={10} />
+                    <span>Backdrop</span>
+                  </button>
                 </div>
+
+                {/* Tab 1: Visual Themes with Name in a Serial List */}
+                {sidebarThemeTab === 'palette' && (
+                  <div className="bg-[var(--color-surface)]/60 border border-[var(--color-border)] rounded-lg p-1.5 space-y-1">
+                    <div className="flex items-center justify-between px-1 text-[8.5px] font-bold uppercase tracking-wider">
+                      <span className="text-[var(--color-text-muted)]">Palettes ({VISUAL_THEMES.length})</span>
+                      <span className="text-[var(--color-primary)] font-extrabold truncate max-w-[90px]">{currentThemeObj.name}</span>
+                    </div>
+
+                    {/* Serial Theme List */}
+                    <div className="max-h-32 overflow-y-auto space-y-0.5 pr-0.5 hide-scrollbar">
+                      {VISUAL_THEMES.map((t, idx) => {
+                        const isSelected = visualTheme === t.id;
+                        return (
+                          <button
+                            key={t.id}
+                            onClick={() => setVisualTheme(t.id)}
+                            className={cn(
+                              "w-full flex items-center gap-1.5 px-1.5 py-1 rounded-md text-[9.5px] font-semibold transition-all cursor-pointer text-left",
+                              isSelected
+                                ? "bg-[var(--color-primary)]/15 text-[var(--color-primary)] font-bold shadow-sm"
+                                : "text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-main)]"
+                            )}
+                          >
+                            <span className="text-[8px] text-[var(--color-text-muted)] font-mono w-2.5 shrink-0">{idx + 1}.</span>
+                            <span 
+                              className="w-2 h-2 rounded-full shrink-0 shadow-sm" 
+                              style={{ backgroundColor: t.color, boxShadow: isSelected ? `0 0 6px ${t.color}` : undefined }} 
+                            />
+                            <span className="truncate flex-1">{t.name}</span>
+                            {isSelected && (
+                              <span className="text-[7.5px] font-black uppercase tracking-wider text-[var(--color-primary)] shrink-0">Active</span>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* Tab 2: Background Effects List */}
+                {sidebarThemeTab === 'background' && (
+                  <div className="bg-[var(--color-surface)]/60 border border-[var(--color-border)] rounded-lg p-1.5 space-y-1">
+                    <div className="flex items-center justify-between px-1 text-[8.5px] font-bold uppercase tracking-wider">
+                      <span className="text-[var(--color-text-muted)]">Effects ({BG_EFFECTS.length})</span>
+                      <span className="text-[var(--color-primary)] font-extrabold truncate max-w-[90px]">
+                        {BG_EFFECTS.find(b => b.id === bgEffect)?.name}
+                      </span>
+                    </div>
+
+                    <div className="max-h-32 overflow-y-auto space-y-0.5 pr-0.5 hide-scrollbar">
+                      {BG_EFFECTS.map((b, idx) => {
+                        const isSelected = bgEffect === b.id;
+                        return (
+                          <button
+                            key={b.id}
+                            onClick={() => setBgEffect(b.id)}
+                            className={cn(
+                              "w-full flex flex-col gap-0.5 px-1.5 py-1 rounded-md text-[9px] font-medium transition-all cursor-pointer text-left",
+                              isSelected
+                                ? "bg-[var(--color-primary)]/15 text-[var(--color-primary)] font-bold shadow-sm border border-[var(--color-primary)]/30"
+                                : "text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-main)]"
+                            )}
+                          >
+                            <div className="flex items-center justify-between">
+                              <span className="font-bold truncate text-[9px]">{b.name}</span>
+                              {isSelected ? (
+                                <span className="text-[7.5px] font-black uppercase tracking-wider text-[var(--color-primary)]">Active</span>
+                              ) : (
+                                <span className="text-[7.5px] text-[var(--color-text-muted)] uppercase tracking-wider">{b.tag}</span>
+                              )}
+                            </div>
+                            <span className="text-[7.5px] text-[var(--color-text-muted)] truncate">{b.desc}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
 
                 {/* Appearance Mode Radio Group */}
                 <div className="grid grid-cols-2 gap-1 p-0.5 bg-[var(--color-surface)] rounded-lg border border-[var(--color-border)]">

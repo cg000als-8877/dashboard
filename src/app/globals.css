@@ -1563,3 +1563,69 @@ body {
   animation-play-state: paused;
 }
 
+/* ═══════════════════════════════════════════
+   BACKGROUND EFFECTS KEYFRAMES & UTILITIES
+═══════════════════════════════════════════ */
+@keyframes orb-float-1 {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  33% {
+    transform: translate3d(60px, -45px, 0) scale(1.1);
+  }
+  66% {
+    transform: translate3d(-40px, 50px, 0) scale(0.92);
+  }
+}
+
+@keyframes orb-float-2 {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  33% {
+    transform: translate3d(-50px, 40px, 0) scale(1.12);
+  }
+  66% {
+    transform: translate3d(45px, -35px, 0) scale(0.9);
+  }
+}
+
+@keyframes orb-float-3 {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(35px, 45px, 0) scale(1.08);
+  }
+}
+
+@keyframes spotlight-pulse {
+  0%, 100% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.06);
+  }
+}
+
+.animate-orb-1 {
+  animation: orb-float-1 22s ease-in-out infinite;
+  will-change: transform;
+}
+
+.animate-orb-2 {
+  animation: orb-float-2 26s ease-in-out infinite;
+  will-change: transform;
+}
+
+.animate-orb-3 {
+  animation: orb-float-3 20s ease-in-out infinite;
+  will-change: transform;
+}
+
+.animate-spotlight-pulse {
+  animation: spotlight-pulse 8s ease-in-out infinite;
+}
+
