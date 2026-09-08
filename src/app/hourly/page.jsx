@@ -362,7 +362,7 @@ export default function HourlyPage() {
                     : 'Select Date'}
                 </span>
                 {holidayInfo && (
-                  <span className="text-[9px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                  <span className="text-[9px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-800 dark:text-amber-400 border border-amber-500/30">
                     {holidayInfo.icon} {holidayInfo.isFriday ? 'Friday' : 'Holiday'}
                   </span>
                 )}
@@ -447,8 +447,8 @@ export default function HourlyPage() {
                           ? "bg-[var(--color-primary)]/15 text-[var(--color-primary)] border-[var(--color-primary)]/40 shadow-sm"
                           : hInfo
                             ? hInfo.isFriday 
-                              ? "bg-rose-500/10 text-rose-300 border-rose-500/20 hover:bg-rose-500/20" 
-                              : "bg-amber-500/10 text-amber-300 border-amber-500/30 hover:bg-amber-500/20"
+                              ? "bg-rose-500/10 text-rose-700 dark:text-rose-300 border-rose-500/20 hover:bg-rose-500/20" 
+                              : "bg-amber-500/10 text-amber-800 dark:text-amber-300 border-amber-500/30 hover:bg-amber-500/20"
                             : "bg-[var(--color-surface)]/40 text-[var(--color-text-main)] border-transparent hover:bg-[var(--color-surface)]"
                       )}
                     >
@@ -470,8 +470,8 @@ export default function HourlyPage() {
                         <span className={cn(
                           "text-[8px] md:text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full border shrink-0 ml-2",
                           hInfo.isFriday 
-                            ? "bg-rose-500/20 text-rose-400 border-rose-500/30" 
-                            : "bg-amber-500/20 text-amber-400 border-amber-500/40"
+                            ? "bg-rose-500/20 text-rose-700 dark:text-rose-400 border-rose-500/30" 
+                            : "bg-amber-500/20 text-amber-800 dark:text-amber-400 border-amber-500/40"
                         )}>
                           {hInfo.isFriday ? 'Friday Rest' : 'Public Holiday'}
                         </span>
@@ -499,7 +499,7 @@ export default function HourlyPage() {
                   {holidayInfo.icon}
                 </div>
                 
-                <span className="text-[10px] md:text-xs font-extrabold uppercase tracking-widest px-3 py-1 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30 mb-3">
+                <span className="text-[10px] md:text-xs font-extrabold uppercase tracking-widest px-3 py-1 rounded-full bg-amber-500/20 text-amber-800 dark:text-amber-400 border border-amber-500/30 mb-3">
                   {holidayInfo.isFriday ? "Weekly Factory Holiday" : "Official Public Holiday"}
                 </span>
 
@@ -507,7 +507,7 @@ export default function HourlyPage() {
                   {holidayInfo.title}
                 </h3>
                 
-                <p className="text-xs md:text-sm font-semibold text-amber-400/90 mb-4 uppercase tracking-wider">
+                <p className="text-xs md:text-sm font-semibold text-amber-800 dark:text-amber-400/90 mb-4 uppercase tracking-wider">
                   {holidayInfo.subtitle} • {formatDate(selectedDate)}
                 </p>
 

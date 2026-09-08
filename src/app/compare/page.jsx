@@ -410,7 +410,7 @@ export default function ComparePage() {
                     </div>
                     <div className="space-y-1">
                       <span className="text-[10px] uppercase font-bold text-[var(--color-text-muted)]">Net Profit</span>
-                      <p className={cn("text-xl font-bold", stats1.netProfit >= 0 ? "text-emerald-400" : "text-rose-400")}>
+                      <p className={cn("text-xl font-bold", stats1.netProfit >= 0 ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400")}>
                         BDT {stats1.netProfit.toLocaleString()}
                       </p>
                     </div>
@@ -448,7 +448,7 @@ export default function ComparePage() {
                     </div>
                     <div className="space-y-1">
                       <span className="text-[10px] uppercase font-bold text-[var(--color-text-muted)]">Net Profit</span>
-                      <p className={cn("text-xl font-bold", stats2.netProfit >= 0 ? "text-emerald-400" : "text-rose-400")}>
+                      <p className={cn("text-xl font-bold", stats2.netProfit >= 0 ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400")}>
                         BDT {stats2.netProfit.toLocaleString()}
                       </p>
                     </div>
@@ -660,7 +660,7 @@ export default function ComparePage() {
                   </div>
                   <div className="space-y-1">
                     <span className="text-[10px] uppercase font-bold text-[var(--color-text-muted)]">Net Profit</span>
-                    <p className={cn("text-xl font-bold", month1Data.stats.netProfit >= 0 ? "text-emerald-400" : "text-rose-400")}>
+                    <p className={cn("text-xl font-bold", month1Data.stats.netProfit >= 0 ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400")}>
                       BDT {month1Data.stats.netProfit.toLocaleString()}
                     </p>
                   </div>
@@ -692,7 +692,7 @@ export default function ComparePage() {
                   </div>
                   <div className="space-y-1">
                     <span className="text-[10px] uppercase font-bold text-[var(--color-text-muted)]">Net Profit</span>
-                    <p className={cn("text-xl font-bold", month2Data.stats.netProfit >= 0 ? "text-emerald-400" : "text-rose-400")}>
+                    <p className={cn("text-xl font-bold", month2Data.stats.netProfit >= 0 ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400")}>
                       BDT {month2Data.stats.netProfit.toLocaleString()}
                     </p>
                   </div>

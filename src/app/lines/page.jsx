@@ -125,28 +125,28 @@ const LINE_CARD_META = {
     glow: 'rgba(16, 185, 129, 0.25)',
     btnClass: 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-md shadow-emerald-950/30',
     borderClass: 'border-emerald-500/30',
-    bgBadge: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30'
+    bgBadge: 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border-emerald-500/30'
   },
   'B': {
     color: '#3B82F6',
     glow: 'rgba(59, 130, 246, 0.25)',
     btnClass: 'bg-blue-600 hover:bg-blue-500 text-white shadow-md shadow-blue-950/30',
     borderClass: 'border-blue-500/30',
-    bgBadge: 'bg-blue-500/15 text-blue-400 border-blue-500/30'
+    bgBadge: 'bg-blue-500/15 text-blue-700 dark:text-blue-400 border-blue-500/30'
   },
   'C': {
     color: '#A855F7',
     glow: 'rgba(168, 85, 247, 0.25)',
     btnClass: 'bg-purple-600 hover:bg-purple-500 text-white shadow-md shadow-purple-950/30',
     borderClass: 'border-purple-500/30',
-    bgBadge: 'bg-purple-500/15 text-purple-400 border-purple-500/30'
+    bgBadge: 'bg-purple-500/15 text-purple-700 dark:text-purple-400 border-purple-500/30'
   },
   'D': {
     color: '#F59E0B',
     glow: 'rgba(245, 158, 11, 0.25)',
     btnClass: 'bg-amber-600 hover:bg-amber-500 text-white shadow-md shadow-amber-950/30',
     borderClass: 'border-amber-500/30',
-    bgBadge: 'bg-amber-500/15 text-amber-400 border-amber-500/30'
+    bgBadge: 'bg-amber-500/15 text-amber-800 dark:text-amber-400 border-amber-500/30'
   }
 };
 
@@ -327,12 +327,12 @@ export default function ProductionLinesPage() {
                     </span>
                   )}
                   {criticalCount > 0 && (
-                    <span className="inline-flex items-center gap-1 text-[10px] sm:text-xs font-bold text-rose-400 bg-rose-500/15 px-2.5 py-0.5 rounded-md border border-rose-500/30">
+                    <span className="inline-flex items-center gap-1 text-[10px] sm:text-xs font-bold text-rose-700 dark:text-rose-400 bg-rose-500/15 px-2.5 py-0.5 rounded-md border border-rose-500/30">
                       <AlertTriangle size={12} /> {criticalCount} Critical
                     </span>
                   )}
                   {inactiveCount > 0 && (
-                    <span className="inline-flex items-center gap-1 text-[10px] sm:text-xs font-bold text-zinc-400 bg-zinc-500/15 px-2.5 py-0.5 rounded-md border border-zinc-500/30">
+                    <span className="inline-flex items-center gap-1 text-[10px] sm:text-xs font-bold text-zinc-700 dark:text-zinc-400 bg-zinc-500/15 px-2.5 py-0.5 rounded-md border border-zinc-500/30">
                       <Clock size={12} /> {inactiveCount} Inactive
                     </span>
                   )}
@@ -450,12 +450,12 @@ export default function ProductionLinesPage() {
                     <td className={cn("py-3 px-3 text-right font-black", isInactive ? "text-[var(--color-text-muted)]" : isProfitable ? "text-[var(--color-success-text)]" : "text-[var(--color-danger-text)]")}>
                       {isInactive ? 'BDT 0' : (isProfitable ? `+BDT ${(line.netProfit || 0).toLocaleString()}` : `BDT ${(line.netProfit || 0).toLocaleString()}`)}
                     </td>
-                    <td className={cn("py-3 px-3 text-right font-bold", isInactive ? "text-[var(--color-text-muted)]" : parseFloat(line.monthCostRecovery || 0) >= 100 ? "text-emerald-400" : "text-amber-400")}>
+                    <td className={cn("py-3 px-3 text-right font-bold", isInactive ? "text-[var(--color-text-muted)]" : parseFloat(line.monthCostRecovery || 0) >= 100 ? "text-emerald-700 dark:text-emerald-400" : "text-amber-800 dark:text-amber-400")}>
                       {line.monthCostRecovery || '0.0'}%
                     </td>
                     <td className="py-3 px-3 text-center">
                       {isInactive ? (
-                        <span className="px-2 py-0.5 rounded text-[8.5px] font-bold uppercase tracking-wider bg-zinc-500/15 text-zinc-400 border border-zinc-500/30">
+                        <span className="px-2 py-0.5 rounded text-[8.5px] font-bold uppercase tracking-wider bg-zinc-500/15 text-zinc-700 dark:text-zinc-400 border border-zinc-500/30">
                           Idle
                         </span>
                       ) : isProfitable ? (
@@ -463,7 +463,7 @@ export default function ProductionLinesPage() {
                           Optimal
                         </span>
                       ) : (
-                        <span className="px-2 py-0.5 rounded text-[8.5px] font-bold uppercase tracking-wider bg-rose-500/15 text-rose-400 border border-rose-500/30">
+                        <span className="px-2 py-0.5 rounded text-[8.5px] font-bold uppercase tracking-wider bg-rose-500/15 text-rose-700 dark:text-rose-400 border border-rose-500/30">
                           Critical
                         </span>
                       )}
@@ -591,24 +591,24 @@ export default function ProductionLinesPage() {
                         {/* Clean Status & Leadership Badges (Without Dots) */}
                         <div className="flex items-center gap-1.5 flex-wrap justify-end">
                           {isTopProfit ? (
-                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-wider bg-amber-500/15 text-amber-400 border border-amber-500/30">
+                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-wider bg-amber-500/15 text-amber-800 dark:text-amber-400 border border-amber-500/30">
                               <Trophy size={11} />
                               <span>Profit Leader</span>
                             </span>
                           ) : isTopOutput ? (
-                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-wider bg-blue-500/15 text-blue-400 border border-blue-500/30">
+                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-wider bg-blue-500/15 text-blue-700 dark:text-blue-400 border border-blue-500/30">
                               <Zap size={11} />
                               <span>Top Output</span>
                             </span>
                           ) : isTopRecovery ? (
-                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-wider bg-purple-500/15 text-purple-400 border border-purple-500/30">
+                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-wider bg-purple-500/15 text-purple-700 dark:text-purple-400 border border-purple-500/30">
                               <Activity size={11} />
                               <span>Top Efficiency</span>
                             </span>
                           ) : null}
 
                           {isInactive ? (
-                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-widest bg-zinc-500/15 text-zinc-400 border border-zinc-500/30">
+                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-widest bg-zinc-500/15 text-zinc-700 dark:text-zinc-400 border border-zinc-500/30">
                               <Clock size={11} />
                               <span>No Production</span>
                             </span>
@@ -618,7 +618,7 @@ export default function ProductionLinesPage() {
                               <span>Optimal</span>
                             </span>
                           ) : (
-                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-widest bg-rose-500/15 text-rose-400 border border-rose-500/30">
+                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-widest bg-rose-500/15 text-rose-700 dark:text-rose-400 border border-rose-500/30">
                               <AlertTriangle size={11} />
                               <span>Critical</span>
                             </span>
@@ -644,8 +644,8 @@ export default function ProductionLinesPage() {
                               isInactive 
                                 ? "text-[var(--color-text-muted)]" 
                                 : parseFloat(line.monthCostRecovery || 0) >= 100 
-                                  ? "text-emerald-400" 
-                                  : "text-amber-400"
+                                  ? "text-emerald-700 dark:text-emerald-400" 
+                                  : "text-amber-800 dark:text-amber-400"
                             )}>
                               {line.monthCostRecovery || '0.0'}%
                             </span>
@@ -810,8 +810,8 @@ export default function ProductionLinesPage() {
                               isInactive 
                                 ? "text-[var(--color-text-muted)]" 
                                 : parseFloat(line.lastDayCostRecovery || 0) >= 100 
-                                  ? "text-emerald-400" 
-                                  : "text-amber-400"
+                                  ? "text-emerald-700 dark:text-emerald-400" 
+                                  : "text-amber-800 dark:text-amber-400"
                             )}>{line.lastDayCostRecovery || '0.0'}%</strong>
                           </span>
                         </div>
@@ -850,7 +850,7 @@ export default function ProductionLinesPage() {
                         {/* Break-Even Target & Productivity Grid */}
                         <div className="grid grid-cols-2 gap-2 pt-2 border-t border-[var(--color-border)]/50 text-[10px]">
                           <div className="flex items-center gap-1.5 text-[var(--color-text-muted)]">
-                            <Target size={12} className="text-amber-400 shrink-0" />
+                            <Target size={12} className="text-amber-600 dark:text-amber-400 shrink-0" />
                             <span>Break-Even:</span>
                             <span className="font-bold text-[var(--color-text-main)]">
                               {breakEvenTarget > 0 ? `${breakEvenTarget} PCS` : 'N/A'}
@@ -858,7 +858,7 @@ export default function ProductionLinesPage() {
                           </div>
 
                           <div className="flex items-center gap-1.5 text-[var(--color-text-muted)] justify-end">
-                            <Users size={12} className="text-blue-400 shrink-0" />
+                            <Users size={12} className="text-blue-600 dark:text-blue-400 shrink-0" />
                             <span>Operator Output:</span>
                             <span className="font-bold text-[var(--color-text-main)]">
                               {pcsPerOperator} <span className="text-[8.5px] text-[var(--color-text-muted)]">P/Head</span>

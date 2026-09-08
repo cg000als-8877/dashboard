@@ -739,7 +739,7 @@ export function DashboardContent({ month, isArchive = false }) {
                               </h2>
                               
                               {isInactive ? (
-                                <span className="inline-flex items-center px-2 py-0.5 rounded text-[8.5px] md:text-[9px] font-bold uppercase tracking-widest bg-zinc-500/15 text-zinc-400 border border-zinc-500/30">
+                                <span className="inline-flex items-center px-2 py-0.5 rounded text-[8.5px] md:text-[9px] font-bold uppercase tracking-widest bg-zinc-500/15 text-zinc-700 dark:text-zinc-400 border border-zinc-500/30">
                                   Idle
                                 </span>
                               ) : isProfitable ? (
@@ -752,7 +752,7 @@ export function DashboardContent({ month, isArchive = false }) {
                                   <span>Critical</span>
                                 </span>
                               ) : (
-                                <span className="inline-flex items-center px-2 py-0.5 rounded text-[8.5px] md:text-[9px] font-bold uppercase tracking-widest bg-rose-500/15 text-rose-400 border border-rose-500/30">
+                                <span className="inline-flex items-center px-2 py-0.5 rounded text-[8.5px] md:text-[9px] font-bold uppercase tracking-widest bg-rose-500/15 text-rose-700 dark:text-rose-400 border border-rose-500/30">
                                   Critical
                                 </span>
                               )}
@@ -772,8 +772,8 @@ export function DashboardContent({ month, isArchive = false }) {
                                   isInactive 
                                     ? "text-[var(--color-text-muted)]"
                                     : parseFloat(line.monthCostRecovery || 0) >= 100 
-                                      ? "text-emerald-400" 
-                                      : "text-amber-400"
+                                      ? "text-emerald-600 dark:text-emerald-400" 
+                                      : "text-amber-600 dark:text-amber-400"
                                 )}>
                                   {line.monthCostRecovery || '0.0'}%
                                 </span>
@@ -804,7 +804,7 @@ export function DashboardContent({ month, isArchive = false }) {
 
                               <div className="bg-[var(--color-surface)] p-2.5 sm:p-3 rounded-xl border border-[var(--color-border)] shadow-xs">
                                 <p className="text-[9px] text-[var(--color-text-muted)] font-medium uppercase tracking-wider mb-0.5">Cost</p>
-                                <p className="text-sm md:text-base lg:text-lg font-bold text-amber-500 truncate">
+                                <p className="text-sm md:text-base lg:text-lg font-bold text-amber-600 dark:text-amber-400 truncate">
                                   <AnimatedNumber value={Math.round(line.totalCost)} prefix="BDT " />
                                 </p>
                               </div>
@@ -841,7 +841,7 @@ export function DashboardContent({ month, isArchive = false }) {
                                 Last Day Input ({lastDayDateStr})
                               </span>
                               <span className="text-[9.5px] sm:text-[10.5px] font-bold text-[var(--color-text-muted)] shrink-0">
-                                Cost Recovery: <span className={cn("font-extrabold", isInactive ? "text-[var(--color-text-muted)]" : (parseFloat(line.lastDayCostRecovery || 0) >= 100 ? "text-emerald-400" : "text-amber-400"))}>{line.lastDayCostRecovery || '0.0'}%</span>
+                                Cost Recovery: <span className={cn("font-extrabold", isInactive ? "text-[var(--color-text-muted)]" : (parseFloat(line.lastDayCostRecovery || 0) >= 100 ? "text-emerald-600 dark:text-emerald-400" : "text-amber-600 dark:text-amber-400"))}>{line.lastDayCostRecovery || '0.0'}%</span>
                               </span>
                             </div>
 

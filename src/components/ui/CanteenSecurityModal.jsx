@@ -120,12 +120,12 @@ export function CanteenSecurityModal({ isOpen, onClose, onRedirectHome }) {
              ══════════════════════════════════════════════════════════ */}
           {step === 'challenge' && (
             <div className="flex flex-col items-center gap-3.5 w-full animate-[fade-in_0.2s_ease-out]">
-              <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center shadow-inner mt-1">
+              <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shadow-inner mt-1">
                 <Lock size={22} className="drop-shadow-[0_0_8px_rgba(129,140,248,0.4)]" />
               </div>
 
               <div className="space-y-1">
-                <span className="text-[9.5px] font-black uppercase tracking-[0.2em] text-indigo-400">
+                <span className="text-[9.5px] font-black uppercase tracking-[0.2em] text-indigo-600 dark:text-indigo-400">
                   Security Question
                 </span>
                 <h3 className="text-sm font-bold text-[var(--color-text-main)] leading-snug px-1">
@@ -171,7 +171,7 @@ export function CanteenSecurityModal({ isOpen, onClose, onRedirectHome }) {
               </div>
 
               {errorMessage && (
-                <p className="text-[11px] text-rose-400 font-semibold animate-[shake_0.3s_ease-in-out]">
+                <p className="text-[11px] text-rose-700 dark:text-rose-400 font-semibold animate-[shake_0.3s_ease-in-out]">
                   {errorMessage}
                 </p>
               )}
@@ -330,7 +330,7 @@ export function CanteenSecurityModal({ isOpen, onClose, onRedirectHome }) {
 
               {/* "YOU LIED!" Headline with glowing fiery wicked styling */}
               <div className="space-y-1">
-                <div className="inline-block px-3 py-1 rounded-full bg-rose-500/20 border border-rose-500/40 text-rose-400 font-black text-[10px] tracking-[0.25em] uppercase shadow-[0_0_12px_rgba(244,63,94,0.4)]">
+                <div className="inline-block px-3 py-1 rounded-full bg-rose-500/20 border border-rose-500/40 text-rose-700 dark:text-rose-400 font-black text-[10px] tracking-[0.25em] uppercase shadow-[0_0_12px_rgba(244,63,94,0.4)]">
                   Caught Red-Handed
                 </div>
                 <h3 className="text-2xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-rose-500 via-amber-400 to-rose-600 animate-pulse uppercase">

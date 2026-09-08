@@ -50,11 +50,11 @@ function ArchiveMonthCard({ month }) {
             <h2 className="text-lg sm:text-xl font-semibold text-[var(--color-text-main)] font-display">{month.name}</h2>
             {!loading && stats && (
               isProfit ? (
-                <span className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20">
+                <span className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20">
                   <TrendingUp size={12} /> Profit
                 </span>
               ) : (
-                <span className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-rose-400 bg-rose-500/10 px-2.5 py-0.5 rounded-full border border-rose-500/20">
+                <span className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-rose-700 dark:text-rose-400 bg-rose-500/10 px-2.5 py-0.5 rounded-full border border-rose-500/20">
                   <TrendingDown size={12} /> Loss
                 </span>
               )

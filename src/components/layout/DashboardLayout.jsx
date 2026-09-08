@@ -120,7 +120,7 @@ export default function DashboardLayout({ children }) {
                 {mode === 'dark' ? (
                   <Sun size={19} strokeWidth={2.2} className="text-amber-400" />
                 ) : (
-                  <Moon size={19} strokeWidth={2.2} className="text-indigo-400" />
+                  <Moon size={19} strokeWidth={2.2} className="text-indigo-600 dark:text-indigo-400" />
                 )}
               </button>
             </div>

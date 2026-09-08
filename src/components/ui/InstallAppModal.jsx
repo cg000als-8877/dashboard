@@ -59,21 +59,21 @@ export function InstallAppModal({ isOpen, isIOS, onInstall, onDismiss }) {
               </p>
               
               <div className="flex items-start gap-2.5">
-                <span className="w-5 h-5 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5">1</span>
+                <span className="w-5 h-5 rounded-full bg-blue-500/20 text-blue-600 dark:text-blue-400 flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5">1</span>
                 <span>
-                  Tap the <strong className="text-blue-400 inline-flex items-center gap-1">Share <Share size={12} className="inline" /></strong> icon in your Safari bottom menu.
+                  Tap the <strong className="text-blue-600 dark:text-blue-400 inline-flex items-center gap-1">Share <Share size={12} className="inline" /></strong> icon in your Safari bottom menu.
                 </span>
               </div>
 
               <div className="flex items-start gap-2.5">
-                <span className="w-5 h-5 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5">2</span>
+                <span className="w-5 h-5 rounded-full bg-blue-500/20 text-blue-600 dark:text-blue-400 flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5">2</span>
                 <span>
-                  Scroll down and tap <strong className="text-emerald-400 inline-flex items-center gap-1">Add to Home Screen <PlusSquare size={12} className="inline" /></strong>.
+                  Scroll down and tap <strong className="text-emerald-700 dark:text-emerald-400 inline-flex items-center gap-1">Add to Home Screen <PlusSquare size={12} className="inline" /></strong>.
                 </span>
               </div>
 
               <div className="flex items-start gap-2.5">
-                <span className="w-5 h-5 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5">3</span>
+                <span className="w-5 h-5 rounded-full bg-blue-500/20 text-blue-600 dark:text-blue-400 flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5">3</span>
                 <span>
                   Tap <strong className="text-[var(--color-primary)]">Add</strong> in the top right corner.
                 </span>
@@ -83,11 +83,11 @@ export function InstallAppModal({ isOpen, isIOS, onInstall, onDismiss }) {
             /* Android / Chrome Benefits */
             <div className="grid grid-cols-2 gap-2 text-[11px] text-[var(--color-text-secondary)]">
               <div className="bg-[var(--color-surface)]/40 border border-[var(--color-border)] rounded-xl p-2.5 flex items-center gap-2">
-                <CheckCircle2 size={14} className="text-emerald-400 shrink-0" />
+                <CheckCircle2 size={14} className="text-emerald-600 dark:text-emerald-400 shrink-0" />
                 <span className="font-semibold">Fast 1-Tap Launch</span>
               </div>
               <div className="bg-[var(--color-surface)]/40 border border-[var(--color-border)] rounded-xl p-2.5 flex items-center gap-2">
-                <CheckCircle2 size={14} className="text-emerald-400 shrink-0" />
+                <CheckCircle2 size={14} className="text-emerald-600 dark:text-emerald-400 shrink-0" />
                 <span className="font-semibold">Full Screen View</span>
               </div>
             </div>
