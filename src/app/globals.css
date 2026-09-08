@@ -338,6 +338,130 @@ html[data-theme="jungle-nebula"][data-mode="light"] {
 }
 
 /* ═══════════════════════════════════════════
+   ARCADE OVERDRIVE — Cyber Gaming HUD / Neon Matrix
+   - Primary (Laser Cyan):     #00F0FF (Dark) / #007A8A (Light)
+   - Secondary (Plasma Ruby):  #FF007F (Dark) / #A00050 (Light)
+   - Success (Matrix Green):   #00FF9D (Dark) / #047857 (Light)
+   - Warning (XP Coin Gold):   #FFB800 (Dark) / #B45309 (Light)
+   - Danger (Boss Alert Red):  #FF2A55 (Dark) / #B91C1C (Light)
+   - Bg Dark:                  #060814 (Cyber Void Obsidian)
+   - Card Dark:                #0D1124 (Cyber Grid Card)
+═══════════════════════════════════════════ */
+html[data-theme="arcade-overdrive"] {
+  --color-primary: #00F0FF;
+  --color-primary-bright: #70F6FF;
+  --color-primary-soft: #052633;
+  --color-primary-glow: rgba(0, 240, 255, 0.28);
+  --color-primary-glow-hover: rgba(0, 240, 255, 0.55);
+
+  --color-secondary: #FF007F;
+  --color-secondary-bright: #FF54A8;
+  --color-secondary-soft: #300318;
+
+  --color-success: #00FF9D;
+  --color-success-text: #00FF9D;
+  --color-success-glow: rgba(0, 255, 157, 0.28);
+
+  --color-danger: #FF2A55;
+  --color-danger-text: #FFA0B2;
+  --color-danger-glow: rgba(255, 42, 85, 0.28);
+
+  --color-warning: #FFB800;
+  --color-warning-text: #FFD166;
+  --color-warning-glow: rgba(255, 184, 0, 0.28);
+
+  --color-info: #38BDF8;
+}
+
+html[data-theme="arcade-overdrive"][data-mode="dark"] {
+  --color-bg-main: #060814;
+  --color-bg-card: #0D1124;
+  --color-bg-card-hover: #141A34;
+  --color-bg-elevated: #1A2244;
+
+  --color-surface: rgba(0, 240, 255, 0.045);
+  --color-surface-hover: rgba(0, 240, 255, 0.085);
+
+  --color-border: rgba(0, 240, 255, 0.16);
+  --color-border-strong: rgba(0, 240, 255, 0.35);
+
+  --color-text-main: #EAF2FF;
+  --color-text-secondary: #9CB4D8;
+  --color-text-muted: #5F7599;
+  --color-text-subtle: #3D506E;
+
+  --color-primary: #00F0FF;
+  --color-on-primary: #04101A;
+  --color-primary-bright: #70F6FF;
+  --color-primary-soft: #052633;
+  --color-primary-glow: rgba(0, 240, 255, 0.28);
+
+  --color-secondary: #FF007F;
+  --color-secondary-bright: #FF54A8;
+  --color-secondary-soft: #300318;
+
+  --color-success: #00FF9D;
+  --color-on-success: #03140C;
+  --color-success-text: #00FF9D;
+
+  --color-danger: #FF2A55;
+  --color-on-danger: #FFFFFF;
+  --color-danger-text: #FFA0B2;
+
+  --color-warning: #FFB800;
+  --color-on-warning: #1C1200;
+  --color-warning-text: #FFD166;
+
+  --color-info: #38BDF8;
+
+  --shadow-color: rgba(0, 240, 255, 0.18);
+}
+
+html[data-theme="arcade-overdrive"][data-mode="light"] {
+  --color-bg-main: #F0F5FA;
+  --color-bg-card: #FFFFFF;
+  --color-bg-card-hover: #EBF2F9;
+  --color-bg-elevated: #F8FAFC;
+
+  --color-surface: rgba(0, 122, 138, 0.045);
+  --color-surface-hover: rgba(0, 122, 138, 0.085);
+
+  --color-border: rgba(0, 122, 138, 0.18);
+  --color-border-strong: rgba(0, 122, 138, 0.32);
+
+  --color-text-main: #090E1A;
+  --color-text-secondary: #182236;
+  --color-text-muted: #2F3F5C;
+  --color-text-subtle: #4B6187;
+
+  --color-primary: #007A8A;
+  --color-on-primary: #FFFFFF;
+  --color-primary-bright: #005C68;
+  --color-primary-soft: #E0F7FA;
+  --color-primary-glow: rgba(0, 122, 138, 0.18);
+
+  --color-secondary: #A00050;
+  --color-secondary-bright: #BD005E;
+  --color-secondary-soft: #FCE4EC;
+
+  --color-success: #047857;
+  --color-on-success: #FFFFFF;
+  --color-success-text: #065F46;
+
+  --color-danger: #B91C1C;
+  --color-on-danger: #FFFFFF;
+  --color-danger-text: #991B1B;
+
+  --color-warning: #B45309;
+  --color-on-warning: #FFFFFF;
+  --color-warning-text: #78350F;
+
+  --color-info: #0284C7;
+
+  --shadow-color: rgba(0, 122, 138, 0.12);
+}
+
+/* ═══════════════════════════════════════════
    GEN-Z — Funky Vivid Hyper-Colorful Neon
    Vivid cobalt, hot pink, laser yellow, neon turquoise
    Bg Dark:   #08000f
@@ -1178,6 +1302,141 @@ html[data-theme="lime-ivory"][data-mode="light"] {
   --shadow-color: rgba(20, 25, 15, 0.10);
 }
 
+/* ═══════════════════════════════════════════
+   ABSTRACT — Pure Monochromatic Void
+   The only hue is function: profit=green, loss=red.
+   Everything else is black, white, and every shade between.
+   Dark:  #0A0A0A bg — deep obsidian void with subtle grain
+   Light: #F5F5F5 bg — crisp paper white with ink-black text
+═══════════════════════════════════════════ */
+html[data-theme="abstract"] {
+  /* Functional accent colours — the ONLY allowed hues */
+  --color-success: #22C55E;
+  --color-success-text: #4ADE80;
+  --color-success-glow: rgba(34, 197, 94, 0.22);
+  --color-on-success: #030F06;
+
+  --color-danger: #EF4444;
+  --color-danger-text: #FCA5A5;
+  --color-danger-glow: rgba(239, 68, 68, 0.22);
+  --color-on-danger: #FFFFFF;
+
+  /* Warning uses warm-grey to stay monochromatic in spirit */
+  --color-warning: #A0A0A0;
+  --color-warning-text: #C8C8C8;
+  --color-warning-glow: rgba(160, 160, 160, 0.18);
+
+  --color-info: #888888;
+}
+
+html[data-theme="abstract"][data-mode="dark"] {
+  /* Surfaces — deep obsidian void layers */
+  --color-bg-main: #0A0A0A;
+  --color-bg-card: #111111;
+  --color-bg-card-hover: #1A1A1A;
+  --color-bg-elevated: #202020;
+
+  --color-surface: rgba(255, 255, 255, 0.04);
+  --color-surface-hover: rgba(255, 255, 255, 0.08);
+
+  --color-border: rgba(255, 255, 255, 0.07);
+  --color-border-strong: rgba(255, 255, 255, 0.14);
+
+  /* Text — crisp white stepping through grey */
+  --color-text-main: #FFFFFF;
+  --color-text-secondary: #C0C0C0;
+  --color-text-muted: #808080;
+  --color-text-subtle: #505050;
+
+  /* Primary — pure white (monochromatic) */
+  --color-primary: #FFFFFF;
+  --color-on-primary: #0A0A0A;
+  --color-primary-bright: #E0E0E0;
+  --color-primary-soft: #1C1C1C;
+  --color-primary-glow: rgba(255, 255, 255, 0.10);
+  --color-primary-glow-hover: rgba(255, 255, 255, 0.18);
+
+  --color-secondary: #888888;
+  --color-secondary-bright: #B0B0B0;
+  --color-secondary-soft: #1A1A1A;
+
+  --color-success: #22C55E;
+  --color-success-text: #4ADE80;
+  --color-success-glow: rgba(34, 197, 94, 0.22);
+
+  --color-danger: #EF4444;
+  --color-danger-text: #FCA5A5;
+  --color-danger-glow: rgba(239, 68, 68, 0.22);
+
+  --color-warning: #787878;
+  --color-warning-text: #A8A8A8;
+
+  --color-info: #909090;
+
+  --color-highlight-1: #FFFFFF;
+  --color-highlight-2: #D4D4D4;
+  --color-highlight-3: #A8A8A8;
+  --color-highlight-4: #707070;
+  --color-highlight-5: #3C3C3C;
+
+  --shadow-color: rgba(0, 0, 0, 0.75);
+}
+
+html[data-theme="abstract"][data-mode="light"] {
+  /* Surfaces — crisp paper and chalk */
+  --color-bg-main: #F0F0F0;
+  --color-bg-card: #FFFFFF;
+  --color-bg-card-hover: #EBEBEB;
+  --color-bg-elevated: #FAFAFA;
+
+  --color-surface: rgba(0, 0, 0, 0.04);
+  --color-surface-hover: rgba(0, 0, 0, 0.08);
+
+  --color-border: rgba(0, 0, 0, 0.10);
+  --color-border-strong: rgba(0, 0, 0, 0.22);
+
+  /* Text — deep ink stepping through greys */
+  --color-text-main: #050505;
+  --color-text-secondary: #1A1A1A;
+  --color-text-muted: #3C3C3C;
+  --color-text-subtle: #666666;
+
+  /* Primary — pure black */
+  --color-primary: #000000;
+  --color-on-primary: #FFFFFF;
+  --color-primary-bright: #222222;
+  --color-primary-soft: #EBEBEB;
+  --color-primary-glow: rgba(0, 0, 0, 0.10);
+  --color-primary-glow-hover: rgba(0, 0, 0, 0.18);
+
+  --color-secondary: #444444;
+  --color-secondary-bright: #222222;
+  --color-secondary-soft: #F0F0F0;
+
+  --color-success: #15803D;
+  --color-on-success: #FFFFFF;
+  --color-success-text: #166534;
+  --color-success-glow: rgba(21, 128, 61, 0.15);
+
+  --color-danger: #B91C1C;
+  --color-on-danger: #FFFFFF;
+  --color-danger-text: #991B1B;
+  --color-danger-glow: rgba(185, 28, 28, 0.15);
+
+  --color-warning: #555555;
+  --color-warning-text: #333333;
+
+  --color-info: #444444;
+
+  --color-highlight-1: #000000;
+  --color-highlight-2: #333333;
+  --color-highlight-3: #666666;
+  --color-highlight-4: #999999;
+  --color-highlight-5: #CCCCCC;
+
+  --shadow-color: rgba(0, 0, 0, 0.10);
+}
+
 /* APPEARANCE MODES */
 html[data-mode="dark"] {
   --color-bg-main: #0B0F17;
@@ -1634,3 +1893,87 @@ body {
   animation: spotlight-pulse 8s ease-in-out infinite;
 }
 
+@keyframes arcade-scanline {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(1200%);
+    opacity: 0;
+  }
+}
+
+.animate-arcade-scanline {
+  animation: arcade-scanline 6s ease-in-out infinite;
+}
+
+@keyframes arcade-reticle-pulse {
+  0%, 100% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.05);
+  }
+}
+
+.animate-arcade-reticle {
+  animation: arcade-reticle-pulse 3s ease-in-out infinite;
+}
+
+/* ─────────────────────────────────────────
+   ABSTRACT VOID — Background keyframes
+   Subtle grey wisps + slow vignette pulse
+───────────────────────────────────────── */
+@keyframes abstract-wisp-1 {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); opacity: 0.45; }
+  35%       { transform: translate3d(40px, -55px, 0) scale(1.08); opacity: 0.60; }
+  70%       { transform: translate3d(-30px, 35px, 0) scale(0.93); opacity: 0.38; }
+}
+
+@keyframes abstract-wisp-2 {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); opacity: 0.30; }
+  40%       { transform: translate3d(-50px, 40px, 0) scale(1.12); opacity: 0.48; }
+  75%       { transform: translate3d(35px, -30px, 0) scale(0.90); opacity: 0.25; }
+}
+
+@keyframes abstract-wisp-3 {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); opacity: 0.20; }
+  50%       { transform: translate3d(25px, 50px, 0) scale(1.06); opacity: 0.35; }
+}
+
+@keyframes abstract-vignette-breathe {
+  0%, 100% { opacity: 0.80; }
+  50%       { opacity: 0.95; }
+}
+
+@keyframes abstract-particle-drift {
+  0%   { transform: translateY(0px) translateX(0px); opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { transform: translateY(-120px) translateX(20px); opacity: 0; }
+}
+
+.animate-abstract-wisp-1 {
+  animation: abstract-wisp-1 28s ease-in-out infinite;
+  will-change: transform;
+}
+.animate-abstract-wisp-2 {
+  animation: abstract-wisp-2 34s ease-in-out infinite;
+  will-change: transform;
+}
+.animate-abstract-wisp-3 {
+  animation: abstract-wisp-3 22s ease-in-out infinite;
+  will-change: transform;
+}
+.animate-abstract-vignette {
+  animation: abstract-vignette-breathe 12s ease-in-out infinite;
+}
