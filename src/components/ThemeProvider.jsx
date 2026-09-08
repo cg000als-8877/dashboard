@@ -176,6 +176,11 @@ export function ThemeProvider({ children }) {
       setVisualThemeState(id);
       localStorage.setItem('app-visual-theme', id);
       sessionStorage.setItem('app-night-theme-overridden', 'true');
+      // Abstract theme enforces a colorless background — override to grain
+      if (id === 'abstract') {
+        setBgEffectState('abstract-void');
+        localStorage.setItem('app-bg-effect', 'abstract-void');
+      }
     }
   };
 

@@ -1304,33 +1304,63 @@ html[data-theme="lime-ivory"][data-mode="light"] {
 
 /* ═══════════════════════════════════════════
    ABSTRACT — Pure Monochromatic Void
-   The only hue is function: profit=green, loss=red.
-   Everything else is black, white, and every shade between.
-   Dark:  #0A0A0A bg — deep obsidian void with subtle grain
-   Light: #F5F5F5 bg — crisp paper white with ink-black text
+   ONE rule: only loss/danger is red.
+   Everything else: black, white, grey only.
+   Dark:  #0A0A0A bg — deep obsidian
+   Light: #F0F0F0 bg — crisp paper
 ═══════════════════════════════════════════ */
-html[data-theme="abstract"] {
-  /* Functional accent colours — the ONLY allowed hues */
-  --color-success: #22C55E;
-  --color-success-text: #4ADE80;
-  --color-success-glow: rgba(34, 197, 94, 0.22);
-  --color-on-success: #030F06;
 
+/* Nuclear desaturation: strip ALL hue from the entire page when abstract is active.
+   This catches every hardcoded Tailwind color class (emerald, indigo, blue, etc.)
+   that doesn't respect CSS variable tokens.  */
+html[data-theme="abstract"] body,
+html[data-theme="abstract"] main,
+html[data-theme="abstract"] nav,
+html[data-theme="abstract"] aside,
+html[data-theme="abstract"] section,
+html[data-theme="abstract"] header,
+html[data-theme="abstract"] footer {
+  filter: saturate(0);
+}
+
+/* Carve back: loss / danger elements get full red back */
+html[data-theme="abstract"] [class*="text-red"],
+html[data-theme="abstract"] [class*="text-rose"],
+html[data-theme="abstract"] [class*="bg-red"],
+html[data-theme="abstract"] [class*="bg-rose"],
+html[data-theme="abstract"] [class*="border-red"],
+html[data-theme="abstract"] [class*="border-rose"],
+html[data-theme="abstract"] .loss,
+html[data-theme="abstract"] .danger,
+html[data-theme="abstract"] [data-loss],
+html[data-theme="abstract"] [class*="danger"] {
+  filter: saturate(1) !important;
+}
+
+/* Shared base tokens */
+html[data-theme="abstract"] {
+  /* SUCCESS → grey (profit is silent — only loss screams) */
+  --color-success: #707070;
+  --color-success-text: #909090;
+  --color-success-glow: rgba(120, 120, 120, 0.15);
+  --color-on-success: #FFFFFF;
+
+  /* DANGER → the one true red */
   --color-danger: #EF4444;
   --color-danger-text: #FCA5A5;
   --color-danger-glow: rgba(239, 68, 68, 0.22);
   --color-on-danger: #FFFFFF;
 
-  /* Warning uses warm-grey to stay monochromatic in spirit */
-  --color-warning: #A0A0A0;
-  --color-warning-text: #C8C8C8;
-  --color-warning-glow: rgba(160, 160, 160, 0.18);
+  /* WARNING → mid grey */
+  --color-warning: #909090;
+  --color-warning-text: #B0B0B0;
+  --color-warning-glow: rgba(144, 144, 144, 0.15);
 
-  --color-info: #888888;
+  --color-info: #787878;
 }
 
 html[data-theme="abstract"][data-mode="dark"] {
-  /* Surfaces — deep obsidian void layers */
+  /* Surfaces */
   --color-bg-main: #0A0A0A;
   --color-bg-card: #111111;
   --color-bg-card-hover: #1A1A1A;
@@ -1342,48 +1372,51 @@ html[data-theme="abstract"][data-mode="dark"] {
   --color-border: rgba(255, 255, 255, 0.07);
   --color-border-strong: rgba(255, 255, 255, 0.14);
 
-  /* Text — crisp white stepping through grey */
+  /* Text */
   --color-text-main: #FFFFFF;
   --color-text-secondary: #C0C0C0;
   --color-text-muted: #808080;
   --color-text-subtle: #505050;
 
-  /* Primary — pure white (monochromatic) */
+  /* Primary — pure white */
   --color-primary: #FFFFFF;
   --color-on-primary: #0A0A0A;
   --color-primary-bright: #E0E0E0;
   --color-primary-soft: #1C1C1C;
-  --color-primary-glow: rgba(255, 255, 255, 0.10);
-  --color-primary-glow-hover: rgba(255, 255, 255, 0.18);
+  --color-primary-glow: rgba(255, 255, 255, 0.08);
+  --color-primary-glow-hover: rgba(255, 255, 255, 0.14);
 
+  /* Secondary — mid grey */
   --color-secondary: #888888;
   --color-secondary-bright: #B0B0B0;
   --color-secondary-soft: #1A1A1A;
 
-  --color-success: #22C55E;
-  --color-success-text: #4ADE80;
-  --color-success-glow: rgba(34, 197, 94, 0.22);
+  /* Success → grey (NOT green) */
+  --color-success: #606060;
+  --color-success-text: #888888;
+  --color-success-glow: rgba(100, 100, 100, 0.15);
 
+  /* Danger → only red */
   --color-danger: #EF4444;
   --color-danger-text: #FCA5A5;
-  --color-danger-glow: rgba(239, 68, 68, 0.22);
+  --color-danger-glow: rgba(239, 68, 68, 0.25);
 
   --color-warning: #787878;
-  --color-warning-text: #A8A8A8;
-
+  --color-warning-text: #A0A0A0;
   --color-info: #909090;
 
+  /* Highlight ramp */
   --color-highlight-1: #FFFFFF;
   --color-highlight-2: #D4D4D4;
   --color-highlight-3: #A8A8A8;
   --color-highlight-4: #707070;
   --color-highlight-5: #3C3C3C;
 
-  --shadow-color: rgba(0, 0, 0, 0.75);
+  --shadow-color: rgba(0, 0, 0, 0.80);
 }
 
 html[data-theme="abstract"][data-mode="light"] {
-  /* Surfaces — crisp paper and chalk */
+  /* Surfaces */
   --color-bg-main: #F0F0F0;
   --color-bg-card: #FFFFFF;
   --color-bg-card-hover: #EBEBEB;
@@ -1395,7 +1428,7 @@ html[data-theme="abstract"][data-mode="light"] {
   --color-border: rgba(0, 0, 0, 0.10);
   --color-border-strong: rgba(0, 0, 0, 0.22);
 
-  /* Text — deep ink stepping through greys */
+  /* Text */
   --color-text-main: #050505;
   --color-text-secondary: #1A1A1A;
   --color-text-muted: #3C3C3C;
@@ -1406,28 +1439,31 @@ html[data-theme="abstract"][data-mode="light"] {
   --color-on-primary: #FFFFFF;
   --color-primary-bright: #222222;
   --color-primary-soft: #EBEBEB;
-  --color-primary-glow: rgba(0, 0, 0, 0.10);
-  --color-primary-glow-hover: rgba(0, 0, 0, 0.18);
+  --color-primary-glow: rgba(0, 0, 0, 0.08);
+  --color-primary-glow-hover: rgba(0, 0, 0, 0.15);
 
+  /* Secondary — charcoal */
   --color-secondary: #444444;
   --color-secondary-bright: #222222;
   --color-secondary-soft: #F0F0F0;
 
-  --color-success: #15803D;
+  /* Success → grey (NOT green) */
+  --color-success: #555555;
   --color-on-success: #FFFFFF;
-  --color-success-text: #166534;
-  --color-success-glow: rgba(21, 128, 61, 0.15);
+  --color-success-text: #333333;
+  --color-success-glow: rgba(80, 80, 80, 0.12);
 
+  /* Danger → only red */
   --color-danger: #B91C1C;
   --color-on-danger: #FFFFFF;
   --color-danger-text: #991B1B;
-  --color-danger-glow: rgba(185, 28, 28, 0.15);
+  --color-danger-glow: rgba(185, 28, 28, 0.18);
 
   --color-warning: #555555;
   --color-warning-text: #333333;
-
   --color-info: #444444;
 
+  /* Highlight ramp */
   --color-highlight-1: #000000;
   --color-highlight-2: #333333;
   --color-highlight-3: #666666;

@@ -4,8 +4,9 @@ import { useEffect, useRef, memo } from 'react';
 import { useTheme } from '@/components/ThemeProvider';
 
 export const BackgroundCanvas = memo(function BackgroundCanvas() {
-  const { bgEffect, mode } = useTheme();
+  const { bgEffect, mode, visualTheme } = useTheme();
   const containerRef = useRef(null);
+  const isAbstract = visualTheme === 'abstract';
 
   useEffect(() => {
     if (bgEffect !== 'spotlight' && bgEffect !== 'hybrid' && bgEffect !== 'arcade-grid' && bgEffect !== 'abstract-void') return;
@@ -46,11 +47,12 @@ export const BackgroundCanvas = memo(function BackgroundCanvas() {
   }
 
   const isDark = mode !== 'light';
-  const showArcade = bgEffect === 'arcade-grid';
+  const showArcade = !isAbstract && bgEffect === 'arcade-grid';
   const showAbstractVoid = bgEffect === 'abstract-void';
-  const showOrbs = bgEffect === 'aurora' || bgEffect === 'hybrid';
-  const showGrid = bgEffect === 'grid' || bgEffect === 'hybrid';
-  const showSpotlight = bgEffect === 'spotlight';
+  // Block all colorful orb/grid effects when abstract theme is active
+  const showOrbs = !isAbstract && (bgEffect === 'aurora' || bgEffect === 'hybrid');
+  const showGrid = !isAbstract && (bgEffect === 'grid' || bgEffect === 'hybrid');
+  const showSpotlight = !isAbstract && bgEffect === 'spotlight';
   const showGrain = bgEffect === 'grain';
 
   return (
@@ -61,6 +63,8 @@ export const BackgroundCanvas = memo(function BackgroundCanvas() {
       style={{
         '--spotlight-x': '50vw',
         '--spotlight-y': '30vh',
+        // Nuclear colour kill on background layer when abstract theme is active
+        filter: isAbstract ? 'saturate(0)' : undefined,
       }}
     >
       {/* 0a. Abstract Void — Monochromatic Wisp Layer */}
