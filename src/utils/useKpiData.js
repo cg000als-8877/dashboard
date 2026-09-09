@@ -39,6 +39,10 @@ export function useKpiData(monthOverride) {
             .then(async res => {
               clearTimeout(timeoutId);
               if (!res.ok) {
+                if (res.status === 401 && typeof window !== 'undefined') {
+                  window.location.href = '/login?from=' + encodeURIComponent(window.location.pathname);
+                  return new Promise(() => {}); // hold promise until page redirects
+                }
                 const errData = await res.json().catch(() => ({}));
                 throw new Error(errData.error || `HTTP ${res.status}: Failed to fetch data`);
               }

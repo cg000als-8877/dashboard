@@ -1,13 +1,13 @@
 "use client";
 
 import { useState, useRef, useEffect } from 'react';
-import { Palette, Sun, Moon, Check, Sparkles } from 'lucide-react';
+import { Palette, Sun, Moon, Check, Sparkles, LogOut } from 'lucide-react';
 import { useTheme } from '@/components/ThemeProvider';
 import { cn } from '@/components/layout/Sidebar';
 
 const quickThemes = [
-  { id: 'abstract', label: 'Abstract', color: '#FFFFFF' },
   { id: 'ember-tide', label: 'Ember', color: '#F97316' },
+  { id: 'abstract', label: 'Abstract', color: '#FFFFFF' },
   { id: 'arcade-overdrive', label: 'Arcade', color: '#00F0FF' },
   { id: 'nordic-slate', label: 'Nordic', color: '#60A5FA' },
   { id: 'jungle-nebula', label: 'Jungle', color: '#57C27A' },
@@ -17,7 +17,16 @@ const quickThemes = [
 export function ThemePicker() {
   const { visualTheme, setVisualTheme, mode, toggleTheme, bgEffect, setBgEffect, BG_EFFECTS } = useTheme();
   const [open, setOpen] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
   const ref = useRef(null);
+
+  const handleLogout = async () => {
+    setLoggingOut(true);
+    try {
+      await fetch('/api/auth', { method: 'DELETE' });
+    } catch {}
+    window.location.href = '/login';
+  };
 
   useEffect(() => {
     const handleClick = (e) => {
@@ -113,6 +122,21 @@ export function ThemePicker() {
                   }`} />
                 </div>
               </div>
+            </button>
+          </div>
+
+          {/* Logout button */}
+          <div className="border-t border-[var(--color-border)]/60 pt-2 mt-1">
+            <button
+              onClick={handleLogout}
+              disabled={loggingOut}
+              className="w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 transition-colors cursor-pointer text-[9px] font-bold uppercase tracking-[0.2em] group"
+            >
+              <span className="flex items-center gap-1.5">
+                <LogOut size={12} className="transition-transform group-hover:-translate-x-0.5" />
+                <span>{loggingOut ? 'Logging out...' : 'Log Out'}</span>
+              </span>
+              <span className="text-[7.5px] font-mono opacity-50 lowercase font-normal">exit</span>
             </button>
           </div>
         </div>

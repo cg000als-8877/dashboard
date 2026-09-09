@@ -20,7 +20,8 @@ import {
   Layers,
   Globe,
   ExternalLink,
-  Sparkles
+  Sparkles,
+  LogOut
 } from 'lucide-react';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -520,7 +521,38 @@ export default function Sidebar({ onClose }) {
                   v8.0.9
                 </span>
               </div>
+
+              {/* Desktop Logout Button */}
+              <button
+                type="button"
+                onClick={async () => {
+                  try { await fetch('/api/auth', { method: 'DELETE' }); } catch {}
+                  window.location.href = '/login';
+                }}
+                className="w-full mt-1.5 px-2 py-1.5 rounded-lg border border-red-500/20 bg-red-500/5 hover:bg-red-500/15 text-red-400 hover:text-red-300 flex items-center justify-between text-[9px] font-bold tracking-wider uppercase transition-all cursor-pointer group"
+              >
+                <span className="flex items-center gap-1.5">
+                  <LogOut size={11} className="transition-transform group-hover:-translate-x-0.5" />
+                  <span>Log Out</span>
+                </span>
+                <span className="text-[7.5px] font-mono opacity-50 lowercase font-normal">lock</span>
+              </button>
             </>
+          )}
+
+          {/* Collapsed Logout Icon */}
+          {isCollapsed && (
+            <button
+              type="button"
+              onClick={async () => {
+                try { await fetch('/api/auth', { method: 'DELETE' }); } catch {}
+                window.location.href = '/login';
+              }}
+              title="Log Out"
+              className="w-8 h-8 mx-auto mt-2 rounded-lg border border-red-500/20 bg-red-500/5 hover:bg-red-500/15 text-red-400 hover:text-red-300 flex items-center justify-center transition-all cursor-pointer"
+            >
+              <LogOut size={13} />
+            </button>
           )}
         </div>
       </div>

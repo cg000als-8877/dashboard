@@ -17,7 +17,7 @@ export function DensitySwitcher({ value, onChange, className = "" }) {
   ];
 
   return (
-    <div className={cn("inline-flex items-center p-1 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl gap-1 shadow-sm backdrop-blur-md", className)}>
+    <div className={cn("inline-flex items-center p-0.5 sm:p-1 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl gap-0.5 sm:gap-1 shadow-sm backdrop-blur-md shrink-0", className)}>
       {options.map((opt) => {
         const Icon = opt.icon;
         const isActive = density === opt.id;
@@ -28,14 +28,14 @@ export function DensitySwitcher({ value, onChange, className = "" }) {
             onClick={() => setDensity(opt.id)}
             title={`${opt.label} View Mode`}
             className={cn(
-              "flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-[10px] sm:text-xs uppercase tracking-wider font-bold transition-all duration-200 cursor-pointer select-none",
+              "flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-[9.5px] sm:text-xs uppercase tracking-wider font-bold transition-all duration-200 cursor-pointer select-none",
               isActive
                 ? "bg-[var(--color-bg-card)] text-[var(--color-primary)] border border-[var(--color-border)] shadow-xs"
                 : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)] font-medium"
             )}
           >
-            <Icon size={13} className={isActive ? "text-[var(--color-primary)]" : "text-[var(--color-text-muted)]"} />
-            <span className="hidden sm:inline">{opt.label}</span>
+            <Icon size={12} className={cn("sm:w-[13px] sm:h-[13px]", isActive ? "text-[var(--color-primary)]" : "text-[var(--color-text-muted)]")} />
+            <span className="hidden md:inline">{opt.label}</span>
           </button>
         );
       })}

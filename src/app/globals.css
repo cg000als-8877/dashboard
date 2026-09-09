@@ -93,11 +93,21 @@ html[data-mode="light"] .shimmer {
   --color-primary-glow-hover: rgba(96, 165, 250, 0.25);
 }
 
-/* Polished Theme & Mode Transitions (Scoped to structural containers) */
-body, aside, nav, header, main {
-  transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
-              color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
-              border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+/* Polished Day/Night & Theme Transitions (Coordinated across containers, cards, and surfaces) */
+html {
+  background-color: var(--color-bg-main);
+  transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body, aside, nav, header, main, section, footer,
+[class*="bg-[var(--color-bg"],
+[class*="bg-[var(--color-card"],
+[class*="bg-[var(--color-surface"],
+[class*="border-[var(--color-border"] {
+  transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ═══════════════════════════════════════════

@@ -43,7 +43,36 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" data-theme="nordic-slate" data-mode="dark">
+    <html lang="en" data-theme="ember-tide" data-mode="dark" data-bg-effect="ember-tide-aurora" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var m = localStorage.getItem('app-mode');
+                  var t = localStorage.getItem('app-visual-theme');
+                  var b = localStorage.getItem('app-bg-effect');
+                  if (m) {
+                    document.documentElement.setAttribute('data-mode', m);
+                    if (m === 'light') {
+                      document.documentElement.classList.add('light-mode');
+                    } else {
+                      document.documentElement.classList.remove('light-mode');
+                    }
+                  }
+                  if (t) {
+                    document.documentElement.setAttribute('data-theme', t);
+                  }
+                  if (b) {
+                    document.documentElement.setAttribute('data-bg-effect', b);
+                  }
+                } catch(e) {}
+              })();
+            `,
+          }}
+        />
+      </head>
       <body className={`${inter.className} ${spaceGrotesk.variable} ${jetbrainsMono.variable} bg-[var(--color-bg-main)] text-[var(--color-text-main)]`}>
         <Suspense fallback={<div>Loading...</div>}>
           <ThemeProvider>

@@ -9,7 +9,7 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { useKpiData } from '@/utils/useKpiData';
 import { format, parseISO } from 'date-fns';
-import { Clock, LayoutDashboard, Factory, BarChart3, Ship, History, Palette, Sun, Moon, GitCompare, Coffee, Globe, ExternalLink, Check, Sparkles } from 'lucide-react';
+import { Clock, LayoutDashboard, Factory, BarChart3, Ship, History, Palette, Sun, Moon, GitCompare, Coffee, Globe, ExternalLink, Check, Sparkles, LogOut } from 'lucide-react';
 import { useMonth } from '@/components/providers/MonthProvider';
 import { useTheme } from '@/components/ThemeProvider';
 import { CanteenSecurityModal } from '@/components/ui/CanteenSecurityModal';
@@ -352,6 +352,24 @@ export default function DashboardLayout({ children }) {
                     </Link>
                   );
                 })}
+              </div>
+
+              {/* Mobile Logout Action */}
+              <div className="pt-1.5 mt-1.5 border-t border-[var(--color-border)]/60">
+                <button
+                  onClick={async () => {
+                    setIsBurgerOpen(false);
+                    try { await fetch('/api/auth', { method: 'DELETE' }); } catch {}
+                    window.location.href = '/login';
+                  }}
+                  className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 transition-colors cursor-pointer text-left group"
+                >
+                  <span className="flex items-center gap-2">
+                    <LogOut size={13} className="shrink-0 transition-transform group-hover:-translate-x-0.5" />
+                    <span>Log Out</span>
+                  </span>
+                  <span className="text-[8px] font-mono opacity-50 lowercase font-normal">exit</span>
+                </button>
               </div>
             </div>
           </>

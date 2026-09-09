@@ -3,9 +3,9 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
 export const VISUAL_THEMES = [
+  { id: 'ember-tide', name: 'Ember Tide', color: '#F97316' },
   { id: 'nordic-slate', name: 'Nordic Slate', color: '#60A5FA' },
   { id: 'abstract', name: 'Abstract', color: '#FFFFFF' },
-  { id: 'ember-tide', name: 'Ember Tide', color: '#F97316' },
   { id: 'arcade-overdrive', name: 'Arcade Overdrive (Gaming)', color: '#00F0FF' },
   { id: 'verdant', name: 'Verdant', color: '#80B918' },
   { id: 'lime-ivory', name: 'Lime Ivory', color: '#9BE52C' },
@@ -25,8 +25,8 @@ export const APPEARANCE_MODES = [
 ];
 
 export const BG_EFFECTS = [
-  { id: 'abstract-void', name: 'Abstract Void', tag: 'Abstract', desc: 'Monochromatic grey wisps, vignette pulse & fine grain noise' },
   { id: 'ember-tide-aurora', name: 'Ember Tide Aurora', tag: 'Ember', desc: 'Burning coral embers meet arctic cyan wisps on midnight navy' },
+  { id: 'abstract-void', name: 'Abstract Void', tag: 'Abstract', desc: 'Monochromatic grey wisps, vignette pulse & fine grain noise' },
   { id: 'arcade-grid', name: 'Arcade Holo-Matrix', tag: 'Arcade', desc: 'Futuristic gaming grid, HUD crosshairs & chromatic glow' },
   { id: 'hybrid', name: 'Aurora + Grid', tag: 'Hybrid', desc: 'Floating ambient orbs + blueprint cyber grid' },
   { id: 'aurora', name: 'Ambient Aurora', tag: 'Orbs', desc: 'Organic glowing orbs matching active theme' },
@@ -36,127 +36,63 @@ export const BG_EFFECTS = [
   { id: 'solid', name: 'Minimal Solid', tag: 'Clean', desc: 'Classic clean solid background' },
 ];
 
-// Dynamic 28-day theme rotation schedule (7 days each, repeating indefinitely in a loop)
-// Phase 1 (Days 1–7):   Nordic Slate  ('nordic-slate')
-// Phase 2 (Days 8–14):  Verdant       ('verdant')
-// Phase 3 (Days 15–21): Lime Ivory    ('lime-ivory')
-// Phase 4 (Days 22–28): Jungle Nebula ('jungle-nebula')
+// Ember Tide is the full-time default theme
 export function getScheduledDefaultTheme() {
-  try {
-    const START_EPOCH = new Date(2026, 8, 3, 0, 0, 0).getTime(); // 3 September 2026 (Month 8 is Sept)
-    const now = Date.now();
-    const diffDays = Math.floor((now - START_EPOCH) / (1000 * 60 * 60 * 24));
-    const cycleDay = ((diffDays % 28) + 28) % 28;
-    const phase = Math.floor(cycleDay / 7);
-
-    const THEME_ROTATION = ['nordic-slate', 'verdant', 'lime-ivory', 'jungle-nebula'];
-    return THEME_ROTATION[phase] || 'nordic-slate';
-  } catch {
-    return 'nordic-slate';
-  }
+  return 'ember-tide';
 }
 
 export function getDefaultBgEffect() {
-  if (typeof window === 'undefined') return 'spotlight';
-  return window.innerWidth < 768 ? 'aurora' : 'spotlight';
+  return 'ember-tide-aurora';
 }
 
 const ThemeContext = createContext();
 
 export function ThemeProvider({ children }) {
-  const [visualTheme, setVisualThemeState] = useState(getScheduledDefaultTheme);
+  const [visualTheme, setVisualThemeState] = useState('ember-tide');
   const [mode, setModeState] = useState('dark');
-  const [bgEffect, setBgEffectState] = useState('spotlight');
+  const [bgEffect, setBgEffectState] = useState('ember-tide-aurora');
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
     
-    // Read persisted choices or fallbacks
+    // Force Ember Tide and Dark (Night) mode for all existing and new visitors
+    const isEmberDefaultApplied = localStorage.getItem('app-ember-default-v2');
+
+    if (!isEmberDefaultApplied) {
+      localStorage.setItem('app-ember-default-v2', 'true');
+      localStorage.setItem('app-visual-theme', 'ember-tide');
+      localStorage.setItem('app-mode', 'dark');
+      localStorage.setItem('theme', 'dark');
+      localStorage.setItem('app-bg-effect', 'ember-tide-aurora');
+      setVisualThemeState('ember-tide');
+      setModeState('dark');
+      setBgEffectState('ember-tide-aurora');
+      return;
+    }
+
+    // Persisted preferences (if changed after default migration)
     const storedVisualTheme = localStorage.getItem('app-visual-theme');
     const storedMode = localStorage.getItem('app-mode');
     const storedBgEffect = localStorage.getItem('app-bg-effect');
-    const legacyTheme = localStorage.getItem('theme'); // backward compatibility
-    const activeScheduleVersion = localStorage.getItem('app-theme-rotation-v2');
 
-    // 0. Background Effect (Default: 'aurora' on Mobile < 768px, 'spotlight' on PC/Desktop >= 768px)
-    const isMobile = window.innerWidth < 768;
-    const defaultBg = isMobile ? 'aurora' : 'spotlight';
-    if (storedBgEffect && BG_EFFECTS.some(b => b.id === storedBgEffect)) {
-      setBgEffectState(storedBgEffect);
-    } else {
-      setBgEffectState(defaultBg);
-    }
-
-    // Responsive background listener when user hasn't explicitly locked a custom preference
-    const handleResize = () => {
-      if (!localStorage.getItem('app-bg-effect')) {
-        setBgEffectState(window.innerWidth < 768 ? 'aurora' : 'spotlight');
-      }
-    };
-    window.addEventListener('resize', handleResize);
-
-    // Check if current Bangladesh time (Asia/Dhaka) is in Night Shift window (11 PM - 2 AM: 23:00 - 02:59)
-    const isBangladeshNightWindow = () => {
-      try {
-        const now = new Date();
-        const bdHourStr = new Intl.DateTimeFormat('en-US', {
-          timeZone: 'Asia/Dhaka',
-          hour: 'numeric',
-          hour12: false
-        }).format(now);
-        const bdHour = parseInt(bdHourStr, 10);
-        return bdHour === 23 || bdHour === 0 || bdHour === 1 || bdHour === 2;
-      } catch {
-        return false;
-      }
-    };
-
-    const isNight = isBangladeshNightWindow();
-    const scheduledDefault = getScheduledDefaultTheme();
-
-    // 1. Visual Theme (Auto Terminal for Night Shift unless manually overridden)
-    if (isNight && !sessionStorage.getItem('app-night-theme-overridden')) {
-      setVisualThemeState('terminal');
-    } else if (!activeScheduleVersion) {
-      // Activate new rotation schedule (Nordic Slate default for next 7 days)
-      localStorage.setItem('app-theme-rotation-v2', 'true');
-      localStorage.removeItem('app-visual-theme');
-      setVisualThemeState(scheduledDefault);
-    } else if (storedVisualTheme && VISUAL_THEMES.some(t => t.id === storedVisualTheme && t.id !== 'cyber-deck')) {
+    if (storedVisualTheme && VISUAL_THEMES.some(t => t.id === storedVisualTheme)) {
       setVisualThemeState(storedVisualTheme);
     } else {
-      setVisualThemeState(scheduledDefault);
+      setVisualThemeState('ember-tide');
     }
 
-    // 2. Appearance Mode - always default to dark on first visit
     if (storedMode) {
       setModeState(storedMode);
-    } else if (legacyTheme) {
-      setModeState(legacyTheme);
     } else {
-      // First visit: always default to dark mode
       setModeState('dark');
     }
 
-    // Listen for system theme changes if user hasn't explicitly set mode
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: light)');
-    const handleSystemChange = (e) => {
-      if (!localStorage.getItem('app-mode')) {
-        setModeState(e.matches ? 'light' : 'dark');
-      }
-    };
-
-    if (mediaQuery.addEventListener) {
-      mediaQuery.addEventListener('change', handleSystemChange);
+    if (storedBgEffect && BG_EFFECTS.some(b => b.id === storedBgEffect)) {
+      setBgEffectState(storedBgEffect);
+    } else {
+      setBgEffectState('ember-tide-aurora');
     }
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-      if (mediaQuery.removeEventListener) {
-        mediaQuery.removeEventListener('change', handleSystemChange);
-      }
-    };
   }, []);
 
   useEffect(() => {

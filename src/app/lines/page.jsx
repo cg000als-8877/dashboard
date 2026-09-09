@@ -251,28 +251,28 @@ export default function ProductionLinesPage() {
           Real-time performance, output, worker telemetry, and unit economics for all factory lines
         </p>
 
-        {/* Month Switcher Tabs & Density Switcher */}
-        <div className="flex flex-wrap justify-center items-center gap-2.5 mt-4 mb-2 relative z-10">
-          <div className="inline-flex p-1 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl gap-1 shadow-sm backdrop-blur-md">
+        {/* Month Switcher Tabs & Density Switcher — Strictly Single Row Side-by-Side on all screens */}
+        <div className="flex flex-nowrap justify-center items-center gap-1.5 sm:gap-2.5 mt-3 sm:mt-4 mb-2 relative z-10 w-full max-w-full overflow-x-auto hide-scrollbar px-0.5">
+          <div className="inline-flex p-0.5 sm:p-1 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl gap-0.5 sm:gap-1 shadow-sm backdrop-blur-md shrink-0">
             <button
               type="button"
               onClick={() => setSelectedMonthTab('current')}
               className={cn(
-                "flex items-center gap-1.5 px-3 sm:px-4 py-1.5 rounded-lg text-[10px] sm:text-xs uppercase tracking-wider font-bold transition-all duration-200 cursor-pointer select-none",
+                "flex items-center gap-1 sm:gap-1.5 px-2 sm:px-4 py-1 sm:py-1.5 rounded-lg text-[9px] sm:text-xs uppercase tracking-wider font-bold transition-all duration-200 cursor-pointer select-none shrink-0",
                 isLive
                   ? "bg-[var(--color-bg-card)] text-[var(--color-text-main)] border border-[var(--color-border)] shadow-sm"
                   : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)] font-medium"
               )}
             >
               <span>SEPTEMBER</span>
-              <span className="text-[8.5px] sm:text-[9.5px] text-rose-500 font-black tracking-wide">(LIVE)</span>
+              <span className="text-[7.5px] sm:text-[9.5px] text-rose-500 font-black tracking-wide">(LIVE)</span>
             </button>
 
             <button
               type="button"
               onClick={() => setSelectedMonthTab('august')}
               className={cn(
-                "px-3 sm:px-4 py-1.5 rounded-lg text-[10px] sm:text-xs uppercase tracking-wider font-bold transition-all duration-200 cursor-pointer select-none",
+                "px-2 sm:px-4 py-1 sm:py-1.5 rounded-lg text-[9px] sm:text-xs uppercase tracking-wider font-bold transition-all duration-200 cursor-pointer select-none shrink-0",
                 isAugust
                   ? "bg-[var(--color-bg-card)] text-[var(--color-text-main)] border border-[var(--color-border)] shadow-sm"
                   : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)] font-medium"
@@ -285,7 +285,7 @@ export default function ProductionLinesPage() {
               type="button"
               onClick={() => setSelectedMonthTab('july')}
               className={cn(
-                "px-3 sm:px-4 py-1.5 rounded-lg text-[10px] sm:text-xs uppercase tracking-wider font-bold transition-all duration-200 cursor-pointer select-none",
+                "px-2 sm:px-4 py-1 sm:py-1.5 rounded-lg text-[9px] sm:text-xs uppercase tracking-wider font-bold transition-all duration-200 cursor-pointer select-none shrink-0",
                 isJuly
                   ? "bg-[var(--color-bg-card)] text-[var(--color-text-main)] border border-[var(--color-border)] shadow-sm"
                   : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)] font-medium"
@@ -295,7 +295,7 @@ export default function ProductionLinesPage() {
             </button>
           </div>
 
-          <DensitySwitcher value={density} onChange={setDensity} />
+          <DensitySwitcher value={density} onChange={setDensity} className="shrink-0" />
         </div>
 
         {/* Unified Date Range Subtitle */}
