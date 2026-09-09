@@ -19,6 +19,12 @@ export function useKpiData(monthOverride) {
   useEffect(() => {
     let isMounted = true;
 
+    // Never fetch or trigger auth redirects if already on the /login page
+    if (typeof window !== 'undefined' && window.location.pathname === '/login') {
+      setLoading(false);
+      return;
+    }
+
     async function fetchData(retries = 2) {
       if (dataCache[targetMonth]) {
         if (isMounted) {
@@ -40,7 +46,9 @@ export function useKpiData(monthOverride) {
               clearTimeout(timeoutId);
               if (!res.ok) {
                 if (res.status === 401 && typeof window !== 'undefined') {
-                  window.location.href = '/login?from=' + encodeURIComponent(window.location.pathname);
+                  if (window.location.pathname !== '/login') {
+                    window.location.href = '/login?from=' + encodeURIComponent(window.location.pathname);
+                  }
                   return new Promise(() => {}); // hold promise until page redirects
                 }
                 const errData = await res.json().catch(() => ({}));

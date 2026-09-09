@@ -127,6 +127,7 @@ export function PwaManager({ children }) {
 
     // 6. Check version via API periodically or on open
     const checkVersion = async () => {
+      if (typeof window !== 'undefined' && window.location.pathname === '/login') return;
       try {
         const res = await fetch('/api/version?t=' + Date.now());
         if (res.ok) {

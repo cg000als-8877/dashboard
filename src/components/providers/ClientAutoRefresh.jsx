@@ -14,7 +14,7 @@ export function ClientAutoRefresh() {
     const originalFetch = window.fetch;
     window.fetch = async function(...args) {
       const response = await originalFetch.apply(this, args);
-      if (response.status === 401 && typeof window !== 'undefined' && window.location.pathname !== '/login') {
+      if (response.status === 401 && typeof window !== 'undefined' && !window.location.pathname.startsWith('/login')) {
         const urlStr = typeof args[0] === 'string' ? args[0] : (args[0]?.url || '');
         if (!urlStr.includes('/api/auth')) {
           window.location.href = '/login?from=' + encodeURIComponent(window.location.pathname);
@@ -29,8 +29,9 @@ export function ClientAutoRefresh() {
   }, []);
 
   useEffect(() => {
-    // Function to handle hard refresh
+    // Function to handle hard refresh (disabled on login page)
     const handleRefresh = () => {
+      if (typeof window !== 'undefined' && window.location.pathname.startsWith('/login')) return;
       window.location.reload();
     };
 
