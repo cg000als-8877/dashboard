@@ -7,11 +7,11 @@ import { cn } from '@/components/layout/Sidebar';
 
 const quickThemes = [
   { id: 'abstract', label: 'Abstract', color: '#FFFFFF' },
+  { id: 'ember-tide', label: 'Ember', color: '#F97316' },
   { id: 'arcade-overdrive', label: 'Arcade', color: '#00F0FF' },
   { id: 'nordic-slate', label: 'Nordic', color: '#60A5FA' },
   { id: 'jungle-nebula', label: 'Jungle', color: '#57C27A' },
   { id: 'terminal', label: 'Terminal', color: '#22C55E' },
-  { id: 'ocean-dark', label: 'Ocean', color: '#4F8CFF' },
 ];
 
 export function ThemePicker() {

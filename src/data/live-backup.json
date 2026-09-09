@@ -105,12 +105,32 @@
     {
       "date": "2026-09-07",
       "line_id": "A",
-      "status": "HOLIDAY"
+      "style": "SHERPA SHIRT",
+      "item": "SHERPA SHIRT",
+      "worker_count": 45,
+      "per_head_cost": 1384,
+      "total_cost": 62280,
+      "production_qty": 130,
+      "production_dzn": 10.83333333,
+      "cm_per_dzn": 1700,
+      "total_income": 18416.66667,
+      "net_profit": -43863.33333,
+      "status": "ACTIVE"
     },
     {
       "date": "2026-09-08",
       "line_id": "A",
-      "status": "HOLIDAY"
+      "style": "SHERPA SHIRT",
+      "item": "SHERPA SHIRT",
+      "worker_count": 45,
+      "per_head_cost": 1384,
+      "total_cost": 62280,
+      "production_qty": 280,
+      "production_dzn": 23.33333333,
+      "cm_per_dzn": 1700,
+      "total_income": 39666.66667,
+      "net_profit": -22613.33333,
+      "status": "ACTIVE"
     },
     {
       "date": "2026-09-09",
@@ -305,12 +325,32 @@
     {
       "date": "2026-09-07",
       "line_id": "B",
-      "status": "HOLIDAY"
+      "style": "",
+      "item": "BOXER",
+      "worker_count": 18,
+      "per_head_cost": 1384,
+      "total_cost": 24912,
+      "production_qty": 870,
+      "production_dzn": 72.5,
+      "cm_per_dzn": 150,
+      "total_income": 10875,
+      "net_profit": -14037,
+      "status": "ACTIVE"
     },
     {
       "date": "2026-09-08",
       "line_id": "B",
-      "status": "HOLIDAY"
+      "style": "",
+      "item": "BOXER",
+      "worker_count": 18,
+      "per_head_cost": 1384,
+      "total_cost": 24912,
+      "production_qty": 1200,
+      "production_dzn": 100,
+      "cm_per_dzn": 150,
+      "total_income": 15000,
+      "net_profit": -9912,
+      "status": "ACTIVE"
     },
     {
       "date": "2026-09-09",
@@ -505,12 +545,32 @@
     {
       "date": "2026-09-07",
       "line_id": "C",
-      "status": "HOLIDAY"
+      "style": "",
+      "item": "BOXER",
+      "worker_count": 21,
+      "per_head_cost": 1384,
+      "total_cost": 29064,
+      "production_qty": 1200,
+      "production_dzn": 100,
+      "cm_per_dzn": 150,
+      "total_income": 15000,
+      "net_profit": -14064,
+      "status": "ACTIVE"
     },
     {
       "date": "2026-09-08",
       "line_id": "C",
-      "status": "HOLIDAY"
+      "style": "",
+      "item": "BOXER",
+      "worker_count": 21,
+      "per_head_cost": 1384,
+      "total_cost": 29064,
+      "production_qty": 2200,
+      "production_dzn": 183.3333333,
+      "cm_per_dzn": 150,
+      "total_income": 27500,
+      "net_profit": -1564,
+      "status": "ACTIVE"
     },
     {
       "date": "2026-09-09",

@@ -9,7 +9,7 @@ export const BackgroundCanvas = memo(function BackgroundCanvas() {
   const isAbstract = visualTheme === 'abstract';
 
   useEffect(() => {
-    if (bgEffect !== 'spotlight' && bgEffect !== 'hybrid' && bgEffect !== 'arcade-grid' && bgEffect !== 'abstract-void') return;
+    if (bgEffect !== 'spotlight' && bgEffect !== 'hybrid' && bgEffect !== 'arcade-grid' && bgEffect !== 'abstract-void' && bgEffect !== 'ember-tide-aurora') return;
 
     let rafId = null;
     let targetX = window.innerWidth / 2;
@@ -49,6 +49,7 @@ export const BackgroundCanvas = memo(function BackgroundCanvas() {
   const isDark = mode !== 'light';
   const showArcade = !isAbstract && bgEffect === 'arcade-grid';
   const showAbstractVoid = bgEffect === 'abstract-void';
+  const showEmberTide = bgEffect === 'ember-tide-aurora';
   // Block all colorful orb/grid effects when abstract theme is active
   const showOrbs = !isAbstract && (bgEffect === 'aurora' || bgEffect === 'hybrid');
   const showGrid = !isAbstract && (bgEffect === 'grid' || bgEffect === 'hybrid');
@@ -67,6 +68,64 @@ export const BackgroundCanvas = memo(function BackgroundCanvas() {
         filter: isAbstract ? 'saturate(0)' : undefined,
       }}
     >
+      {/* 0. Ember Tide Aurora — Coral Fire × Arctic Cyan Layer */}
+      {showEmberTide && (
+        <div className="absolute inset-0 overflow-hidden">
+          {/* Subtle interactive tide spotlight — follows mouse */}
+          <div
+            className="hidden md:block absolute inset-0 transition-opacity duration-300 transform-gpu"
+            style={{
+              background: `radial-gradient(650px circle at var(--spotlight-x) var(--spotlight-y), ${
+                isDark ? 'rgba(249,115,22,0.10)' : 'rgba(249,115,22,0.06)'
+              } 0%, transparent 65%)`,
+            }}
+          />
+
+          {/* Ember Orb 1 — Large Burning Coral, top-right */}
+          <div
+            className="animate-ember-drift-1 absolute -top-[12%] -right-[8%] w-[600px] sm:w-[780px] h-[600px] sm:h-[780px] rounded-full blur-[100px] sm:blur-[150px] transform-gpu"
+            style={{
+              background: isDark
+                ? `radial-gradient(circle, rgba(249,115,22,0.90) 0%, rgba(251,146,60,0.40) 40%, transparent 70%)`
+                : `radial-gradient(circle, rgba(249,115,22,0.35) 0%, rgba(251,146,60,0.14) 50%, transparent 70%)`,
+              opacity: isDark ? 0.22 : 0.10,
+            }}
+          />
+
+          {/* Ember Orb 2 — Mid-size warm pulse, center-left */}
+          <div
+            className="animate-ember-drift-2 absolute top-[30%] -left-[6%] w-[380px] sm:w-[520px] h-[380px] sm:h-[520px] rounded-full blur-[80px] sm:blur-[120px] transform-gpu"
+            style={{
+              background: isDark
+                ? `radial-gradient(circle, rgba(251,191,36,0.80) 0%, rgba(249,115,22,0.35) 50%, transparent 70%)`
+                : `radial-gradient(circle, rgba(251,191,36,0.30) 0%, rgba(249,115,22,0.12) 50%, transparent 70%)`,
+              opacity: isDark ? 0.16 : 0.08,
+            }}
+          />
+
+          {/* Arctic Orb — Cool Cyan, bottom-left */}
+          <div
+            className="animate-arctic-drift-1 absolute -bottom-[10%] left-[15%] w-[500px] sm:w-[660px] h-[500px] sm:h-[660px] rounded-full blur-[90px] sm:blur-[140px] transform-gpu"
+            style={{
+              background: isDark
+                ? `radial-gradient(circle, rgba(56,189,248,0.85) 0%, rgba(125,211,252,0.35) 45%, transparent 70%)`
+                : `radial-gradient(circle, rgba(56,189,248,0.35) 0%, rgba(125,211,252,0.14) 50%, transparent 70%)`,
+              opacity: isDark ? 0.20 : 0.09,
+            }}
+          />
+
+          {/* Breathing vignette — deepens edges for drama */}
+          <div
+            className="animate-tide-pulse absolute inset-0 pointer-events-none"
+            style={{
+              background: isDark
+                ? 'radial-gradient(ellipse 85% 80% at 50% 50%, transparent 35%, rgba(7,12,22,0.70) 100%)'
+                : 'radial-gradient(ellipse 85% 80% at 50% 50%, transparent 35%, rgba(6,16,30,0.12) 100%)',
+            }}
+          />
+        </div>
+      )}
+
       {/* 0a. Abstract Void — Monochromatic Wisp Layer */}
       {showAbstractVoid && (
         <div className="absolute inset-0 overflow-hidden">

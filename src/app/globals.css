@@ -223,6 +223,145 @@ html[data-theme="nordic-slate"][data-mode="light"] {
 }
 
 /* ═══════════════════════════════════════════
+   EMBER TIDE — Midnight Navy × Burning Coral × Arctic Cyan
+   The complementary clash: warm fire meets cold ocean on deep navy.
+   Primary:   #F97316 (Ember Orange / Burning Coral)
+   Secondary: #38BDF8 (Arctic Sky Cyan)
+   Success:   #34D399 (Seafoam Mint)
+   Warning:   #FBBF24 (Amber)
+   Danger:    #F43F5E (Rose Red)
+   Bg Dark:   #070C16 (Midnight Deep Navy)
+   Light:     #F0F7FF (Arctic Frost White)
+═══════════════════════════════════════════ */
+html[data-theme="ember-tide"] {
+  --color-primary: #F97316;
+  --color-primary-bright: #FB923C;
+  --color-primary-soft: #1C0C03;
+  --color-primary-glow: rgba(249, 115, 22, 0.28);
+  --color-primary-glow-hover: rgba(249, 115, 22, 0.50);
+
+  --color-secondary: #38BDF8;
+  --color-secondary-bright: #7DD3FC;
+  --color-secondary-soft: #051828;
+
+  --color-success: #34D399;
+  --color-success-text: #6EE7B7;
+  --color-success-glow: rgba(52, 211, 153, 0.25);
+
+  --color-danger: #F43F5E;
+  --color-danger-text: #FDA4AF;
+  --color-danger-glow: rgba(244, 63, 94, 0.28);
+
+  --color-warning: #FBBF24;
+  --color-warning-text: #FDE68A;
+  --color-warning-glow: rgba(251, 191, 36, 0.25);
+
+  --color-info: #BAE6FD;
+}
+
+html[data-theme="ember-tide"][data-mode="dark"] {
+  --color-bg-main: #070C16;
+  --color-bg-card: #0D1525;
+  --color-bg-card-hover: #141E34;
+  --color-bg-elevated: #192440;
+
+  --color-surface: rgba(249, 115, 22, 0.045);
+  --color-surface-hover: rgba(249, 115, 22, 0.085);
+
+  --color-border: rgba(56, 189, 248, 0.12);
+  --color-border-strong: rgba(56, 189, 248, 0.25);
+
+  --color-text-main: #F0F7FF;
+  --color-text-secondary: #A8C4E0;
+  --color-text-muted: #6A8CAA;
+  --color-text-subtle: #4A6480;
+
+  --color-primary: #F97316;
+  --color-on-primary: #060A14;
+  --color-primary-bright: #FB923C;
+  --color-primary-soft: #1C0C03;
+  --color-primary-glow: rgba(249, 115, 22, 0.28);
+  --color-primary-glow-hover: rgba(249, 115, 22, 0.50);
+
+  --color-secondary: #38BDF8;
+  --color-secondary-bright: #7DD3FC;
+  --color-secondary-soft: #051828;
+
+  --color-success: #34D399;
+  --color-on-success: #052E20;
+  --color-success-text: #6EE7B7;
+
+  --color-danger: #F43F5E;
+  --color-on-danger: #FFFFFF;
+  --color-danger-text: #FDA4AF;
+
+  --color-warning: #FBBF24;
+  --color-on-warning: #1C1200;
+  --color-warning-text: #FDE68A;
+
+  --color-info: #BAE6FD;
+
+  --color-highlight-1: #F97316;
+  --color-highlight-2: #FB923C;
+  --color-highlight-3: #38BDF8;
+  --color-highlight-4: #7DD3FC;
+  --color-highlight-5: #34D399;
+
+  --shadow-color: rgba(7, 12, 22, 0.70);
+}
+
+html[data-theme="ember-tide"][data-mode="light"] {
+  --color-bg-main: #F0F7FF;
+  --color-bg-card: #FFFFFF;
+  --color-bg-card-hover: #E8F3FD;
+  --color-bg-elevated: #FAFCFF;
+
+  --color-surface: rgba(249, 115, 22, 0.05);
+  --color-surface-hover: rgba(249, 115, 22, 0.10);
+
+  --color-border: rgba(14, 36, 80, 0.14);
+  --color-border-strong: rgba(249, 115, 22, 0.28);
+
+  --color-text-main: #06101E;
+  --color-text-secondary: #102030;
+  --color-text-muted: #1E3A5A;
+  --color-text-subtle: #325270;
+
+  --color-primary: #C2410C;
+  --color-on-primary: #FFFFFF;
+  --color-primary-bright: #9A3412;
+  --color-primary-soft: #FFF7ED;
+  --color-primary-glow: rgba(194, 65, 12, 0.18);
+  --color-primary-glow-hover: rgba(194, 65, 12, 0.30);
+
+  --color-secondary: #0284C7;
+  --color-secondary-bright: #0369A1;
+  --color-secondary-soft: #E0F2FE;
+
+  --color-success: #059669;
+  --color-on-success: #FFFFFF;
+  --color-success-text: #047857;
+
+  --color-danger: #BE123C;
+  --color-on-danger: #FFFFFF;
+  --color-danger-text: #9F1239;
+
+  --color-warning: #D97706;
+  --color-on-warning: #FFFFFF;
+  --color-warning-text: #B45309;
+
+  --color-info: #0369A1;
+
+  --color-highlight-1: #C2410C;
+  --color-highlight-2: #EA580C;
+  --color-highlight-3: #0284C7;
+  --color-highlight-4: #38BDF8;
+  --color-highlight-5: #059669;
+
+  --shadow-color: rgba(6, 16, 30, 0.12);
+}
+
+/* ═══════════════════════════════════════════
    JUNGLE NEBULA — Space Indigo × Jungle Emerald
    Primary:   #57c27a (Emerald)
    Secondary: #5f5490 (Dusty Grape)
@@ -2012,4 +2151,47 @@ body {
 }
 .animate-abstract-vignette {
   animation: abstract-vignette-breathe 12s ease-in-out infinite;
+}
+
+/* ─────────────────────────────────────────
+   EMBER TIDE — Background keyframes
+   Warm coral ember orbs + cold arctic cyan wisps
+───────────────────────────────────────── */
+@keyframes ember-drift-1 {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  30%       { transform: translate3d(55px, -45px, 0) scale(1.10); }
+  65%       { transform: translate3d(-35px, 40px, 0) scale(0.92); }
+}
+
+@keyframes ember-drift-2 {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  40%       { transform: translate3d(-60px, 50px, 0) scale(1.14); }
+  72%       { transform: translate3d(45px, -30px, 0) scale(0.90); }
+}
+
+@keyframes arctic-drift-1 {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  38%       { transform: translate3d(40px, 55px, 0) scale(1.08); }
+  70%       { transform: translate3d(-25px, -40px, 0) scale(0.94); }
+}
+
+@keyframes tide-pulse {
+  0%, 100% { opacity: 0.65; }
+  50%       { opacity: 0.90; }
+}
+
+.animate-ember-drift-1 {
+  animation: ember-drift-1 26s ease-in-out infinite;
+  will-change: transform;
+}
+.animate-ember-drift-2 {
+  animation: ember-drift-2 32s ease-in-out infinite;
+  will-change: transform;
+}
+.animate-arctic-drift-1 {
+  animation: arctic-drift-1 28s ease-in-out infinite;
+  will-change: transform;
+}
+.animate-tide-pulse {
+  animation: tide-pulse 10s ease-in-out infinite;
 }

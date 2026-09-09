@@ -5,6 +5,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 export const VISUAL_THEMES = [
   { id: 'nordic-slate', name: 'Nordic Slate', color: '#60A5FA' },
   { id: 'abstract', name: 'Abstract', color: '#FFFFFF' },
+  { id: 'ember-tide', name: 'Ember Tide', color: '#F97316' },
   { id: 'arcade-overdrive', name: 'Arcade Overdrive (Gaming)', color: '#00F0FF' },
   { id: 'verdant', name: 'Verdant', color: '#80B918' },
   { id: 'lime-ivory', name: 'Lime Ivory', color: '#9BE52C' },
@@ -25,6 +26,7 @@ export const APPEARANCE_MODES = [
 
 export const BG_EFFECTS = [
   { id: 'abstract-void', name: 'Abstract Void', tag: 'Abstract', desc: 'Monochromatic grey wisps, vignette pulse & fine grain noise' },
+  { id: 'ember-tide-aurora', name: 'Ember Tide Aurora', tag: 'Ember', desc: 'Burning coral embers meet arctic cyan wisps on midnight navy' },
   { id: 'arcade-grid', name: 'Arcade Holo-Matrix', tag: 'Arcade', desc: 'Futuristic gaming grid, HUD crosshairs & chromatic glow' },
   { id: 'hybrid', name: 'Aurora + Grid', tag: 'Hybrid', desc: 'Floating ambient orbs + blueprint cyber grid' },
   { id: 'aurora', name: 'Ambient Aurora', tag: 'Orbs', desc: 'Organic glowing orbs matching active theme' },
@@ -176,10 +178,15 @@ export function ThemeProvider({ children }) {
       setVisualThemeState(id);
       localStorage.setItem('app-visual-theme', id);
       sessionStorage.setItem('app-night-theme-overridden', 'true');
-      // Abstract theme enforces a colorless background — override to grain
+      // Abstract theme enforces a colorless background — override to abstract-void
       if (id === 'abstract') {
         setBgEffectState('abstract-void');
         localStorage.setItem('app-bg-effect', 'abstract-void');
+      }
+      // Ember Tide gets its own signature aurora by default
+      if (id === 'ember-tide') {
+        setBgEffectState('ember-tide-aurora');
+        localStorage.setItem('app-bg-effect', 'ember-tide-aurora');
       }
     }
   };
