@@ -1,14 +1,21 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 
 export function AppWelcomeSplash() {
+  const pathname = usePathname();
   const [visible, setVisible] = useState(true);
   const [fading, setFading] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    if (pathname === '/login') {
+      setVisible(false);
+      return;
+    }
     setMounted(true);
+
     // Check if splash was already shown in this specific active session
     const hasSeenSplash = sessionStorage.getItem('bapl_splash_shown');
     if (hasSeenSplash) {

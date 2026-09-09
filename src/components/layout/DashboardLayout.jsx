@@ -56,6 +56,11 @@ export default function DashboardLayout({ children }) {
 
   const isDashboard = pathname === '/';
 
+  // Standalone auth pages (do not render dashboard shell, sidebar, or mobile nav)
+  if (pathname === '/login') {
+    return <>{children}</>;
+  }
+
   return (
     <div className="flex h-screen overflow-hidden w-full bg-[var(--color-bg-main)] relative">
       {/* Ambient Visual Background FX Layer */}
