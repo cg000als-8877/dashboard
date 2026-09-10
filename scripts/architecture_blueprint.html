@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Byzid Apparels - System Architecture & Visual Construction Blueprint</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+    @page {
+      size: A4 portrait;
+      margin: 8mm 10mm 8mm 10mm;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #0F172A;
+      background: #FFFFFF;
+      line-height: 1.36;
+      font-size: 9.5px;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    .page {
+      width: 100%;
+      height: 280mm;
+      max-height: 280mm;
+      position: relative;
+      page-break-after: always;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+      padding-bottom: 4mm;
+    }
+
+    .page:last-child {
+      page-break-after: avoid;
+    }
+
+    .doc-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #0F172A;
+      padding-bottom: 5px;
+      margin-bottom: 7px;
+    }
+
+    .doc-header .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .logo-badge {
+      background: #0F172A;
+      color: #FFFFFF;
+      font-weight: 900;
+      font-size: 9.5px;
+      padding: 3px 7px;
+      border-radius: 5px;
+      letter-spacing: 0.5px;
+    }
+
+    .doc-title {
+      font-size: 11.5px;
+      font-weight: 800;
+      letter-spacing: -0.2px;
+      color: #0F172A;
+      text-transform: uppercase;
+    }
+
+    .doc-subtitle {
+      font-size: 8px;
+      color: #64748B;
+      font-weight: 600;
+      letter-spacing: 0.4px;
+    }
+
+    .doc-meta {
+      text-align: right;
+      font-size: 7.5px;
+      color: #64748B;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .doc-meta span {
+      color: #F97316;
+      font-weight: 700;
+    }
+
+    .doc-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid #E2E8F0;
+      padding-top: 4px;
+      font-size: 7.5px;
+      color: #94A3B8;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    h2 {
+      font-size: 11px;
+      font-weight: 800;
+      color: #0F172A;
+      text-transform: uppercase;
+      letter-spacing: 0.2px;
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    h2 .bar {
+      width: 3.5px;
+      height: 11px;
+      background: #F97316;
+      border-radius: 2px;
+      display: inline-block;
+    }
+
+    h3 {
+      font-size: 9px;
+      font-weight: 700;
+      color: #1E293B;
+      margin-bottom: 3px;
+    }
+
+    p {
+      color: #334155;
+      margin-bottom: 5px;
+      font-size: 8.5px;
+      line-height: 1.35;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+
+    .card {
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: 6px;
+      padding: 5px 8px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 7.5px;
+      margin-bottom: 5px;
+    }
+
+    th {
+      background: #F1F5F9;
+      color: #0F172A;
+      font-weight: 700;
+      text-align: left;
+      padding: 3px 5px;
+      border: 1px solid #CBD5E1;
+      font-family: 'JetBrains Mono', monospace;
+      text-transform: uppercase;
+      font-size: 7px;
+    }
+
+    td {
+      padding: 3px 5px;
+      border: 1px solid #E2E8F0;
+      color: #334155;
+    }
+
+    tr:nth-child(even) td {
+      background: #F8FAFC;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 1px 4px;
+      border-radius: 3px;
+      font-size: 7px;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      text-transform: uppercase;
+    }
+
+    .badge-orange { background: #FFEDD5; color: #C2410C; }
+    .badge-blue { background: #DBEAFE; color: #1D4ED8; }
+    .badge-green { background: #DCFCE7; color: #15803D; }
+    .badge-purple { background: #F3E8FF; color: #7E22CE; }
+
+    .tree-box {
+      background: #090E17;
+      border: 1px solid #1E293B;
+      border-radius: 6px;
+      padding: 6px 9px;
+      margin-bottom: 5px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 7.5px;
+      line-height: 1.45;
+      color: #E2E8F0;
+    }
+
+    .tree-box .branch-root { color: #F97316; font-weight: 800; font-size: 8px; }
+    .tree-box .branch-sub { color: #38BDF8; font-weight: 700; }
+    .tree-box .branch-leaf { color: #A7F3D0; font-weight: 600; }
+    .tree-box .branch-attr { color: #94A3B8; font-style: italic; }
+    .tree-box .branch-tag { color: #FBBF24; font-weight: 700; }
+
+    .flowchart-box {
+      background: #080D1A;
+      border: 1px solid #1E293B;
+      border-radius: 6px;
+      padding: 6px 9px;
+      margin-bottom: 5px;
+    }
+
+    .flowchart-title {
+      color: #F8FAFC;
+      font-size: 8.5px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #1E293B;
+      padding-bottom: 3px;
+    }
+
+    .flowchart-title span.tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 6.5px;
+      padding: 1px 4px;
+      border-radius: 3px;
+      background: #F97316;
+      color: #FFFFFF;
+      font-weight: 700;
+    }
+
+    .diagram-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 3px 0;
+      position: relative;
+    }
+
+    .node {
+      background: #0F172A;
+      border: 1px solid #334155;
+      border-radius: 5px;
+      padding: 3px 5px;
+      font-size: 7px;
+      color: #E2E8F0;
+      text-align: center;
+      position: relative;
+      flex: 1;
+      max-width: 140px;
+    }
+
+    .node.primary {
+      border-color: #F97316;
+      background: rgba(249, 115, 22, 0.12);
+      color: #FED7AA;
+      font-weight: 700;
+    }
+
+    .node.accent {
+      border-color: #38BDF8;
+      background: rgba(56, 189, 248, 0.12);
+      color: #BAE6FD;
+      font-weight: 700;
+    }
+
+    .node.success {
+      border-color: #34D399;
+      background: rgba(52, 211, 153, 0.12);
+      color: #A7F3D0;
+      font-weight: 700;
+    }
+
+    .node.warning {
+      border-color: #FBBF24;
+      background: rgba(251, 191, 36, 0.12);
+      color: #FDE68A;
+      font-weight: 700;
+    }
+
+    .arrow-right {
+      color: #64748B;
+      font-size: 8px;
+      padding: 0 3px;
+      font-weight: 900;
+      flex-shrink: 0;
+    }
+
+    .code-block {
+      background: #0B1120;
+      color: #93C5FD;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 7px;
+      padding: 4px 6px;
+      border-radius: 5px;
+      border: 1px solid #1E293B;
+      margin-bottom: 5px;
+      white-space: pre-wrap;
+      line-height: 1.3;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== PAGE 1 ==================== -->
+  <div class="page">
+    <div>
+      <div class="doc-header">
+        <div class="logo-area">
+          <div class="logo-badge">BYZID APPARELS</div>
+          <div>
+            <div class="doc-title">Website Construction Blueprint &amp; Feature Hierarchy</div>
+            <div class="doc-subtitle">Component-by-Component Architectural Breakdown for AI Platforms</div>
+          </div>
+        </div>
+        <div class="doc-meta">
+          DOC REF: <span>ARCH-HIERARCHY-2026</span><br>
+          BUILD: <span>NEXT.JS 16.2 · TURBOPACK · REACT 19</span>
+        </div>
+      </div>
+
+      <h2><span class="bar"></span>1. Executive Platform Architecture &amp; Construction Overview</h2>
+      <p>
+        The <strong>Byzid Apparels Factory Operations Platform</strong> is a high-speed telemetry and financial analytics dashboard engineered for industrial garment manufacturing. Built on Next.js 16.2 (Turbopack) and React 19, the website provides floor-to-executive visibility across 4 sewing lines, live hourly piece counts, dynamic Contribution Margin (CM) financial calculations, and interactive visual physics simulations.
+      </p>
+
+      <!-- Flowchart: Master Routing & Layout Topology -->
+      <div class="flowchart-box">
+        <div class="flowchart-title">
+          <span>MASTER ARCHITECTURE FLOWCHART: LAYOUT SHELL &amp; ROUTE COMPOSITION</span>
+          <span class="tag">ROUTER TOPOLOGY</span>
+        </div>
+        <div class="diagram-row">
+          <div class="node primary">
+            <strong>CLIENT BROWSER / PWA</strong><br>
+            Capacitor Android / Web
+          </div>
+          <div class="arrow-right">➔</div>
+          <div class="node warning">
+            <strong>EDGE PROXY GATEWAY</strong><br>
+            src/proxy.js (SHA-256 Token)
+          </div>
+          <div class="arrow-right">➔</div>
+          <div class="node accent">
+            <strong>GLOBAL LAYOUT SHELL</strong><br>
+            ThemeProvider + MonthProvider
+          </div>
+          <div class="arrow-right">➔</div>
+          <div class="node success">
+            <strong>PAGE VIEW COMPONENT</strong><br>
+            Dashboard / Hourly / Lines / etc.
+          </div>
+        </div>
+        <div style="display:flex; justify-content:space-between; margin-top:4px; font-size:6.8px; font-family:'JetBrains Mono'; color:#94A3B8; border-top:1px dashed #1E293B; padding-top:3px;">
+          <div>• Auth Passcode: <strong>do1@z1a</strong></div>
+          <div>• Session Cookie: <strong>ba_session</strong> (httpOnly, 1 Year)</div>
+          <div>• Default Theme: <strong>Ember Tide</strong></div>
+          <div>• Default Mode: <strong>Night/Dark</strong> (0ms FOUC)</div>
+        </div>
+      </div>
+
+      <h2><span class="bar"></span>2. Complete Website Anatomy Index (Every Page &amp; URL Route)</h2>
+      <table>
+        <tr>
+          <th>Page Name</th>
+          <th>URL Route</th>
+          <th>Core Component File</th>
+          <th>Primary Screen Purpose &amp; Key Features</th>
+        </tr>
+        <tr>
+          <td><strong>Login Portal</strong></td>
+          <td><code>/login</code></td>
+          <td><code>src/app/login/page.jsx</code></td>
+          <td>Access code security gate, glassmorphic card, passcode visibility toggle, auto-focus input.</td>
+        </tr>
+        <tr>
+          <td><strong>Executive Dashboard</strong></td>
+          <td><code>/</code></td>
+          <td><code>src/components/dashboard/DashboardContent.jsx</code></td>
+          <td>Top Month tabs, Visual Titanic animation, 6 KPI cards, 4-Line summary grid, AI Insights, Telemetry charts.</td>
+        </tr>
+        <tr>
+          <td><strong>Hourly Production</strong></td>
+          <td><code>/hourly</code></td>
+          <td><code>src/app/hourly/page.jsx</code></td>
+          <td>Live floor tracking, calendar date picker, 11-hour matrix (Target vs Actual vs Variance), hourly DHU % defects.</td>
+        </tr>
+        <tr>
+          <td><strong>Lines Overview</strong></td>
+          <td><code>/lines</code></td>
+          <td><code>src/app/lines/page.jsx</code></td>
+          <td>Single-row Month Switcher + Density Switcher (Compact table, Normal cards, Detailed telemetry), floor stats.</td>
+        </tr>
+        <tr>
+          <td><strong>Line Telemetry Deep Dive</strong></td>
+          <td><code>/lines/[id]</code></td>
+          <td><code>src/components/dashboard/LineDetailsContent.jsx</code></td>
+          <td>Dedicated Line A, B, C, D analytics, breadcrumb trail, 6-box Operations Summary, daily historical logs.</td>
+        </tr>
+        <tr>
+          <td><strong>Simulation Studio</strong></td>
+          <td><code>/simulator</code></td>
+          <td><code>src/app/simulator/page.jsx</code></td>
+          <td>Interactive physics simulator, Titanic floating/sinking engine, Profit/Neutral/Loss modes, 1–31 day loss slider.</td>
+        </tr>
+        <tr>
+          <td><strong>Compare Workbench</strong></td>
+          <td><code>/compare</code></td>
+          <td><code>src/app/compare/page.jsx</code></td>
+          <td>Benchmarking workbench: Line vs Line, Date vs Date, Month vs Month with side-by-side radar and bar charts.</td>
+        </tr>
+        <tr>
+          <td><strong>Archival Catalog</strong></td>
+          <td><code>/archive</code></td>
+          <td><code>src/app/archive/page.jsx</code></td>
+          <td>Catalog of past months (July, August, September), financial status badges, external Google Sheets download links.</td>
+        </tr>
+        <tr>
+          <td><strong>Printable Report Engine</strong></td>
+          <td><code>/report</code></td>
+          <td><code>src/components/report/PrintableArchiveReport.jsx</code></td>
+          <td>A4 print-ready executive summary generator, breakdown of floor operational costs and production earnings.</td>
+        </tr>
+      </table>
+
+      <h2><span class="bar"></span>3. Master Construction Hierarchy Tree (Top-Level Structure)</h2>
+      <div class="tree-box">
+        <span class="branch-root">GLOBAL PLATFORM ROOT [Next.js App Router]</span><br>
+        ├── <span class="branch-sub">ROOT PROVIDER CHAIN</span> <span class="branch-attr">(layout.tsx &gt; ThemeProvider &gt; MonthProvider &gt; DensityProvider)</span><br>
+        ├── <span class="branch-sub">APPLICATION SHELL</span> <span class="branch-attr">(DashboardLayout.jsx)</span><br>
+        │   ├── <span class="branch-leaf">BackgroundCanvas</span> <span class="branch-tag">[9 Interactive Ambient Shader Themes]</span><br>
+        │   ├── <span class="branch-leaf">Desktop Sidebar</span> <span class="branch-tag">[Brand Header &gt; Navigation List &gt; Month Selector &gt; Theme Picker &gt; System Online &gt; Log Out]</span><br>
+        │   ├── <span class="branch-leaf">Mobile Header Bar</span> <span class="branch-tag">[Hourly Marquee Ticker &gt; Factory Title &gt; Theme Palette Toggle &gt; Day/Night Toggle]</span><br>
+        │   ├── <span class="branch-leaf">Mobile Bottom Bar</span> <span class="branch-tag">[5 Columns: Dashboard, Lines, Animated Watch (Hourly), Archive, Others Drawer]</span><br>
+        │   └── <span class="branch-leaf">ThemePicker Widget</span> <span class="branch-tag">[Fixed Bottom-Right Floating Action Button with 14 Color Palettes]</span><br>
+        └── <span class="branch-sub">PAGE ROUTES &amp; SCREENS</span> <span class="branch-attr">(/login, /, /hourly, /lines, /lines/[id], /simulator, /compare, /archive)</span>
+      </div>
+    </div>
+
+    <div class="doc-footer">
+      <div>BYZID APPARELS (PVT) LTD · SYSTEM CONSTRUCTION SPECIFICATION</div>
+      <div>PAGE 1 OF 6 · PLATFORM ARCHITECTURE &amp; ROUTE INDEX</div>
+    </div>
+  </div>
+
+  <!-- ==================== PAGE 2 ==================== -->
+  <div class="page">
+    <div>
+      <div class="doc-header">
+        <div class="logo-area">
+          <div class="logo-badge">GLOBAL SHELL</div>
+          <div>
+            <div class="doc-title">Global Shell, Navigation &amp; Security Construction</div>
+            <div class="doc-subtitle">Layout Infrastructure, Sidebars, Bottom Navigation &amp; Auth Gateway</div>
+          </div>
+        </div>
+        <div class="doc-meta">
+          COMPONENT: <span>DashboardLayout.jsx</span><br>
+          AUTH GATE: <span>src/proxy.js</span>
+        </div>
+      </div>
+
+      <h2><span class="bar"></span>4. Global Layout Shell Construction &amp; Component Breakdown</h2>
+
+      <div class="tree-box">
+        <span class="branch-root">GLOBAL SHELL &gt; DASHBOARDLAYOUT.JSX</span><br>
+        ├── <span class="branch-sub">1. BACKGROUND CANVAS</span> <span class="branch-attr">(&lt;BackgroundCanvas /&gt;)</span><br>
+        │   ├── <strong>Theme Shaders:</strong> Ambient Orbs, Ember Tide Aurora, Cyber Grid, Abstract Void, Nebula Pulse, Minimal Slate<br>
+        │   └── <strong>Interactive Pointer:</strong> Radial mouse spotlight cursor tracker on desktop screens<br>
+        ├── <span class="branch-sub">2. DESKTOP SIDEBAR</span> <span class="branch-attr">(&lt;Sidebar /&gt; - Fixed Left Navigation, Collapsible 240px to 72px)</span><br>
+        │   ├── <strong>Brand Header:</strong> Byzid Apparels logo icon, Factory title, Version badge (<span class="branch-tag">v8.0.9</span>)<br>
+        │   ├── <strong>Primary Nav Links:</strong> Dashboard (<span class="branch-attr">/</span>), Hourly (<span class="branch-attr">/hourly</span>), Lines (<span class="branch-attr">/lines</span>), Compare (<span class="branch-attr">/compare</span>), Analytics, Simulator, Archive, Byzid Profile (<span class="branch-attr">external</span>)<br>
+        │   ├── <strong>Nested Lines Dropdown:</strong> Sub-links to Line A (Green), Line B (Blue), Line C (Purple), Line D (Amber)<br>
+        │   ├── <strong>Month Selector Radio:</strong> September (LIVE), August, July active state switcher<br>
+        │   ├── <strong>Sidebar Theme Palette Accordion:</strong> Color palette circles (14 themes) + Background shader selector + Night/Day mode switch<br>
+        │   ├── <strong>System Online Widget:</strong> Green pulse ping status indicator + Last Updated timestamp<br>
+        │   └── <strong>Log Out Button:</strong> Red border button, executes <code>DELETE /api/auth</code> and redirects to <code>/login</code><br>
+        ├── <span class="branch-sub">3. MOBILE HEADER BAR</span> <span class="branch-attr">(Visible on screen width &lt; 768px)</span><br>
+        │   ├── <strong>Live Hourly Marquee Ticker:</strong> Top scrolling ribbon with latest hour piece output per line<br>
+        │   ├── <strong>Brand Identity:</strong> "BYZID APPARELS PVT LTD" title + "Last Updated: [Date]"<br>
+        │   ├── <strong>Theme Palette Trigger:</strong> Opens mobile appearance &amp; style drawer modal<br>
+        │   └── <strong>Day / Night Toggle Button:</strong> Direct one-tap switch between Dark mode and Light mode<br>
+        ├── <span class="branch-sub">4. MOBILE BOTTOM NAVIGATION BAR</span> <span class="branch-attr">(&lt;MobileBottomNav /&gt; - Fixed Bottom Floating Pill)</span><br>
+        │   ├── <strong>Col 1 - Dashboard:</strong> Home icon, active primary highlight<br>
+        │   ├── <strong>Col 2 - Lines:</strong> Factory icon, routes to <code>/lines</code> overview<br>
+        │   ├── <strong>Col 3 - Center Animated Watch (Hourly):</strong> Elevated glowing circular button with rotating watch hands, routes to <code>/hourly</code><br>
+        │   ├── <strong>Col 4 - Archive:</strong> History icon, routes to <code>/archive</code> catalog<br>
+        │   └── <strong>Col 5 - Others Drawer Trigger:</strong> Three-dots horizontal icon, triggers popup drawer<br>
+        ├── <span class="branch-sub">5. MOBILE OTHERS DRAWER POPUP</span> <span class="branch-attr">(Slides up from bottom right)</span><br>
+        │   ├── <strong>Canteen Trigger:</strong> Opens Canteen Security &amp; PIN Verification Modal<br>
+        │   ├── <strong>Internal Tools:</strong> Simulator, Analytics, Compare Workbench<br>
+        │   ├── <strong>Direct Line Jumpers:</strong> Line A, Line B, Line C, Line D color-coded pills<br>
+        │   ├── <strong>External Link:</strong> Byzid Corporate Profile (Vercel)<br>
+        │   └── <strong>Mobile Log Out Action:</strong> Instant session clearance and redirection to login screen<br>
+        └── <span class="branch-sub">6. FLOATING THEME PICKER</span> <span class="branch-attr">(&lt;ThemePicker /&gt; - Fixed bottom-right action button)</span><br>
+            ├── <strong>Trigger:</strong> 40px circular palette button with glowing halo<br>
+            └── <strong>Flyout Popup:</strong> 14 color themes (Oceanic, Ember Tide, Emerald, Rose, etc.), Dark/Light switcher, Log Out button
+      </div>
+
+      <h2><span class="bar"></span>5. Authentication Gateway &amp; Pre-Auth Login Screen (/login)</h2>
+      <div class="grid-2">
+        <div class="card">
+          <h3>Login Portal Anatomy (/login)</h3>
+          <p>
+            The authentication portal is an isolated, high-security pre-auth route with custom industrial aesthetics:
+          </p>
+          <div class="tree-box" style="margin-bottom:0;">
+            <span class="branch-root">LOGIN SCREEN ANATOMY</span><br>
+            ├── <strong>Industrial Background:</strong> Architectural blueprint grid, security status watermarks, radial spotlight<br>
+            ├── <strong>Glassmorphic Card:</strong> Elevated matte container with glowing borders<br>
+            ├── <strong>Apparel Crest:</strong> Factory vector badge with sewing needle &amp; shield emblem<br>
+            ├── <strong>Portal Title:</strong> "BYZID APPARELS" &amp; "Operations Access Portal"<br>
+            ├── <strong>Passcode Input:</strong> Password field with Eye/EyeOff visibility toggle, auto-focused<br>
+            ├── <strong>Unlock Button:</strong> "AUTHENTICATE" action with arrow animation and loading spinner<br>
+            └── <strong>Footer Notice:</strong> "Protected Facility Portal · Authorized Factory Management Only"
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Security &amp; Loop-Prevention Implementation</h3>
+          <p>
+            Edge middleware protects all routes. Background polling aborts immediately if 401 Unauthorized occurs:
+          </p>
+          <div class="code-block">// Edge Route Proxy Gateway (src/proxy.js)
+export function middleware(req) {
+  const session = req.cookies.get('ba_session')?.value;
+  const isAuth = session === hashPasscode(process.env.DASHBOARD_PASSCODE);
+  if (!isAuth && !req.nextUrl.pathname.startsWith('/login')) {
+    return NextResponse.redirect(new URL('/login', req.url));
+  }
+}
+
+// 401 Flash Prevention (useKpiData.js & ClientAutoRefresh.jsx)
+if (res.status === 401) {
+  if (window.location.pathname !== '/login') {
+    window.location.href = '/login';
+  }
+  return null; // Stop polling loop completely
+}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="doc-footer">
+      <div>BYZID APPARELS (PVT) LTD · SYSTEM CONSTRUCTION SPECIFICATION</div>
+      <div>PAGE 2 OF 6 · GLOBAL SHELL, NAVIGATION &amp; SECURITY GATEWAY</div>
+    </div>
+  </div>
+
+  <!-- ==================== PAGE 3 ==================== -->
+  <div class="page">
+    <div>
+      <div class="doc-header">
+        <div class="logo-area">
+          <div class="logo-badge">EXECUTIVE DASHBOARD</div>
+          <div>
+            <div class="doc-title">Executive Dashboard Construction &amp; Widget Hierarchy</div>
+            <div class="doc-subtitle">Top Controls, Titanic Animation, Financial Stat Cards &amp; Line Summaries</div>
+          </div>
+        </div>
+        <div class="doc-meta">
+          ROUTE: <code>/</code> (INDEX)<br>
+          COMPONENT: <span>DashboardContent.jsx</span>
+        </div>
+      </div>
+
+      <h2><span class="bar"></span>6. Executive Dashboard (/) Hierarchical Breakdown</h2>
+      <p>
+        The primary operational screen combines executive-level financial intelligence with floor production analytics. The breakdown below details every nested section, button, and widget:
+      </p>
+
+      <div class="tree-box">
+        <span class="branch-root">DASHBOARD SCREEN ROOT [src/app/page.jsx &gt; DashboardContent.jsx]</span><br>
+        ├── <span class="branch-sub">SECTION 1: TOP CONTROLS &amp; VISUALS TOGGLE</span><br>
+        │   ├── <span class="branch-leaf">Titanic Animation (Visual Sinking Voyage)</span> <span class="branch-tag">[TitanicAnimation.jsx]</span><br>
+        │   │   ├── <strong>Dynamic Vessel Model:</strong> High-detail SVG luxury ocean liner with smoking funnels and flag<br>
+        │   │   ├── <strong>Physics Engine:</strong> Ship tilts and sinks into animated SVG water waves if Net Profit is negative<br>
+        │   │   ├── <strong>Floating Full Steam Ahead:</strong> Ship sails smoothly forward when month is profitable<br>
+        │   │   └── <strong>Water Level Meter:</strong> Dynamically calculates water breach line according to cumulative loss<br>
+        │   ├── <span class="branch-leaf">Visuals Toggle Button</span> <span class="branch-attr">("Show Visuals" / "Hide Visuals")</span><br>
+        │   │   └── Pill button centered above header; features pulsing slow-blink animation when visuals are collapsed<br>
+        │   └── <span class="branch-leaf">Factory Financials Header</span><br>
+        │       ├── <strong>Title:</strong> "FACTORY FINANCIALS" (uppercase gradient text with shadow)<br>
+        │       └── <strong>Analyst Credit:</strong> "Financial Data Analyst : Rofiqul Islam Zia (Merchandiser)"<br>
+        ├── <span class="branch-sub">SECTION 2: 6 KPI METRIC STAT CARDS</span> <span class="branch-tag">[MetricCard.jsx &times; 6]</span><br>
+        │   ├── <span class="branch-leaf">Month Switcher Tabs:</span> Pill switch for <strong>September (LIVE)</strong>, <strong>August</strong>, and <strong>July</strong><br>
+        │   ├── <span class="branch-leaf">Date Range Subtitle:</span> Dynamic badge e.g. <span class="branch-tag">FROM 01 SEP TO 09 SEP, 2026</span><br>
+        │   ├── <strong>Card 1: Total Cost (BDT):</strong> Sum of operator labor, overhead, and operating expenses + % vs previous month<br>
+        │   ├── <strong>Card 2: Total Income (BDT):</strong> Cumulative CM gross earnings generated from all production lines<br>
+        │   ├── <strong>Card 3: Net Profit / Loss (BDT):</strong> Net financial balance; dynamically colored (Green = Profit, Red = Loss)<br>
+        │   ├── <strong>Card 4: Working Days:</strong> Total recorded active manufacturing days in selected month (e.g. 8 Days)<br>
+        │   ├── <strong>Card 5: Production Lines:</strong> Active producing lines indicator (e.g. "All 4 Lines Active &amp; Producing")<br>
+        │   └── <strong>Card 6: Avg Daily Profit / Loss (BDT):</strong> Daily run-rate deficit or profit pace (e.g. "-109k / day")<br>
+        ├── <span class="branch-sub">SECTION 3: PRODUCTION LINE SUMMARY SECTION</span><br>
+        │   ├── <span class="branch-leaf">Section Header:</span> "LINE SUMMARY SEPTEMBER" + Date range badge<br>
+        │   ├── <span class="branch-leaf">Mobile Line Switcher Tabs:</span> 4 single-row buttons: <span class="branch-tag">[LINE A]</span> <span class="branch-tag">[LINE B]</span> <span class="branch-tag">[LINE C]</span> <span class="branch-tag">[LINE D]</span><br>
+        │   ├── <span class="branch-leaf">Desktop 2&times;2 Grid Layout:</span> Line A &amp; B in top row, Line C &amp; D in bottom row<br>
+        │   └── <span class="branch-leaf">Inside Each Line Card (Component Structure):</span><br>
+        │       ├── <strong>Color Top Accent Bar:</strong> Emerald (A), Royal Blue (B), Deep Purple (C), Warm Amber (D)<br>
+        │       ├── <strong>Line Title &amp; Status Badge:</strong> Line Name + Status (<span class="branch-tag">Optimal</span>, <span class="branch-tag">Idle</span>, or <span class="branch-tag">Critical</span> with strobe beacon)<br>
+        │       ├── <strong>Active Item &amp; Efficiency:</strong> Running garment (e.g. Sherpa Jacket, Boxer) + Cost Recovery Efficiency %<br>
+        │       ├── <strong>Month Total Summary (4-box row):</strong> Production (PCS), Income (BDT), Cost (BDT), Net Profit/Loss (BDT)<br>
+        │       ├── <strong>Last Day Input Strip (3-box row):</strong> Day Output (PCS), Day Income (BDT), Day Net Profit/Loss (BDT)<br>
+        │       └── <strong>Action CTA Button:</strong> "VIEW FULL DETAILS" button routing directly to <code>/lines/[id]</code><br>
+        ├── <span class="branch-sub">SECTION 4: SYSTEM INTELLIGENCE (AI INSIGHTS PANEL)</span><br>
+        │   ├── <strong>AI Sparkles Icon:</strong> Illuminated accent container<br>
+        │   └── <strong>Automated Bullet Insights:</strong> Dynamic operational summary generated from floor telemetry rules<br>
+        └── <span class="branch-sub">SECTION 5: PERFORMANCE TELEMETRY CHARTS</span><br>
+            ├── <strong>Daily Output Area Chart:</strong> Recharts area visualization plotting daily Target vs Actual pieces produced<br>
+            └── <strong>Income vs Cost Bar Chart:</strong> Bi-color bar graph comparing daily financial gross revenue against factory expenses
+      </div>
+
+      <h2><span class="bar"></span>7. Dashboard Line Cards Technical Data Matrix</h2>
+      <table>
+        <tr>
+          <th>Line ID</th>
+          <th>Accent Color</th>
+          <th>Running Item</th>
+          <th>Target Manpower</th>
+          <th>Primary Buyer</th>
+          <th>Default Target / Hour</th>
+        </tr>
+        <tr>
+          <td><strong>Line A</strong></td>
+          <td><span class="badge badge-green">#10B981 (Emerald)</span></td>
+          <td>SHERPA JACKET / FLANNEL</td>
+          <td>78 Operators</td>
+          <td>FAMETEX</td>
+          <td>80 Pcs / Hour</td>
+        </tr>
+        <tr>
+          <td><strong>Line B</strong></td>
+          <td><span class="badge badge-blue">#3B82F6 (Blue)</span></td>
+          <td>BOXER SHORTS</td>
+          <td>48 Operators</td>
+          <td>TOP-GRADE</td>
+          <td>230 Pcs / Hour</td>
+        </tr>
+        <tr>
+          <td><strong>Line C</strong></td>
+          <td><span class="badge badge-purple">#A855F7 (Purple)</span></td>
+          <td>BOXER SHORTS</td>
+          <td>48 Operators</td>
+          <td>TOP-GRADE</td>
+          <td>230 Pcs / Hour</td>
+        </tr>
+        <tr>
+          <td><strong>Line D</strong></td>
+          <td><span class="badge badge-orange">#F59E0B (Amber)</span></td>
+          <td>MEN'S T-SHIRT (STANDBY)</td>
+          <td>45 Operators</td>
+          <td>INTERNAL</td>
+          <td>Standby / Idle</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="doc-footer">
+      <div>BYZID APPARELS (PVT) LTD · SYSTEM CONSTRUCTION SPECIFICATION</div>
+      <div>PAGE 3 OF 6 · EXECUTIVE DASHBOARD DETAILED ANATOMY</div>
+    </div>
+  </div>
+
+  <!-- ==================== PAGE 4 ==================== -->
+  <div class="page">
+    <div>
+      <div class="doc-header">
+        <div class="logo-area">
+          <div class="logo-badge">FLOOR OPERATIONS</div>
+          <div>
+            <div class="doc-title">Hourly Matrix &amp; Multi-Line Overview Construction</div>
+            <div class="doc-subtitle">11-Hour Shift Telemetry, Date Pickers &amp; Multi-Density Views</div>
+          </div>
+        </div>
+        <div class="doc-meta">
+          ROUTES: <code>/hourly</code> &amp; <code>/lines</code><br>
+          ENGINES: <span>SheetJS + DensityProvider</span>
+        </div>
+      </div>
+
+      <h2><span class="bar"></span>8. Hourly Production Matrix (/hourly) Hierarchical Breakdown</h2>
+
+      <div class="tree-box">
+        <span class="branch-root">HOURLY FLOOR TRACKING ROOT [src/app/hourly/page.jsx]</span><br>
+        ├── <span class="branch-sub">TOP FLOOR CONTROLS &amp; HEADER</span><br>
+        │   ├── <span class="branch-leaf">Page Title:</span> "HOURLY PRODUCTION" + Subtitle "REAL-TIME FLOOR PRODUCTION LOG"<br>
+        │   ├── <span class="branch-leaf">Live Sync Status Indicator:</span> Real-time clock (<span class="branch-attr">&lt;RealTimeClock /&gt;</span>) + pulsating green sync dot<br>
+        │   └── <span class="branch-leaf">Date Selector Dropdown:</span> Interactive calendar selector popup listing all available production dates<br>
+        │       ├── <strong>Date Row:</strong> Date label, today's badge, Friday factory rest badge, or public holiday banner<br>
+        │       └── <strong>Total Pieces Indicator:</strong> Shows total finished pieces produced on that date directly inside dropdown<br>
+        ├── <span class="branch-sub">FACTORY TOTAL SUMMARY STRIP</span><br>
+        │   ├── <strong>Total Target Box:</strong> Cumulative target sum for all 4 lines combined<br>
+        │   ├── <strong>Total Actual Box:</strong> Cumulative actual pieces sewn across the entire factory<br>
+        │   ├── <strong>Overall Achievement Gauge:</strong> Animated precision radial ring (<span class="branch-attr">&lt;PrecisionProgressRing /&gt;</span>) showing %<br>
+        │   └── <strong>Active Shift Indicator:</strong> Automatically detects currently running hour (e.g. "8th Hour Active")<br>
+        ├── <span class="branch-sub">DESKTOP 11-HOUR PRODUCTION MATRIX TABLE</span><br>
+        │   ├── <strong>Sticky Left Column:</strong> Line Identifiers (Line A, B, C, D) + Combined Factory Total Row<br>
+        │   ├── <strong>11 Hourly Shift Columns:</strong> 1ST, 2ND, 3RD, 4TH, 5TH, 6TH, 7TH, 8TH, 9TH, 10TH, 11TH Hours<br>
+        │   ├── <strong>Cell Data Triad:</strong> Target pieces, Actual pieces, and Achievement % in every hourly cell<br>
+        │   └── <strong>Cell Note Callouts:</strong> Operator downtime or style-change notes rendered under cell value<br>
+        └── <span class="branch-sub">MOBILE HOURLY FLOOR EXPERIENCE</span><br>
+            ├── <strong>Single-Row Mobile Tab Bar:</strong> <span class="branch-tag">[OVERALL]</span> <span class="branch-tag">[LINE A]</span> <span class="branch-tag">[LINE B]</span> <span class="branch-tag">[LINE C]</span> <span class="branch-tag">[LINE D]</span><br>
+            ├── <strong>Overall Tab:</strong> Compact 4-column table (Hour, Target, Actual, Achieve %)<br>
+            └── <strong>Line Tabs:</strong> Line Specs Grid (Buyer, Style, Item, Workers) + 11-hour vertical breakdown table + Total Footer
+      </div>
+
+      <h2><span class="bar"></span>9. Lines Overview (/lines) Construction &amp; Density Engine</h2>
+
+      <div class="tree-box">
+        <span class="branch-root">LINES OVERVIEW ROOT [src/app/lines/page.jsx]</span><br>
+        ├── <span class="branch-sub">CONTROLS STRIP (Enforced Single-Row Flex-Nowrap)</span><br>
+        │   ├── <span class="branch-leaf">Month Switcher Tabs:</span> September (LIVE with red badge), August, July<br>
+        │   └── <span class="branch-leaf">Density Switcher (&lt;DensitySwitcher /&gt;):</span> Single-row 3-way toggle button:<br>
+        │       ├── <span class="branch-tag">COMPACT</span> (Table icon) · Condensed spreadsheet table for high-speed executive scanning<br>
+        │       ├── <span class="branch-tag">NORMAL</span> (Grid icon) · Balanced card grid with key performance badges and CTAs<br>
+        │       └── <span class="branch-tag">DETAILED</span> (List icon) · Expanded engineering telemetry with hourly trend metrics<br>
+        ├── <span class="branch-sub">FACTORY FLOOR SUMMARY STRIP</span><br>
+        │   └── 4 stat cards: Total Target (PCS), Total Actual (PCS), Total Income (BDT), Net Profit / Loss (BDT)<br>
+        ├── <span class="branch-sub">VIEW MODE 1: COMPACT EXECUTIVE SPREADSHEET (Density === 'compact')</span><br>
+        │   └── High-density table: Line, Active Item, Workers, Month Output, Total Income, Total Cost, Net Profit, Recovery %, Status, Action<br>
+        ├── <span class="branch-sub">VIEW MODE 2: BALANCED CARD GRID (Density === 'normal')</span><br>
+        │   └── 4 responsive line cards: Top accent bar, Worker counts, Efficiency gauge, Last day input stats, "View Details" button<br>
+        └── <span class="branch-sub">VIEW MODE 3: DETAILED TELEMETRY (Density === 'detailed')</span><br>
+            └── Expanded line cards with inline break-even financial gauges and worker allocation graphs
+      </div>
+
+      <h2><span class="bar"></span>10. Comparison of Density Modes in Lines Overview</h2>
+      <table>
+        <tr>
+          <th>Density Mode</th>
+          <th>Layout Format</th>
+          <th>Target Screen</th>
+          <th>Visible Data Fields</th>
+        </tr>
+        <tr>
+          <td><strong>Compact</strong></td>
+          <td>Single Responsive Table</td>
+          <td>Desktop &amp; Mobile Tablets</td>
+          <td>Line ID, Item, Workers, Pcs Output, Total Income, Total Cost, Net Profit, Cost Recovery %, Status Pill.</td>
+        </tr>
+        <tr>
+          <td><strong>Normal</strong></td>
+          <td>2&times;2 Grid of Cards</td>
+          <td>Standard Mobile &amp; Desktop</td>
+          <td>Line identity, Buyer, Item, Efficiency %, Month totals (4 stats), Last day input (3 stats), Navigation CTA.</td>
+        </tr>
+        <tr>
+          <td><strong>Detailed</strong></td>
+          <td>Expanded Modular Panels</td>
+          <td>Industrial Floor Monitors</td>
+          <td>Full engineering telemetry, operator counts, break-even graphs, daily CM contribution analysis.</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="doc-footer">
+      <div>BYZID APPARELS (PVT) LTD · SYSTEM CONSTRUCTION SPECIFICATION</div>
+      <div>PAGE 4 OF 6 · HOURLY PRODUCTION &amp; MULTI-LINE OVERVIEW</div>
+    </div>
+  </div>
+
+  <!-- ==================== PAGE 5 ==================== -->
+  <div class="page">
+    <div>
+      <div class="doc-header">
+        <div class="logo-area">
+          <div class="logo-badge">ADVANCED MODULES</div>
+          <div>
+            <div class="doc-title">Line Deep Dive, Simulation Studio &amp; Compare Workbench</div>
+            <div class="doc-subtitle">Component Construction for /lines/[id], /simulator and /compare</div>
+          </div>
+        </div>
+        <div class="doc-meta">
+          ROUTES: <code>/lines/[id]</code> · <code>/simulator</code> · <code>/compare</code><br>
+          PHYSICS: <span>SVG Water &amp; Dynamic Ship Model</span>
+        </div>
+      </div>
+
+      <h2><span class="bar"></span>11. Line Telemetry Deep Dive (/lines/[id]) Construction</h2>
+      <div class="tree-box">
+        <span class="branch-root">LINE DEEP DIVE ROOT [LineDetailsContent.jsx]</span><br>
+        ├── <span class="branch-sub">HEADER &amp; BREADCRUMB BAR</span><br>
+        │   ├── <strong>Breadcrumbs:</strong> Dashboard &gt; Lines &gt; Line [A/B/C/D] &gt; Telemetry<br>
+        │   ├── <strong>Back Navigation:</strong> Circle arrow button returning to previous view<br>
+        │   ├── <strong>Title &amp; Subtitle:</strong> "Line [ID] Telemetry" + "Detailed breakdown synced from source records"<br>
+        │   └── <strong>Local Density Switcher:</strong> Independent Compact / Normal / Detailed table toggle<br>
+        ├── <span class="branch-sub">OPERATIONS SUMMARY GRID (6-Card Container)</span><br>
+        │   ├── <strong>Date Range:</strong> Active date range (e.g. "01 - 09 Sep, 2026")<br>
+        │   ├── <strong>Active Item:</strong> Garment style currently running on line (e.g. "SHERPA JACKET")<br>
+        │   ├── <strong>Total Production:</strong> Cumulative finished pieces sewn in selected period<br>
+        │   ├── <strong>Total Cost:</strong> Cumulative line operational expenses in BDT<br>
+        │   ├── <strong>Total Income:</strong> Cumulative CM earnings generated by line in BDT<br>
+        │   └── <strong>Net Balance:</strong> Net Profit / Net Loss with green/red status glow<br>
+        └── <span class="branch-sub">DAILY HISTORICAL LOGS TABLE</span><br>
+            ├── <strong>Table Columns:</strong> Date, Line, Style, Item, Workers, Per Head Cost, Total Cost, Prod Qty, Prod DZN, CM/DZN, Total Income, Net Profit<br>
+            └── <strong>Special Row Handlers:</strong> Friday Factory Rest rows and Public Holiday rows automatically highlighted in amber/rose
+      </div>
+
+      <h2><span class="bar"></span>12. Simulation Studio (/simulator) Construction &amp; Controls</h2>
+      <div class="tree-box">
+        <span class="branch-root">SIMULATION STUDIO ROOT [src/app/simulator/page.jsx]</span><br>
+        ├── <span class="branch-sub">1. HOW THE SIMULATOR WORKS (Interactive Accordion)</span><br>
+        │   ├── <strong>Accordion Header:</strong> Question mark icon + Title + Expand/Collapse toggle [<span class="branch-tag">&plus;</span> / <span class="branch-tag">&minus;</span>]<br>
+        │   └── <strong>Explanation Body:</strong> Details Profitable (full steam), Breaking Even (neutral), and Sinking (loss progression)<br>
+        ├── <span class="branch-sub">2. SIMULATED TITANIC ANIMATION STAGE</span><br>
+        │   └── Live SVG ship stage responding directly to simulation state variables (simMode, simDay)<br>
+        ├── <span class="branch-sub">3. SHIP PHYSICS CONTROL PANEL</span><br>
+        │   ├── <strong>Mode Toggles (3 Buttons):</strong><br>
+        │   │   ├── <span class="branch-tag">PROFIT MODE</span> (Green button): Ship sails forward with full steam, waves ripple smoothly<br>
+        │   │   ├── <span class="branch-tag">NEUTRAL MODE</span> (Amber button): Ship stays afloat at neutral waterline<br>
+        │   │   └── <span class="branch-tag">LOSS MODE</span> (Red button): Triggers water breach physics and unlocks time progression slider<br>
+        │   └── <strong>Time Progression Slider (Only active in Loss Mode):</strong><br>
+        │       ├── <strong>Range:</strong> Day 1 to Day 31 of sustained losses<br>
+        │       └── <strong>Visual Milestones:</strong> Safe &rarr; Water Breach &rarr; 30&deg; Stern Tilt &rarr; 90&deg; Vertical Plunge &rarr; Vessel Shatter
+      </div>
+
+      <h2><span class="bar"></span>13. Compare Workbench (/compare) Construction</h2>
+      <div class="tree-box">
+        <span class="branch-root">COMPARE WORKBENCH ROOT [src/app/compare/page.jsx]</span><br>
+        ├── <span class="branch-sub">TAB 1: LINE COMPARISON (Line vs Line)</span><br>
+        │   ├── <strong>Selectors:</strong> Line 1 Selector (A, B, C, D) vs Line 2 Selector (A, B, C, D)<br>
+        │   ├── <strong>Side-by-Side KPI Cards:</strong> Production Output, Efficiency %, Total Revenue, Cost, Profit Delta<br>
+        │   └── <strong>Comparative Charts:</strong> Multi-axis Radar comparison chart &amp; Bar delta comparison graph<br>
+        ├── <span class="branch-sub">TAB 2: DATE COMPARISON (Day vs Day)</span><br>
+        │   ├── <strong>Selectors:</strong> Date 1 dropdown vs Date 2 dropdown<br>
+        │   └── <strong>Hourly Curve Overlay:</strong> Recharts line graph overlaying both days' 11-hour output curves<br>
+        └── <span class="branch-sub">TAB 3: MONTH COMPARISON (Month vs Month)</span><br>
+            ├── <strong>Selectors:</strong> Month 1 dropdown (September LIVE) vs Month 2 (August / July)<br>
+            └── <strong>Financial Variance Analysis:</strong> Month-over-month CM variance, working day counts, and daily average loss comparisons
+      </div>
+    </div>
+
+    <div class="doc-footer">
+      <div>BYZID APPARELS (PVT) LTD · SYSTEM CONSTRUCTION SPECIFICATION</div>
+      <div>PAGE 5 OF 6 · LINE DEEP DIVE, SIMULATOR &amp; COMPARE WORKBENCH</div>
+    </div>
+  </div>
+
+  <!-- ==================== PAGE 6 ==================== -->
+  <div class="page">
+    <div>
+      <div class="doc-header">
+        <div class="logo-area">
+          <div class="logo-badge">ARCHIVE &amp; AI GUIDE</div>
+          <div>
+            <div class="doc-title">Archival Catalog, Data Pipeline &amp; AI Prompt Guide</div>
+            <div class="doc-subtitle">Historical Storage, ETL Workflow &amp; AI Collaboration Prompts</div>
+          </div>
+        </div>
+        <div class="doc-meta">
+          PIPELINE: <span>ETL-SHEETJS-FIRESTORE</span><br>
+          TARGET: <span>AI PLATFORM SHARING</span>
+        </div>
+      </div>
+
+      <h2><span class="bar"></span>14. Archival Catalog (/archive) &amp; Report Generator (/report)</h2>
+      <div class="tree-box">
+        <span class="branch-root">ARCHIVE &amp; REPORTS ROOT [src/app/archive/page.jsx]</span><br>
+        ├── <span class="branch-sub">MONTHLY ARCHIVE DIRECTORY</span><br>
+        │   ├── <strong>July 2026 Card:</strong> Recorded working days, net balance, "SEE DETAILS" action &rarr; <code>/archive/2026-07</code><br>
+        │   ├── <strong>August 2026 Card:</strong> Recorded working days, net balance, "SEE DETAILS" action &rarr; <code>/archive/2026-08</code><br>
+        │   └── <strong>September 2026 Card:</strong> Live month snapshot &rarr; <code>/</code><br>
+        ├── <span class="branch-sub">EXTERNAL GOOGLE DRIVE PDF SHEET DOWNLOADS</span><br>
+        │   ├── July Factory Sheet: Direct Google Drive link (<code>1GWGOeDtG3mvxW7T8y0w64UHg75jBR-Bv</code>)<br>
+        │   └── August Factory Sheet: Direct Google Drive link (<code>1-Jug6L8J5_CttfrAyrh2NCFuV70g0pvu</code>)<br>
+        └── <span class="branch-sub">PRINTABLE EXECUTIVE REPORT GENERATOR</span> <span class="branch-tag">[PrintableArchiveReport.jsx]</span><br>
+            └── Generates clean, printer-optimized A4 financial audits formatted for factory board meetings
+      </div>
+
+      <h2><span class="bar"></span>15. Complete Data Ingestion &amp; Calculation Pipeline Flowchart</h2>
+      <div class="flowchart-box">
+        <div class="flowchart-title">
+          <span>FLOWCHART: FACTORY FLOOR TO REACT TELEMETRY DATA FLOW</span>
+          <span class="tag">DATA PIPELINE</span>
+        </div>
+        <div class="diagram-row">
+          <div class="node primary">
+            <strong>1. FACTORY GOOGLE SHEET</strong><br>
+            Live Floor Entry (Doc ID: 1sk_chM...)
+          </div>
+          <div class="arrow-right">➔</div>
+          <div class="node accent">
+            <strong>2. XLSX BUFFER INGESTION</strong><br>
+            fetch() &rarr; SheetJS Parser
+          </div>
+          <div class="arrow-right">➔</div>
+          <div class="node warning">
+            <strong>3. NORMALIZATION &amp; BACKUP</strong><br>
+            hourly-archives/*.json + Firestore
+          </div>
+        </div>
+        <div class="diagram-row" style="margin-top:4px;">
+          <div class="node" style="border-color:#A855F7; color:#E9D5FF;">
+            <strong>4. KPI ENGINE (kpiEngine.js)</strong><br>
+            Eff%, DHU%, CM Gross Revenue
+          </div>
+          <div class="arrow-right">➔</div>
+          <div class="node success">
+            <strong>5. REACTIVE SWR CACHE</strong><br>
+            useKpiData.js (Client Memory)
+          </div>
+          <div class="arrow-right">➔</div>
+          <div class="node primary">
+            <strong>6. INTERACTIVE UI DISPLAY</strong><br>
+            Recharts, Stat Cards, Titanic Ship
+          </div>
+        </div>
+      </div>
+
+      <h2><span class="bar"></span>16. AI Platform Collaboration Prompt &amp; System Rules</h2>
+      <div class="card" style="background:#FFFBEB; border-color:#FDE68A;">
+        <h3 style="color:#B45309;">Ready-to-Use Prompt Template for Sharing with External AI Models:</h3>
+        <p style="font-size:7.5px; color:#78350F; margin-bottom:3px;">
+          Copy and paste the exact prompt below into ChatGPT, Claude, Gemini, or other AI platforms to provide instant context:
+        </p>
+        <div class="code-block" style="background:#0F172A; color:#F8FAFC; margin-bottom:0; font-size:6.8px;">"CONTEXT: You are assisting with the Byzid Apparels Factory Operations Platform (Byzid Apparels Pvt Ltd).
+• Framework: Next.js 16.2 Turbopack, React 19, Tailwind CSS v4, Capacitor 8.5 (Android native).
+• Production Theme: 'ember-tide' in enforced Night/Dark mode (0ms FOUC prevention via blocking script in layout.tsx).
+• Security: All routes protected by src/proxy.js using SHA-256 session cookie (ba_session). Passcode is 'do1@z1a'. 401 calls abort polling loops to prevent login screen flashing.
+• Pages &amp; Construction:
+  1. Login (/login): Glassmorphic pre-auth portal with passcode visibility toggle.
+  2. Dashboard (/): Top controls &gt; Show/Hide Visuals &gt; Titanic SVG animation &gt; Factory Financials header &gt; 6 KPI cards &gt; Line Summary (Line A-D tabs/grid) &gt; AI Insights &gt; Performance charts.
+  3. Hourly (/hourly): Date picker &gt; RealTimeClock &gt; Total Production card &gt; 11-Hour matrix table (Target vs Actual vs Variance vs Notes).
+  4. Lines (/lines): Single-row Month Switcher (flex-nowrap) + Density Switcher (Compact table / Normal cards / Detailed telemetry).
+  5. Line Details (/lines/[id]): Breadcrumb nav &gt; Operations Summary 6-grid &gt; Daily historical logs table.
+  6. Simulator (/simulator): Titanic floating vs sinking simulator &gt; Profit/Neutral/Loss modes &gt; 1-31 Day Loss slider.
+  7. Compare (/compare): Line vs Line, Date vs Date, and Month vs Month with Recharts radar and bar graphs.
+  8. Archive (/archive): Monthly catalog cards with Google Drive PDF links.
+• Math Formulas (src/utils/kpiEngine.js):
+  - Efficiency % = (Actual Output &times; SMV) / (Manpower &times; Working Minutes) &times; 100
+  - Contribution Margin = Actual Pieces &times; (CM per Dozen / 12) - Daily Factory Overhead
+Please respect the component hierarchy and 60-30-10 color budget (Skill.md) in all modifications."</div>
+      </div>
+    </div>
+
+    <div class="doc-footer">
+      <div>BYZID APPARELS (PVT) LTD · SYSTEM CONSTRUCTION SPECIFICATION</div>
+      <div>PAGE 6 OF 6 · ARCHIVE CATALOG, DATA FLOWCHART &amp; AI COLLABORATION PROMPT</div>
+    </div>
+  </div>
+
+</body>
+</html>
