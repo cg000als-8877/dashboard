@@ -607,7 +607,7 @@ export default function HourlyPage() {
                             </p>
                             <p className={cn(
                               "text-lg font-black",
-                              (factoryAchievement >= 100) ? "text-[var(--color-success-text)]" : "text-amber-500"
+                              (factoryAchievement >= 100) ? "text-[var(--color-success-text)]" : "text-[var(--color-danger-text)]"
                             )}>
                               <AnimatedNumber value={factoryAchievement} suffix="%" />
                             </p>
@@ -752,7 +752,7 @@ export default function HourlyPage() {
                                 return (
                                   <td key={`actual-${idx}`} className={cn(
                                     "px-3 py-3.5 text-base text-center border-r border-[var(--color-border)] last:border-r-0 font-extrabold",
-                                    isZero ? "text-[var(--color-text-muted)]" : isGood ? "text-[var(--color-success-text)] drop-shadow-[0_0_8px_rgba(16,185,129,0.2)]" : "text-amber-500 drop-shadow-[0_0_8px_rgba(245,158,11,0.2)]"
+                                    isZero ? "text-[var(--color-text-muted)]" : isGood ? "text-[var(--color-success-text)]" : "text-[var(--color-danger-text)]"
                                   )}>
                                     {act}
                                   </td>
@@ -830,7 +830,7 @@ export default function HourlyPage() {
                                       </td>
                                       <td className={cn(
                                         "px-2 py-2.5 text-sm font-bold border-r border-[var(--color-border)]",
-                                        isZero ? "text-[var(--color-text-muted)]" : isGoodAct ? "text-[var(--color-success-text)]" : "text-amber-500"
+                                        isZero ? "text-[var(--color-text-muted)]" : isGoodAct ? "text-[var(--color-success-text)]" : "text-[var(--color-danger-text)]"
                                       )}>
                                         {act}
                                       </td>
@@ -955,7 +955,7 @@ export default function HourlyPage() {
                                             </td>
                                             <td className={cn(
                                               "px-2 py-1.5 text-sm font-bold border-r border-[var(--color-border)]",
-                                              !hasActual ? "text-[var(--color-text-muted)] opacity-50" : isZero ? "text-[var(--color-text-muted)]" : isGoodAct ? "text-[var(--color-success-text)]" : "text-amber-500"
+                                              !hasActual ? "text-[var(--color-text-muted)] opacity-50" : isZero ? "text-[var(--color-text-muted)]" : isGoodAct ? "text-[var(--color-success-text)]" : "text-[var(--color-danger-text)]"
                                             )}>
                                               {!hasActual ? (
                                                 '-'
@@ -1160,7 +1160,7 @@ export default function HourlyPage() {
                                           </td>
                                           <td className={cn(
                                             "px-2 py-1.5 text-sm font-bold border-r border-[var(--color-border)]",
-                                            !hasActual ? "text-[var(--color-text-muted)] opacity-50" : isZero ? "text-[var(--color-text-muted)]" : isGoodAct ? "text-[var(--color-success-text)]" : "text-amber-500"
+                                            !hasActual ? "text-[var(--color-text-muted)] opacity-50" : isZero ? "text-[var(--color-text-muted)]" : isGoodAct ? "text-[var(--color-success-text)]" : "text-[var(--color-danger-text)]"
                                           )}>
                                             {!hasActual ? (
                                               '-'
@@ -1297,9 +1297,9 @@ export default function HourlyPage() {
                       const insights = [];
 
                       if (overallAchieve >= 90) {
-                        insights.push(`<strong>PEAK FACTORY VELOCITY:</strong> Total floor achievement stands at <span class="text-emerald-600 dark:text-emerald-400 font-bold">${overallAchieve.toFixed(1)}%</span> with <span class="text-[var(--color-primary)] font-bold">${totalActual.toLocaleString()} PCS</span> produced against <span class="text-amber-600 dark:text-amber-400 font-bold">${totalTarget.toLocaleString()} PCS</span> target.`);
+                        insights.push(`<strong>PEAK FACTORY VELOCITY:</strong> Total floor achievement stands at <span class="text-emerald-600 dark:text-emerald-400 font-bold">${overallAchieve.toFixed(1)}%</span> with <span class="text-[var(--color-primary)] font-bold">${totalActual.toLocaleString()} PCS</span> produced against <span class="text-[var(--color-text-main)] font-bold">${totalTarget.toLocaleString()} PCS</span> target.`);
                       } else {
-                        insights.push(`<strong>HOURLY TARGET DEFICIT:</strong> Total floor achievement currently stands at <span class="text-amber-600 dark:text-amber-400 font-bold">${overallAchieve.toFixed(1)}%</span> (${totalActual.toLocaleString()} of <span class="text-rose-600 dark:text-rose-400 font-bold">${totalTarget.toLocaleString()} PCS</span> target), leaving a gap of <span class="text-rose-600 dark:text-rose-400 font-bold">${Math.max(0, totalTarget - totalActual).toLocaleString()} units</span>.`);
+                        insights.push(`<strong>HOURLY TARGET DEFICIT:</strong> Total floor achievement currently stands at <span class="text-rose-600 dark:text-rose-400 font-bold">${overallAchieve.toFixed(1)}%</span> (${totalActual.toLocaleString()} of <span class="text-[var(--color-text-main)] font-bold">${totalTarget.toLocaleString()} PCS</span> target), leaving a gap of <span class="text-rose-600 dark:text-rose-400 font-bold">${Math.max(0, totalTarget - totalActual).toLocaleString()} units</span>.`);
                       }
 
                       if (topProducer && topProducer.act > 0) {

@@ -150,7 +150,17 @@
     {
       "date": "2026-09-10",
       "line_id": "A",
-      "status": "HOLIDAY"
+      "style": "SHERPA SHIRT",
+      "item": "SHERPA SHIRT",
+      "worker_count": 57,
+      "per_head_cost": 1384,
+      "total_cost": 78888,
+      "production_qty": 400,
+      "production_dzn": 33.33333333,
+      "cm_per_dzn": 1700,
+      "total_income": 56666.66667,
+      "net_profit": -22221.33333,
+      "status": "ACTIVE"
     },
     {
       "date": "2026-09-11",
@@ -380,7 +390,17 @@
     {
       "date": "2026-09-10",
       "line_id": "B",
-      "status": "HOLIDAY"
+      "style": "",
+      "item": "BOXER",
+      "worker_count": 22,
+      "per_head_cost": 1384,
+      "total_cost": 30448,
+      "production_qty": 1430,
+      "production_dzn": 119.1666667,
+      "cm_per_dzn": 150,
+      "total_income": 17875,
+      "net_profit": -12573,
+      "status": "ACTIVE"
     },
     {
       "date": "2026-09-11",
@@ -610,7 +630,17 @@
     {
       "date": "2026-09-10",
       "line_id": "C",
-      "status": "HOLIDAY"
+      "style": "",
+      "item": "BOXER",
+      "worker_count": 22,
+      "per_head_cost": 1384,
+      "total_cost": 30448,
+      "production_qty": 1800,
+      "production_dzn": 150,
+      "cm_per_dzn": 150,
+      "total_income": 22500,
+      "net_profit": -7948,
+      "status": "ACTIVE"
     },
     {
       "date": "2026-09-11",

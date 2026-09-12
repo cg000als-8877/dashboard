@@ -44,12 +44,7 @@ const navItems = [
   { name: 'Byzid Profile', key: 'navProfile', href: 'https://baplprofile.vercel.app/', icon: Globe, isExternal: true },
 ];
 
-const LINE_COLORS = {
-  'A': '#10B981',
-  'B': '#3B82F6',
-  'C': '#A855F7',
-  'D': '#F59E0B'
-};
+
 
 const DEFAULT_LINE_ITEMS = {
   'A': 'Sherpa Jacket',
@@ -247,7 +242,6 @@ export default function Sidebar({ onClose }) {
                         const href = `/lines/${lineId}`;
                         const isLineActive = pathname === href;
                         const lineData = lines?.find(l => l.id?.toUpperCase() === lineId);
-                        const color = LINE_COLORS[lineId] || '#3B82F6';
                         const itemDesc = lineData?.lastActiveDay?.item || lineData?.today?.item || lineData?.item || DEFAULT_LINE_ITEMS[lineId] || 'N/A';
 
                         return (

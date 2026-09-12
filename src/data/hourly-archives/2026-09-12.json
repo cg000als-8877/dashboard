@@ -151,52 +151,6 @@
         null,
         null
       ]
-    },
-    {
-      "line_id": "D",
-      "buyer": "INTERNAL",
-      "style": "N/A",
-      "item": "MEN'S T-SHIRT",
-      "mp": 0,
-      "target": [
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null
-      ],
-      "actual": [
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null
-      ],
-      "notes": [
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null
-      ]
     }
   ]
 }

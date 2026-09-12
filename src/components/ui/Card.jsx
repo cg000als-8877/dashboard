@@ -31,7 +31,7 @@ export function MetricCard({
     primary: "text-[var(--color-primary)]",
     success: "text-[var(--color-success)]",
     danger: "text-[var(--color-danger)]",
-    warning: "text-[var(--color-warning)]"
+    warning: "text-[var(--color-text-main)]"
   };
 
   return (
@@ -42,7 +42,7 @@ export function MetricCard({
         </div>
         <div className="min-w-0 flex-1 flex flex-col justify-start md:justify-between">
           <div>
-            <p className={cn("font-medium md:font-semibold tracking-tight whitespace-nowrap text-xl sm:text-2xl md:text-3xl lg:text-4xl leading-tight", colors[color])}>
+            <p className={cn("font-medium md:font-semibold tracking-tight whitespace-nowrap text-xl sm:text-2xl md:text-3xl lg:text-4xl leading-tight", colors[color] || colors.default)}>
               {value}
             </p>
             {(subtitle || trendValue) && (
@@ -65,7 +65,11 @@ export function MetricCard({
             <div className="flex flex-wrap md:flex-nowrap items-baseline gap-x-1 gap-y-0.5 mt-1.5 md:mt-3 pt-1.5 md:pt-2 border-t border-[var(--color-border)]/40 text-[10px] sm:text-[11px] md:text-[12px] leading-tight md:leading-normal italic">
               <span className={cn(
                 "font-bold inline-flex items-center gap-0.5 shrink-0 whitespace-nowrap",
-                comparison.isPositive ? "text-[var(--color-success-text)]" : "text-[var(--color-danger-text)]"
+                comparison.trend === 'neutral'
+                  ? "text-[var(--color-primary)]"
+                  : comparison.isPositive
+                    ? "text-[var(--color-success-text)]"
+                    : "text-[var(--color-danger-text)]"
               )}>
                 {comparison.trend === 'up' && '▲ '}
                 {comparison.trend === 'down' && '▼ '}

@@ -205,7 +205,7 @@ export function createKpiEngine(rawData) {
 
       // 1. Overall Financial Status & Deficit
       if (stats.netProfit < 0) {
-        insights.push(`<strong>CRITICAL LOSS ALERT:</strong> Factory operating at a net loss of <span class="text-rose-600 dark:text-rose-400 font-bold">BDT ${Math.abs(stats.netProfit).toLocaleString()}</span>, with total revenue of <span class="text-[var(--color-primary)] font-bold">BDT ${stats.totalIncome.toLocaleString()}</span> unrecovered against <span class="text-amber-600 dark:text-amber-400 font-bold">BDT ${stats.totalCost.toLocaleString()}</span> in expenses.`);
+        insights.push(`<strong>CRITICAL LOSS ALERT:</strong> Factory operating at a net loss of <span class="text-rose-600 dark:text-rose-400 font-bold">BDT ${Math.abs(stats.netProfit).toLocaleString()}</span>, with total revenue of <span class="text-[var(--color-primary)] font-bold">BDT ${stats.totalIncome.toLocaleString()}</span> unrecovered against <span class="text-[var(--color-text-main)] font-bold">BDT ${stats.totalCost.toLocaleString()}</span> in expenses.`);
       } else {
         insights.push(`<strong>FINANCIAL SURPLUS:</strong> Factory generating net profit of <span class="text-emerald-600 dark:text-emerald-400 font-bold">+BDT ${stats.netProfit.toLocaleString()}</span> with total revenue of <span class="text-[var(--color-primary)] font-bold">BDT ${stats.totalIncome.toLocaleString()}</span> surpassing operational expenditure.`);
       }
@@ -218,26 +218,26 @@ export function createKpiEngine(rawData) {
       }
 
       // 3. Factory-Wide Cost Recovery Shortfall
-      insights.push(`<strong>COST RECOVERY GAP:</strong> Overall factory cost recovery stands at <span class="text-amber-600 dark:text-amber-400 font-bold">${overallCostRecovery}%</span>, leaving a <span class="text-rose-600 dark:text-rose-400 font-bold">${Math.max(0, (100 - parseFloat(overallCostRecovery))).toFixed(1)}% recovery deficit</span> to reach zero-loss breakeven.`);
+      insights.push(`<strong>COST RECOVERY GAP:</strong> Overall factory cost recovery stands at <span class="text-[var(--color-text-main)] font-bold">${overallCostRecovery}%</span>, leaving a <span class="text-rose-600 dark:text-rose-400 font-bold">${Math.max(0, (100 - parseFloat(overallCostRecovery))).toFixed(1)}% recovery deficit</span> to reach zero-loss breakeven.`);
 
       // 4. Volume Leadership
       if (highestProducer) {
-        insights.push(`<strong>VOLUME LEADERSHIP:</strong> <span class="text-[var(--color-primary)] font-bold">${highestProducer.name}</span> (${highestProducer.item || 'Active'}) leads factory output with <span class="text-emerald-600 dark:text-emerald-400 font-bold">${highestProducer.totalProduction.toLocaleString()} PCS</span> manufactured (${volShare}% of total output).`);
+        insights.push(`<strong>VOLUME LEADERSHIP:</strong> <span class="text-[var(--color-primary)] font-bold">${highestProducer.name}</span> (${highestProducer.item || 'Active'}) leads factory output with <span class="text-[var(--color-primary)] font-bold">${highestProducer.totalProduction.toLocaleString()} PCS</span> manufactured (${volShare}% of total output).`);
       }
 
       // 5. Major Deficit / Loss Contributor
       if (worstLine && worstLine.netProfit < 0) {
-        insights.push(`<strong>HIGHEST DEFICIT CONTRIBUTOR:</strong> <span class="text-rose-600 dark:text-rose-400 font-bold">${worstLine.name}</span> (${worstLine.item || 'Active'}) accounts for the largest deficit at <span class="text-rose-600 dark:text-rose-400 font-bold">-BDT ${Math.abs(worstLine.netProfit).toLocaleString()}</span> with <span class="text-amber-600 dark:text-amber-400 font-bold">${worstLine.monthCostRecovery || '0.0'}% cost recovery</span>.`);
+        insights.push(`<strong>HIGHEST DEFICIT CONTRIBUTOR:</strong> <span class="text-rose-600 dark:text-rose-400 font-bold">${worstLine.name}</span> (${worstLine.item || 'Active'}) accounts for the largest deficit at <span class="text-rose-600 dark:text-rose-400 font-bold">-BDT ${Math.abs(worstLine.netProfit).toLocaleString()}</span> with <span class="text-rose-600 dark:text-rose-400 font-bold">${worstLine.monthCostRecovery || '0.0'}% cost recovery</span>.`);
       }
 
       // 6. Expenditure & Overhead Concentration
       if (highestCostLine) {
-        insights.push(`<strong>OVERHEAD CONCENTRATION:</strong> <span class="text-[var(--color-primary)] font-bold">${highestCostLine.name}</span> incurred highest operational cost of <span class="text-amber-600 dark:text-amber-400 font-bold">BDT ${highestCostLine.totalCost.toLocaleString()}</span> (${costShare}% of factory total).`);
+        insights.push(`<strong>OVERHEAD CONCENTRATION:</strong> <span class="text-[var(--color-primary)] font-bold">${highestCostLine.name}</span> incurred highest operational cost of <span class="text-[var(--color-text-main)] font-bold">BDT ${highestCostLine.totalCost.toLocaleString()}</span> (${costShare}% of factory total).`);
       }
 
       // 7. CM Rate Spread & Pricing Yield
       if (highestCm && highestCm.averageCm > 0) {
-        insights.push(`<strong>CM REVENUE SPREAD:</strong> Highest earning style is on <span class="text-[var(--color-primary)] font-bold">${highestCm.name}</span> at <span class="text-emerald-600 dark:text-emerald-400 font-bold">BDT ${highestCm.averageCm}/Dzn</span>, compared to <span class="text-amber-600 dark:text-amber-400 font-bold">BDT ${lowestCm?.averageCm || '250'}/Dzn</span> on baseline styles.`);
+        insights.push(`<strong>CM REVENUE SPREAD:</strong> Highest earning style is on <span class="text-[var(--color-primary)] font-bold">${highestCm.name}</span> at <span class="text-emerald-600 dark:text-emerald-400 font-bold">BDT ${highestCm.averageCm}/Dzn</span>, compared to <span class="text-[var(--color-text-muted)] font-bold">BDT ${lowestCm?.averageCm || '250'}/Dzn</span> on baseline styles.`);
       }
 
       // 8. Line Efficiency Disparity
@@ -247,7 +247,7 @@ export function createKpiEngine(rawData) {
 
       // 9. Latest Production Day Telemetry
       if (lastDayTotalOutput > 0) {
-        insights.push(`<strong>LATEST DAY PRODUCTION:</strong> Across active lines, latest daily output reached <span class="text-[var(--color-primary)] font-bold">${lastDayTotalOutput.toLocaleString()} PCS</span> generating <span class="text-emerald-600 dark:text-emerald-400 font-bold">BDT ${lastDayTotalIncome.toLocaleString()}</span> against <span class="text-amber-600 dark:text-amber-400 font-bold">BDT ${lastDayTotalCost.toLocaleString()}</span> cost.`);
+        insights.push(`<strong>LATEST DAY PRODUCTION:</strong> Across active lines, latest daily output reached <span class="text-[var(--color-primary)] font-bold">${lastDayTotalOutput.toLocaleString()} PCS</span> generating <span class="text-[var(--color-primary)] font-bold">BDT ${lastDayTotalIncome.toLocaleString()}</span> against <span class="text-[var(--color-text-main)] font-bold">BDT ${lastDayTotalCost.toLocaleString()}</span> cost.`);
       }
 
       // 10. Breakeven Production Surge Target

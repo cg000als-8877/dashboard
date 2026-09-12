@@ -100,36 +100,10 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false }) {
         id.toLowerCase() === 'd' ? "Men's Tshirt" : 'N/A'
       ));
 
-  const LINE_COLORS = {
-    'a': '#10B981', // Emerald
-    'b': '#3B82F6', // Blue
-    'c': '#A855F7', // Purple
-    'd': '#F59E0B'  // Amber
-  };
-  const lineAccentColor = LINE_COLORS[id.toLowerCase()] || 'var(--color-primary)';
-
-  // Density-specific spacing and styles
-  const isCompact = density === 'compact';
-  const isDetailed = density === 'detailed';
-
-  const summaryPadding = isCompact ? 'p-3.5 md:p-5' : isDetailed ? 'p-5 md:p-8' : 'p-4 md:p-6';
-  const summaryGap = isCompact ? 'gap-2.5 lg:gap-3.5' : isDetailed ? 'gap-3 lg:gap-5' : 'gap-3 lg:gap-4';
-  const summaryCellPadding = isCompact ? 'p-3 lg:p-3.5' : isDetailed ? 'p-4 lg:p-5' : 'p-3.5 lg:p-4';
-  const summaryValSize = isCompact ? 'text-base md:text-xl' : isDetailed ? 'text-lg md:text-2xl' : 'text-base md:text-xl';
-  
-  const tableThPadding = isCompact ? 'px-3 py-2 text-[9px] md:text-[10px]' : isDetailed ? 'px-5 py-4 text-[10px] md:text-[11px]' : 'px-4 py-3 text-[10px] md:text-[11px]';
-  const tableTdPadding = isCompact ? 'px-3 py-1.5 text-xs' : isDetailed ? 'px-5 py-3.5 text-sm' : 'px-4 py-2.5 text-sm';
-  const tableTotalPadding = isCompact ? 'px-3 py-2 text-sm' : isDetailed ? 'px-5 py-3.5 text-[16px]' : 'px-4 py-3 text-sm md:text-base';
-
   return (
     <div 
       className={`space-y-6 animate-[fade-up_0.4s_ease-out_both] ${isEmbed ? '' : 'p-2 md:p-0'}`} 
       id={`line-${id}`}
-      style={{
-        '--color-primary': lineAccentColor,
-        '--color-primary-glow': `${lineAccentColor}24`,
-        '--color-primary-glow-hover': `${lineAccentColor}45`
-      }}
     >
       
       {!isEmbed && (
@@ -201,11 +175,11 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false }) {
           </div>
           <div className={`bg-[var(--color-surface)] ${summaryCellPadding} rounded-2xl border border-[var(--color-border)] shadow-inner transition-transform hover:-translate-y-0.5 duration-300`}>
             <p className="text-[10px] text-[var(--color-text-muted)] font-medium uppercase tracking-widest mb-1">Total Cost</p>
-            <p className={`${summaryValSize} font-semibold md:font-bold text-amber-500 leading-tight`}>{Math.round(parseFloat(totalCost)).toLocaleString()}</p>
+            <p className={`${summaryValSize} font-semibold md:font-bold text-[var(--color-text-main)] leading-tight`}>{Math.round(parseFloat(totalCost)).toLocaleString()}</p>
           </div>
           <div className={`bg-[var(--color-surface)] ${summaryCellPadding} rounded-2xl border border-[var(--color-border)] shadow-inner transition-transform hover:-translate-y-0.5 duration-300`}>
             <p className="text-[10px] text-[var(--color-text-muted)] font-medium uppercase tracking-widest mb-1">Total Income</p>
-            <p className={`${summaryValSize} font-semibold md:font-bold text-[var(--color-text-main)] leading-tight`}>{Math.round(parseFloat(totalIncome)).toLocaleString()}</p>
+            <p className={`${summaryValSize} font-semibold md:font-bold text-[var(--color-primary)] leading-tight`}>{Math.round(parseFloat(totalIncome)).toLocaleString()}</p>
           </div>
           <div className={`bg-[var(--color-surface)] ${summaryCellPadding} rounded-2xl border shadow-inner transition-transform hover:-translate-y-0.5 duration-300 ${parseFloat(totalNetProfitLoss) >= 0 ? 'border-[rgba(16,185,129,0.15)] bg-gradient-to-b from-[rgba(16,185,129,0.05)] to-transparent' : 'border-[rgba(255,59,48,0.15)] bg-gradient-to-b from-[rgba(255,59,48,0.05)] to-transparent'}`}>
             <p className="text-[10px] text-[var(--color-text-muted)] font-medium uppercase tracking-widest mb-1">
@@ -230,7 +204,7 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false }) {
                   <th 
                     key={colIndex} 
                     className={`
-                      ${tableThPadding} uppercase tracking-widest font-semibold md:font-bold text-transparent bg-clip-text bg-gradient-to-br from-[var(--color-primary)] to-indigo-300 leading-tight
+                      ${tableThPadding} uppercase tracking-widest font-semibold md:font-bold text-[var(--color-primary)] leading-tight
                       ${isNumericCol ? 'text-center' : 'text-left'}
                       ${isTightCol ? 'w-[1%] whitespace-nowrap' : 'whitespace-nowrap md:whitespace-normal break-words'}
                     `}
@@ -280,7 +254,7 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false }) {
                           ${tableTdPadding} text-[var(--color-text-main)] font-light
                           ${isTightCol ? 'w-[1%] whitespace-nowrap' : 'whitespace-nowrap md:whitespace-normal break-words'}
                           ${isNumber ? "text-center font-mono tracking-wide" : ""}
-                          ${isNegative ? "!text-red-400 font-medium" : ""} 
+                          ${isNegative ? "!text-[var(--color-danger-text)] font-medium" : ""} 
                           ${isDate ? "text-[var(--color-primary)] font-medium tracking-widest text-left uppercase text-[10px]" : ""}
                         `}
                       >
@@ -295,7 +269,7 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false }) {
             {/* Total Row */}
             <tr className="bg-[var(--color-surface)] font-bold">
               <td colSpan={6} className={`${tableTotalPadding} text-right text-[var(--color-text-main)] tracking-wide`}>TOTAL</td>
-              <td className={`${tableTotalPadding} text-center font-mono text-amber-500 tracking-wide`}>{Math.round(totalCost).toLocaleString()}</td>
+              <td className={`${tableTotalPadding} text-center font-mono text-[var(--color-text-main)] tracking-wide`}>{Math.round(totalCost).toLocaleString()}</td>
               <td className={`${tableTotalPadding} text-center font-mono text-[var(--color-text-main)] tracking-wide`}>{Math.round(totalProduction).toLocaleString()}</td>
               <td colSpan={2}></td>
               <td className={`${tableTotalPadding} text-center font-mono text-[var(--color-text-main)] tracking-wide`}>{Math.round(totalIncome).toLocaleString()}</td>

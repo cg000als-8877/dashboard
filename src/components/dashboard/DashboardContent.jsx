@@ -115,28 +115,7 @@ function DashboardDateRange({ dateInfo, className = "" }) {
   );
 }
 
-const LINE_CARD_META = {
-  'A': {
-    color: '#10B981',
-    glow: 'rgba(16, 185, 129, 0.25)',
-    btnClass: 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-md shadow-emerald-950/30'
-  },
-  'B': {
-    color: '#3B82F6',
-    glow: 'rgba(59, 130, 246, 0.25)',
-    btnClass: 'bg-blue-600 hover:bg-blue-500 text-white shadow-md shadow-blue-950/30'
-  },
-  'C': {
-    color: '#A855F7',
-    glow: 'rgba(168, 85, 247, 0.25)',
-    btnClass: 'bg-purple-600 hover:bg-purple-500 text-white shadow-md shadow-purple-950/30'
-  },
-  'D': {
-    color: '#F59E0B',
-    glow: 'rgba(245, 158, 11, 0.25)',
-    btnClass: 'bg-amber-600 hover:bg-amber-500 text-white shadow-md shadow-amber-950/30'
-  }
-};
+
 
 export function DashboardContent({ month, isArchive = false }) {
   const { stats, dailyTrends, insights, lines, loading, error } = useKpiData(month);
@@ -418,8 +397,8 @@ export function DashboardContent({ month, isArchive = false }) {
 
         {/* FACTORY FINANCIALS HEADER */}
         <div className="relative flex flex-col items-center justify-center mb-4 sm:mb-5 px-1 sm:px-0">
-          <h2 className="text-[20px] sm:text-[23px] md:text-[27px] font-bold tracking-[0.12em] uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] via-[var(--color-text-secondary)] to-[var(--color-text-muted)] text-center leading-tight">
-            Factory Financials
+          <h2 className="text-[20px] sm:text-[23px] md:text-[27px] font-bold tracking-normal uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] via-[var(--color-text-secondary)] to-[var(--color-text-muted)] text-center leading-tight">
+            FACTORY FINANCIALS
           </h2>
           <p className="text-[10.5px] sm:text-[11.5px] md:text-xs text-[var(--color-text-muted)] font-medium tracking-normal text-center mt-0.5 flex items-center justify-center flex-wrap gap-1">
             <span>Financial Data Analyst :</span>
@@ -447,8 +426,8 @@ export function DashboardContent({ month, isArchive = false }) {
                   )}
                 >
                   <span>SEPTEMBER</span>
-                  <span className="text-[8.5px] sm:text-[10px] text-rose-500 font-black tracking-wide">(LIVE)</span>
-                  <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.7)] animate-pulse shrink-0" />
+                  <span className="text-[8.5px] sm:text-[10px] text-[var(--color-primary)] font-black tracking-wide">(LIVE)</span>
+                  <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[var(--color-primary)] shadow-[0_0_8px_var(--color-primary-glow)] animate-pulse shrink-0" />
                 </button>
 
                 <button
@@ -513,7 +492,7 @@ export function DashboardContent({ month, isArchive = false }) {
                 <MetricCard 
                   title="Total Cost" 
                   value={<AnimatedNumber value={Math.round(displayStats.totalCost)} prefix="BDT " />} 
-                  color="warning"
+                  color="default"
                   comparison={isArchive ? null : (
                     isAugust 
                       ? { highlight: "August Total", label: "full month actual spending", trend: "neutral", isPositive: true }
@@ -677,7 +656,7 @@ export function DashboardContent({ month, isArchive = false }) {
             <div className="mt-12 mb-10 relative z-10">
               {/* Header Title & Date Subtitle */}
               <div className="flex flex-col items-center justify-center mb-5 sm:mb-6 text-center">
-                <h2 className="text-[20px] sm:text-[23px] md:text-[27px] font-bold tracking-tight uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] via-[var(--color-text-secondary)] to-[var(--color-text-muted)] text-center leading-tight">
+                <h2 className="text-[20px] sm:text-[23px] md:text-[27px] font-bold tracking-normal uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] via-[var(--color-text-secondary)] to-[var(--color-text-muted)] text-center leading-tight">
                   LINE SUMMARY {activeMonthName.toUpperCase()}
                 </h2>
                 <div className="mt-1 flex items-center justify-center">
@@ -690,7 +669,6 @@ export function DashboardContent({ month, isArchive = false }) {
                 <div className="grid grid-cols-4 w-full p-1 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl gap-1 shadow-sm">
                   {['A', 'B', 'C', 'D'].map(lineId => {
                     const isSelected = selectedMobileLine === lineId;
-                    const meta = LINE_CARD_META[lineId] || { color: '#3B82F6' };
                     return (
                       <button
                         key={lineId}
@@ -699,10 +677,9 @@ export function DashboardContent({ month, isArchive = false }) {
                         className={cn(
                           "py-2 rounded-lg text-xs font-black uppercase transition-all duration-200 cursor-pointer select-none text-center flex items-center justify-center",
                           isSelected
-                            ? "bg-[var(--color-bg-card)] shadow-sm border border-[var(--color-border)]"
+                            ? "bg-[var(--color-primary)] text-[var(--color-on-primary,white)] shadow-sm"
                             : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)]"
                         )}
-                        style={isSelected ? { color: meta.color, borderColor: `${meta.color}60` } : {}}
                       >
                         <span>LINE {lineId}</span>
                       </button>
@@ -714,7 +691,6 @@ export function DashboardContent({ month, isArchive = false }) {
               {/* Line Cards Grid (2 Column, 2 Row: Line A & B top, Line C & D bottom on Desktop) */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-4 md:gap-5">
                 {activeLines.sort((a,b) => a.id.localeCompare(b.id)).map((line) => {
-                  const meta = LINE_CARD_META[line.id.toUpperCase()] || LINE_CARD_META['A'];
                   const isHiddenOnMobile = selectedMobileLine !== line.id;
                   const lastDayDateStr = line.lastDayDate ? format(parseISO(line.lastDayDate), 'do MMMM, yyyy') : (dateComponents?.endDay ? `${dateComponents.endDay} ${dateComponents.month}, ${dateComponents.year}` : '1st September, 2026');
                   const isLiveCurrent = !isArchive && selectedCardMonth === 'current';
@@ -725,9 +701,6 @@ export function DashboardContent({ month, isArchive = false }) {
                     <div key={line.id} className={cn("w-full flex flex-col", isHiddenOnMobile && "hidden md:flex")}>
                       <Card className="relative overflow-hidden w-full h-full p-0 flex flex-col justify-between border border-[var(--color-border)] hover:border-[var(--color-primary)]/40 transition-all duration-300">
                         <div className="absolute inset-0 bg-gradient-to-b from-[var(--color-surface)] to-transparent pointer-events-none rounded-[inherit]"></div>
-                        
-                        {/* Top Decorative Line Color Strip */}
-                        <div className="absolute top-0 left-0 right-0 h-1" style={{ backgroundColor: meta.color }}></div>
 
                         <div className="flex flex-col gap-3.5 p-3.5 sm:p-5 pt-4.5 relative z-10 flex-1 justify-between">
                           
@@ -772,8 +745,8 @@ export function DashboardContent({ month, isArchive = false }) {
                                   isInactive 
                                     ? "text-[var(--color-text-muted)]"
                                     : parseFloat(line.monthCostRecovery || 0) >= 100 
-                                      ? "text-emerald-600 dark:text-emerald-400" 
-                                      : "text-amber-600 dark:text-amber-400"
+                                      ? "text-[var(--color-success-text)]" 
+                                      : "text-[var(--color-danger-text)]"
                                 )}>
                                   {line.monthCostRecovery || '0.0'}%
                                 </span>
@@ -804,7 +777,7 @@ export function DashboardContent({ month, isArchive = false }) {
 
                               <div className="bg-[var(--color-surface)] p-2.5 sm:p-3 rounded-xl border border-[var(--color-border)] shadow-xs">
                                 <p className="text-[9px] text-[var(--color-text-muted)] font-medium uppercase tracking-wider mb-0.5">Cost</p>
-                                <p className="text-sm md:text-base lg:text-lg font-bold text-amber-600 dark:text-amber-400 truncate">
+                                <p className="text-sm md:text-base lg:text-lg font-bold text-[var(--color-text-main)] truncate">
                                   <AnimatedNumber value={Math.round(line.totalCost)} prefix="BDT " />
                                 </p>
                               </div>
@@ -841,7 +814,7 @@ export function DashboardContent({ month, isArchive = false }) {
                                 Last Day Input ({lastDayDateStr})
                               </span>
                               <span className="text-[9.5px] sm:text-[10.5px] font-bold text-[var(--color-text-muted)] shrink-0">
-                                Cost Recovery: <span className={cn("font-extrabold", isInactive ? "text-[var(--color-text-muted)]" : (parseFloat(line.lastDayCostRecovery || 0) >= 100 ? "text-emerald-600 dark:text-emerald-400" : "text-amber-600 dark:text-amber-400"))}>{line.lastDayCostRecovery || '0.0'}%</span>
+                                Cost Recovery: <span className={cn("font-extrabold", isInactive ? "text-[var(--color-text-muted)]" : (parseFloat(line.lastDayCostRecovery || 0) >= 100 ? "text-[var(--color-success-text)]" : "text-[var(--color-danger-text)]"))}>{line.lastDayCostRecovery || '0.0'}%</span>
                               </span>
                             </div>
 
@@ -878,7 +851,7 @@ export function DashboardContent({ month, isArchive = false }) {
                             </div>
                           </div>
 
-                          {/* View Full Details CTA Button with Line Specific Colors */}
+                          {/* View Full Details CTA Button */}
                           <Link
                             href={
                               isArchive
@@ -889,10 +862,7 @@ export function DashboardContent({ month, isArchive = false }) {
                                     ? `/archive/2026-07/lines/${line.id}`
                                     : `/lines/${line.id}`
                             }
-                            className={cn(
-                              "w-full py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer select-none group mt-0.5",
-                              meta.btnClass
-                            )}
+                            className="w-full py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer select-none group mt-0.5 bg-[var(--color-primary)] hover:opacity-90 text-[var(--color-on-primary,white)] shadow-md"
                           >
                             <span>View Full Details</span>
                             <ArrowRight size={15} className="group-hover:translate-x-1 transition-transform" />

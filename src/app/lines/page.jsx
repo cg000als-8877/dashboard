@@ -119,36 +119,7 @@ function LinesDateRange({ dateInfo, className = "" }) {
   );
 }
 
-const LINE_CARD_META = {
-  'A': {
-    color: '#10B981',
-    glow: 'rgba(16, 185, 129, 0.25)',
-    btnClass: 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-md shadow-emerald-950/30',
-    borderClass: 'border-emerald-500/30',
-    bgBadge: 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border-emerald-500/30'
-  },
-  'B': {
-    color: '#3B82F6',
-    glow: 'rgba(59, 130, 246, 0.25)',
-    btnClass: 'bg-blue-600 hover:bg-blue-500 text-white shadow-md shadow-blue-950/30',
-    borderClass: 'border-blue-500/30',
-    bgBadge: 'bg-blue-500/15 text-blue-700 dark:text-blue-400 border-blue-500/30'
-  },
-  'C': {
-    color: '#A855F7',
-    glow: 'rgba(168, 85, 247, 0.25)',
-    btnClass: 'bg-purple-600 hover:bg-purple-500 text-white shadow-md shadow-purple-950/30',
-    borderClass: 'border-purple-500/30',
-    bgBadge: 'bg-purple-500/15 text-purple-700 dark:text-purple-400 border-purple-500/30'
-  },
-  'D': {
-    color: '#F59E0B',
-    glow: 'rgba(245, 158, 11, 0.25)',
-    btnClass: 'bg-amber-600 hover:bg-amber-500 text-white shadow-md shadow-amber-950/30',
-    borderClass: 'border-amber-500/30',
-    bgBadge: 'bg-amber-500/15 text-amber-800 dark:text-amber-400 border-amber-500/30'
-  }
-};
+
 
 export default function ProductionLinesPage() {
   const [selectedMonthTab, setSelectedMonthTab] = useState('current'); // 'current' | 'august' | 'july'
@@ -369,7 +340,7 @@ export default function ProductionLinesPage() {
                 <span className="text-[9px] sm:text-[10px] uppercase font-bold tracking-wider text-[var(--color-text-muted)]">
                   Total Cost
                 </span>
-                <span className="text-sm sm:text-base font-black text-amber-500 mt-0.5">
+                <span className="text-sm sm:text-base font-black text-[var(--color-text-main)] mt-0.5">
                   <AnimatedNumber value={Math.round(currentStats.totalCost || 0)} prefix="BDT " />
                 </span>
               </div>
@@ -419,7 +390,6 @@ export default function ProductionLinesPage() {
             </thead>
             <tbody className="divide-y divide-[var(--color-border)]/50">
               {currentLines.sort((a,b) => a.id.localeCompare(b.id)).map((line) => {
-                const meta = LINE_CARD_META[line.id.toUpperCase()] || LINE_CARD_META['A'];
                 const isInactive = (line.totalProduction || 0) === 0 && (line.totalCost || 0) === 0;
                 const isProfitable = !isInactive && (line.netProfit || 0) >= 0;
                 const detailsUrl = isAugust ? `/archive/2026-08/lines/${line.id}` : (isJuly ? `/archive/2026-07/lines/${line.id}` : `/lines/${line.id}`);
@@ -427,7 +397,7 @@ export default function ProductionLinesPage() {
                 return (
                   <tr key={line.id} className="hover:bg-[var(--color-surface-hover)] transition-colors">
                     <td className="py-3 px-4 font-bold flex items-center gap-2.5">
-                      <span className="w-6 h-6 rounded-md text-[10px] font-black flex items-center justify-center text-white shrink-0" style={{ backgroundColor: meta.color }}>
+                      <span className="w-6 h-6 rounded-md text-[10px] font-black flex items-center justify-center text-[var(--color-on-primary,white)] shrink-0 bg-[var(--color-primary)]">
                         {line.id}
                       </span>
                       <span className="text-[var(--color-text-main)] font-extrabold">{line.name}</span>
@@ -444,13 +414,13 @@ export default function ProductionLinesPage() {
                     <td className="py-3 px-3 text-right font-bold text-[var(--color-primary)]">
                       BDT {(line.totalIncome || 0).toLocaleString()}
                     </td>
-                    <td className="py-3 px-3 text-right font-bold text-amber-500">
+                    <td className="py-3 px-3 text-right font-bold text-[var(--color-text-main)]">
                       BDT {(line.totalCost || 0).toLocaleString()}
                     </td>
                     <td className={cn("py-3 px-3 text-right font-black", isInactive ? "text-[var(--color-text-muted)]" : isProfitable ? "text-[var(--color-success-text)]" : "text-[var(--color-danger-text)]")}>
                       {isInactive ? 'BDT 0' : (isProfitable ? `+BDT ${(line.netProfit || 0).toLocaleString()}` : `BDT ${(line.netProfit || 0).toLocaleString()}`)}
                     </td>
-                    <td className={cn("py-3 px-3 text-right font-bold", isInactive ? "text-[var(--color-text-muted)]" : parseFloat(line.monthCostRecovery || 0) >= 100 ? "text-emerald-700 dark:text-emerald-400" : "text-amber-800 dark:text-amber-400")}>
+                    <td className={cn("py-3 px-3 text-right font-bold", isInactive ? "text-[var(--color-text-muted)]" : parseFloat(line.monthCostRecovery || 0) >= 100 ? "text-[var(--color-success-text)]" : "text-[var(--color-danger-text)]")}>
                       {line.monthCostRecovery || '0.0'}%
                     </td>
                     <td className="py-3 px-3 text-center">
@@ -487,7 +457,6 @@ export default function ProductionLinesPage() {
             <div className="grid grid-cols-4 w-full p-1 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl gap-1 shadow-sm">
               {['A', 'B', 'C', 'D'].map(lineId => {
                 const isSelected = selectedMobileLine === lineId;
-                const meta = LINE_CARD_META[lineId] || { color: '#3B82F6' };
                 return (
                   <button
                     key={lineId}
@@ -496,10 +465,9 @@ export default function ProductionLinesPage() {
                     className={cn(
                       "py-2 rounded-lg text-xs font-black uppercase transition-all duration-200 cursor-pointer select-none text-center flex items-center justify-center",
                       isSelected
-                        ? "bg-[var(--color-bg-card)] shadow-sm border border-[var(--color-border)]"
+                        ? "bg-[var(--color-primary)] text-[var(--color-on-primary,white)] shadow-sm"
                         : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)]"
                     )}
-                    style={isSelected ? { color: meta.color, borderColor: `${meta.color}60` } : {}}
                   >
                     <span>LINE {lineId}</span>
                   </button>
@@ -511,7 +479,6 @@ export default function ProductionLinesPage() {
           {/* ── 5. PRODUCTION LINES GRID (Detailed & Normal Modes) ──────────────────────────── */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
             {currentLines.sort((a,b) => a.id.localeCompare(b.id)).map((line) => {
-              const meta = LINE_CARD_META[line.id.toUpperCase()] || LINE_CARD_META['A'];
               const isHiddenOnMobile = selectedMobileLine !== line.id;
               
               // Accurate active vs inactive vs profitability checks
@@ -564,9 +531,6 @@ export default function ProductionLinesPage() {
                 >
                   <Card className="relative overflow-hidden w-full h-full p-0 flex flex-col justify-between border border-[var(--color-border)] shadow-md hover:shadow-xl transition-all duration-300">
                     <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-surface)] to-transparent pointer-events-none rounded-[inherit]" />
-                    
-                    {/* Decorative Top Line Strip */}
-                    <div className="w-full h-1" style={{ backgroundColor: meta.color }} />
 
                     <div className="flex flex-col gap-4 p-4 sm:p-5 relative z-10 flex-1">
                       
@@ -574,13 +538,7 @@ export default function ProductionLinesPage() {
                       <div className="flex items-center justify-between gap-2 border-b border-[var(--color-border)]/50 pb-3">
                         
                         <div className="flex items-center gap-2.5">
-                          <div 
-                            className="text-white px-3 py-1 rounded-full text-xs font-black tracking-wider border"
-                            style={{
-                              backgroundColor: meta.color,
-                              borderColor: `${meta.color}50`
-                            }}
-                          >
+                          <div className="bg-[var(--color-primary)] text-[var(--color-on-primary,white)] px-3 py-1 rounded-full text-xs font-black tracking-wider">
                             LINE {line.id}
                           </div>
                           <h2 className="text-lg sm:text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[var(--color-text-main)] to-[var(--color-text-secondary)]">
@@ -588,20 +546,20 @@ export default function ProductionLinesPage() {
                           </h2>
                         </div>
 
-                        {/* Clean Status & Leadership Badges (Without Dots) */}
+                        {/* Clean Status & Leadership Badges */}
                         <div className="flex items-center gap-1.5 flex-wrap justify-end">
                           {isTopProfit ? (
-                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-wider bg-amber-500/15 text-amber-800 dark:text-amber-400 border border-amber-500/30">
+                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-wider bg-[var(--color-success-glow)] text-[var(--color-success-text)] border border-[rgba(16,185,129,0.25)]">
                               <Trophy size={11} />
                               <span>Profit Leader</span>
                             </span>
                           ) : isTopOutput ? (
-                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-wider bg-blue-500/15 text-blue-700 dark:text-blue-400 border border-blue-500/30">
+                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-wider bg-[var(--color-primary)]/15 text-[var(--color-primary)] border border-[var(--color-primary)]/30">
                               <Zap size={11} />
                               <span>Top Output</span>
                             </span>
                           ) : isTopRecovery ? (
-                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-wider bg-purple-500/15 text-purple-700 dark:text-purple-400 border border-purple-500/30">
+                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-wider bg-[var(--color-primary)]/15 text-[var(--color-primary)] border border-[var(--color-primary)]/30">
                               <Activity size={11} />
                               <span>Top Efficiency</span>
                             </span>
@@ -644,8 +602,8 @@ export default function ProductionLinesPage() {
                               isInactive 
                                 ? "text-[var(--color-text-muted)]" 
                                 : parseFloat(line.monthCostRecovery || 0) >= 100 
-                                  ? "text-emerald-700 dark:text-emerald-400" 
-                                  : "text-amber-800 dark:text-amber-400"
+                                  ? "text-[var(--color-success-text)]" 
+                                  : "text-[var(--color-danger-text)]"
                             )}>
                               {line.monthCostRecovery || '0.0'}%
                             </span>
@@ -660,8 +618,8 @@ export default function ProductionLinesPage() {
                               isInactive
                                 ? "bg-zinc-600/30"
                                 : parseFloat(line.monthCostRecovery || 0) >= 100 
-                                  ? "bg-gradient-to-r from-emerald-500 to-teal-400" 
-                                  : "bg-gradient-to-r from-amber-500 to-rose-400"
+                                  ? "bg-[var(--color-success)]" 
+                                  : "bg-[var(--color-danger)]"
                             )}
                             style={{ width: `${isInactive ? 0 : Math.min(parseFloat(line.monthCostRecovery || 0), 100)}%` }}
                           />
@@ -702,7 +660,7 @@ export default function ProductionLinesPage() {
                             <p className="text-[9px] text-[var(--color-text-muted)] font-medium uppercase tracking-wider mb-0.5">
                               Total Cost
                             </p>
-                            <p className="text-sm sm:text-base font-black text-amber-500">
+                            <p className="text-sm sm:text-base font-black text-[var(--color-text-main)]">
                               <AnimatedNumber value={Math.round(line.totalCost || 0)} prefix="BDT " />
                             </p>
                           </div>
@@ -810,8 +768,8 @@ export default function ProductionLinesPage() {
                               isInactive 
                                 ? "text-[var(--color-text-muted)]" 
                                 : parseFloat(line.lastDayCostRecovery || 0) >= 100 
-                                  ? "text-emerald-700 dark:text-emerald-400" 
-                                  : "text-amber-800 dark:text-amber-400"
+                                  ? "text-[var(--color-success-text)]" 
+                                  : "text-[var(--color-danger-text)]"
                             )}>{line.lastDayCostRecovery || '0.0'}%</strong>
                           </span>
                         </div>
@@ -850,7 +808,7 @@ export default function ProductionLinesPage() {
                         {/* Break-Even Target & Productivity Grid */}
                         <div className="grid grid-cols-2 gap-2 pt-2 border-t border-[var(--color-border)]/50 text-[10px]">
                           <div className="flex items-center gap-1.5 text-[var(--color-text-muted)]">
-                            <Target size={12} className="text-amber-600 dark:text-amber-400 shrink-0" />
+                            <Target size={12} className="text-[var(--color-primary)] shrink-0" />
                             <span>Break-Even:</span>
                             <span className="font-bold text-[var(--color-text-main)]">
                               {breakEvenTarget > 0 ? `${breakEvenTarget} PCS` : 'N/A'}
@@ -858,7 +816,7 @@ export default function ProductionLinesPage() {
                           </div>
 
                           <div className="flex items-center gap-1.5 text-[var(--color-text-muted)] justify-end">
-                            <Users size={12} className="text-blue-600 dark:text-blue-400 shrink-0" />
+                            <Users size={12} className="text-[var(--color-primary)] shrink-0" />
                             <span>Operator Output:</span>
                             <span className="font-bold text-[var(--color-text-main)]">
                               {pcsPerOperator} <span className="text-[8.5px] text-[var(--color-text-muted)]">P/Head</span>
@@ -872,10 +830,7 @@ export default function ProductionLinesPage() {
                       <div className="flex flex-col sm:flex-row items-center gap-2 mt-auto pt-1">
                         <Link
                           href={detailsUrl}
-                          className={cn(
-                            "w-full flex-1 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer select-none group",
-                            meta.btnClass
-                          )}
+                          className="w-full flex-1 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer select-none group bg-[var(--color-primary)] hover:opacity-90 text-[var(--color-on-primary,white)] shadow-md"
                         >
                           <span>View Full Details</span>
                           <ArrowRight size={15} className="group-hover:translate-x-1 transition-transform" />
