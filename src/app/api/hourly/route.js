@@ -119,8 +119,9 @@ export async function GET(request) {
     const date = searchParams.get('date');
 
     const archiveDir = path.join(process.cwd(), 'src', 'data', 'hourly-archives');
+    try { await fs.mkdir(archiveDir, { recursive: true }); } catch (e) {}
     
-    // 1. Always fetch live data directly from Google Sheets to guarantee it's up-to-date
+    // 1. Always fetch live data directly from Google Sheets to guarantee real-time sync
     let liveData = null;
     try {
         liveData = await fetchLiveHourlyData();
@@ -128,22 +129,45 @@ export async function GET(request) {
         console.error("Failed to fetch live hourly data:", e);
     }
 
+    // 2. AUTOMATIC PERSISTENCE: Automatically save/update live data to disk archive and Firebase
+    if (liveData && liveData.date) {
+      const hasProduction = liveData.lines && liveData.lines.some(l => l.actual && l.actual.some(a => a !== null && a !== undefined && a > 0));
+      if (hasProduction) {
+        try {
+          const liveArchivePath = path.join(archiveDir, `${liveData.date}.json`);
+          await fs.writeFile(liveArchivePath, JSON.stringify(liveData, null, 2), 'utf-8');
+        } catch (writeErr) {
+          console.error("Auto-archive file write failed:", writeErr);
+        }
+
+        try {
+          const { db } = await import('@/lib/firebase');
+          if (db) {
+            await db.collection('hourly_archives').doc(liveData.date).set(liveData);
+          }
+        } catch (fbErr) {
+          // Firebase not configured or offline
+        }
+      }
+    }
+
+    // 3. Handle Single Date Request
     if (date) {
-        // 1. Check local JSON files FIRST (they are the authoritative recorded backup with custom notes/corrections)
+        // If requesting today's live date, ALWAYS return fresh live data directly from Google Sheets
+        if (liveData && liveData.date === date) {
+            return NextResponse.json(liveData);
+        }
+
+        // For past historical dates, check local JSON archive files FIRST
         const filePath = path.join(archiveDir, `${date}.json`);
         try {
             const fileData = await fs.readFile(filePath, 'utf-8');
             return NextResponse.json(JSON.parse(fileData));
         } catch (e) {
-            // No local file — fall through to live or Firebase
+            // No local file — fall through to Firebase
         }
 
-        // 2. If the user is requesting today's live date and no local archive exists, return the LIVE data
-        if (liveData && liveData.date === date) {
-            return NextResponse.json(liveData);
-        }
-
-        // 4. Fallback to Firebase if no local file exists
+        // Fallback to Firebase if no local file exists
         try {
             const { db } = await import('@/lib/firebase');
             if (db) {
@@ -206,15 +230,13 @@ export async function GET(request) {
             if (!dates.includes(liveData.date)) {
                 dates.push(liveData.date);
             }
-            if (dateTotals[liveData.date] === undefined) {
-                let liveActual = 0;
-                if (liveData.lines) {
-                    liveData.lines.forEach(l => {
-                        if (l.actual) l.actual.forEach(a => liveActual += (a || 0));
-                    });
-                }
-                dateTotals[liveData.date] = liveActual;
+            let liveActual = 0;
+            if (liveData.lines) {
+                liveData.lines.forEach(l => {
+                    if (l.actual) l.actual.forEach(a => liveActual += (a || 0));
+                });
             }
+            dateTotals[liveData.date] = liveActual;
         }
 
         dates.sort((a, b) => b.localeCompare(a)); // Newest first
