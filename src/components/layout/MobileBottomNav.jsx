@@ -13,10 +13,75 @@ import {
 import { cn } from './Sidebar';
 import { useTheme } from '@/components/ThemeProvider';
 
-function AnimatedWatchIcon({ isHourly, isClicked, isLight }) {
-  const strapColor = isLight ? "#94A3B8" : "#6B7280";
-  const mainColor = isLight ? "#CBD5E1" : "#9CA3AF";
-  const handColor = isLight ? "#E2E8F0" : "#9CA3AF";
+function getHourlyConfig(visualTheme, isLight) {
+  // 1. ABSTRACT THEME: Black fill with thin white stroke & grey animating icon in dark mode
+  if (visualTheme === 'abstract') {
+    if (isLight) {
+      return {
+        buttonClass: "border border-black/20 bg-[#18181B] text-white shadow-[0_4px_12px_rgba(0,0,0,0.15)]",
+        activeRing: "ring-2 ring-black/40",
+        mainColor: "#FFFFFF",
+        strapColor: "#9CA3AF",
+        handColor: "#FFFFFF"
+      };
+    }
+    return {
+      buttonClass: "border border-white/60 bg-black text-gray-400 shadow-[0_4px_16px_rgba(0,0,0,0.6)]",
+      activeRing: "ring-1 ring-white/70 shadow-[0_0_18px_rgba(255,255,255,0.25)]",
+      mainColor: "#9CA3AF",
+      strapColor: "#6B7280",
+      handColor: "#9CA3AF"
+    };
+  }
+
+  // 2. ALL OTHER THEMES
+  // In light mode: themed primary button with crisp white icon
+  if (isLight) {
+    return {
+      buttonClass: "border-2 border-[var(--color-bg-card)] bg-[var(--color-primary)] text-white shadow-[0_4px_12px_rgba(0,0,0,0.15)]",
+      activeRing: "ring-2 ring-[var(--color-primary)] ring-offset-1 ring-offset-[var(--color-bg-card)] shadow-[0_0_22px_var(--color-primary-glow-hover)]",
+      mainColor: "#FFFFFF",
+      strapColor: "rgba(255,255,255,0.75)",
+      handColor: "#FFFFFF"
+    };
+  }
+
+  // In dark/night mode: check primary color luminance for maximum visibility
+  const darkIconThemes = [
+    'nordic-slate',
+    'arcade-overdrive',
+    'lime-ivory',
+    'terminal',
+    'amber-forge',
+    'verdant',
+    'jungle-nebula',
+    'obsidian-vercel'
+  ];
+
+  const useDarkIcon = darkIconThemes.includes(visualTheme);
+
+  if (useDarkIcon) {
+    return {
+      buttonClass: "border-2 border-[var(--color-bg-card)] bg-[var(--color-primary)] shadow-[0_6px_18px_var(--color-primary-glow)]",
+      activeRing: "ring-2 ring-[var(--color-primary)] ring-offset-1 ring-offset-[var(--color-bg-card)] shadow-[0_0_22px_var(--color-primary-glow-hover)]",
+      mainColor: "#0B0F19",
+      strapColor: "rgba(11,15,25,0.70)",
+      handColor: "#0B0F19"
+    };
+  }
+
+  // Saturated/deep primary themes (ember-tide, ocean-dark, gen-z, cyber-violet, electric-indigo) use white icon
+  return {
+    buttonClass: "border-2 border-[var(--color-bg-card)] bg-[var(--color-primary)] shadow-[0_6px_18px_var(--color-primary-glow)]",
+    activeRing: "ring-2 ring-[var(--color-primary)] ring-offset-1 ring-offset-[var(--color-bg-card)] shadow-[0_0_22px_var(--color-primary-glow-hover)]",
+    mainColor: "#FFFFFF",
+    strapColor: "rgba(255,255,255,0.75)",
+    handColor: "#FFFFFF"
+  };
+}
+
+function AnimatedWatchIcon({ isHourly, isClicked, colors }) {
+  const { mainColor, strapColor, handColor } = colors;
 
   return (
     <svg 
@@ -30,7 +95,6 @@ function AnimatedWatchIcon({ isHourly, isClicked, isLight }) {
       strokeLinejoin="round"
       className={cn(
         "transition-transform duration-300",
-        isLight ? "text-slate-300" : "text-gray-400",
         isClicked ? "scale-115 rotate-12" : "group-hover:scale-110"
       )}
     >
@@ -102,8 +166,9 @@ function AnimatedWatchIcon({ isHourly, isClicked, isLight }) {
 export function MobileBottomNav({ isOthersOpen, onToggleOthers, onOthersClose }) {
   const pathname = usePathname();
   const [clickedHourly, setClickedHourly] = useState(false);
-  const { mode } = useTheme();
+  const { mode, visualTheme } = useTheme();
   const isLight = mode === 'light';
+  const hourlyConfig = getHourlyConfig(visualTheme, isLight);
 
   const isDashboard = pathname === '/';
   const isLines = pathname === '/lines' || pathname.startsWith('/lines/');
@@ -153,20 +218,14 @@ export function MobileBottomNav({ isOthersOpen, onToggleOthers, onOthersClose })
             onClick={handleHourlyClick}
             className={cn(
               "relative w-10 h-10 rounded-full transition-all duration-300 active:scale-95 flex items-center justify-center cursor-pointer group",
-              isLight 
-                ? "border-2 border-[var(--color-bg-card)] bg-[var(--color-primary)] text-white shadow-[0_4px_12px_rgba(0,0,0,0.15)]" 
-                : "border border-white/60 bg-black text-gray-400 shadow-[0_4px_16px_rgba(0,0,0,0.6)]",
+              hourlyConfig.buttonClass,
               isHourly
-                ? (isLight 
-                    ? "shadow-[0_0_22px_var(--color-primary-glow-hover)] ring-2 ring-[var(--color-primary)] ring-offset-1 ring-offset-[var(--color-bg-card)] scale-105" 
-                    : "shadow-[0_0_18px_rgba(255,255,255,0.25)] ring-1 ring-white/70 scale-105")
-                : (isLight 
-                    ? "hover:scale-105 shadow-[0_6px_18px_var(--color-primary-glow)]" 
-                    : "hover:scale-105 hover:border-white/90 shadow-[0_4px_14px_rgba(0,0,0,0.4)]")
+                ? cn("scale-105", hourlyConfig.activeRing)
+                : "hover:scale-105"
             )}
             aria-label="Hourly Output"
           >
-            <AnimatedWatchIcon isHourly={isHourly} isClicked={clickedHourly} isLight={isLight} />
+            <AnimatedWatchIcon isHourly={isHourly} isClicked={clickedHourly} colors={hourlyConfig} />
           </Link>
         </div>
 
