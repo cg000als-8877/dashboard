@@ -17,7 +17,7 @@
   --color-on-warning: #0B0F19;
   
 
-  --color-text-main: #F8FAFC;
+  --color-text-main: #ECEEF2;
   --color-text-secondary: #94A3B8;
   --color-text-muted: #64748B;
   --color-success-text: #34D399; /* emerald-400 */
@@ -162,7 +162,7 @@ html[data-theme="nordic-slate"][data-mode="dark"] {
   --color-border: rgba(255, 255, 255, 0.08);
   --color-border-strong: rgba(96, 165, 250, 0.20);
 
-  --color-text-main: #F8FAFC;
+  --color-text-main: #ECEEF2;
   --color-text-secondary: #94A3B8;
   --color-text-muted: #64748B;
   --color-text-subtle: #475569;
@@ -747,7 +747,7 @@ html[data-theme="ocean-dark"][data-mode="dark"] {
   --color-bg-card: #131A24;
   --color-bg-card-hover: #18212E;
   --color-border: rgba(255, 255, 255, 0.08);
-  --color-text-main: #FFFFFF;
+  --color-text-main: #ECEEF2;
   --color-text-secondary: #9BA7B4;
   --color-text-muted: #6D7684;
   --color-surface: rgba(0, 0, 0, 0.25);
@@ -1031,14 +1031,14 @@ html[data-theme="obsidian-vercel"][data-mode="dark"] {
   --color-border: #1F1F1F;
   --color-border-strong: #2E2E2E;
 
-  --color-text-main: #FAFAFA;
+  --color-text-main: #ECEEF2;
   --color-text-secondary: #A1A1A1;
   --color-text-muted: #666666;
   --color-text-subtle: #444444;
 
-  --color-primary: #FFFFFF;
+  --color-primary: #ECEEF2;
   --color-on-primary: #000000;
-  --color-primary-bright: #FFFFFF;
+  --color-primary-bright: #ECEEF2;
   --color-primary-soft: #1A1A1A;
   --color-primary-glow: rgba(255, 255, 255, 0.12);
 
@@ -1452,60 +1452,35 @@ html[data-theme="lime-ivory"][data-mode="light"] {
 }
 
 /* ═══════════════════════════════════════════
-   ABSTRACT — Pure Monochromatic Void
-   ONE rule: only loss/danger is red.
-   Everything else: black, white, grey only.
-   Dark:  #0A0A0A bg — deep obsidian
-   Light: #F0F0F0 bg — crisp paper
+   ABSTRACT — Monochromatic Void with Semantic Metric Cards
+   - Backgrounds, typography, and borders are pure minimalist monochrome
+   - Metric cards: Loss is Red, Profit is Green, Neutral is Blue
+   - Dimmed off-white (#ECEEF2) for comfortable, strain-free viewing
+   - Dark:  #0A0A0A bg — deep obsidian
+   - Light: #F0F0F0 bg — crisp paper
 ═══════════════════════════════════════════ */
-
-/* Nuclear desaturation: strip ALL hue from the entire page when abstract is active.
-   This catches every hardcoded Tailwind color class (emerald, indigo, blue, etc.)
-   that doesn't respect CSS variable tokens.  */
-html[data-theme="abstract"] body,
-html[data-theme="abstract"] main,
-html[data-theme="abstract"] nav,
-html[data-theme="abstract"] aside,
-html[data-theme="abstract"] section,
-html[data-theme="abstract"] header,
-html[data-theme="abstract"] footer {
-  filter: saturate(0);
-}
-
-/* Carve back: loss / danger elements get full red back */
-html[data-theme="abstract"] [class*="text-red"],
-html[data-theme="abstract"] [class*="text-rose"],
-html[data-theme="abstract"] [class*="bg-red"],
-html[data-theme="abstract"] [class*="bg-rose"],
-html[data-theme="abstract"] [class*="border-red"],
-html[data-theme="abstract"] [class*="border-rose"],
-html[data-theme="abstract"] .loss,
-html[data-theme="abstract"] .danger,
-html[data-theme="abstract"] [data-loss],
-html[data-theme="abstract"] [class*="danger"] {
-  filter: saturate(1) !important;
-}
 
 /* Shared base tokens */
 html[data-theme="abstract"] {
-  /* SUCCESS → grey (profit is silent — only loss screams) */
-  --color-success: #707070;
-  --color-success-text: #909090;
-  --color-success-glow: rgba(120, 120, 120, 0.15);
-  --color-on-success: #FFFFFF;
+  /* SUCCESS / Profit → Emerald Green */
+  --color-success: #34D399;
+  --color-success-text: #34D399;
+  --color-success-glow: rgba(52, 211, 153, 0.20);
+  --color-on-success: #0A0A0A;
 
-  /* DANGER → the one true red */
+  /* DANGER / Loss → Coral Red */
   --color-danger: #EF4444;
   --color-danger-text: #FCA5A5;
-  --color-danger-glow: rgba(239, 68, 68, 0.22);
-  --color-on-danger: #FFFFFF;
+  --color-danger-glow: rgba(239, 68, 68, 0.25);
+  --color-on-danger: #ECEEF2;
 
-  /* WARNING → mid grey */
+  /* WARNING → Mid Grey */
   --color-warning: #909090;
   --color-warning-text: #B0B0B0;
   --color-warning-glow: rgba(144, 144, 144, 0.15);
 
-  --color-info: #787878;
+  /* INFO / Neutral → Sky Blue */
+  --color-info: #60A5FA;
 }
 
 html[data-theme="abstract"][data-mode="dark"] {
@@ -1521,47 +1496,54 @@ html[data-theme="abstract"][data-mode="dark"] {
   --color-border: rgba(255, 255, 255, 0.07);
   --color-border-strong: rgba(255, 255, 255, 0.14);
 
-  /* Text */
-  --color-text-main: #FFFFFF;
-  --color-text-secondary: #C0C0C0;
-  --color-text-muted: #808080;
+  /* Text — comfortable off-white */
+  --color-text-main: #ECEEF2;
+  --color-text-secondary: #B4B9C2;
+  --color-text-muted: #7E8490;
   --color-text-subtle: #505050;
 
-  /* Primary — pure white */
-  --color-primary: #FFFFFF;
+  /* Primary — off-white outside cards */
+  --color-primary: #ECEEF2;
   --color-on-primary: #0A0A0A;
-  --color-primary-bright: #E0E0E0;
+  --color-primary-bright: #DCE0E6;
   --color-primary-soft: #1C1C1C;
-  --color-primary-glow: rgba(255, 255, 255, 0.08);
-  --color-primary-glow-hover: rgba(255, 255, 255, 0.14);
+  --color-primary-glow: rgba(236, 238, 242, 0.08);
+  --color-primary-glow-hover: rgba(236, 238, 242, 0.14);
 
   /* Secondary — mid grey */
   --color-secondary: #888888;
   --color-secondary-bright: #B0B0B0;
   --color-secondary-soft: #1A1A1A;
 
-  /* Success → grey (NOT green) */
-  --color-success: #606060;
-  --color-success-text: #888888;
-  --color-success-glow: rgba(100, 100, 100, 0.15);
+  /* Success → Profit Green */
+  --color-success: #34D399;
+  --color-success-text: #34D399;
+  --color-success-glow: rgba(52, 211, 153, 0.20);
 
-  /* Danger → only red */
+  /* Danger → Loss Red */
   --color-danger: #EF4444;
   --color-danger-text: #FCA5A5;
   --color-danger-glow: rgba(239, 68, 68, 0.25);
 
   --color-warning: #787878;
   --color-warning-text: #A0A0A0;
-  --color-info: #909090;
+  --color-info: #60A5FA;
 
   /* Highlight ramp */
-  --color-highlight-1: #FFFFFF;
+  --color-highlight-1: #ECEEF2;
   --color-highlight-2: #D4D4D4;
   --color-highlight-3: #A8A8A8;
   --color-highlight-4: #707070;
   --color-highlight-5: #3C3C3C;
 
   --shadow-color: rgba(0, 0, 0, 0.80);
+}
+
+/* Metric Cards in Abstract Theme: Neutral values and comparison tags use blue */
+html[data-theme="abstract"] .group\/metric,
+html[data-theme="abstract"] [data-metric-title] {
+  --color-primary: #60A5FA;
+  --color-primary-glow: rgba(96, 165, 250, 0.20);
 }
 
 html[data-theme="abstract"][data-mode="light"] {
@@ -1578,15 +1560,15 @@ html[data-theme="abstract"][data-mode="light"] {
   --color-border-strong: rgba(0, 0, 0, 0.22);
 
   /* Text */
-  --color-text-main: #050505;
-  --color-text-secondary: #1A1A1A;
+  --color-text-main: #0F172A;
+  --color-text-secondary: #1E293B;
   --color-text-muted: #3C3C3C;
   --color-text-subtle: #666666;
 
-  /* Primary — pure black */
-  --color-primary: #000000;
+  /* Primary — pure dark charcoal */
+  --color-primary: #18181B;
   --color-on-primary: #FFFFFF;
-  --color-primary-bright: #222222;
+  --color-primary-bright: #27272A;
   --color-primary-soft: #EBEBEB;
   --color-primary-glow: rgba(0, 0, 0, 0.08);
   --color-primary-glow-hover: rgba(0, 0, 0, 0.15);
@@ -1596,24 +1578,24 @@ html[data-theme="abstract"][data-mode="light"] {
   --color-secondary-bright: #222222;
   --color-secondary-soft: #F0F0F0;
 
-  /* Success → grey (NOT green) */
-  --color-success: #555555;
+  /* Success → green */
+  --color-success: #059669;
   --color-on-success: #FFFFFF;
-  --color-success-text: #333333;
-  --color-success-glow: rgba(80, 80, 80, 0.12);
+  --color-success-text: #047857;
+  --color-success-glow: rgba(5, 150, 105, 0.12);
 
-  /* Danger → only red */
-  --color-danger: #B91C1C;
+  /* Danger → red */
+  --color-danger: #DC2626;
   --color-on-danger: #FFFFFF;
-  --color-danger-text: #991B1B;
-  --color-danger-glow: rgba(185, 28, 28, 0.18);
+  --color-danger-text: #B91C1C;
+  --color-danger-glow: rgba(220, 38, 38, 0.18);
 
-  --color-warning: #555555;
-  --color-warning-text: #333333;
-  --color-info: #444444;
+  --color-warning: #D97706;
+  --color-warning-text: #B45309;
+  --color-info: #2563EB;
 
   /* Highlight ramp */
-  --color-highlight-1: #000000;
+  --color-highlight-1: #18181B;
   --color-highlight-2: #333333;
   --color-highlight-3: #666666;
   --color-highlight-4: #999999;
@@ -1622,13 +1604,19 @@ html[data-theme="abstract"][data-mode="light"] {
   --shadow-color: rgba(0, 0, 0, 0.10);
 }
 
+html[data-theme="abstract"][data-mode="light"] .group\/metric,
+html[data-theme="abstract"][data-mode="light"] [data-metric-title] {
+  --color-primary: #2563EB;
+  --color-primary-glow: rgba(37, 99, 235, 0.15);
+}
+
 /* APPEARANCE MODES */
 html[data-mode="dark"] {
   --color-bg-main: #0B0F17;
   --color-bg-card: #131A24;
   --color-bg-card-hover: #18212E;
   --color-border: rgba(255, 255, 255, 0.08);
-  --color-text-main: #FFFFFF;
+  --color-text-main: #ECEEF2;
   --color-text-secondary: #9BA7B4;
   --color-text-muted: #6D7684;
   --color-surface: rgba(0, 0, 0, 0.25);

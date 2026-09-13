@@ -211,7 +211,7 @@ export default function ProductionLinesPage() {
   const inactiveCount = currentLines.filter(l => (l.totalProduction || 0) === 0 && (l.totalCost || 0) === 0).length;
 
   return (
-    <div className="space-y-6 sm:space-y-8 animate-[fade-up_0.4s_ease-out_both] pb-12">
+    <div className="space-y-6 sm:space-y-8 animate-[fade-up_0.4s_ease-out_both]">
       
       {/* ── 1. PAGE HEADER & TITLE ───────────────────────────────────── */}
       <div className="relative flex flex-col items-center justify-center text-center pt-2 sm:pt-4">
@@ -451,33 +451,8 @@ export default function ProductionLinesPage() {
           </table>
         </div>
       ) : (
-        <>
-          {/* ── 4. MOBILE SEGMENTED LINE TABS ────────────────────────────── */}
-          <div className="md:hidden flex justify-center items-center w-full px-0.5">
-            <div className="grid grid-cols-4 w-full p-1 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl gap-1 shadow-sm">
-              {['A', 'B', 'C', 'D'].map(lineId => {
-                const isSelected = selectedMobileLine === lineId;
-                return (
-                  <button
-                    key={lineId}
-                    type="button"
-                    onClick={() => setSelectedMobileLine(lineId)}
-                    className={cn(
-                      "py-2 rounded-lg text-xs font-black uppercase transition-all duration-200 cursor-pointer select-none text-center flex items-center justify-center",
-                      isSelected
-                        ? "bg-[var(--color-primary)] text-[var(--color-on-primary,white)] shadow-sm"
-                        : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)]"
-                    )}
-                  >
-                    <span>LINE {lineId}</span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
           {/* ── 5. PRODUCTION LINES GRID (Detailed & Normal Modes) ──────────────────────────── */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
             {currentLines.sort((a,b) => a.id.localeCompare(b.id)).map((line) => {
               const isHiddenOnMobile = selectedMobileLine !== line.id;
               
@@ -532,16 +507,37 @@ export default function ProductionLinesPage() {
                   <Card className="relative overflow-hidden w-full h-full p-0 flex flex-col justify-between border border-[var(--color-border)] shadow-md hover:shadow-xl transition-all duration-300">
                     <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-surface)] to-transparent pointer-events-none rounded-[inherit]" />
 
+                    {/* Attached Mobile Line Switcher Tabs (Directly on top of the card on mobile) */}
+                    <div className="md:hidden w-full border-b border-[var(--color-border)] bg-[var(--color-surface)]/60 p-1 rounded-t-[inherit]">
+                      <div className="grid grid-cols-4 gap-1">
+                        {['A', 'B', 'C', 'D'].map(lineId => {
+                          const isSelected = selectedMobileLine === lineId;
+                          return (
+                            <button
+                              key={lineId}
+                              type="button"
+                              onClick={() => setSelectedMobileLine(lineId)}
+                              className={cn(
+                                "py-2 rounded-lg text-xs font-bold uppercase transition-all duration-200 cursor-pointer select-none text-center flex items-center justify-center",
+                                isSelected
+                                  ? "bg-[var(--color-primary)] text-[var(--color-on-primary,white)] shadow-xs"
+                                  : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)]"
+                              )}
+                            >
+                              <span>LINE {lineId}</span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+
                     <div className="flex flex-col gap-4 p-4 sm:p-5 relative z-10 flex-1">
                       
                       {/* Line Card Header */}
                       <div className="flex items-center justify-between gap-2 border-b border-[var(--color-border)]/50 pb-3">
                         
-                        <div className="flex items-center gap-2.5">
-                          <div className="bg-[var(--color-primary)] text-[var(--color-on-primary,white)] px-3 py-1 rounded-full text-xs font-black tracking-wider">
-                            LINE {line.id}
-                          </div>
-                          <h2 className="text-lg sm:text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[var(--color-text-main)] to-[var(--color-text-secondary)]">
+                        <div className="flex items-center gap-2">
+                          <h2 className="text-lg sm:text-xl font-bold text-[var(--color-text-main)] tracking-tight uppercase">
                             {line.name}
                           </h2>
                         </div>
@@ -826,25 +822,15 @@ export default function ProductionLinesPage() {
 
                       </div>
 
-                      {/* ── 8. ACTION BUTTONS (VIEW DETAILS & HOURLY LINK) ─────────── */}
-                      <div className="flex flex-col sm:flex-row items-center gap-2 mt-auto pt-1">
+                      {/* ── 8. ACTION BUTTON (VIEW DETAILS) ─────────── */}
+                      <div className="mt-auto pt-1">
                         <Link
                           href={detailsUrl}
-                          className="w-full flex-1 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer select-none group bg-[var(--color-primary)] hover:opacity-90 text-[var(--color-on-primary,white)] shadow-md"
+                          className="w-full py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer select-none group bg-[var(--color-primary)] hover:opacity-90 text-[var(--color-on-primary,white)] shadow-md"
                         >
                           <span>View Full Details</span>
                           <ArrowRight size={15} className="group-hover:translate-x-1 transition-transform" />
                         </Link>
-
-                        {isLive && (
-                          <Link
-                            href="/hourly"
-                            className="w-full sm:w-auto py-2.5 px-3.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-[var(--color-surface)] hover:bg-[var(--color-surface-hover)] border border-[var(--color-border)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)] transition-colors flex items-center justify-center gap-1.5"
-                          >
-                            <Clock size={13} className="text-[var(--color-primary)]" />
-                            <span>Hourly Flow</span>
-                          </Link>
-                        )}
                       </div>
 
                     </div>
@@ -853,7 +839,6 @@ export default function ProductionLinesPage() {
               );
             })}
           </div>
-        </>
       )}
 
     </div>

@@ -529,14 +529,15 @@ export function DashboardContent({ month, isArchive = false }) {
                   )}
                 />
                 <MetricCard 
-                  title="Working Days" 
-                  value={<AnimatedNumber value={displayStats.workingDays} suffix=" Days" />} 
+                  title={displayStats.averageDailyProfit >= 0 ? "Avg Daily Profit" : "Avg Daily Loss"} 
+                  value={<AnimatedNumber value={Math.abs(Math.round(displayStats.averageDailyProfit))} prefix={displayStats.averageDailyProfit >= 0 ? "+" : "-"} suffix=" / day" />}
+                  color={displayStats.averageDailyProfit >= 0 ? 'success' : 'danger'}
                   comparison={isArchive ? null : (
                     isAugust 
-                      ? { highlight: `${displayStats.workingDays} Days`, label: "total active factory days in August", trend: "neutral", isPositive: true }
+                      ? { highlight: "August Pace", label: "overall daily average rate", trend: "neutral", isPositive: displayStats.averageDailyProfit >= 0 }
                       : (isJuly 
-                          ? { highlight: `${displayStats.workingDays} Days`, label: "total active factory days in July", trend: "neutral", isPositive: true }
-                          : daysComparison
+                          ? { highlight: "July Pace", label: "overall daily average rate", trend: "neutral", isPositive: displayStats.averageDailyProfit >= 0 }
+                          : avgDailyComparison
                         )
                   )}
                 />
@@ -556,15 +557,14 @@ export function DashboardContent({ month, isArchive = false }) {
                   })()}
                 />
                 <MetricCard 
-                  title={displayStats.averageDailyProfit >= 0 ? "Avg Daily Profit" : "Avg Daily Loss"} 
-                  value={<AnimatedNumber value={Math.abs(Math.round(displayStats.averageDailyProfit))} prefix={displayStats.averageDailyProfit >= 0 ? "+" : "-"} suffix=" / day" />}
-                  color={displayStats.averageDailyProfit >= 0 ? 'success' : 'danger'}
+                  title="Working Days" 
+                  value={<AnimatedNumber value={displayStats.workingDays} suffix=" Days" />} 
                   comparison={isArchive ? null : (
                     isAugust 
-                      ? { highlight: "August Pace", label: "overall daily average rate", trend: "neutral", isPositive: displayStats.averageDailyProfit >= 0 }
+                      ? { highlight: `${displayStats.workingDays} Days`, label: "total active factory days in August", trend: "neutral", isPositive: true }
                       : (isJuly 
-                          ? { highlight: "July Pace", label: "overall daily average rate", trend: "neutral", isPositive: displayStats.averageDailyProfit >= 0 }
-                          : avgDailyComparison
+                          ? { highlight: `${displayStats.workingDays} Days`, label: "total active factory days in July", trend: "neutral", isPositive: true }
+                          : daysComparison
                         )
                   )}
                 />
@@ -664,30 +664,6 @@ export function DashboardContent({ month, isArchive = false }) {
                 </div>
               </div>
 
-              {/* Mobile Tab Series Side by Side (LINE A, LINE B, LINE C, LINE D) */}
-              <div className="md:hidden flex justify-center items-center w-full mb-3 px-0.5">
-                <div className="grid grid-cols-4 w-full p-1 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl gap-1 shadow-sm">
-                  {['A', 'B', 'C', 'D'].map(lineId => {
-                    const isSelected = selectedMobileLine === lineId;
-                    return (
-                      <button
-                        key={lineId}
-                        type="button"
-                        onClick={() => setSelectedMobileLine(lineId)}
-                        className={cn(
-                          "py-2 rounded-lg text-xs font-black uppercase transition-all duration-200 cursor-pointer select-none text-center flex items-center justify-center",
-                          isSelected
-                            ? "bg-[var(--color-primary)] text-[var(--color-on-primary,white)] shadow-sm"
-                            : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)]"
-                        )}
-                      >
-                        <span>LINE {lineId}</span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
               {/* Line Cards Grid (2 Column, 2 Row: Line A & B top, Line C & D bottom on Desktop) */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-4 md:gap-5">
                 {activeLines.sort((a,b) => a.id.localeCompare(b.id)).map((line) => {
@@ -701,6 +677,30 @@ export function DashboardContent({ month, isArchive = false }) {
                     <div key={line.id} className={cn("w-full flex flex-col", isHiddenOnMobile && "hidden md:flex")}>
                       <Card className="relative overflow-hidden w-full h-full p-0 flex flex-col justify-between border border-[var(--color-border)] hover:border-[var(--color-primary)]/40 transition-all duration-300">
                         <div className="absolute inset-0 bg-gradient-to-b from-[var(--color-surface)] to-transparent pointer-events-none rounded-[inherit]"></div>
+
+                        {/* Attached Mobile Line Switcher Tabs (Directly on top of the card on mobile) */}
+                        <div className="md:hidden w-full border-b border-[var(--color-border)] bg-[var(--color-surface)]/60 p-1 rounded-t-[inherit]">
+                          <div className="grid grid-cols-4 gap-1">
+                            {['A', 'B', 'C', 'D'].map(lineId => {
+                              const isSelected = selectedMobileLine === lineId;
+                              return (
+                                <button
+                                  key={lineId}
+                                  type="button"
+                                  onClick={() => setSelectedMobileLine(lineId)}
+                                  className={cn(
+                                    "py-2 rounded-lg text-xs font-bold uppercase transition-all duration-200 cursor-pointer select-none text-center flex items-center justify-center",
+                                    isSelected
+                                      ? "bg-[var(--color-primary)] text-[var(--color-on-primary,white)] shadow-xs"
+                                      : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)]"
+                                  )}
+                                >
+                                  <span>LINE {lineId}</span>
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
 
                         <div className="flex flex-col gap-3.5 p-3.5 sm:p-5 pt-4.5 relative z-10 flex-1 justify-between">
                           

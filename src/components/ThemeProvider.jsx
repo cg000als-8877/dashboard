@@ -5,7 +5,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 export const VISUAL_THEMES = [
   { id: 'ember-tide', name: 'Ember Tide', color: '#F97316' },
   { id: 'nordic-slate', name: 'Nordic Slate', color: '#60A5FA' },
-  { id: 'abstract', name: 'Abstract', color: '#FFFFFF' },
+  { id: 'abstract', name: 'Abstract', color: '#ECEEF2' },
   { id: 'arcade-overdrive', name: 'Arcade Overdrive (Gaming)', color: '#00F0FF' },
   { id: 'verdant', name: 'Verdant', color: '#80B918' },
   { id: 'lime-ivory', name: 'Lime Ivory', color: '#9BE52C' },
@@ -15,7 +15,7 @@ export const VISUAL_THEMES = [
   { id: 'gen-z', name: 'Gen-Z Pink', color: '#FF007F' },
   { id: 'amber-forge', name: 'Amber Forge', color: '#F59E0B' },
   { id: 'cyber-violet', name: 'Cyber Violet', color: '#A855F7' },
-  { id: 'obsidian-vercel', name: 'Obsidian Vercel', color: '#FFFFFF' },
+  { id: 'obsidian-vercel', name: 'Obsidian Vercel', color: '#ECEEF2' },
   { id: 'electric-indigo', name: 'Electric Indigo', color: '#7C6CFF' },
 ];
 
@@ -25,12 +25,7 @@ export const APPEARANCE_MODES = [
 ];
 
 export const BG_EFFECTS = [
-  { id: 'ember-tide-aurora', name: 'Ember Tide Aurora', tag: 'Ember', desc: 'Burning coral embers meet arctic cyan wisps on midnight navy' },
-  { id: 'abstract-void', name: 'Abstract Void', tag: 'Abstract', desc: 'Monochromatic grey wisps, vignette pulse & fine grain noise' },
-  { id: 'arcade-grid', name: 'Arcade Holo-Matrix', tag: 'Arcade', desc: 'Futuristic gaming grid, HUD crosshairs & chromatic glow' },
-  { id: 'hybrid', name: 'Aurora + Grid', tag: 'Hybrid', desc: 'Floating ambient orbs + blueprint cyber grid' },
   { id: 'aurora', name: 'Ambient Aurora', tag: 'Orbs', desc: 'Organic glowing orbs matching active theme' },
-  { id: 'grid', name: 'Cyber Grid', tag: 'Matrix', desc: 'Technical CAD matrix with radial vignette' },
   { id: 'spotlight', name: 'Interactive Spotlight', tag: 'Spotlight', desc: 'Mouse-following radiant halo & ambient pulse' },
   { id: 'grain', name: 'Velvet Frosted Grain', tag: 'Velvet', desc: 'Deep multi-stop gradient with fine grain texture' },
   { id: 'solid', name: 'Minimal Solid', tag: 'Clean', desc: 'Classic clean solid background' },
@@ -42,7 +37,7 @@ export function getScheduledDefaultTheme() {
 }
 
 export function getDefaultBgEffect() {
-  return 'ember-tide-aurora';
+  return 'aurora';
 }
 
 const ThemeContext = createContext();
@@ -50,7 +45,7 @@ const ThemeContext = createContext();
 export function ThemeProvider({ children }) {
   const [visualTheme, setVisualThemeState] = useState('ember-tide');
   const [mode, setModeState] = useState('dark');
-  const [bgEffect, setBgEffectState] = useState('ember-tide-aurora');
+  const [bgEffect, setBgEffectState] = useState('aurora');
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -64,10 +59,10 @@ export function ThemeProvider({ children }) {
       localStorage.setItem('app-visual-theme', 'ember-tide');
       localStorage.setItem('app-mode', 'dark');
       localStorage.setItem('theme', 'dark');
-      localStorage.setItem('app-bg-effect', 'ember-tide-aurora');
+      localStorage.setItem('app-bg-effect', 'aurora');
       setVisualThemeState('ember-tide');
       setModeState('dark');
-      setBgEffectState('ember-tide-aurora');
+      setBgEffectState('aurora');
       return;
     }
 
@@ -88,10 +83,10 @@ export function ThemeProvider({ children }) {
       setModeState('dark');
     }
 
-    if (storedBgEffect && BG_EFFECTS.some(b => b.id === storedBgEffect)) {
-      setBgEffectState(storedBgEffect);
+    if (storedBgEffect && (BG_EFFECTS.some(b => b.id === storedBgEffect) || storedBgEffect === 'ember-tide-aurora')) {
+      setBgEffectState(storedBgEffect === 'ember-tide-aurora' ? 'aurora' : storedBgEffect);
     } else {
-      setBgEffectState('ember-tide-aurora');
+      setBgEffectState('aurora');
     }
   }, []);
 
@@ -114,15 +109,15 @@ export function ThemeProvider({ children }) {
       setVisualThemeState(id);
       localStorage.setItem('app-visual-theme', id);
       sessionStorage.setItem('app-night-theme-overridden', 'true');
-      // Abstract theme enforces a colorless background — override to abstract-void
+      // Abstract theme activates Velvet Frosted Grain bg by default
       if (id === 'abstract') {
-        setBgEffectState('abstract-void');
-        localStorage.setItem('app-bg-effect', 'abstract-void');
+        setBgEffectState('grain');
+        localStorage.setItem('app-bg-effect', 'grain');
       }
-      // Ember Tide gets its own signature aurora by default
+      // Ember Tide attaches its signature ember aurora by default
       if (id === 'ember-tide') {
-        setBgEffectState('ember-tide-aurora');
-        localStorage.setItem('app-bg-effect', 'ember-tide-aurora');
+        setBgEffectState('aurora');
+        localStorage.setItem('app-bg-effect', 'aurora');
       }
     }
   };
