@@ -23,6 +23,7 @@ export const APPEARANCE_MODES = [
 export const BG_EFFECTS = [
   { id: 'aurora', name: 'Ambient Aurora', tag: 'Orbs', desc: 'Organic glowing orbs matching active theme' },
   { id: 'spotlight', name: 'Interactive Spotlight', tag: 'Spotlight', desc: 'Mouse-following radiant halo & ambient pulse' },
+  { id: 'bokeh', name: 'Moving Bokeh', tag: 'Bokeh', desc: 'Floating dynamic orbital light spheres' },
   { id: 'grain', name: 'Velvet Frosted Grain', tag: 'Velvet', desc: 'Deep multi-stop gradient with fine grain texture' },
   { id: 'grid', name: 'Grid', tag: 'Grid', desc: 'Precision blueprint grid with radial aura' },
   { id: 'honeycomb', name: 'Honeycomb', tag: 'Hex', desc: 'Hexagonal geometric matrix with radial aura' },

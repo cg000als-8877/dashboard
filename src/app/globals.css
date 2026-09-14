@@ -1903,3 +1903,12 @@ body {
 .animate-tide-pulse {
   animation: tide-pulse 10s ease-in-out infinite;
 }
+
+/* ─────────────────────────────────────────
+   MOVING BOKEH — Orbital floating light spheres
+───────────────────────────────────────── */
+@keyframes bokeh-orbit {
+  100% {
+    transform: translate3d(0, 0, 1px) rotate(360deg);
+  }
+}

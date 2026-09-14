@@ -55,6 +55,7 @@ export const BackgroundCanvas = memo(function BackgroundCanvas() {
   const showGrain = bgEffect === 'grain';
   const showGrid = bgEffect === 'grid';
   const showHoneycomb = bgEffect === 'honeycomb';
+  const showBokeh = bgEffect === 'bokeh';
 
   return (
     <div
@@ -288,6 +289,103 @@ export const BackgroundCanvas = memo(function BackgroundCanvas() {
               WebkitMaskRepeat: 'no-repeat',
             }}
           />
+        </div>
+      )}
+
+      {/* 7. Moving Bokeh Orbital Spheres Layer */}
+      {showBokeh && (
+        <div className="absolute inset-0 overflow-hidden animate-in fade-in duration-700">
+          {/* Ambient backdrop aura */}
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background: `radial-gradient(ellipse 85% 75% at 50% 50%, var(--color-primary-glow) 0%, transparent 75%)`,
+              opacity: isDark ? 0.35 : 0.15,
+            }}
+          />
+
+          {/* Bokeh Container with orbiting nodes */}
+          <div className="absolute inset-0 pointer-events-none">
+            {/* Bokeh Node 1: Primary Brand Orbit */}
+            <span
+              className="absolute rounded-full pointer-events-none"
+              style={{
+                width: '9vmin',
+                height: '9vmin',
+                top: '28%',
+                left: '67%',
+                color: 'var(--color-primary)',
+                boxShadow: '18vmin 0 2.72vmin currentColor',
+                transformOrigin: '11vw 7vh',
+                animation: 'bokeh-orbit 18s linear infinite',
+                animationDelay: '-1s',
+                opacity: isDark ? 0.50 : 0.25,
+                filter: 'blur(3px)',
+                willChange: 'transform',
+                backfaceVisibility: 'hidden',
+              }}
+            />
+
+            {/* Bokeh Node 2: Warm Pastel Satellite */}
+            <span
+              className="absolute rounded-full pointer-events-none"
+              style={{
+                width: '9vmin',
+                height: '9vmin',
+                top: '75%',
+                left: '37%',
+                color: 'color-mix(in srgb, var(--color-primary) 65%, #FFACAC)',
+                boxShadow: '18vmin 0 2.28vmin currentColor',
+                transformOrigin: '-4vw 12vh',
+                animation: 'bokeh-orbit 22s linear infinite',
+                animationDelay: '-3s',
+                opacity: isDark ? 0.45 : 0.22,
+                filter: 'blur(4px)',
+                willChange: 'transform',
+                backfaceVisibility: 'hidden',
+              }}
+            />
+
+            {/* Bokeh Node 3: Vivid Accent Orbit */}
+            <span
+              className="absolute rounded-full pointer-events-none"
+              style={{
+                width: '9vmin',
+                height: '9vmin',
+                top: '60%',
+                left: '17%',
+                color: 'color-mix(in srgb, var(--color-primary) 60%, #E45A84)',
+                boxShadow: '18vmin 0 2.71vmin currentColor',
+                transformOrigin: '13vw -15vh',
+                animation: 'bokeh-orbit 20s linear infinite',
+                animationDelay: '-2s',
+                opacity: isDark ? 0.48 : 0.24,
+                filter: 'blur(3px)',
+                willChange: 'transform',
+                backfaceVisibility: 'hidden',
+              }}
+            />
+
+            {/* Bokeh Node 4: Gentle Secondary Ambient */}
+            <span
+              className="absolute rounded-full pointer-events-none hidden sm:block"
+              style={{
+                width: '8vmin',
+                height: '8vmin',
+                top: '18%',
+                left: '25%',
+                color: 'color-mix(in srgb, var(--color-primary) 50%, #38BDF8)',
+                boxShadow: '16vmin 0 2.5vmin currentColor',
+                transformOrigin: '-7vw 14vh',
+                animation: 'bokeh-orbit 26s linear infinite',
+                animationDelay: '-6s',
+                opacity: isDark ? 0.38 : 0.18,
+                filter: 'blur(4px)',
+                willChange: 'transform',
+                backfaceVisibility: 'hidden',
+              }}
+            />
+          </div>
         </div>
       )}
 
