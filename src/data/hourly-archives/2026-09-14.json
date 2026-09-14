@@ -1,5 +1,5 @@
 {
-  "date": "2026-09-13",
+  "date": "2026-09-14",
   "timeLabels": [
     "1ST",
     "2ND",
@@ -34,9 +34,9 @@
         null
       ],
       "actual": [
-        50,
-        50,
-        70,
+        null,
+        null,
+        null,
         null,
         null,
         null,
@@ -80,14 +80,14 @@
         null
       ],
       "actual": [
+        140,
+        120,
         100,
-        100,
-        60,
-        30,
-        90,
-        80,
-        110,
-        110,
+        null,
+        null,
+        null,
+        null,
+        null,
         null,
         null,
         null
@@ -128,12 +128,12 @@
       "actual": [
         400,
         350,
-        110,
-        100,
-        250,
-        120,
-        120,
-        200,
+        300,
+        null,
+        null,
+        null,
+        null,
+        null,
         null,
         null,
         null
