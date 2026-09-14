@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect, useRef, Suspense } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useState, useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import { Lock, Eye, EyeOff, ShieldCheck, ArrowRight, CheckCircle2, ShieldAlert } from 'lucide-react';
 
 // Faint architectural technical grid and watermarks
@@ -68,7 +68,6 @@ function IndustrialBackground() {
 
 function LoginForm() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const inputRef = useRef(null);
 
   const [passcode, setPasscode] = useState('');
@@ -99,7 +98,8 @@ function LoginForm() {
       if (res.ok) {
         setSuccess(true);
         setTimeout(() => {
-          const from = searchParams.get('from') || '/';
+          const params = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
+          const from = (params && params.get('from')) || '/';
           router.replace(from);
           router.refresh();
         }, 700);
@@ -365,10 +365,8 @@ export default function LoginPage() {
               </div>
             </div>
 
-            {/* Interactive login form wrapped in Suspense for useSearchParams */}
-            <Suspense fallback={<div className="h-40 animate-pulse bg-slate-800/20 rounded-xl" />}>
-              <LoginForm />
-            </Suspense>
+            {/* Interactive login form */}
+            <LoginForm />
           </div>
         </div>
 

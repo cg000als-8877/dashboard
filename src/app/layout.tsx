@@ -7,7 +7,7 @@ import { DensityProvider } from "@/components/providers/DensityProvider";
 import { ClientAutoRefresh } from "@/components/providers/ClientAutoRefresh";
 import { PwaManager } from "@/components/providers/PwaManager";
 import { AppWelcomeSplash } from "@/components/ui/AppWelcomeSplash";
-import { Suspense } from "react";
+
 
 const inter = Inter({ 
   weight: ["300", "400", "500", "600", "700"],
@@ -74,21 +74,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className={`${inter.className} ${spaceGrotesk.variable} ${jetbrainsMono.variable} bg-[var(--color-bg-main)] text-[var(--color-text-main)]`}>
-        <Suspense fallback={<div>Loading...</div>}>
-          <ThemeProvider>
-            <MonthProvider>
-              <DensityProvider>
-                <ClientAutoRefresh />
-                <PwaManager>
-                  <AppWelcomeSplash />
-                  <DashboardLayout>
-                    {children}
-                  </DashboardLayout>
-                </PwaManager>
-              </DensityProvider>
-            </MonthProvider>
-          </ThemeProvider>
-        </Suspense>
+        <ThemeProvider>
+          <MonthProvider>
+            <DensityProvider>
+              <ClientAutoRefresh />
+              <PwaManager>
+                <AppWelcomeSplash />
+                <DashboardLayout>
+                  {children}
+                </DashboardLayout>
+              </PwaManager>
+            </DensityProvider>
+          </MonthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

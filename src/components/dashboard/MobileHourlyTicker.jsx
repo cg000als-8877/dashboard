@@ -115,7 +115,7 @@ export function MobileHourlyTicker() {
   return (
     <Link 
       href="/hourly"
-      className="md:hidden block w-full bg-[var(--color-bg-card)]/95 backdrop-blur-md border-b border-[var(--color-border)] py-1 overflow-hidden relative select-none hover:bg-[var(--color-surface-hover)] transition-colors"
+      className="md:hidden block w-full bg-[var(--color-bg-card)] border-b border-[var(--color-border)] py-1 overflow-hidden relative select-none hover:bg-[var(--color-surface-hover)] transition-colors"
       title="Tap to view hourly production report"
     >
       <div className="animate-marquee flex whitespace-nowrap">

@@ -37,7 +37,7 @@ function CompareSkeleton() {
           <ShimmerBlock key={t} className="h-9 w-28 bg-[var(--color-text-muted)]/15 rounded-lg" />
         ))}
       </div>
-      <div className="bg-[var(--color-bg-card)]/50 border border-[var(--color-border)]/60 rounded-2xl p-6 h-[400px] shimmer" />
+      <div className="bg-[var(--color-bg-card)] border border-[var(--color-border)]/60 rounded-2xl p-6 h-[400px] shimmer" />
     </div>
   );
 }
@@ -355,7 +355,7 @@ export default function ComparePage() {
       {activeTab === 'line' && (
         <div className="space-y-6 animate-[fade-in_0.3s_ease-out_both]">
           {/* Controls Card */}
-          <Card className="p-4 bg-[var(--color-bg-card)]/50 border-[var(--color-border)]/60">
+          <Card className="p-4 bg-[var(--color-bg-card)] border-[var(--color-border)]/60">
             <div className="flex flex-col sm:flex-row items-center gap-4 justify-between">
               <div className="flex items-center gap-2">
                 <GitCompare className="text-[var(--color-primary)] h-5 w-5 shrink-0" />
@@ -396,7 +396,7 @@ export default function ComparePage() {
               if (!stats1) return null;
               return (
                 <Card 
-                  className="p-5 border-t-4 bg-[var(--color-bg-card)]/75"
+                  className="p-5 border-t-4 bg-[var(--color-bg-card)]"
                   style={{ borderTopColor: meta1.color, boxShadow: `0 4px 30px rgba(0, 0, 0, 0.15), inset 0 0 12px ${meta1.color}15` }}
                 >
                   <div className="flex justify-between items-center mb-4 border-b border-[var(--color-border)]/40 pb-2">
@@ -434,7 +434,7 @@ export default function ComparePage() {
               if (!stats2) return null;
               return (
                 <Card 
-                  className="p-5 border-t-4 bg-[var(--color-bg-card)]/75"
+                  className="p-5 border-t-4 bg-[var(--color-bg-card)]"
                   style={{ borderTopColor: meta2.color, boxShadow: `0 4px 30px rgba(0, 0, 0, 0.15), inset 0 0 12px ${meta2.color}15` }}
                 >
                   <div className="flex justify-between items-center mb-4 border-b border-[var(--color-border)]/40 pb-2">
@@ -469,7 +469,7 @@ export default function ComparePage() {
           {/* Charts Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Overlap Hourly Chart */}
-            <Card className="lg:col-span-2 p-5 bg-[var(--color-bg-card)]/75">
+            <Card className="lg:col-span-2 p-5 bg-[var(--color-bg-card)]">
               <h4 className="text-sm font-bold uppercase tracking-wider text-[var(--color-text-main)] mb-4 font-display">Overlap Hourly Outputs</h4>
               <div className="h-[300px]">
                 {loadingDates ? (
@@ -494,7 +494,7 @@ export default function ComparePage() {
             </Card>
 
             {/* KPI Efficiency Radar */}
-            <Card className="lg:col-span-1 p-5 bg-[var(--color-bg-card)]/75">
+            <Card className="lg:col-span-1 p-5 bg-[var(--color-bg-card)]">
               <h4 className="text-sm font-bold uppercase tracking-wider text-[var(--color-text-main)] mb-4 font-display">KPI Efficiency index</h4>
               <div className="h-[300px]">
                 <ResponsiveContainer width="100%" height="100%">
@@ -520,7 +520,7 @@ export default function ComparePage() {
       {activeTab === 'date' && (
         <div className="space-y-6 animate-[fade-in_0.3s_ease-out_both]">
           {/* Controls Card */}
-          <Card className="p-4 bg-[var(--color-bg-card)]/50 border-[var(--color-border)]/60">
+          <Card className="p-4 bg-[var(--color-bg-card)] border-[var(--color-border)]/60">
             <div className="flex flex-col sm:flex-row items-center gap-4 justify-between">
               <div className="flex items-center gap-2">
                 <CalendarIcon className="text-[var(--color-primary)] h-5 w-5 shrink-0" />
@@ -554,7 +554,7 @@ export default function ComparePage() {
 
           {/* Intraday speed matching chart */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <Card className="lg:col-span-2 p-5 bg-[var(--color-bg-card)]/75">
+            <Card className="lg:col-span-2 p-5 bg-[var(--color-bg-card)]">
               <h4 className="text-sm font-bold uppercase tracking-wider text-[var(--color-text-main)] mb-4 font-display">Intraday Speed Matching (Total Factory Output)</h4>
               <div className="h-[300px]">
                 {loadingDates ? (
@@ -578,7 +578,7 @@ export default function ComparePage() {
             </Card>
 
             {/* Shift efficiency bar chart */}
-            <Card className="lg:col-span-1 p-5 bg-[var(--color-bg-card)]/75">
+            <Card className="lg:col-span-1 p-5 bg-[var(--color-bg-card)]">
               <h4 className="text-sm font-bold uppercase tracking-wider text-[var(--color-text-main)] mb-4 font-display">Shift Efficiency Contrast</h4>
               <div className="h-[300px]">
                 {loadingDates ? (
@@ -608,7 +608,7 @@ export default function ComparePage() {
       {activeTab === 'month' && (
         <div className="space-y-6 animate-[fade-in_0.3s_ease-out_both]">
           {/* Controls Card */}
-          <Card className="p-4 bg-[var(--color-bg-card)]/50 border-[var(--color-border)]/60">
+          <Card className="p-4 bg-[var(--color-bg-card)] border-[var(--color-border)]/60">
             <div className="flex flex-col sm:flex-row items-center gap-4 justify-between">
               <div className="flex items-center gap-2">
                 <Calendar className="text-[var(--color-primary)] h-5 w-5 shrink-0" />
@@ -646,7 +646,7 @@ export default function ComparePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Month 1 Stats */}
             {month1Data && (
-              <Card className="p-5 bg-[var(--color-bg-card)]/75 border border-[var(--color-border)]/60">
+              <Card className="p-5 bg-[var(--color-bg-card)] border border-[var(--color-border)]/60">
                 <div className="flex justify-between items-center mb-4 border-b border-[var(--color-border)]/40 pb-2">
                   <h4 className="text-base font-bold font-display text-[var(--color-primary)]">
                     {month1 === 'live' ? 'August 2026' : availableMonths.find(m => m.id === month1)?.name}
@@ -678,7 +678,7 @@ export default function ComparePage() {
 
             {/* Month 2 Stats */}
             {month2Data && (
-              <Card className="p-5 bg-[var(--color-bg-card)]/75 border border-[var(--color-border)]/60">
+              <Card className="p-5 bg-[var(--color-bg-card)] border border-[var(--color-border)]/60">
                 <div className="flex justify-between items-center mb-4 border-b border-[var(--color-border)]/40 pb-2">
                   <h4 className="text-base font-bold font-display text-warning-400 text-[var(--color-warning)]">
                     {month2 === 'live' ? 'August 2026' : availableMonths.find(m => m.id === month2)?.name}
@@ -710,7 +710,7 @@ export default function ComparePage() {
           </div>
 
           {/* Monthly overlay trends */}
-          <Card className="p-5 bg-[var(--color-bg-card)]/75">
+          <Card className="p-5 bg-[var(--color-bg-card)]">
             <h4 className="text-sm font-bold uppercase tracking-wider text-[var(--color-text-main)] mb-4 font-display">Macro Performance Overlays (Normalized comparison)</h4>
             <div className="h-[300px]">
               {loadingMonths ? (

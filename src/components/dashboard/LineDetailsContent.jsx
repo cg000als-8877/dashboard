@@ -349,21 +349,21 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false }) {
                 onClick={() => toggleRow(rowIndex)}
                 className="grid grid-cols-3 gap-1.5 pt-2 cursor-pointer active:opacity-90 select-none"
               >
-                <div className="bg-[var(--color-surface)]/70 rounded-lg p-1.5 border border-[var(--color-border)]/40">
+                <div className="bg-[var(--color-surface)] rounded-lg p-1.5 border border-[var(--color-border)]/40">
                   <p className="text-[8.5px] uppercase tracking-wider font-semibold text-[var(--color-text-muted)]">Production</p>
                   <p className="text-[11px] font-bold font-mono text-[var(--color-text-main)] mt-0.5 leading-tight">
                     {Math.round(row.production_qty || 0).toLocaleString()} <span className="text-[8px] font-normal text-[var(--color-text-muted)]">pcs</span>
                   </p>
                 </div>
 
-                <div className="bg-[var(--color-surface)]/70 rounded-lg p-1.5 border border-[var(--color-border)]/40">
+                <div className="bg-[var(--color-surface)] rounded-lg p-1.5 border border-[var(--color-border)]/40">
                   <p className="text-[8.5px] uppercase tracking-wider font-semibold text-[var(--color-text-muted)]">Total Cost</p>
                   <p className="text-[11px] font-bold font-mono text-[var(--color-text-main)] mt-0.5 leading-tight">
                     {Math.round(row.total_cost || 0).toLocaleString()}
                   </p>
                 </div>
 
-                <div className="bg-[var(--color-surface)]/70 rounded-lg p-1.5 border border-[var(--color-border)]/40">
+                <div className="bg-[var(--color-surface)] rounded-lg p-1.5 border border-[var(--color-border)]/40">
                   <p className="text-[8.5px] uppercase tracking-wider font-semibold text-[var(--color-text-muted)]">Total Income</p>
                   <p className="text-[11px] font-bold font-mono text-[var(--color-primary)] mt-0.5 leading-tight">
                     {Math.round(row.total_income || 0).toLocaleString()}
@@ -375,26 +375,26 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false }) {
               {isExpanded && (
                 <div className="mt-2.5 pt-2.5 border-t border-[var(--color-border)]/50 space-y-1.5 animate-[fade-up_0.2s_ease-out]">
                   <div className="grid grid-cols-2 gap-1.5 text-[10.5px]">
-                    <div className="flex items-center justify-between p-1.5 rounded-lg bg-[var(--color-surface)]/50 border border-[var(--color-border)]/30">
+                    <div className="flex items-center justify-between p-1.5 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)]/30">
                       <span className="text-[9px] text-[var(--color-text-muted)] uppercase tracking-wider font-medium">Workers</span>
                       <span className="font-mono font-bold text-[var(--color-text-main)]">{row.worker_count || '-'}</span>
                     </div>
-                    <div className="flex items-center justify-between p-1.5 rounded-lg bg-[var(--color-surface)]/50 border border-[var(--color-border)]/30">
+                    <div className="flex items-center justify-between p-1.5 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)]/30">
                       <span className="text-[9px] text-[var(--color-text-muted)] uppercase tracking-wider font-medium">Per Head</span>
                       <span className="font-mono font-bold text-[var(--color-text-main)]">{row.per_head_cost ? `${Math.round(row.per_head_cost).toLocaleString()}` : '-'}</span>
                     </div>
-                    <div className="flex items-center justify-between p-1.5 rounded-lg bg-[var(--color-surface)]/50 border border-[var(--color-border)]/30">
+                    <div className="flex items-center justify-between p-1.5 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)]/30">
                       <span className="text-[9px] text-[var(--color-text-muted)] uppercase tracking-wider font-medium">Prod (DZN)</span>
                       <span className="font-mono font-bold text-[var(--color-text-main)]">{row.production_dzn ? Number(row.production_dzn).toFixed(1) : '-'}</span>
                     </div>
-                    <div className="flex items-center justify-between p-1.5 rounded-lg bg-[var(--color-surface)]/50 border border-[var(--color-border)]/30">
+                    <div className="flex items-center justify-between p-1.5 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)]/30">
                       <span className="text-[9px] text-[var(--color-text-muted)] uppercase tracking-wider font-medium">CM / DZN</span>
                       <span className="font-mono font-bold text-[var(--color-primary)]">{row.cm_per_dzn ? `${Math.round(row.cm_per_dzn).toLocaleString()}` : '-'}</span>
                     </div>
                   </div>
 
                   {(row.item || row.style) && (
-                    <div className="p-1.5 rounded-lg bg-[var(--color-surface)]/50 border border-[var(--color-border)]/30 flex items-center justify-between text-[10px]">
+                    <div className="p-1.5 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)]/30 flex items-center justify-between text-[10px]">
                       <span className="text-[9px] text-[var(--color-text-muted)] uppercase tracking-wider font-medium">Item Name</span>
                       <span className="font-semibold text-[var(--color-text-main)] truncate max-w-[200px]">
                         {row.item || row.style}
@@ -408,7 +408,7 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false }) {
         })}
 
         {/* Mobile Total Card (Distinct Aggregate Summary Footer) */}
-        <div className="mt-4 mb-1 relative overflow-hidden rounded-2xl p-3.5 bg-gradient-to-b from-[var(--color-surface)]/90 via-[var(--color-bg-card)] to-[var(--color-surface)]/80 border-2 border-[var(--color-primary)]/40 shadow-lg select-none">
+        <div className="mt-4 mb-1 relative overflow-hidden rounded-2xl p-3.5 bg-[var(--color-bg-card)] border-2 border-[var(--color-primary)]/40 shadow-lg select-none">
           {/* Subtle Ambient Glow */}
           <div className="absolute -top-10 -right-10 w-28 h-28 bg-[var(--color-primary)]/10 rounded-full blur-xl pointer-events-none" />
 

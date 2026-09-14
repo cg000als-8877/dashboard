@@ -1,22 +1,21 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
 
 const MonthContext = createContext();
 
 export function MonthProvider({ children }) {
-  const searchParams = useSearchParams();
-  const initialMonth = searchParams.get('month') || 'live';
-  
-  const [selectedMonth, setSelectedMonth] = useState(initialMonth);
+  const [selectedMonth, setSelectedMonth] = useState('live');
 
   useEffect(() => {
-    const urlMonth = searchParams.get('month');
-    if (urlMonth && urlMonth !== selectedMonth) {
-      setSelectedMonth(urlMonth);
-    }
-  }, [searchParams]);
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const urlMonth = params.get('month');
+      if (urlMonth && urlMonth !== selectedMonth) {
+        setSelectedMonth(urlMonth);
+      }
+    } catch (e) {}
+  }, []);
 
   return (
     <MonthContext.Provider value={{ selectedMonth, setSelectedMonth }}>

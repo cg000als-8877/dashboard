@@ -408,7 +408,7 @@ export function DashboardContent({ month, isArchive = false }) {
         </div>
 
         {/* KPI Overview Section (Unboxed on mobile to expand cards, card on desktop) */}
-        <div className="relative rounded-none md:rounded-3xl border-0 md:border md:border-[var(--color-border)]/70 bg-transparent md:bg-[var(--color-bg-card)]/50 backdrop-blur-none md:backdrop-blur-md p-0 md:p-6 shadow-none md:shadow-xl overflow-visible md:overflow-hidden mb-6 -mx-2 sm:mx-0">
+        <div className="relative rounded-none md:rounded-3xl border-0 md:border md:border-[var(--color-border)]/70 bg-transparent md:bg-[var(--color-bg-card)] backdrop-blur-none p-0 md:p-6 shadow-none md:shadow-xl overflow-visible md:overflow-hidden mb-6 -mx-2 sm:mx-0">
           <div className="hidden md:block absolute top-0 left-1/2 -translate-x-1/2 w-96 h-28 bg-[var(--color-primary)]/5 rounded-full blur-3xl pointer-events-none" />
 
           {/* Month Tab Switcher for 6 KPI Stat Cards (Live Dashboard Only) */}
@@ -679,7 +679,7 @@ export function DashboardContent({ month, isArchive = false }) {
                         <div className="absolute inset-0 bg-gradient-to-b from-[var(--color-surface)] to-transparent pointer-events-none rounded-[inherit]"></div>
 
                         {/* Attached Mobile Line Switcher Tabs (Directly on top of the card on mobile) */}
-                        <div className="md:hidden w-full border-b border-[var(--color-border)] bg-[var(--color-surface)]/60 p-1 rounded-t-[inherit]">
+                        <div className="md:hidden w-full border-b border-[var(--color-border)] bg-[var(--color-surface)] p-1 rounded-t-[inherit]">
                           <div className="grid grid-cols-4 gap-1">
                             {['A', 'B', 'C', 'D'].map(lineId => {
                               const isSelected = selectedMobileLine === lineId;
@@ -808,7 +808,7 @@ export function DashboardContent({ month, isArchive = false }) {
                           </div>
 
                           {/* Last Recorded Day Input & Cost Recovery Efficiency */}
-                          <div className="bg-[var(--color-surface)]/70 border border-[var(--color-border)] rounded-xl p-2.5 sm:p-3">
+                          <div className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl p-2.5 sm:p-3">
                             <div className="flex items-center justify-between mb-2">
                               <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-[var(--color-text-secondary)] truncate">
                                 Last Day Input ({lastDayDateStr})

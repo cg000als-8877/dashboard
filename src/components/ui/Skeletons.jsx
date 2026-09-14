@@ -12,7 +12,7 @@ export function DashboardSkeleton() {
       {/* 4 KPI cards grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[1, 2, 3, 4].map(idx => (
-          <div key={idx} className="bg-[var(--color-bg-card)]/60 border border-[var(--color-border)]/50 p-4 rounded-2xl flex flex-col space-y-3 h-[100px] md:h-[130px] shimmer">
+          <div key={idx} className="bg-[var(--color-bg-card)] border border-[var(--color-border)]/50 p-4 rounded-2xl flex flex-col space-y-3 h-[100px] md:h-[130px] shimmer">
             <ShimmerBlock className="h-3 w-1/3 opacity-40 bg-[var(--color-text-muted)]/20" />
             <ShimmerBlock className="h-7 w-2/3 opacity-60 bg-[var(--color-text-muted)]/30" />
             <ShimmerBlock className="h-3.5 w-1/2 opacity-30 bg-[var(--color-text-muted)]/10" />
@@ -23,7 +23,7 @@ export function DashboardSkeleton() {
       {/* Main analytical elements */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left OEE card */}
-        <div className="lg:col-span-1 bg-[var(--color-bg-card)]/60 border border-[var(--color-border)]/50 p-6 rounded-2xl h-[380px] flex flex-col justify-between shimmer">
+        <div className="lg:col-span-1 bg-[var(--color-bg-card)] border border-[var(--color-border)]/50 p-6 rounded-2xl h-[380px] flex flex-col justify-between shimmer">
           <div className="space-y-2">
             <ShimmerBlock className="h-4 w-1/4 bg-[var(--color-text-muted)]/20" />
             <ShimmerBlock className="h-3 w-1/2 bg-[var(--color-text-muted)]/10" />
@@ -37,7 +37,7 @@ export function DashboardSkeleton() {
         </div>
 
         {/* Right Charts card */}
-        <div className="lg:col-span-2 bg-[var(--color-bg-card)]/60 border border-[var(--color-border)]/50 p-6 rounded-2xl h-[380px] flex flex-col justify-between shimmer">
+        <div className="lg:col-span-2 bg-[var(--color-bg-card)] border border-[var(--color-border)]/50 p-6 rounded-2xl h-[380px] flex flex-col justify-between shimmer">
           <div className="flex justify-between items-center">
             <div className="space-y-2">
               <ShimmerBlock className="h-4 w-1/3 bg-[var(--color-text-muted)]/20" />
@@ -83,7 +83,7 @@ export function HourlySkeleton() {
       </div>
 
       {/* Main card panel */}
-      <div className="bg-[var(--color-bg-card)]/60 border border-[var(--color-border)]/50 rounded-2xl p-6 space-y-6 h-[500px] flex flex-col shimmer">
+      <div className="bg-[var(--color-bg-card)] border border-[var(--color-border)]/50 rounded-2xl p-6 space-y-6 h-[500px] flex flex-col shimmer">
         <div className="flex justify-between items-center border-b border-[var(--color-border)]/40 pb-4">
           <ShimmerBlock className="h-6 w-32 bg-[var(--color-text-muted)]/20" />
           <div className="flex gap-1.5 w-1/3">
@@ -127,7 +127,7 @@ export function LinesSkeleton() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
         {[1, 2, 3, 4].map(line => (
-          <div key={line} className="bg-[var(--color-bg-card)]/60 border border-[var(--color-border)]/50 p-6 rounded-2xl h-[220px] flex flex-col justify-between shimmer">
+          <div key={line} className="bg-[var(--color-bg-card)] border border-[var(--color-border)]/50 p-6 rounded-2xl h-[220px] flex flex-col justify-between shimmer">
             <div className="flex justify-between items-start">
               <div className="space-y-2">
                 <ShimmerBlock className="h-5 w-24 bg-[var(--color-text-muted)]/25" />
@@ -161,7 +161,7 @@ export function AnalyticsSkeleton() {
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-        <div className="xl:col-span-2 bg-[var(--color-bg-card)]/60 border border-[var(--color-border)]/50 p-6 rounded-2xl h-[420px] flex flex-col justify-between shimmer">
+        <div className="xl:col-span-2 bg-[var(--color-bg-card)] border border-[var(--color-border)]/50 p-6 rounded-2xl h-[420px] flex flex-col justify-between shimmer">
           <ShimmerBlock className="h-5 w-32 bg-[var(--color-text-muted)]/25" />
           <div className="flex-1 flex items-end gap-3 mt-6 mb-4">
             {[...Array(12)].map((_, i) => (
@@ -172,7 +172,7 @@ export function AnalyticsSkeleton() {
 
         <div className="xl:col-span-1 space-y-6">
           {[1, 2].map(idx => (
-            <div key={idx} className="bg-[var(--color-bg-card)]/60 border border-[var(--color-border)]/50 p-6 rounded-2xl h-[198px] flex flex-col justify-between shimmer">
+            <div key={idx} className="bg-[var(--color-bg-card)] border border-[var(--color-border)]/50 p-6 rounded-2xl h-[198px] flex flex-col justify-between shimmer">
               <ShimmerBlock className="h-4 w-20 bg-[var(--color-text-muted)]/20" />
               <ShimmerBlock className="h-7 w-32 bg-[var(--color-text-muted)]/25" />
               <ShimmerBlock className="h-3 w-40 bg-[var(--color-text-muted)]/15" />
@@ -194,12 +194,12 @@ export function SimulatorSkeleton() {
       </div>
 
       {/* Simulator canvas skeleton */}
-      <div className="bg-[var(--color-bg-card)]/60 border border-[var(--color-border)]/50 rounded-2xl h-[340px] flex items-center justify-center shimmer">
+      <div className="bg-[var(--color-bg-card)] border border-[var(--color-border)]/50 rounded-2xl h-[340px] flex items-center justify-center shimmer">
         <div className="w-5/6 h-20 rounded-full border-4 border-dashed border-[var(--color-text-muted)]/10 animate-spin" style={{ animationDuration: '6s' }} />
       </div>
 
       {/* Controls card skeleton */}
-      <div className="bg-[var(--color-bg-card)]/60 border border-[var(--color-border)]/50 p-6 rounded-2xl h-[160px] flex flex-col justify-between shimmer">
+      <div className="bg-[var(--color-bg-card)] border border-[var(--color-border)]/50 p-6 rounded-2xl h-[160px] flex flex-col justify-between shimmer">
         <div className="flex justify-between items-center">
           <ShimmerBlock className="h-5 w-36 bg-[var(--color-text-muted)]/25" />
           <ShimmerBlock className="h-4 w-20 bg-[var(--color-text-muted)]/15" />

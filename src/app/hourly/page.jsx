@@ -774,7 +774,7 @@ export default function HourlyPage() {
                                 
                                 return (
                                   <td key={`achieve-${idx}`} className={cn(
-                                    "px-3 py-3.5 text-base text-center border-r border-[var(--color-border)] last:border-r-0 font-bold bg-[var(--color-bg-card)]/30",
+                                    "px-3 py-3.5 text-base text-center border-r border-[var(--color-border)] last:border-r-0 font-bold bg-[var(--color-bg-card)]",
                                     isZero ? "text-[var(--color-text-muted)] opacity-50" : isGood ? "text-blue-500 dark:text-blue-400" : "text-rose-500 dark:text-rose-400"
                                   )}>
                                     {isZero ? '-' : `${percent}%`}
@@ -835,7 +835,7 @@ export default function HourlyPage() {
                                         {act}
                                       </td>
                                       <td className={cn(
-                                        "px-2 py-2.5 text-sm font-bold bg-[var(--color-bg-card)]/30",
+                                        "px-2 py-2.5 text-sm font-bold bg-[var(--color-bg-card)]",
                                         isZero ? "text-[var(--color-text-muted)] opacity-50" : isGoodAchieve ? "text-blue-500 dark:text-blue-400" : "text-rose-500 dark:text-rose-400"
                                       )}>
                                         {isZero ? '-' : `${percent}%`}
@@ -974,7 +974,7 @@ export default function HourlyPage() {
                                               )}
                                             </td>
                                             <td className={cn(
-                                              "px-2 py-2 text-sm font-bold bg-[var(--color-bg-card)]/30",
+                                              "px-2 py-2 text-sm font-bold bg-[var(--color-bg-card)]",
                                               !hasActual ? "text-[var(--color-text-muted)] opacity-50" : isZero ? "text-[var(--color-text-muted)] opacity-50" : isGoodAchieve ? "text-blue-500 dark:text-blue-400" : "text-rose-500 dark:text-rose-400"
                                             )}>
                                               {!hasActual ? '-' : isZero ? '-' : `${percent}%`}
@@ -987,7 +987,7 @@ export default function HourlyPage() {
                                 </div>
 
                                 {/* Line Total Summary Footer */}
-                                <div className="bg-[var(--color-surface)]/30 p-3 border-t border-[var(--color-border)] flex items-center justify-between">
+                                <div className="bg-[var(--color-surface)] p-3 border-t border-[var(--color-border)] flex items-center justify-between">
                                   <div>
                                     <p className="text-[8.5px] text-[var(--color-text-muted)] uppercase font-bold tracking-widest leading-tight">
                                       Achievement
@@ -1152,7 +1152,7 @@ export default function HourlyPage() {
 
                                       return (
                                         <tr key={`line-row-${timeIdx}`} className="border-b border-[var(--color-border)] last:border-b-0 hover:bg-[var(--color-surface)]/50 transition-colors">
-                                          <td className="px-2 py-2 text-xs font-bold text-[var(--color-text-main)] bg-[var(--color-surface)]/30 border-r border-[var(--color-border)]">
+                                          <td className="px-2 py-2 text-xs font-bold text-[var(--color-text-main)] bg-[var(--color-surface)] border-r border-[var(--color-border)]">
                                             {serialTime}
                                           </td>
                                           <td className="px-2 py-2 text-xs font-semibold text-[var(--color-text-secondary)] border-r border-[var(--color-border)] opacity-80">
@@ -1179,7 +1179,7 @@ export default function HourlyPage() {
                                             )}
                                           </td>
                                           <td className={cn(
-                                            "px-2 py-2 text-sm font-bold bg-[var(--color-bg-card)]/30",
+                                            "px-2 py-2 text-sm font-bold bg-[var(--color-bg-card)]",
                                             !hasActual ? "text-[var(--color-text-muted)] opacity-50" : isZero ? "text-[var(--color-text-muted)] opacity-50" : isGoodAchieve ? "text-blue-500 dark:text-blue-400" : "text-rose-500 dark:text-rose-400"
                                           )}>
                                             {!hasActual ? '-' : isZero ? '-' : `${percent}%`}
@@ -1192,7 +1192,7 @@ export default function HourlyPage() {
                               </div>
                               
                               {/* Total Actual Footer */}
-                              <div className="bg-[var(--color-surface)]/30 p-3 border-t border-[var(--color-border)] flex items-center justify-between mt-auto">
+                              <div className="bg-[var(--color-surface)] p-3 border-t border-[var(--color-border)] flex items-center justify-between mt-auto">
                                 <div>
                                   <p className="text-[8.5px] text-[var(--color-text-muted)] uppercase font-bold tracking-widest leading-tight">
                                     Achievement

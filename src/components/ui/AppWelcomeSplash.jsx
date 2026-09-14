@@ -5,15 +5,15 @@ import { usePathname } from 'next/navigation';
 
 export function AppWelcomeSplash() {
   const pathname = usePathname();
+
+  // Never mount or render splash on the login screen
+  if (pathname === '/login') return null;
+
   const [visible, setVisible] = useState(true);
   const [fading, setFading] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    if (pathname === '/login') {
-      setVisible(false);
-      return;
-    }
     setMounted(true);
 
     // Check if splash was already shown in this specific active session

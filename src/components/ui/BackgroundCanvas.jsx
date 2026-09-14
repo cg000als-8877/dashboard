@@ -53,6 +53,7 @@ export const BackgroundCanvas = memo(function BackgroundCanvas() {
   const showOrbs = !isAbstract && !isEmberTheme && bgEffect === 'aurora';
   const showSpotlight = !isAbstract && bgEffect === 'spotlight';
   const showGrain = bgEffect === 'grain';
+  const showGrid = bgEffect === 'grid';
 
   return (
     <div
@@ -211,6 +212,43 @@ export const BackgroundCanvas = memo(function BackgroundCanvas() {
             <rect width="100%" height="100%" filter="url(#grain-noise)" />
           </svg>
         </>
+      )}
+
+      {/* 5. Architectural Blueprint Grid Layer */}
+      {showGrid && (
+        <div className="absolute inset-0 overflow-hidden animate-in fade-in duration-700">
+          {/* Ambient theme aura glow behind grid */}
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background: `radial-gradient(ellipse 80% 60% at 50% 40%, var(--color-primary-glow) 0%, transparent 70%)`,
+              opacity: isDark ? 0.40 : 0.22,
+            }}
+          />
+
+          {/* Precision Blueprint Grid */}
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              backgroundColor: `color-mix(in srgb, var(--color-primary) ${isDark ? '3.5%' : '2%'}, transparent)`,
+              opacity: 0.8,
+              backgroundImage: `
+                linear-gradient(color-mix(in srgb, var(--color-primary) ${isDark ? '30%' : '25%'}, transparent) 2px, transparent 2px),
+                linear-gradient(90deg, color-mix(in srgb, var(--color-primary) ${isDark ? '30%' : '25%'}, transparent) 2px, transparent 2px),
+                linear-gradient(color-mix(in srgb, var(--color-primary) ${isDark ? '14%' : '11%'}, transparent) 1px, transparent 1px),
+                linear-gradient(90deg, color-mix(in srgb, var(--color-primary) ${isDark ? '14%' : '11%'}, transparent) 1px, color-mix(in srgb, var(--color-primary) ${isDark ? '3.5%' : '2%'}, transparent) 1px)
+              `,
+              backgroundSize: '50px 50px, 50px 50px, 10px 10px, 10px 10px',
+              backgroundPosition: '-2px -2px, -2px -2px, -1px -1px, -1px -1px',
+              maskImage: 'radial-gradient(ellipse at center, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0) 75%)',
+              WebkitMaskImage: 'radial-gradient(ellipse at center, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0) 75%)',
+              maskSize: '100% 100%',
+              WebkitMaskSize: '100% 100%',
+              maskRepeat: 'no-repeat',
+              WebkitMaskRepeat: 'no-repeat',
+            }}
+          />
+        </div>
       )}
 
       {/* Subtle top horizontal linear ambient sheen for refined depth */}

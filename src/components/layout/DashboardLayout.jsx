@@ -73,7 +73,7 @@ export default function DashboardLayout({ children }) {
 
       <div className="flex flex-col flex-1 overflow-hidden relative w-full z-10">
         {/* Mobile Top Header (Hidden on Desktop) */}
-        <header className="md:hidden fixed top-0 left-0 right-0 bg-[var(--color-bg-card)]/95 backdrop-blur-md z-50 flex flex-col border-b border-[var(--color-border)] shadow-sm">
+        <header className="md:hidden fixed top-0 left-0 right-0 bg-[var(--color-bg-card)] z-50 flex flex-col border-b border-[var(--color-border)] shadow-sm">
           {/* Marquee Ticker placed directly ABOVE Byzid Apparels TITLE on dashboard */}
           {isDashboard && <MobileHourlyTicker />}
 

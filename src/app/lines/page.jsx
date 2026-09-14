@@ -277,7 +277,7 @@ export default function ProductionLinesPage() {
 
       {/* ── 2. FACTORY FLOOR SUMMARY STRIP ───────────────────────────── */}
       {currentStats && (
-        <div className="relative overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-card)] p-4 sm:p-5 shadow-lg backdrop-blur-md">
+        <div className="relative overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-card)] p-4 sm:p-5 shadow-lg">
           <div className="absolute top-0 right-0 w-64 h-32 bg-[var(--color-primary)] opacity-5 rounded-full blur-3xl pointer-events-none" />
           
           <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
@@ -315,7 +315,7 @@ export default function ProductionLinesPage() {
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-4 w-full lg:w-auto flex-1 lg:max-w-3xl">
               
               {/* Total Factory Output */}
-              <div className="bg-[var(--color-surface)]/60 border border-[var(--color-border)]/50 rounded-xl p-2.5 sm:p-3 flex flex-col">
+              <div className="bg-[var(--color-surface)] border border-[var(--color-border)]/50 rounded-xl p-2.5 sm:p-3 flex flex-col">
                 <span className="text-[9px] sm:text-[10px] uppercase font-bold tracking-wider text-[var(--color-text-muted)]">
                   Total Output
                 </span>
@@ -326,7 +326,7 @@ export default function ProductionLinesPage() {
               </div>
 
               {/* Total Income */}
-              <div className="bg-[var(--color-surface)]/60 border border-[var(--color-border)]/50 rounded-xl p-2.5 sm:p-3 flex flex-col">
+              <div className="bg-[var(--color-surface)] border border-[var(--color-border)]/50 rounded-xl p-2.5 sm:p-3 flex flex-col">
                 <span className="text-[9px] sm:text-[10px] uppercase font-bold tracking-wider text-[var(--color-text-muted)]">
                   Total Income
                 </span>
@@ -336,7 +336,7 @@ export default function ProductionLinesPage() {
               </div>
 
               {/* Total Cost */}
-              <div className="bg-[var(--color-surface)]/60 border border-[var(--color-border)]/50 rounded-xl p-2.5 sm:p-3 flex flex-col">
+              <div className="bg-[var(--color-surface)] border border-[var(--color-border)]/50 rounded-xl p-2.5 sm:p-3 flex flex-col">
                 <span className="text-[9px] sm:text-[10px] uppercase font-bold tracking-wider text-[var(--color-text-muted)]">
                   Total Cost
                 </span>
@@ -372,7 +372,7 @@ export default function ProductionLinesPage() {
 
       {/* ── 3. COMPACT EXECUTIVE SPREADSHEET TABLE (When Density === 'compact') ───────────────────── */}
       {density === 'compact' ? (
-        <div className="overflow-x-auto rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-card)] shadow-lg backdrop-blur-md">
+        <div className="overflow-x-auto rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-card)] shadow-lg">
           <table className="w-full text-left text-xs">
             <thead className="bg-[var(--color-surface)] border-b border-[var(--color-border)] text-[9.5px] uppercase font-bold tracking-wider text-[var(--color-text-muted)] select-none">
               <tr>
@@ -694,7 +694,7 @@ export default function ProductionLinesPage() {
                       {/* ── 6. RECENT 7-DAY OUTPUT SPARKLINE (Only in Detailed Mode) ────────────────────── */}
                       {density === 'detailed' && (
                         lineHistory.length > 0 ? (
-                          <div className="bg-[var(--color-surface)]/50 border border-[var(--color-border)]/60 rounded-xl p-3">
+                          <div className="bg-[var(--color-surface)] border border-[var(--color-border)]/60 rounded-xl p-3">
                             <div className="flex items-center justify-between mb-2">
                               <span className="text-[9.5px] font-bold uppercase tracking-wider text-[var(--color-text-muted)] flex items-center gap-1">
                                 <BarChart2 size={12} className="text-[var(--color-primary)]" />
@@ -706,7 +706,7 @@ export default function ProductionLinesPage() {
                             </div>
 
                             {/* Mini Bar Sparkline */}
-                            <div className="flex items-end gap-1.5 h-12 pt-1 pb-0.5 px-1 bg-[var(--color-bg-card)]/60 rounded-lg border border-[var(--color-border)]/40">
+                            <div className="flex items-end gap-1.5 h-12 pt-1 pb-0.5 px-1 bg-[var(--color-bg-card)] rounded-lg border border-[var(--color-border)]/40">
                               {lineHistory.map((day, idx) => {
                                 const heightPct = Math.max(Math.round(((day.production_qty || 0) / maxSparklineQty) * 100), 12);
                                 const dayLabel = format(parseISO(day.date), 'dd MMM');
