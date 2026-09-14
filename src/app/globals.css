@@ -65,6 +65,35 @@ select option {
   animation: shimmer 1.6s infinite linear;
 }
 
+@keyframes drawJaggedArrow {
+  0% {
+    stroke-dashoffset: 280;
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}
+
+@keyframes popArrowHead {
+  0% {
+    opacity: 0;
+    transform: scale(0.2);
+  }
+  70% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 html[data-mode="light"] .shimmer {
   background: linear-gradient(
     90deg,

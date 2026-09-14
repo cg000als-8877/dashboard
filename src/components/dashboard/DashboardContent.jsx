@@ -95,12 +95,12 @@ function formatDateRangeInfo(startDateStr, endDateStr, overrideMonth, overrideYe
   }
 }
 
-function DashboardDateRange({ dateInfo, className = "" }) {
+function DashboardDateRange({ dateInfo, workingDays = null, className = "" }) {
   if (!dateInfo) return null;
   const { isRange, startDay, endDay, startMonthShort, endMonthShort, year } = dateInfo;
 
   return (
-    <span className={cn("inline-flex items-center justify-center whitespace-nowrap text-[11px] sm:text-[12px] md:text-[13px] font-medium tracking-wide text-[var(--color-text-muted)] leading-tight uppercase", className)}>
+    <span className={cn("inline-flex items-center justify-center flex-wrap whitespace-nowrap text-[11px] sm:text-[12px] md:text-[13px] font-medium tracking-wide text-[var(--color-text-muted)] leading-tight uppercase", className)}>
       <span>FROM&nbsp;</span>
       {isRange ? (
         <>
@@ -111,7 +111,73 @@ function DashboardDateRange({ dateInfo, className = "" }) {
       ) : (
         <span className="font-extrabold text-[var(--color-primary)] tracking-wide">{startDay} {endMonthShort}, {year}</span>
       )}
+      {workingDays !== null && workingDays !== undefined && (
+        <span className="font-bold text-[var(--color-text-secondary)] ml-1.5 tracking-wider">
+          ({workingDays} {workingDays === 1 ? 'DAY' : 'DAYS'})
+        </span>
+      )}
     </span>
+  );
+}
+
+function AnimatedTrendCurve({ isProfit = false, className = "" }) {
+  return (
+    <div className={cn("relative flex items-center justify-center shrink-0 select-none", className)}>
+      <svg
+        viewBox="0 0 128 100"
+        className="w-full h-full overflow-visible drop-shadow-[0_2px_10px_rgba(239,68,68,0.35)]"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <defs>
+          <linearGradient id={isProfit ? "profitJaggedGrad" : "lossJaggedGrad"} x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor={isProfit ? "#34D399" : "#FCA5A5"} />
+            <stop offset="100%" stopColor={isProfit ? "#059669" : "#DC2626"} />
+          </linearGradient>
+          <filter id={isProfit ? "glowProfit" : "glowLoss"} x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="2" stdDeviation="2.5" floodColor={isProfit ? "rgba(16,185,129,0.5)" : "rgba(239,68,68,0.5)"} />
+          </filter>
+        </defs>
+
+        {/* Smoothly Rounded Downward Trend Curve / Upward Trend Curve */}
+        <path
+          d={
+            isProfit
+              ? "M 6 92 C 12 76, 16 56, 22 56 C 28 56, 30 72, 36 72 C 42 72, 44 42, 50 42 C 58 42, 62 68, 68 68 C 72 68, 74 52, 77 52 C 79 52, 80 58, 83 58 C 86 58, 88 36, 92 36 C 95 36, 97 48, 100 48 C 104 48, 106 30, 110 24"
+              : "M 6 8 C 12 24, 16 44, 22 44 C 28 44, 30 28, 36 28 C 42 28, 44 58, 50 58 C 58 58, 62 32, 68 32 C 72 32, 74 48, 77 48 C 79 48, 80 42, 83 42 C 86 42, 88 64, 92 64 C 95 64, 97 52, 100 52 C 104 52, 106 70, 110 76"
+          }
+          stroke={`url(#${isProfit ? "profitJaggedGrad" : "lossJaggedGrad"})`}
+          strokeWidth="5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          filter={`url(#${isProfit ? "glowProfit" : "glowLoss"})`}
+          style={{
+            strokeDasharray: 280,
+            strokeDashoffset: 280,
+            animation: "drawJaggedArrow 1.1s cubic-bezier(0.2, 0.8, 0.25, 1) 0.05s forwards"
+          }}
+        />
+
+        {/* Softly Rounded Triangular Arrowhead */}
+        <polygon
+          points={
+            isProfit
+              ? "124,6 116,30 96,16"
+              : "124,94 96,84 116,70"
+          }
+          fill={isProfit ? "#10B981" : "#EF4444"}
+          stroke={isProfit ? "#10B981" : "#EF4444"}
+          strokeWidth="2"
+          strokeLinejoin="round"
+          strokeLinecap="round"
+          style={{
+            transformOrigin: isProfit ? "108px 24px" : "108px 76px",
+            opacity: 0,
+            animation: "popArrowHead 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) 0.75s forwards"
+          }}
+        />
+      </svg>
+    </div>
   );
 }
 
@@ -474,9 +540,13 @@ export function DashboardContent({ month, isArchive = false }) {
               activeDateInfo = formatDateRangeInfo(startDate, endDate, dateComponents?.month, dateComponents?.year);
             }
 
+            const isAugust = !isArchive && selectedCardMonth === 'august' && !!augustStats;
+            const isJuly = !isArchive && selectedCardMonth === 'july' && !!julyStats;
+            const currentStatsForDate = isAugust ? augustStats : (isJuly ? julyStats : stats);
+
             return (
               <div className="flex justify-center items-center w-full mt-0.5 mb-2.5 sm:mb-3.5 relative z-10">
-                <DashboardDateRange dateInfo={activeDateInfo} />
+                <DashboardDateRange dateInfo={activeDateInfo} workingDays={currentStatsForDate?.workingDays} />
               </div>
             );
           })()}
@@ -487,88 +557,204 @@ export function DashboardContent({ month, isArchive = false }) {
             const isJuly = !isArchive && selectedCardMonth === 'july' && !!julyStats;
             const displayStats = isAugust ? augustStats : (isJuly ? julyStats : stats);
 
+            const costComp = isArchive ? null : (
+              isAugust 
+                ? { highlight: "August Total", label: "full month actual spending", trend: "neutral", isPositive: true }
+                : (isJuly 
+                    ? { highlight: "July Total", label: "full month actual spending", trend: "neutral", isPositive: true }
+                    : costComparison
+                  )
+            );
+
+            const incomeComp = isArchive ? null : (
+              isAugust 
+                ? { highlight: "August Total", label: "full month earned revenue", trend: "neutral", isPositive: true }
+                : (isJuly 
+                    ? { highlight: "July Total", label: "full month earned revenue", trend: "neutral", isPositive: true }
+                    : incomeComparison
+                  )
+            );
+
+            const netComp = isArchive ? null : (
+              isAugust 
+                ? { highlight: "August Balance", label: displayStats.netProfit >= 0 ? "net monthly profit" : "net monthly loss", trend: "neutral", isPositive: displayStats.netProfit >= 0 }
+                : (isJuly 
+                    ? { highlight: "July Balance", label: displayStats.netProfit >= 0 ? "net monthly profit" : "net monthly loss", trend: "neutral", isPositive: displayStats.netProfit >= 0 }
+                    : netComparison
+                  )
+            );
+
+            const avgDailyComp = isArchive ? null : (
+              isAugust 
+                ? { highlight: "August Pace", label: "overall daily average rate", trend: "neutral", isPositive: displayStats.averageDailyProfit >= 0 }
+                : (isJuly 
+                    ? { highlight: "July Pace", label: "overall daily average rate", trend: "neutral", isPositive: displayStats.averageDailyProfit >= 0 }
+                    : avgDailyComparison
+                  )
+            );
+
+            const actLinesCount = displayStats.activeLinesCount !== undefined ? displayStats.activeLinesCount : 4;
+            const totLinesCount = displayStats.totalLinesCount || totalLines || 4;
+            const isAllLines = actLinesCount === totLinesCount;
+
+            const linesComp = isArchive ? null : (() => {
+              return {
+                highlight: isAllLines ? `All ${totLinesCount} Lines` : `${actLinesCount} of ${totLinesCount} Lines`,
+                label: isAugust || isJuly ? "active manufacturing operations" : "active & producing",
+                trend: "neutral",
+                isPositive: true
+              };
+            })();
+
+            const daysComp = isArchive ? null : (
+              isAugust 
+                ? { highlight: `${displayStats.workingDays} Days`, label: "total active factory days in August", trend: "neutral", isPositive: true }
+                : (isJuly 
+                    ? { highlight: `${displayStats.workingDays} Days`, label: "total active factory days in July", trend: "neutral", isPositive: true }
+                    : daysComparison
+                  )
+            );
+
+            const isNetProfit = displayStats.netProfit >= 0;
+
             return (
-              <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-2.5 md:gap-4 relative z-10 px-0.5 sm:px-0">
-                <MetricCard 
-                  title="Total Cost" 
-                  value={<AnimatedNumber value={Math.round(displayStats.totalCost)} prefix="BDT " />} 
-                  color="default"
-                  comparison={isArchive ? null : (
-                    isAugust 
-                      ? { highlight: "August Total", label: "full month actual spending", trend: "neutral", isPositive: true }
-                      : (isJuly 
-                          ? { highlight: "July Total", label: "full month actual spending", trend: "neutral", isPositive: true }
-                          : costComparison
-                        )
-                  )}
-                />
-                <MetricCard 
-                  title="Total Income" 
-                  value={<AnimatedNumber value={Math.round(displayStats.totalIncome)} prefix="BDT " />}
-                  color="primary"
-                  comparison={isArchive ? null : (
-                    isAugust 
-                      ? { highlight: "August Total", label: "full month earned revenue", trend: "neutral", isPositive: true }
-                      : (isJuly 
-                          ? { highlight: "July Total", label: "full month earned revenue", trend: "neutral", isPositive: true }
-                          : incomeComparison
-                        )
-                  )}
-                />
-                <MetricCard 
-                  title={displayStats.netProfit >= 0 ? "Net Profit" : "Net Loss"} 
-                  value={<AnimatedNumber value={Math.abs(Math.round(displayStats.netProfit))} prefix={displayStats.netProfit >= 0 ? "+BDT " : "BDT -"} />}
-                  color={displayStats.netProfit >= 0 ? 'success' : 'danger'}
-                  comparison={isArchive ? null : (
-                    isAugust 
-                      ? { highlight: "August Balance", label: displayStats.netProfit >= 0 ? "net monthly profit" : "net monthly loss", trend: "neutral", isPositive: displayStats.netProfit >= 0 }
-                      : (isJuly 
-                          ? { highlight: "July Balance", label: displayStats.netProfit >= 0 ? "net monthly profit" : "net monthly loss", trend: "neutral", isPositive: displayStats.netProfit >= 0 }
-                          : netComparison
-                        )
-                  )}
-                />
-                <MetricCard 
-                  title={displayStats.averageDailyProfit >= 0 ? "Avg Daily Profit" : "Avg Daily Loss"} 
-                  value={<AnimatedNumber value={Math.abs(Math.round(displayStats.averageDailyProfit))} prefix={displayStats.averageDailyProfit >= 0 ? "+" : "-"} suffix=" / day" />}
-                  color={displayStats.averageDailyProfit >= 0 ? 'success' : 'danger'}
-                  comparison={isArchive ? null : (
-                    isAugust 
-                      ? { highlight: "August Pace", label: "overall daily average rate", trend: "neutral", isPositive: displayStats.averageDailyProfit >= 0 }
-                      : (isJuly 
-                          ? { highlight: "July Pace", label: "overall daily average rate", trend: "neutral", isPositive: displayStats.averageDailyProfit >= 0 }
-                          : avgDailyComparison
-                        )
-                  )}
-                />
-                <MetricCard 
-                  title="Production Lines" 
-                  value={<AnimatedNumber value={displayStats.activeLinesCount !== undefined ? displayStats.activeLinesCount : 4} suffix=" Active" />} 
-                  comparison={isArchive ? null : (() => {
-                    const actCount = displayStats.activeLinesCount !== undefined ? displayStats.activeLinesCount : 4;
-                    const totCount = displayStats.totalLinesCount || totalLines || 4;
-                    const isAll = actCount === totCount;
-                    return {
-                      highlight: isAll ? `All ${totCount} Lines` : `${actCount} of ${totCount} Lines`,
-                      label: isAugust || isJuly ? "active manufacturing operations" : "active & producing",
-                      trend: "neutral",
-                      isPositive: true
-                    };
-                  })()}
-                />
-                <MetricCard 
-                  title="Working Days" 
-                  value={<AnimatedNumber value={displayStats.workingDays} suffix=" Days" />} 
-                  comparison={isArchive ? null : (
-                    isAugust 
-                      ? { highlight: `${displayStats.workingDays} Days`, label: "total active factory days in August", trend: "neutral", isPositive: true }
-                      : (isJuly 
-                          ? { highlight: `${displayStats.workingDays} Days`, label: "total active factory days in July", trend: "neutral", isPositive: true }
-                          : daysComparison
-                        )
-                  )}
-                />
-              </div>
+              <>
+                {/* ── MOBILE VIEW ONLY: 1 Big Top Highlighted Card + 2x2 Grid (4 Cards) ── */}
+                <div className="md:hidden flex flex-col gap-2 relative z-10 px-0.5">
+                  
+                  {/* 1. TOP HIGHLIGHTED NET LOSS / PROFIT CARD */}
+                  <Card 
+                    hover 
+                    data-color={isNetProfit ? 'success' : 'danger'}
+                    className="p-3.5 sm:p-4 rounded-2xl border border-[var(--color-border)] transition-all flex flex-col justify-between shadow-sm overflow-hidden"
+                    style={{
+                      backgroundColor: 'var(--color-bg-card)',
+                      backgroundImage: isNetProfit 
+                        ? 'linear-gradient(135deg, var(--color-bg-card) 55%, rgba(16, 185, 129, 0.12) 100%)' 
+                        : 'linear-gradient(135deg, var(--color-bg-card) 55%, rgba(239, 68, 68, 0.12) 100%)'
+                    }}
+                  >
+                    <div className="flex items-center justify-between gap-3">
+                      {/* Left Side: Title + Bigger Number with reduced spacing */}
+                      <div className="min-w-0 flex-1">
+                        <h3 className="text-[11px] sm:text-xs font-bold uppercase tracking-widest text-[var(--color-text-secondary)] leading-none">
+                          {isNetProfit ? "Net Profit" : "Net Loss"}
+                        </h3>
+
+                        <p className={cn(
+                          "font-black tracking-tight text-[28px] sm:text-[34px] leading-tight mt-1 mb-0.5 [filter:var(--shadow-text)] truncate",
+                          isNetProfit ? "text-[var(--color-success)]" : "text-[var(--color-danger)]"
+                        )}>
+                          <AnimatedNumber 
+                            value={Math.abs(Math.round(displayStats.netProfit))} 
+                            prefix={isNetProfit ? "+BDT " : "BDT -"} 
+                          />
+                        </p>
+                      </div>
+
+                      {/* Right Side: Larger Animating Trend Curve vertically aligned in middle */}
+                      <div className="shrink-0 flex items-center justify-center pl-1">
+                        <AnimatedTrendCurve isProfit={isNetProfit} className="w-20 sm:w-24 h-14 sm:h-16" />
+                      </div>
+                    </div>
+
+                    {/* Comparison Note across bottom */}
+                    {netComp && (
+                      <div className="flex flex-wrap items-baseline gap-x-1 gap-y-0.5 mt-2 pt-1.5 border-t border-[var(--color-border)]/40 text-[10.5px] leading-tight italic">
+                        <span className={cn(
+                          "font-bold inline-flex items-center gap-0.5 shrink-0 whitespace-nowrap",
+                          netComp.trend === 'neutral'
+                            ? "text-[var(--color-primary)]"
+                            : netComp.isPositive
+                              ? "text-[var(--color-success-text)]"
+                              : "text-[var(--color-danger-text)]"
+                        )}>
+                          {netComp.trend === 'up' && '▲ '}
+                          {netComp.trend === 'down' && '▼ '}
+                          {netComp.trend === 'neutral' && '• '}
+                          {netComp.highlight}
+                        </span>
+                        <span className="text-[var(--color-text-secondary)] font-medium break-words">
+                          {netComp.label}
+                        </span>
+                      </div>
+                    )}
+                  </Card>
+
+                  {/* 2. 2-COLUMN 2-ROW GRID (4 Cards) */}
+                  <div className="grid grid-cols-2 gap-2">
+                    {/* Row 1, Col 1: Total Cost */}
+                    <MetricCard 
+                      title="Total Cost" 
+                      value={<AnimatedNumber value={Math.round(displayStats.totalCost)} prefix="BDT " />} 
+                      color="default"
+                      comparison={costComp}
+                    />
+
+                    {/* Row 1, Col 2: Total Income */}
+                    <MetricCard 
+                      title="Total Income" 
+                      value={<AnimatedNumber value={Math.round(displayStats.totalIncome)} prefix="BDT " />}
+                      color="primary"
+                      comparison={incomeComp}
+                    />
+
+                    {/* Row 2, Col 1: Avg Daily Loss / Profit */}
+                    <MetricCard 
+                      title={displayStats.averageDailyProfit >= 0 ? "Avg Daily Profit" : "Avg Daily Loss"} 
+                      value={<AnimatedNumber value={Math.abs(Math.round(displayStats.averageDailyProfit))} prefix={displayStats.averageDailyProfit >= 0 ? "+" : "-"} suffix=" / day" />}
+                      color={displayStats.averageDailyProfit >= 0 ? 'success' : 'danger'}
+                      comparison={avgDailyComp}
+                    />
+
+                    {/* Row 2, Col 2: Production Lines */}
+                    <MetricCard 
+                      title="Production Lines" 
+                      value={<AnimatedNumber value={actLinesCount} suffix=" Active" />}
+                      color="default"
+                      comparison={linesComp}
+                    />
+                  </div>
+                </div>
+
+                {/* ── DESKTOP VIEW: Full 6-Card Grid ── */}
+                <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-2.5 md:gap-4 relative z-10 px-0">
+                  <MetricCard 
+                    title="Total Cost" 
+                    value={<AnimatedNumber value={Math.round(displayStats.totalCost)} prefix="BDT " />} 
+                    color="default"
+                    comparison={costComp}
+                  />
+                  <MetricCard 
+                    title="Total Income" 
+                    value={<AnimatedNumber value={Math.round(displayStats.totalIncome)} prefix="BDT " />}
+                    color="primary"
+                    comparison={incomeComp}
+                  />
+                  <MetricCard 
+                    title={displayStats.netProfit >= 0 ? "Net Profit" : "Net Loss"} 
+                    value={<AnimatedNumber value={Math.abs(Math.round(displayStats.netProfit))} prefix={displayStats.netProfit >= 0 ? "+BDT " : "BDT -"} />}
+                    color={displayStats.netProfit >= 0 ? 'success' : 'danger'}
+                    comparison={netComp}
+                  />
+                  <MetricCard 
+                    title={displayStats.averageDailyProfit >= 0 ? "Avg Daily Profit" : "Avg Daily Loss"} 
+                    value={<AnimatedNumber value={Math.abs(Math.round(displayStats.averageDailyProfit))} prefix={displayStats.averageDailyProfit >= 0 ? "+" : "-"} suffix=" / day" />}
+                    color={displayStats.averageDailyProfit >= 0 ? 'success' : 'danger'}
+                    comparison={avgDailyComp}
+                  />
+                  <MetricCard 
+                    title="Production Lines" 
+                    value={<AnimatedNumber value={actLinesCount} suffix=" Active" />} 
+                    comparison={linesComp}
+                  />
+                  <MetricCard 
+                    title="Working Days" 
+                    value={<AnimatedNumber value={displayStats.workingDays} suffix=" Days" />} 
+                    comparison={daysComp}
+                  />
+                </div>
+              </>
             );
           })()}
         </div>

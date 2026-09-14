@@ -25,6 +25,7 @@ export const BG_EFFECTS = [
   { id: 'spotlight', name: 'Interactive Spotlight', tag: 'Spotlight', desc: 'Mouse-following radiant halo & ambient pulse' },
   { id: 'grain', name: 'Velvet Frosted Grain', tag: 'Velvet', desc: 'Deep multi-stop gradient with fine grain texture' },
   { id: 'grid', name: 'Grid', tag: 'Grid', desc: 'Precision blueprint grid with radial aura' },
+  { id: 'honeycomb', name: 'Honeycomb', tag: 'Hex', desc: 'Hexagonal geometric matrix with radial aura' },
   { id: 'solid', name: 'Minimal Solid', tag: 'Clean', desc: 'Classic clean solid background' },
 ];
 
