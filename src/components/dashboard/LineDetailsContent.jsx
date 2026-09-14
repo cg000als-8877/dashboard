@@ -1,11 +1,15 @@
-"use client";
-
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, ChevronRight, ChevronDown, ChevronUp } from 'lucide-react';
+import { ArrowLeft, ChevronRight, ChevronDown, ChevronUp, TrendingUp, TrendingDown, Layers } from 'lucide-react';
 import { useKpiData } from '@/utils/useKpiData';
 import { useDensity } from '@/components/providers/DensityProvider';
 import { DensitySwitcher } from '@/components/ui/DensitySwitcher';
+
+function cn(...classes) {
+  return classes.filter(Boolean).join(' ');
+}
+
+
 
 export function LineDetailsContent({ id, month, backUrl, isEmbed = false }) {
   const { dailyTrends, lines, rawEngine, loading, error } = useKpiData(month);
@@ -220,43 +224,56 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false }) {
               <p className="text-base font-bold text-[var(--color-text-main)] leading-tight">{dateRange}</p>
             </div>
 
-            {/* 2. Item (Bento Hero Tile on Mobile: spans 2 columns) */}
-            <div className={`col-span-2 md:col-span-1 bg-[var(--color-bg-card)] md:bg-[var(--color-surface)] ${summaryCellPadding} rounded-xl md:rounded-2xl border border-[var(--color-border)] shadow-sm md:shadow-inner transition-transform hover:-translate-y-0.5 duration-200 flex items-center justify-between md:block`}>
+            {/* 2. Net Profit / Net Loss (Bento Hero Tile on Mobile: spans 2 columns, order-first on mobile, order-last on desktop) */}
+            <div className={`col-span-2 md:col-span-1 order-first md:order-last bg-[var(--color-bg-card)] md:bg-[var(--color-surface)] ${summaryCellPadding} rounded-xl md:rounded-2xl border shadow-sm md:shadow-inner transition-transform hover:-translate-y-0.5 duration-200 flex items-center justify-between md:block ${
+              parseFloat(totalNetProfitLoss) >= 0 
+                ? 'border-emerald-500/30 md:border-emerald-500/20 bg-gradient-to-r md:bg-gradient-to-b from-emerald-500/10 via-[var(--color-bg-card)] to-transparent' 
+                : 'border-rose-500/30 md:border-rose-500/20 bg-gradient-to-r md:bg-gradient-to-b from-rose-500/10 via-[var(--color-bg-card)] to-transparent'
+            }`}>
               <div>
-                <p className="text-[9px] md:text-[10px] text-[var(--color-text-muted)] font-medium uppercase tracking-widest mb-0.5 md:mb-1">Item</p>
-                <p className="text-xs md:text-base font-semibold md:font-bold text-[var(--color-primary)] leading-tight truncate">{itemName}</p>
+                <div className="flex items-center gap-1.5 mb-0.5 md:mb-1">
+                  {parseFloat(totalNetProfitLoss) >= 0 ? (
+                    <TrendingUp className="w-3.5 h-3.5 text-emerald-400" />
+                  ) : (
+                    <TrendingDown className="w-3.5 h-3.5 text-rose-400" />
+                  )}
+                  <p className="text-[9px] md:text-[10px] text-[var(--color-text-muted)] font-medium uppercase tracking-widest">
+                    {parseFloat(totalNetProfitLoss) >= 0 ? 'Net Profit' : 'Net Loss'}
+                  </p>
+                </div>
+                <p className={`text-base md:${summaryValSize} font-bold leading-tight [filter:var(--shadow-text)] ${
+                  parseFloat(totalNetProfitLoss) >= 0 ? 'text-[var(--color-success-text)]' : 'text-[var(--color-danger-text)]'
+                }`}>
+                  {Math.round(parseFloat(totalNetProfitLoss)).toLocaleString()}
+                </p>
               </div>
               <span className="md:hidden text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-[var(--color-surface)] border border-[var(--color-border)] text-[var(--color-text-secondary)]">
                 Line {safeId}
               </span>
             </div>
 
-            {/* 3. Production */}
+            {/* 3. Item (1 Column on Mobile, 1 Column on Desktop) */}
+            <div className={`col-span-1 bg-[var(--color-bg-card)] md:bg-[var(--color-surface)] ${summaryCellPadding} rounded-xl md:rounded-2xl border border-[var(--color-border)] shadow-sm md:shadow-inner transition-transform hover:-translate-y-0.5 duration-200`}>
+              <p className="text-[9px] md:text-[10px] text-[var(--color-text-muted)] font-medium uppercase tracking-widest mb-0.5 md:mb-1">Item</p>
+              <p className="text-xs md:text-base font-semibold md:font-bold text-[var(--color-primary)] leading-tight truncate">{itemName}</p>
+            </div>
+
+            {/* 4. Production */}
             <div className={`col-span-1 bg-[var(--color-bg-card)] md:bg-[var(--color-surface)] ${summaryCellPadding} rounded-xl md:rounded-2xl border border-[var(--color-border)] shadow-sm md:shadow-inner transition-transform hover:-translate-y-0.5 duration-200`}>
               <p className="text-[9px] md:text-[10px] text-[var(--color-text-muted)] font-medium uppercase tracking-widest mb-0.5 md:mb-1">Production</p>
               <p className={`${summaryValSize} font-semibold md:font-bold text-[var(--color-text-main)] leading-tight`}>{Math.round(parseFloat(totalProduction)).toLocaleString()}</p>
             </div>
 
-            {/* 4. Total Cost */}
+            {/* 5. Total Cost */}
             <div className={`col-span-1 bg-[var(--color-bg-card)] md:bg-[var(--color-surface)] ${summaryCellPadding} rounded-xl md:rounded-2xl border border-[var(--color-border)] shadow-sm md:shadow-inner transition-transform hover:-translate-y-0.5 duration-200`}>
               <p className="text-[9px] md:text-[10px] text-[var(--color-text-muted)] font-medium uppercase tracking-widest mb-0.5 md:mb-1">Total Cost</p>
               <p className={`${summaryValSize} font-semibold md:font-bold text-[var(--color-text-main)] leading-tight`}>{Math.round(parseFloat(totalCost)).toLocaleString()}</p>
             </div>
 
-            {/* 5. Total Income */}
+            {/* 6. Total Income */}
             <div className={`col-span-1 bg-[var(--color-bg-card)] md:bg-[var(--color-surface)] ${summaryCellPadding} rounded-xl md:rounded-2xl border border-[var(--color-border)] shadow-sm md:shadow-inner transition-transform hover:-translate-y-0.5 duration-200`}>
               <p className="text-[9px] md:text-[10px] text-[var(--color-text-muted)] font-medium uppercase tracking-widest mb-0.5 md:mb-1">Total Income</p>
               <p className={`${summaryValSize} font-semibold md:font-bold text-[var(--color-primary)] leading-tight`}>{Math.round(parseFloat(totalIncome)).toLocaleString()}</p>
-            </div>
-
-            {/* 6. Net Profit / Loss */}
-            <div className={`col-span-1 bg-[var(--color-bg-card)] md:bg-[var(--color-surface)] ${summaryCellPadding} rounded-xl md:rounded-2xl border shadow-sm md:shadow-inner transition-transform hover:-translate-y-0.5 duration-200 ${parseFloat(totalNetProfitLoss) >= 0 ? 'border-[rgba(16,185,129,0.25)] md:border-[rgba(16,185,129,0.15)] bg-gradient-to-b from-[rgba(16,185,129,0.08)] to-transparent' : 'border-[rgba(255,59,48,0.25)] md:border-[rgba(255,59,48,0.15)] bg-gradient-to-b from-[rgba(255,59,48,0.08)] to-transparent'}`}>
-              <p className="text-[9px] md:text-[10px] text-[var(--color-text-muted)] font-medium uppercase tracking-widest mb-0.5 md:mb-1">
-                {parseFloat(totalNetProfitLoss) >= 0 ? 'Net Profit' : 'Net Loss'}
-              </p>
-              <p className={`${summaryValSize} font-semibold md:font-bold leading-tight [filter:var(--shadow-text)] ${parseFloat(totalNetProfitLoss) >= 0 ? 'text-[var(--color-success-text)]' : 'text-[var(--color-danger-text)]'}`}>
-                {Math.round(parseFloat(totalNetProfitLoss)).toLocaleString()}
-              </p>
             </div>
 
           </div>
@@ -390,31 +407,66 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false }) {
           );
         })}
 
-        {/* Mobile Total Card */}
-        <div className="mt-3 bg-[var(--color-bg-card)] border border-[var(--color-primary)]/40 rounded-xl p-3 shadow-md">
-          <div className="flex items-center justify-between pb-2 border-b border-[var(--color-border)]/60">
-            <span className="text-[10.5px] font-black uppercase tracking-widest text-[var(--color-primary)]">Total Cumulative</span>
-            <span className={`px-2 py-0.5 rounded-md text-[11px] font-bold font-mono ${
-              totalNetProfitLoss >= 0 
-                ? 'bg-[var(--color-success-glow)] text-[var(--color-success-text)]' 
-                : 'bg-[var(--color-danger-glow)] text-[var(--color-danger-text)]'
-            }`}>
-              {totalNetProfitLoss >= 0 ? '+' : ''}{Math.round(totalNetProfitLoss).toLocaleString()}
+        {/* Mobile Total Card (Distinct Aggregate Summary Footer) */}
+        <div className="mt-4 mb-1 relative overflow-hidden rounded-2xl p-3.5 bg-gradient-to-b from-[var(--color-surface)]/90 via-[var(--color-bg-card)] to-[var(--color-surface)]/80 border-2 border-[var(--color-primary)]/40 shadow-lg select-none">
+          {/* Subtle Ambient Glow */}
+          <div className="absolute -top-10 -right-10 w-28 h-28 bg-[var(--color-primary)]/10 rounded-full blur-xl pointer-events-none" />
+
+          {/* Header Row: Title Badge & Active Days */}
+          <div className="flex items-center justify-between pb-2.5 mb-2.5 border-b border-[var(--color-border)]/80 relative z-10">
+            <div className="flex items-center gap-1.5">
+              <div className="p-1 rounded-md bg-[var(--color-primary)]/15 text-[var(--color-primary)]">
+                <Layers size={13} className="stroke-[2.5]" />
+              </div>
+              <span className="text-[10.5px] font-black uppercase tracking-widest text-[var(--color-primary)]">
+                Total Cumulative
+              </span>
+            </div>
+            <span className="text-[9.5px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[var(--color-surface)] border border-[var(--color-border)] text-[var(--color-text-secondary)]">
+              {filteredLineData.filter(d => d.status !== 'HOLIDAY').length} Days
             </span>
           </div>
-          <div className="grid grid-cols-3 gap-1.5 pt-2">
-            <div>
-              <p className="text-[8.5px] uppercase tracking-wider text-[var(--color-text-muted)] font-semibold">Total Output</p>
-              <p className="text-[11px] font-bold font-mono text-[var(--color-text-main)]">{Math.round(totalProduction).toLocaleString()}</p>
+
+          {/* 3 Metric Stat Tiles */}
+          <div className="grid grid-cols-3 gap-2 relative z-10">
+            <div className="bg-[var(--color-bg-card)] rounded-xl p-2 border border-[var(--color-border)]/80 shadow-xs text-center">
+              <p className="text-[8px] uppercase tracking-wider text-[var(--color-text-muted)] font-bold mb-0.5">Total Output</p>
+              <p className="text-[12px] font-black font-mono text-[var(--color-text-main)] leading-tight">
+                {Math.round(totalProduction).toLocaleString()}
+                <span className="text-[8px] font-normal text-[var(--color-text-muted)] block">pcs</span>
+              </p>
             </div>
-            <div>
-              <p className="text-[8.5px] uppercase tracking-wider text-[var(--color-text-muted)] font-semibold">Total Cost</p>
-              <p className="text-[11px] font-bold font-mono text-[var(--color-text-main)]">{Math.round(totalCost).toLocaleString()}</p>
+
+            <div className="bg-[var(--color-bg-card)] rounded-xl p-2 border border-[var(--color-border)]/80 shadow-xs text-center">
+              <p className="text-[8px] uppercase tracking-wider text-[var(--color-text-muted)] font-bold mb-0.5">Total Cost</p>
+              <p className="text-[12px] font-black font-mono text-[var(--color-text-main)] leading-tight">
+                {Math.round(totalCost).toLocaleString()}
+              </p>
             </div>
-            <div>
-              <p className="text-[8.5px] uppercase tracking-wider text-[var(--color-text-muted)] font-semibold">Total Income</p>
-              <p className="text-[11px] font-bold font-mono text-[var(--color-primary)]">{Math.round(totalIncome).toLocaleString()}</p>
+
+            <div className="bg-[var(--color-bg-card)] rounded-xl p-2 border border-[var(--color-border)]/80 shadow-xs text-center">
+              <p className="text-[8px] uppercase tracking-wider text-[var(--color-primary)] font-bold mb-0.5">Total Income</p>
+              <p className="text-[12px] font-black font-mono text-[var(--color-primary)] leading-tight">
+                {Math.round(totalIncome).toLocaleString()}
+              </p>
             </div>
+          </div>
+
+          {/* Dedicated Net Profit / Loss Banner */}
+          <div className={`mt-2.5 px-3 py-2 rounded-xl flex items-center justify-between border relative z-10 ${
+            totalNetProfitLoss >= 0 
+              ? 'bg-emerald-500/15 border-emerald-500/30 text-emerald-400' 
+              : 'bg-rose-500/15 border-rose-500/30 text-rose-400'
+          }`}>
+            <div className="flex items-center gap-1.5">
+              {totalNetProfitLoss >= 0 ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
+              <span className="text-[9.5px] font-extrabold uppercase tracking-wider">
+                {totalNetProfitLoss >= 0 ? 'Cumulative Profit' : 'Cumulative Loss'}
+              </span>
+            </div>
+            <span className="text-sm font-black font-mono tracking-tight [filter:var(--shadow-text)]">
+              {totalNetProfitLoss >= 0 ? '+' : ''}{Math.round(totalNetProfitLoss).toLocaleString()}
+            </span>
           </div>
         </div>
 

@@ -13,10 +13,6 @@ export const VISUAL_THEMES = [
   { id: 'ocean-dark', name: 'Ocean Dark', color: '#4F8CFF' },
   { id: 'terminal', name: 'Terminal (Night Shift)', color: '#22C55E' },
   { id: 'gen-z', name: 'Gen-Z Pink', color: '#FF007F' },
-  { id: 'amber-forge', name: 'Amber Forge', color: '#F59E0B' },
-  { id: 'cyber-violet', name: 'Cyber Violet', color: '#A855F7' },
-  { id: 'obsidian-vercel', name: 'Obsidian Vercel', color: '#ECEEF2' },
-  { id: 'electric-indigo', name: 'Electric Indigo', color: '#7C6CFF' },
 ];
 
 export const APPEARANCE_MODES = [

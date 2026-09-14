@@ -52,10 +52,8 @@ function getHourlyConfig(visualTheme, isLight) {
     'arcade-overdrive',
     'lime-ivory',
     'terminal',
-    'amber-forge',
     'verdant',
-    'jungle-nebula',
-    'obsidian-vercel'
+    'jungle-nebula'
   ];
 
   const useDarkIcon = darkIconThemes.includes(visualTheme);
@@ -70,7 +68,7 @@ function getHourlyConfig(visualTheme, isLight) {
     };
   }
 
-  // Saturated/deep primary themes (ember-tide, ocean-dark, gen-z, cyber-violet, electric-indigo) use white icon
+  // Saturated/deep primary themes (ember-tide, ocean-dark, gen-z) use white icon
   return {
     buttonClass: "border-2 border-[var(--color-bg-card)] bg-[var(--color-primary)] shadow-[0_6px_18px_var(--color-primary-glow)]",
     activeRing: "ring-2 ring-[var(--color-primary)] ring-offset-1 ring-offset-[var(--color-bg-card)] shadow-[0_0_22px_var(--color-primary-glow-hover)]",
