@@ -21,13 +21,19 @@ export function CostRecoveryJar({ percentage = 0, isProfitable = false, classNam
   const currentHeight = (fillLevel / 100) * maxFluidHeight;
   const liquidTopY = 138 - currentHeight;
 
+  // Solid high-visibility gradient colors
+  const liquidColorStart = isProfitable ? '#34D399' : '#38BDF8';
+  const liquidColorEnd = isProfitable ? '#059669' : '#2563EB';
+  const liquidBackStart = isProfitable ? '#6EE7B7' : '#60A5FA';
+  const liquidBackEnd = isProfitable ? '#10B981' : '#1D4ED8';
+
   return (
     <div className={cn("flex flex-col items-center justify-between w-full h-full relative select-none", className)}>
       {/* SVG Glass Jar Graphic */}
-      <div className="relative w-full max-w-[125px] aspect-[120/135] flex items-center justify-center my-auto">
+      <div className="relative w-full max-w-[130px] sm:max-w-[160px] md:max-w-[190px] xl:max-w-[220px] aspect-[120/135] flex items-center justify-center my-auto overflow-hidden">
         <svg
           viewBox="0 0 120 150"
-          className="w-full h-full overflow-visible drop-shadow-[0_8px_20px_rgba(0,0,0,0.12)]"
+          className="w-full h-full overflow-hidden drop-shadow-[0_8px_25px_rgba(0,0,0,0.25)]"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
@@ -37,16 +43,16 @@ export function CostRecoveryJar({ percentage = 0, isProfitable = false, classNam
               <path d="M38 36 H82 C82 36 84 50 94 58 C104 66 104 122 104 130 C104 138 96 142 86 142 H34 C24 142 16 138 16 130 C16 122 16 66 26 58 C36 50 38 36 38 36 Z" />
             </clipPath>
 
-            {/* Fluid Gradient */}
+            {/* Fluid Front Gradient */}
             <linearGradient id="jar-liquid-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor={isProfitable ? '#34D399' : 'var(--color-primary)'} stopOpacity="0.95" />
-              <stop offset="100%" stopColor={isProfitable ? '#059669' : 'var(--color-primary)'} stopOpacity="0.75" />
+              <stop offset="0%" stopColor={liquidColorStart} stopOpacity="0.95" />
+              <stop offset="100%" stopColor={liquidColorEnd} stopOpacity="0.85" />
             </linearGradient>
 
             {/* Back Wave Gradient for 3D depth */}
             <linearGradient id="jar-liquid-back" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor={isProfitable ? '#6EE7B7' : 'var(--color-primary)'} stopOpacity="0.45" />
-              <stop offset="100%" stopColor={isProfitable ? '#10B981' : 'var(--color-primary)'} stopOpacity="0.6" />
+              <stop offset="0%" stopColor={liquidBackStart} stopOpacity="0.5" />
+              <stop offset="100%" stopColor={liquidBackEnd} stopOpacity="0.65" />
             </linearGradient>
 
             {/* Glass Highlight Gradient */}
@@ -70,13 +76,13 @@ export function CostRecoveryJar({ percentage = 0, isProfitable = false, classNam
           <g clipPath="url(#jar-fluid-clip)">
             {/* Ambient liquid glow body */}
             <rect
-              x="10"
+              x="0"
               y={liquidTopY}
-              width="100"
-              height={currentHeight + 20}
+              width="120"
+              height={currentHeight + 30}
               fill="url(#jar-liquid-grad)"
               className="transition-all duration-1000 ease-out"
-              opacity="0.88"
+              opacity="0.92"
             />
 
             {/* Secondary Oscillating Back Wave */}
@@ -85,7 +91,7 @@ export function CostRecoveryJar({ percentage = 0, isProfitable = false, classNam
               style={{ transform: `translateY(${liquidTopY}px)` }}
             >
               <path
-                d="M 0 0 Q 30 -5 60 0 T 120 0 V 120 H 0 Z"
+                d="M -60 0 Q -30 -6 0 0 T 60 0 T 120 0 T 180 0 V 130 H -60 Z"
                 fill="url(#jar-liquid-back)"
                 className="animate-wave-slow"
               />
@@ -97,16 +103,16 @@ export function CostRecoveryJar({ percentage = 0, isProfitable = false, classNam
               style={{ transform: `translateY(${liquidTopY}px)` }}
             >
               <path
-                d="M 0 0 Q 30 6 60 0 T 120 0 V 120 H 0 Z"
+                d="M -60 0 Q -30 6 0 0 T 60 0 T 120 0 T 180 0 V 130 H -60 Z"
                 fill="url(#jar-liquid-grad)"
                 className="animate-wave-fast"
               />
               {/* Foam/crest highlight line */}
               <path
-                d="M 0 0 Q 30 6 60 0 T 120 0"
+                d="M -60 0 Q -30 6 0 0 T 60 0 T 120 0 T 180 0"
                 stroke="white"
-                strokeWidth="1.5"
-                strokeOpacity="0.45"
+                strokeWidth="2"
+                strokeOpacity="0.55"
                 fill="none"
                 className="animate-wave-fast"
               />
@@ -115,9 +121,9 @@ export function CostRecoveryJar({ percentage = 0, isProfitable = false, classNam
             {/* Rising micro bubbles inside fluid */}
             {fillLevel > 15 && (
               <>
-                <circle cx="45" cy={liquidTopY + currentHeight * 0.6} r="2" fill="white" opacity="0.35" className="animate-bubble-1" />
-                <circle cx="72" cy={liquidTopY + currentHeight * 0.4} r="1.5" fill="white" opacity="0.4" className="animate-bubble-2" />
-                <circle cx="58" cy={liquidTopY + currentHeight * 0.75} r="2.5" fill="white" opacity="0.3" className="animate-bubble-3" />
+                <circle cx="45" cy={liquidTopY + currentHeight * 0.6} r="2.5" fill="white" opacity="0.45" className="animate-bubble-1" />
+                <circle cx="75" cy={liquidTopY + currentHeight * 0.4} r="2" fill="white" opacity="0.5" className="animate-bubble-2" />
+                <circle cx="58" cy={liquidTopY + currentHeight * 0.75} r="3" fill="white" opacity="0.4" className="animate-bubble-3" />
               </>
             )}
           </g>
@@ -203,21 +209,21 @@ export function CostRecoveryJar({ percentage = 0, isProfitable = false, classNam
 
         {/* Central Floating Percentage Display */}
         <div className="absolute inset-0 flex flex-col items-center justify-center pt-5 pointer-events-none">
-          <span className="font-black text-[23px] sm:text-[25px] tracking-tight text-[var(--color-text-main)] [filter:var(--shadow-text)] leading-none drop-shadow-sm">
+          <span className="font-black text-2xl sm:text-3xl md:text-4xl xl:text-[42px] tracking-tight text-[var(--color-text-main)] [filter:var(--shadow-text)] leading-none drop-shadow-md">
             <AnimatedNumber value={Math.round(clamped)} suffix="%" />
           </span>
-          <span className="text-[7.5px] font-bold uppercase tracking-widest text-[var(--color-text-muted)] mt-0.5 opacity-90">
+          <span className="text-[8px] sm:text-[9.5px] md:text-[11px] font-extrabold uppercase tracking-widest text-[var(--color-text-main)] mt-1 drop-shadow-sm">
             {isProfitable ? 'Recovered' : 'Progress'}
           </span>
         </div>
       </div>
 
       {/* Card Footer Title */}
-      <div className="flex flex-col items-center text-center mt-1 pb-0.5">
-        <h4 className="text-[12px] sm:text-[13px] font-bold uppercase tracking-wider text-[var(--color-text-main)] leading-tight">
+      <div className="flex flex-col items-center text-center mt-2 pb-1">
+        <h4 className="text-[13px] sm:text-[14px] md:text-[16px] font-extrabold uppercase tracking-wider text-[var(--color-text-main)] leading-tight">
           Cost Recovery
         </h4>
-        <p className="text-[9px] sm:text-[9.5px] text-[var(--color-text-muted)] font-medium leading-tight mt-0.5">
+        <p className="text-[10px] sm:text-[11px] md:text-xs text-[var(--color-text-muted)] font-semibold leading-tight mt-1">
           {percentage >= 100 ? 'Costs 100% recouped' : 'of overall factory cost'}
         </p>
       </div>
@@ -225,34 +231,34 @@ export function CostRecoveryJar({ percentage = 0, isProfitable = false, classNam
       {/* SVG Keyframe Animation Styles */}
       <style jsx>{`
         @keyframes wave-fast {
-          0% { transform: translate3d(0, 0, 0); }
-          50% { transform: translate3d(-30px, 1.5px, 0); }
-          100% { transform: translate3d(0, 0, 0); }
+          0% { transform: translateX(0); }
+          50% { transform: translateX(-30px); }
+          100% { transform: translateX(0); }
         }
         @keyframes wave-slow {
-          0% { transform: translate3d(0, 0, 0); }
-          50% { transform: translate3d(25px, -1px, 0); }
-          100% { transform: translate3d(0, 0, 0); }
+          0% { transform: translateX(0); }
+          50% { transform: translateX(25px); }
+          100% { transform: translateX(0); }
         }
         @keyframes bubble-rise {
           0% { transform: translateY(0) scale(0.8); opacity: 0; }
-          40% { opacity: 0.55; }
-          100% { transform: translateY(-30px) scale(1.1); opacity: 0; }
+          40% { opacity: 0.65; }
+          100% { transform: translateY(-35px) scale(1.1); opacity: 0; }
         }
         .animate-wave-fast {
-          animation: wave-fast 4s ease-in-out infinite;
+          animation: wave-fast 3.5s ease-in-out infinite;
         }
         .animate-wave-slow {
-          animation: wave-slow 6s ease-in-out infinite;
+          animation: wave-slow 5.5s ease-in-out infinite;
         }
         .animate-bubble-1 {
-          animation: bubble-rise 3.5s ease-in infinite;
+          animation: bubble-rise 3s ease-in infinite;
         }
         .animate-bubble-2 {
-          animation: bubble-rise 4.2s ease-in infinite 1.2s;
+          animation: bubble-rise 3.8s ease-in infinite 1s;
         }
         .animate-bubble-3 {
-          animation: bubble-rise 3s ease-in infinite 0.6s;
+          animation: bubble-rise 2.8s ease-in infinite 0.5s;
         }
       `}</style>
     </div>
