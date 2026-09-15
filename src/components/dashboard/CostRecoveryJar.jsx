@@ -21,19 +21,13 @@ export function CostRecoveryJar({ percentage = 0, isProfitable = false, classNam
   const currentHeight = (fillLevel / 100) * maxFluidHeight;
   const liquidTopY = 138 - currentHeight;
 
-  // Solid high-visibility gradient colors
-  const liquidColorStart = isProfitable ? '#34D399' : '#38BDF8';
-  const liquidColorEnd = isProfitable ? '#059669' : '#2563EB';
-  const liquidBackStart = isProfitable ? '#6EE7B7' : '#60A5FA';
-  const liquidBackEnd = isProfitable ? '#10B981' : '#1D4ED8';
-
   return (
     <div className={cn("flex flex-col items-center justify-between w-full h-full relative select-none", className)}>
-      {/* SVG Glass Jar Graphic */}
-      <div className="relative w-full max-w-[130px] sm:max-w-[160px] md:max-w-[190px] xl:max-w-[220px] aspect-[120/135] flex items-center justify-center my-auto overflow-hidden">
+      {/* SVG Glass Jar Graphic - No square container clipping / no box drop-shadow */}
+      <div className="relative w-full max-w-[130px] sm:max-w-[160px] md:max-w-[190px] xl:max-w-[220px] aspect-[120/135] flex items-center justify-center my-auto">
         <svg
           viewBox="0 0 120 150"
-          className="w-full h-full overflow-hidden drop-shadow-[0_8px_25px_rgba(0,0,0,0.25)]"
+          className="w-full h-full"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
@@ -43,27 +37,27 @@ export function CostRecoveryJar({ percentage = 0, isProfitable = false, classNam
               <path d="M38 36 H82 C82 36 84 50 94 58 C104 66 104 122 104 130 C104 138 96 142 86 142 H34 C24 142 16 138 16 130 C16 122 16 66 26 58 C36 50 38 36 38 36 Z" />
             </clipPath>
 
-            {/* Fluid Front Gradient */}
+            {/* Fluid Front Gradient linked to dynamic Theme variables */}
             <linearGradient id="jar-liquid-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor={liquidColorStart} stopOpacity="0.95" />
-              <stop offset="100%" stopColor={liquidColorEnd} stopOpacity="0.85" />
+              <stop offset="0%" stopColor={isProfitable ? "var(--color-success)" : "var(--color-primary)"} stopOpacity="0.95" />
+              <stop offset="100%" stopColor={isProfitable ? "var(--color-success-text)" : "var(--color-primary)"} stopOpacity="0.75" />
             </linearGradient>
 
-            {/* Back Wave Gradient for 3D depth */}
+            {/* Back Wave Gradient for 3D depth linked to dynamic Theme variables */}
             <linearGradient id="jar-liquid-back" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor={liquidBackStart} stopOpacity="0.5" />
-              <stop offset="100%" stopColor={liquidBackEnd} stopOpacity="0.65" />
+              <stop offset="0%" stopColor={isProfitable ? "var(--color-success)" : "var(--color-primary)"} stopOpacity="0.45" />
+              <stop offset="100%" stopColor={isProfitable ? "var(--color-success)" : "var(--color-primary)"} stopOpacity="0.65" />
             </linearGradient>
 
             {/* Glass Highlight Gradient */}
             <linearGradient id="glass-reflection" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="white" stopOpacity="0.45" />
-              <stop offset="40%" stopColor="white" stopOpacity="0.1" />
+              <stop offset="0%" stopColor="white" stopOpacity="0.5" />
+              <stop offset="40%" stopColor="white" stopOpacity="0.15" />
               <stop offset="100%" stopColor="white" stopOpacity="0" />
             </linearGradient>
           </defs>
 
-          {/* 1. Jar Background Body (Subtle translucent glass cavity) */}
+          {/* 1. Jar Background Body (Translucent glass cavity using theme surface) */}
           <path
             d="M38 36 H82 C82 36 84 50 94 58 C104 66 104 122 104 130 C104 138 96 142 86 142 H34 C24 142 16 138 16 130 C16 122 16 66 26 58 C36 50 38 36 38 36 Z"
             fill="var(--color-surface)"
@@ -74,7 +68,7 @@ export function CostRecoveryJar({ percentage = 0, isProfitable = false, classNam
 
           {/* 2. Liquid Container (Clipped to Jar outline) */}
           <g clipPath="url(#jar-fluid-clip)">
-            {/* Ambient liquid glow body */}
+            {/* Ambient liquid body */}
             <rect
               x="0"
               y={liquidTopY}
@@ -112,7 +106,7 @@ export function CostRecoveryJar({ percentage = 0, isProfitable = false, classNam
                 d="M -60 0 Q -30 6 0 0 T 60 0 T 120 0 T 180 0"
                 stroke="white"
                 strokeWidth="2"
-                strokeOpacity="0.55"
+                strokeOpacity="0.6"
                 fill="none"
                 className="animate-wave-fast"
               />
@@ -121,9 +115,9 @@ export function CostRecoveryJar({ percentage = 0, isProfitable = false, classNam
             {/* Rising micro bubbles inside fluid */}
             {fillLevel > 15 && (
               <>
-                <circle cx="45" cy={liquidTopY + currentHeight * 0.6} r="2.5" fill="white" opacity="0.45" className="animate-bubble-1" />
-                <circle cx="75" cy={liquidTopY + currentHeight * 0.4} r="2" fill="white" opacity="0.5" className="animate-bubble-2" />
-                <circle cx="58" cy={liquidTopY + currentHeight * 0.75} r="3" fill="white" opacity="0.4" className="animate-bubble-3" />
+                <circle cx="45" cy={liquidTopY + currentHeight * 0.6} r="2.5" fill="white" opacity="0.6" className="animate-bubble-1" />
+                <circle cx="75" cy={liquidTopY + currentHeight * 0.4} r="2" fill="white" opacity="0.65" className="animate-bubble-2" />
+                <circle cx="58" cy={liquidTopY + currentHeight * 0.75} r="3" fill="white" opacity="0.55" className="animate-bubble-3" />
               </>
             )}
           </g>
@@ -132,7 +126,7 @@ export function CostRecoveryJar({ percentage = 0, isProfitable = false, classNam
           <path
             d="M38 36 H82 C82 36 84 50 94 58 C104 66 104 122 104 130 C104 138 96 142 86 142 H34 C24 142 16 138 16 130 C16 122 16 66 26 58 C36 50 38 36 38 36 Z"
             fill="none"
-            stroke="var(--color-border)"
+            stroke="var(--color-border-strong, var(--color-border))"
             strokeWidth="2.5"
             strokeLinejoin="round"
           />
@@ -151,7 +145,7 @@ export function CostRecoveryJar({ percentage = 0, isProfitable = false, classNam
             d="M96 66 C98 74 98 120 95 128"
             stroke="white"
             strokeWidth="1.5"
-            strokeOpacity="0.25"
+            strokeOpacity="0.3"
             strokeLinecap="round"
             fill="none"
           />
@@ -161,7 +155,7 @@ export function CostRecoveryJar({ percentage = 0, isProfitable = false, classNam
             d="M28 136 C38 140 82 140 92 136"
             stroke="var(--color-border)"
             strokeWidth="1.5"
-            strokeOpacity="0.5"
+            strokeOpacity="0.6"
             fill="none"
           />
 
@@ -172,22 +166,21 @@ export function CostRecoveryJar({ percentage = 0, isProfitable = false, classNam
             width="52"
             height="8"
             rx="3"
-            fill="var(--color-bg-card)"
+            fill="var(--color-bg-card-hover, var(--color-bg-card))"
             stroke="var(--color-border)"
             strokeWidth="2"
           />
 
-          {/* Jar Wooden / Metallic Lid / Cap */}
+          {/* Jar Lid / Cap */}
           <rect
             x="30"
             y="18"
             width="60"
             height="12"
             rx="4"
-            fill="color-mix(in srgb, var(--color-bg-card) 60%, var(--color-text-main))"
-            stroke="var(--color-border)"
+            fill="var(--color-bg-card-hover, var(--color-bg-card))"
+            stroke="var(--color-border-strong, var(--color-border))"
             strokeWidth="2"
-            className="drop-shadow-xs"
           />
           {/* Lid highlight line */}
           <line
@@ -196,7 +189,7 @@ export function CostRecoveryJar({ percentage = 0, isProfitable = false, classNam
             x2="85"
             y2="22"
             stroke="white"
-            strokeOpacity="0.3"
+            strokeOpacity="0.4"
             strokeWidth="1.5"
             strokeLinecap="round"
           />
@@ -207,12 +200,12 @@ export function CostRecoveryJar({ percentage = 0, isProfitable = false, classNam
           <line x1="28" y1="112" x2="34" y2="112" stroke="var(--color-border)" strokeWidth="1.5" strokeLinecap="round" opacity="0.6" />
         </svg>
 
-        {/* Central Floating Percentage Display */}
+        {/* Central Floating Percentage Display - High Legibility across all Themes */}
         <div className="absolute inset-0 flex flex-col items-center justify-center pt-5 pointer-events-none">
-          <span className="font-black text-2xl sm:text-3xl md:text-4xl xl:text-[42px] tracking-tight text-[var(--color-text-main)] [filter:var(--shadow-text)] leading-none drop-shadow-md">
+          <span className="font-black text-2xl sm:text-3xl md:text-4xl xl:text-[42px] tracking-tight text-[var(--color-text-main)] [filter:var(--shadow-text)] leading-none drop-shadow-sm">
             <AnimatedNumber value={Math.round(clamped)} suffix="%" />
           </span>
-          <span className="text-[8px] sm:text-[9.5px] md:text-[11px] font-extrabold uppercase tracking-widest text-[var(--color-text-main)] mt-1 drop-shadow-sm">
+          <span className="text-[8px] sm:text-[9.5px] md:text-[11px] font-black uppercase tracking-widest text-[var(--color-text-main)] [filter:var(--shadow-text)] mt-1 drop-shadow-sm">
             {isProfitable ? 'Recovered' : 'Progress'}
           </span>
         </div>

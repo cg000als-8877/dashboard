@@ -820,7 +820,7 @@ export function DashboardContent({ month, isArchive = false }) {
                       </div>
                     </div>
 
-                    {/* Lines Badges List: Line & Item In Production (Without dots) */}
+                    {/* Lines Badges List: Line Name, Item, & Total Production (No A/B/C/D letter pill) */}
                     <div className="grid grid-cols-2 gap-1.5 pt-2 border-t border-[var(--color-border)]/50">
                       {['A', 'B', 'C', 'D'].map((lineId) => {
                         const lineData = currentActiveLines?.find(l => l.id?.toUpperCase() === lineId);
@@ -828,36 +828,39 @@ export function DashboardContent({ month, isArchive = false }) {
                           ? (lineData.totalProduction > 0 || lineData.totalCost > 0 || (lineData.activeDaysCount && lineData.activeDaysCount > 0))
                           : true;
                         const itemDesc = lineData?.lastActiveDay?.item || lineData?.today?.item || lineData?.item || DEFAULT_LINE_ITEMS[lineId] || 'Polo Shirt';
+                        const totalProd = lineData?.totalProduction || 0;
 
                         return (
                           <div
                             key={lineId}
                             className={cn(
-                              "flex items-center gap-2 p-2 rounded-xl border transition-all",
+                              "flex items-center justify-between gap-1.5 p-2 rounded-xl border transition-all",
                               isLineActive
                                 ? "bg-[var(--color-surface)] border-[var(--color-border)]/80 shadow-xs"
                                 : "bg-[var(--color-surface)]/30 border-[var(--color-border)]/30 opacity-60"
                             )}
                           >
-                            {/* Line Letter Pill */}
-                            <div className={cn(
-                              "w-7 h-7 rounded-lg flex items-center justify-center text-[11px] font-black shrink-0 tracking-tight",
-                              isLineActive
-                                ? "bg-[var(--color-primary)] text-[var(--color-on-primary,white)] shadow-xs"
-                                : "bg-zinc-700/40 text-[var(--color-text-muted)]"
-                            )}>
-                              {lineId}
-                            </div>
-
-                            {/* Line Info */}
+                            {/* Line Info: Line Name & Item Name */}
                             <div className="min-w-0 flex-1">
-                              <span className="text-[10.5px] font-bold text-[var(--color-text-main)] truncate block">
+                              <span className="text-[11px] sm:text-xs font-bold text-[var(--color-text-main)] truncate block leading-tight">
                                 Line {lineId}
                               </span>
-                              <p className="text-[9px] font-medium text-[var(--color-text-muted)] truncate mt-0.5">
+                              <p className="text-[9px] sm:text-[9.5px] font-medium text-[var(--color-text-muted)] truncate mt-0.5 leading-tight">
                                 {isLineActive ? itemDesc : 'Standby'}
                               </p>
                             </div>
+
+                            {/* Total Production Output */}
+                            {isLineActive && (
+                              <div className="text-right shrink-0 pl-1">
+                                <span className="text-[11px] sm:text-xs font-bold text-[var(--color-text-main)] block leading-tight">
+                                  <AnimatedNumber value={totalProd} />
+                                </span>
+                                <span className="text-[8px] font-semibold uppercase text-[var(--color-text-muted)] block leading-none">
+                                  pcs
+                                </span>
+                              </div>
+                            )}
                           </div>
                         );
                       })}
