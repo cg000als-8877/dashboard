@@ -99,12 +99,12 @@ function formatDateRangeInfo(startDateStr, endDateStr, overrideMonth, overrideYe
   }
 }
 
-function LinesDateRange({ dateInfo, className = "" }) {
+function LinesDateRange({ dateInfo, workingDays = null, className = "" }) {
   if (!dateInfo) return null;
   const { isRange, startDay, endDay, startMonthShort, endMonthShort, year } = dateInfo;
 
   return (
-    <span className={cn("inline-flex items-center justify-center whitespace-nowrap text-[11px] sm:text-[12px] md:text-[13px] font-medium tracking-wide text-[var(--color-text-muted)] leading-tight uppercase", className)}>
+    <span className={cn("inline-flex items-center justify-center flex-wrap whitespace-nowrap text-[13px] sm:text-[14px] md:text-[17px] font-medium tracking-wide text-[var(--color-text-muted)] leading-tight uppercase", className)}>
       <span>FROM&nbsp;</span>
       {isRange ? (
         <>
@@ -114,6 +114,11 @@ function LinesDateRange({ dateInfo, className = "" }) {
         </>
       ) : (
         <span className="font-extrabold text-[var(--color-primary)] tracking-wide">{startDay} {endMonthShort}, {year}</span>
+      )}
+      {workingDays !== null && workingDays !== undefined && (
+        <span className="font-bold text-[var(--color-text-secondary)] ml-1.5 tracking-wider">
+          ({workingDays} {workingDays === 1 ? 'DAY' : 'DAYS'})
+        </span>
       )}
     </span>
   );
@@ -128,10 +133,9 @@ export default function ProductionLinesPage() {
   const [density, setDensityState] = useState(() => {
     if (typeof window !== 'undefined') {
       const stored = localStorage.getItem('lines_density');
-      if (stored && ['compact', 'normal', 'detailed'].includes(stored)) return stored;
-      if (window.innerWidth < 768) return 'detailed';
+      if (stored && ['compact', 'normal'].includes(stored)) return stored;
     }
-    return 'detailed';
+    return 'compact';
   });
 
   const setDensity = (newDensity) => {
@@ -271,7 +275,7 @@ export default function ProductionLinesPage() {
 
         {/* Unified Date Range Subtitle */}
         <div className="flex justify-center items-center w-full mt-1 mb-2">
-          <LinesDateRange dateInfo={activeDateInfo} />
+          <LinesDateRange dateInfo={activeDateInfo} workingDays={currentStats?.workingDays} />
         </div>
       </div>
 
@@ -280,10 +284,10 @@ export default function ProductionLinesPage() {
         <div className="relative overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-card)] p-4 sm:p-5 shadow-lg">
           <div className="absolute top-0 right-0 w-64 h-32 bg-[var(--color-primary)] opacity-5 rounded-full blur-3xl pointer-events-none" />
           
-          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 sm:gap-6">
             
             {/* Left Status Block */}
-            <div className="flex items-center gap-3 w-full lg:w-auto pb-3 lg:pb-0 border-b lg:border-b-0 border-[var(--color-border)]">
+            <div className="flex items-center gap-3 w-full lg:w-[230px] xl:w-[260px] pb-3 lg:pb-0 border-b lg:border-b-0 border-[var(--color-border)] shrink-0">
               <div className="w-10 h-10 rounded-xl bg-[var(--color-primary)]/10 border border-[var(--color-primary)]/20 flex items-center justify-center text-[var(--color-primary)] shrink-0">
                 <Factory size={20} />
               </div>
@@ -312,42 +316,42 @@ export default function ProductionLinesPage() {
             </div>
 
             {/* 4 Metric Summary Cards */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-4 w-full lg:w-auto flex-1 lg:max-w-3xl">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3.5 w-full flex-1">
               
               {/* Total Factory Output */}
-              <div className="bg-[var(--color-surface)] border border-[var(--color-border)]/50 rounded-xl p-2.5 sm:p-3 flex flex-col">
+              <div className="bg-[var(--color-surface)] border border-[var(--color-border)]/50 rounded-xl p-2.5 sm:p-3 flex flex-col justify-center">
                 <span className="text-[9px] sm:text-[10px] uppercase font-bold tracking-wider text-[var(--color-text-muted)]">
                   Total Output
                 </span>
-                <span className="text-sm sm:text-base font-black text-[var(--color-text-main)] mt-0.5">
+                <span className="text-sm sm:text-base font-black text-[var(--color-text-main)] mt-0.5 truncate">
                   <AnimatedNumber value={Math.round(currentStats.totalProduction || 0)} />{' '}
                   <span className="text-[10px] text-[var(--color-text-muted)] font-normal">PCS</span>
                 </span>
               </div>
 
               {/* Total Income */}
-              <div className="bg-[var(--color-surface)] border border-[var(--color-border)]/50 rounded-xl p-2.5 sm:p-3 flex flex-col">
+              <div className="bg-[var(--color-surface)] border border-[var(--color-border)]/50 rounded-xl p-2.5 sm:p-3 flex flex-col justify-center">
                 <span className="text-[9px] sm:text-[10px] uppercase font-bold tracking-wider text-[var(--color-text-muted)]">
                   Total Income
                 </span>
-                <span className="text-sm sm:text-base font-black text-[var(--color-primary)] mt-0.5">
+                <span className="text-sm sm:text-base font-black text-[var(--color-primary)] mt-0.5 truncate">
                   <AnimatedNumber value={Math.round(currentStats.totalIncome || 0)} prefix="BDT " />
                 </span>
               </div>
 
               {/* Total Cost */}
-              <div className="bg-[var(--color-surface)] border border-[var(--color-border)]/50 rounded-xl p-2.5 sm:p-3 flex flex-col">
+              <div className="bg-[var(--color-surface)] border border-[var(--color-border)]/50 rounded-xl p-2.5 sm:p-3 flex flex-col justify-center">
                 <span className="text-[9px] sm:text-[10px] uppercase font-bold tracking-wider text-[var(--color-text-muted)]">
                   Total Cost
                 </span>
-                <span className="text-sm sm:text-base font-black text-[var(--color-text-main)] mt-0.5">
+                <span className="text-sm sm:text-base font-black text-[var(--color-text-main)] mt-0.5 truncate">
                   <AnimatedNumber value={Math.round(currentStats.totalCost || 0)} prefix="BDT " />
                 </span>
               </div>
 
               {/* Net Profit / Loss */}
               <div className={cn(
-                "border rounded-xl p-2.5 sm:p-3 flex flex-col",
+                "border rounded-xl p-2.5 sm:p-3 flex flex-col justify-center",
                 (currentStats.netProfit || 0) >= 0 
                   ? "bg-[var(--color-success-glow)]/40 border-[rgba(16,185,129,0.25)]" 
                   : "bg-[var(--color-danger-glow)]/40 border-[rgba(255,59,48,0.25)]"
@@ -356,10 +360,10 @@ export default function ProductionLinesPage() {
                   {(currentStats.netProfit || 0) >= 0 ? "Net Profit" : "Net Loss"}
                 </span>
                 <span className={cn(
-                  "text-sm sm:text-base font-black mt-0.5 flex items-center gap-1",
+                  "text-sm sm:text-base font-black mt-0.5 flex items-center gap-1 truncate",
                   (currentStats.netProfit || 0) >= 0 ? "text-[var(--color-success-text)]" : "text-[var(--color-danger-text)]"
                 )}>
-                  {(currentStats.netProfit || 0) >= 0 ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
+                  {(currentStats.netProfit || 0) >= 0 ? <TrendingUp size={14} className="shrink-0" /> : <TrendingDown size={14} className="shrink-0" />}
                   <AnimatedNumber value={Math.abs(Math.round(currentStats.netProfit || 0))} prefix={(currentStats.netProfit || 0) >= 0 ? "+BDT " : "BDT -"} />
                 </span>
               </div>
@@ -370,89 +374,175 @@ export default function ProductionLinesPage() {
         </div>
       )}
 
-      {/* ── 3. COMPACT EXECUTIVE SPREADSHEET TABLE (When Density === 'compact') ───────────────────── */}
+      {/* ── 3. COMPACT LIST VIEW (When Density === 'compact') ───────────────────── */}
       {density === 'compact' ? (
-        <div className="overflow-x-auto rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-card)] shadow-lg">
-          <table className="w-full text-left text-xs">
-            <thead className="bg-[var(--color-surface)] border-b border-[var(--color-border)] text-[9.5px] uppercase font-bold tracking-wider text-[var(--color-text-muted)] select-none">
-              <tr>
-                <th className="py-3 px-4">Line</th>
-                <th className="py-3 px-3">Active Item</th>
-                <th className="py-3 px-3 text-right">Workers</th>
-                <th className="py-3 px-3 text-right">Month Output</th>
-                <th className="py-3 px-3 text-right">Total Income</th>
-                <th className="py-3 px-3 text-right">Total Cost</th>
-                <th className="py-3 px-3 text-right">Net Profit</th>
-                <th className="py-3 px-3 text-right">Recovery</th>
-                <th className="py-3 px-3 text-center">Status</th>
-                <th className="py-3 px-4 text-right">Action</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[var(--color-border)]/50">
-              {currentLines.sort((a,b) => a.id.localeCompare(b.id)).map((line) => {
-                const isInactive = (line.totalProduction || 0) === 0 && (line.totalCost || 0) === 0;
-                const isProfitable = !isInactive && (line.netProfit || 0) >= 0;
-                const detailsUrl = isAugust ? `/archive/2026-08/lines/${line.id}` : (isJuly ? `/archive/2026-07/lines/${line.id}` : `/lines/${line.id}`);
+        <div className="flex flex-col gap-3">
+          {currentLines.sort((a,b) => a.id.localeCompare(b.id)).map((line) => {
+            const isInactive = (line.totalProduction || 0) === 0 && (line.totalCost || 0) === 0;
+            const isProfitable = !isInactive && (line.netProfit || 0) >= 0;
+            const detailsUrl = isAugust ? `/archive/2026-08/lines/${line.id}` : (isJuly ? `/archive/2026-07/lines/${line.id}` : `/lines/${line.id}`);
 
-                return (
-                  <tr key={line.id} className="hover:bg-[var(--color-surface-hover)] transition-colors">
-                    <td className="py-3 px-4 font-bold flex items-center gap-2.5">
-                      <span className="w-6 h-6 rounded-md text-[10px] font-black flex items-center justify-center text-[var(--color-on-primary,white)] shrink-0 bg-[var(--color-primary)]">
-                        {line.id}
-                      </span>
-                      <span className="text-[var(--color-text-main)] font-extrabold">{line.name}</span>
-                    </td>
-                    <td className="py-3 px-3 text-[var(--color-text-muted)] font-medium">
-                      {isInactive ? 'Standby / Idle' : (line.item || 'Standard Garment')}
-                    </td>
-                    <td className="py-3 px-3 text-right font-medium text-[var(--color-text-main)]">
-                      {isInactive ? '0' : (line.averageWorkers || line.lastDay?.worker_count || 50)}
-                    </td>
-                    <td className="py-3 px-3 text-right font-bold text-[var(--color-text-main)]">
-                      {(line.totalProduction || 0).toLocaleString()} <span className="text-[9px] text-[var(--color-text-muted)] font-normal">PCS</span>
-                    </td>
-                    <td className="py-3 px-3 text-right font-bold text-[var(--color-primary)]">
+            // Floor Leadership Badges
+            const isTopProfit = !isInactive && floorRankings.topProfitId === line.id;
+            const isTopOutput = !isInactive && !isTopProfit && floorRankings.topOutputId === line.id;
+            const isTopRecovery = !isInactive && !isTopProfit && !isTopOutput && floorRankings.topRecoveryId === line.id;
+
+            const workerCount = line.lastDay?.worker_count || line.averageWorkers || 0;
+            const recoveryVal = parseFloat(line.monthCostRecovery || 0);
+
+            return (
+              <Card key={line.id} className="relative overflow-hidden p-3.5 sm:p-4 border border-[var(--color-border)] bg-[var(--color-bg-card)] shadow-xs hover:shadow-md transition-all duration-200">
+                <div className="grid grid-cols-2 lg:grid-cols-[230px_repeat(4,1fr)_140px_100px] xl:grid-cols-[260px_repeat(4,1fr)_150px_110px] items-center gap-2.5 sm:gap-3.5">
+                  
+                  {/* Col 1: Line Pill + Name + Badges + Item & Workers */}
+                  <div className="col-span-2 lg:col-span-1 flex items-center gap-3 min-w-0 pb-1 lg:pb-0 border-b lg:border-b-0 border-[var(--color-border)]/50">
+                    <div className="hidden sm:flex w-10 h-10 rounded-xl font-black text-sm sm:text-base items-center justify-center text-[var(--color-on-primary,white)] shrink-0 bg-[var(--color-primary)] shadow-xs">
+                      {line.id}
+                    </div>
+                    
+                    <div className="flex flex-col min-w-0 flex-1">
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <h3 className="text-sm sm:text-base font-extrabold text-[var(--color-text-main)] tracking-tight uppercase truncate">
+                          {line.name}
+                        </h3>
+                        
+                        {/* Status Badges */}
+                        {isTopProfit ? (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[8.5px] font-bold uppercase tracking-wider bg-[var(--color-success-glow)] text-[var(--color-success-text)] border border-[rgba(16,185,129,0.25)] shrink-0">
+                            <Trophy size={10} /> Profit
+                          </span>
+                        ) : isTopOutput ? (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[8.5px] font-bold uppercase tracking-wider bg-[var(--color-primary)]/15 text-[var(--color-primary)] border border-[var(--color-primary)]/30 shrink-0">
+                            <Zap size={10} /> Top
+                          </span>
+                        ) : isTopRecovery ? (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[8.5px] font-bold uppercase tracking-wider bg-[var(--color-primary)]/15 text-[var(--color-primary)] border border-[var(--color-primary)]/30 shrink-0">
+                            <Activity size={10} /> Top Eff
+                          </span>
+                        ) : null}
+
+                        {isInactive ? (
+                          <span className="px-2 py-0.5 rounded text-[8.5px] font-bold uppercase tracking-wider bg-zinc-500/15 text-zinc-700 dark:text-zinc-400 border border-zinc-500/30 shrink-0">
+                            Idle
+                          </span>
+                        ) : isProfitable ? (
+                          <span className="px-2 py-0.5 rounded text-[8.5px] font-bold uppercase tracking-wider bg-[var(--color-success-glow)] text-[var(--color-success-text)] border border-[rgba(16,185,129,0.25)] shrink-0">
+                            Optimal
+                          </span>
+                        ) : (
+                          <span className="px-2 py-0.5 rounded text-[8.5px] font-bold uppercase tracking-wider bg-rose-500/15 text-rose-700 dark:text-rose-400 border border-rose-500/30 shrink-0">
+                            Critical
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="flex items-center gap-2 mt-0.5 text-[11px] text-[var(--color-text-muted)] min-w-0">
+                        <span className="flex items-center gap-1 font-medium min-w-0 truncate">
+                          <Shirt size={12} className="text-[var(--color-primary)] shrink-0" />
+                          <span className="truncate text-[var(--color-text-secondary)] font-semibold">
+                            {isInactive ? 'Standby / Idle' : (line.item || 'Standard Garment')}
+                          </span>
+                        </span>
+                        <span className="text-[var(--color-border)] shrink-0">•</span>
+                        <span className="flex items-center gap-1 shrink-0">
+                          <Users size={12} className="text-[var(--color-text-muted)] shrink-0" />
+                          <span>{isInactive ? '0' : workerCount} W</span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Col 2: Output */}
+                  <div className="col-span-1 bg-[var(--color-surface)] border border-[var(--color-border)]/50 rounded-xl px-3 py-2 flex flex-col justify-center min-w-0">
+                    <span className="text-[8.5px] uppercase font-bold tracking-wider text-[var(--color-text-muted)]">
+                      Output
+                    </span>
+                    <span className="text-xs xl:text-sm font-black text-[var(--color-text-main)] truncate mt-0.5">
+                      {(line.totalProduction || 0).toLocaleString()} <span className="text-[8.5px] text-[var(--color-text-muted)] font-normal">PCS</span>
+                    </span>
+                  </div>
+
+                  {/* Col 3: Income */}
+                  <div className="col-span-1 bg-[var(--color-surface)] border border-[var(--color-border)]/50 rounded-xl px-3 py-2 flex flex-col justify-center min-w-0">
+                    <span className="text-[8.5px] uppercase font-bold tracking-wider text-[var(--color-text-muted)]">
+                      Income
+                    </span>
+                    <span className="text-xs xl:text-sm font-black text-[var(--color-primary)] truncate mt-0.5">
                       BDT {(line.totalIncome || 0).toLocaleString()}
-                    </td>
-                    <td className="py-3 px-3 text-right font-bold text-[var(--color-text-main)]">
+                    </span>
+                  </div>
+
+                  {/* Col 4: Cost */}
+                  <div className="col-span-1 bg-[var(--color-surface)] border border-[var(--color-border)]/50 rounded-xl px-3 py-2 flex flex-col justify-center min-w-0">
+                    <span className="text-[8.5px] uppercase font-bold tracking-wider text-[var(--color-text-muted)]">
+                      Cost
+                    </span>
+                    <span className="text-xs xl:text-sm font-black text-[var(--color-text-main)] truncate mt-0.5">
                       BDT {(line.totalCost || 0).toLocaleString()}
-                    </td>
-                    <td className={cn("py-3 px-3 text-right font-black", isInactive ? "text-[var(--color-text-muted)]" : isProfitable ? "text-[var(--color-success-text)]" : "text-[var(--color-danger-text)]")}>
+                    </span>
+                  </div>
+
+                  {/* Col 5: Net Profit / Loss */}
+                  <div className={cn(
+                    "col-span-1 border rounded-xl px-3 py-2 flex flex-col justify-center min-w-0",
+                    isInactive
+                      ? "bg-[var(--color-surface)] border-[var(--color-border)]/50"
+                      : isProfitable
+                        ? "bg-[var(--color-success-glow)]/40 border-[rgba(16,185,129,0.25)]"
+                        : "bg-[var(--color-danger-glow)]/40 border-[rgba(255,59,48,0.25)]"
+                  )}>
+                    <span className="text-[8.5px] uppercase font-bold tracking-wider text-[var(--color-text-muted)]">
+                      {isInactive ? "Net Balance" : isProfitable ? "Net Profit" : "Net Loss"}
+                    </span>
+                    <span className={cn(
+                      "text-xs xl:text-sm font-black truncate mt-0.5",
+                      isInactive ? "text-[var(--color-text-muted)]" : isProfitable ? "text-[var(--color-success-text)]" : "text-[var(--color-danger-text)]"
+                    )}>
                       {isInactive ? 'BDT 0' : (isProfitable ? `+BDT ${(line.netProfit || 0).toLocaleString()}` : `BDT ${(line.netProfit || 0).toLocaleString()}`)}
-                    </td>
-                    <td className={cn("py-3 px-3 text-right font-bold", isInactive ? "text-[var(--color-text-muted)]" : parseFloat(line.monthCostRecovery || 0) >= 100 ? "text-[var(--color-success-text)]" : "text-[var(--color-danger-text)]")}>
-                      {line.monthCostRecovery || '0.0'}%
-                    </td>
-                    <td className="py-3 px-3 text-center">
-                      {isInactive ? (
-                        <span className="px-2 py-0.5 rounded text-[8.5px] font-bold uppercase tracking-wider bg-zinc-500/15 text-zinc-700 dark:text-zinc-400 border border-zinc-500/30">
-                          Idle
-                        </span>
-                      ) : isProfitable ? (
-                        <span className="px-2 py-0.5 rounded text-[8.5px] font-bold uppercase tracking-wider bg-[var(--color-success-glow)] text-[var(--color-success-text)] border border-[rgba(16,185,129,0.25)]">
-                          Optimal
-                        </span>
-                      ) : (
-                        <span className="px-2 py-0.5 rounded text-[8.5px] font-bold uppercase tracking-wider bg-rose-500/15 text-rose-700 dark:text-rose-400 border border-rose-500/30">
-                          Critical
-                        </span>
-                      )}
-                    </td>
-                    <td className="py-3 px-4 text-right">
-                      <Link href={detailsUrl} className="inline-flex items-center gap-1 text-[11px] font-bold text-[var(--color-primary)] hover:underline uppercase tracking-wider">
-                        <span>Details</span>
-                        <ArrowRight size={12} />
-                      </Link>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+                    </span>
+                  </div>
+
+                  {/* Col 6: Cost Recovery */}
+                  <div className="col-span-2 sm:col-span-1 lg:col-span-1 flex flex-col justify-center px-1 min-w-0">
+                    <div className="flex items-center justify-between text-[9px] font-bold uppercase tracking-wider mb-1">
+                      <span className="text-[var(--color-text-muted)]">Recovery</span>
+                      <span className={cn(
+                        "font-extrabold",
+                        isInactive ? "text-[var(--color-text-muted)]" : recoveryVal >= 100 ? "text-[var(--color-success-text)]" : "text-[var(--color-danger-text)]"
+                      )}>
+                        {line.monthCostRecovery || '0.0'}%
+                      </span>
+                    </div>
+                    <div className="w-full bg-[var(--color-surface)] h-2 rounded-full overflow-hidden border border-[var(--color-border)]/40">
+                      <div
+                        className={cn(
+                          "h-full rounded-full transition-all duration-300",
+                          isInactive ? "bg-zinc-600/30" : recoveryVal >= 100 ? "bg-[var(--color-success)]" : "bg-[var(--color-danger)]"
+                        )}
+                        style={{ width: `${isInactive ? 0 : Math.min(recoveryVal, 100)}%` }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Col 7: Action Link */}
+                  <div className="col-span-2 sm:col-span-1 lg:col-span-1 flex items-center justify-end">
+                    <Link
+                      href={detailsUrl}
+                      className="w-full py-2.5 px-3 rounded-xl text-xs font-bold uppercase tracking-wider bg-[var(--color-primary)] hover:opacity-90 text-[var(--color-on-primary,white)] shadow-xs transition-all flex items-center justify-center gap-1.5 group"
+                    >
+                      <span>Details</span>
+                      <ArrowRight size={13} className="group-hover:translate-x-0.5 transition-transform" />
+                    </Link>
+                  </div>
+
+                </div>
+              </Card>
+            );
+          })}
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
-          {/* ── 5. PRODUCTION LINES GRID (Detailed & Normal Modes) ──────────────────────────── */}
+          {/* ── 4. PRODUCTION LINES GRID (Cards Mode) ──────────────────────────── */}
             {currentLines.sort((a,b) => a.id.localeCompare(b.id)).map((line) => {
               const isHiddenOnMobile = selectedMobileLine !== line.id;
               
@@ -460,16 +550,6 @@ export default function ProductionLinesPage() {
               const isInactive = (line.totalProduction || 0) === 0 && (line.totalCost || 0) === 0;
               const isProfitable = !isInactive && (line.netProfit || 0) >= 0;
               const lastDayDateStr = line.lastDayDate ? format(parseISO(line.lastDayDate), 'dd MMM, yyyy') : '02 Sep, 2026';
-
-              // Extract last 7 active production entries for 7-day sparkline
-              const lineHistory = (currentEngine?.kpiData?.dailyProduction || [])
-                .filter(d => d.line_id === line.id && d.status === 'ACTIVE' && (d.production_qty || 0) > 0)
-                .sort((a, b) => a.date.localeCompare(b.date))
-                .slice(-7);
-
-              const maxSparklineQty = lineHistory.length > 0 
-                ? Math.max(...lineHistory.map(h => h.production_qty || 0), 1)
-                : 1000;
 
               // Unit economics & productivity calculations
               const lastDay = line.lastDay || null;
@@ -624,10 +704,6 @@ export default function ProductionLinesPage() {
 
                       {/* 4-Box Cumulative Month Metrics */}
                       <div>
-                        <p className="text-[9.5px] uppercase tracking-wider font-bold text-[var(--color-text-muted)] mb-2">
-                          Month Total Summary ({activeMonthName})
-                        </p>
-                        
                         <div className="grid grid-cols-2 gap-2 sm:gap-2.5">
                           
                           {/* Total Output */}
@@ -691,68 +767,7 @@ export default function ProductionLinesPage() {
                         </div>
                       </div>
 
-                      {/* ── 6. RECENT 7-DAY OUTPUT SPARKLINE (Only in Detailed Mode) ────────────────────── */}
-                      {density === 'detailed' && (
-                        lineHistory.length > 0 ? (
-                          <div className="bg-[var(--color-surface)] border border-[var(--color-border)]/60 rounded-xl p-3">
-                            <div className="flex items-center justify-between mb-2">
-                              <span className="text-[9.5px] font-bold uppercase tracking-wider text-[var(--color-text-muted)] flex items-center gap-1">
-                                <BarChart2 size={12} className="text-[var(--color-primary)]" />
-                                <span>Recent Output Trend</span>
-                              </span>
-                              <span className="text-[9.5px] font-bold text-[var(--color-text-secondary)]">
-                                Last {lineHistory.length} Days
-                              </span>
-                            </div>
-
-                            {/* Mini Bar Sparkline */}
-                            <div className="flex items-end gap-1.5 h-12 pt-1 pb-0.5 px-1 bg-[var(--color-bg-card)] rounded-lg border border-[var(--color-border)]/40">
-                              {lineHistory.map((day, idx) => {
-                                const heightPct = Math.max(Math.round(((day.production_qty || 0) / maxSparklineQty) * 100), 12);
-                                const dayLabel = format(parseISO(day.date), 'dd MMM');
-                                const isDayProfitable = (day.net_profit !== undefined ? day.net_profit : ((day.total_income || 0) - (day.total_cost || 0))) >= 0;
-
-                                return (
-                                  <div 
-                                    key={day.date || idx}
-                                    className="flex-1 flex flex-col items-center justify-end h-full group relative cursor-default"
-                                  >
-                                    {/* Hover Tooltip */}
-                                    <div className="absolute -top-7 opacity-0 group-hover:opacity-100 transition-opacity bg-[var(--color-bg-card)] border border-[var(--color-border)] text-[9px] font-bold px-1.5 py-0.5 rounded shadow-lg whitespace-nowrap pointer-events-none z-20">
-                                      {dayLabel}: {day.production_qty} pcs
-                                    </div>
-
-                                    <div 
-                                      className={cn(
-                                        "w-full rounded-t transition-all duration-300",
-                                        isDayProfitable 
-                                          ? "bg-emerald-500/70 group-hover:bg-emerald-400" 
-                                          : "bg-blue-500/70 group-hover:bg-blue-400"
-                                      )}
-                                      style={{ height: `${heightPct}%` }}
-                                    />
-                                  </div>
-                                );
-                              })}
-                            </div>
-
-                            <div className="flex items-center justify-between text-[8.5px] text-[var(--color-text-muted)] mt-1 px-1">
-                              <span>{format(parseISO(lineHistory[0].date), 'dd MMM')}</span>
-                              <span>{format(parseISO(lineHistory[lineHistory.length - 1].date), 'dd MMM')}</span>
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="bg-[var(--color-surface)]/30 border border-[var(--color-border)]/40 rounded-xl p-3 flex items-center justify-between text-xs text-[var(--color-text-muted)]">
-                            <span className="flex items-center gap-1.5 uppercase font-bold text-[9.5px]">
-                              <BarChart2 size={12} className="text-[var(--color-text-muted)]" />
-                              <span>Recent Output Trend</span>
-                            </span>
-                            <span className="text-[9.5px] italic">No active production recorded</span>
-                          </div>
-                        )
-                      )}
-
-                      {/* ── 7. TELEMETRY & PRODUCTIVITY SNAPSHOT ────────────────── */}
+                      {/* ── 5. TELEMETRY & PRODUCTIVITY SNAPSHOT ────────────────── */}
                       <div className="bg-[var(--color-surface)]/70 border border-[var(--color-border)] rounded-xl p-3">
                         <div className="flex items-center justify-between mb-2">
                           <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-text-secondary)] flex items-center gap-1">
@@ -822,7 +837,7 @@ export default function ProductionLinesPage() {
 
                       </div>
 
-                      {/* ── 8. ACTION BUTTON (VIEW DETAILS) ─────────── */}
+                      {/* ── 6. ACTION BUTTON (VIEW DETAILS) ─────────── */}
                       <div className="mt-auto pt-1">
                         <Link
                           href={detailsUrl}

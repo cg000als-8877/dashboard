@@ -11,6 +11,14 @@ import { PrintableArchiveReport } from '@/components/report/PrintableArchiveRepo
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { DashboardSkeleton } from '@/components/ui/Skeletons';
 import { cn } from '@/components/layout/Sidebar';
+import { CostRecoveryJar } from '@/components/dashboard/CostRecoveryJar';
+
+const DEFAULT_LINE_ITEMS = {
+  A: 'Polo Shirt',
+  B: 'Henley Shirt',
+  C: 'Crew Neck',
+  D: 'Fleece Hoodie'
+};
 
 // High-speed emergency ambulance siren beacon
 function AmbulanceBeacon() {
@@ -100,7 +108,7 @@ function DashboardDateRange({ dateInfo, workingDays = null, className = "" }) {
   const { isRange, startDay, endDay, startMonthShort, endMonthShort, year } = dateInfo;
 
   return (
-    <span className={cn("inline-flex items-center justify-center flex-wrap whitespace-nowrap text-[11px] sm:text-[12px] md:text-[13px] font-medium tracking-wide text-[var(--color-text-muted)] leading-tight uppercase", className)}>
+    <span className={cn("inline-flex items-center justify-center flex-wrap whitespace-nowrap text-[13px] sm:text-[14px] md:text-[17px] font-medium tracking-wide text-[var(--color-text-muted)] leading-tight uppercase", className)}>
       <span>FROM&nbsp;</span>
       {isRange ? (
         <>
@@ -616,13 +624,20 @@ export function DashboardContent({ month, isArchive = false }) {
             );
 
             const isNetProfit = displayStats.netProfit >= 0;
+            const isAvgDailyProfit = displayStats.averageDailyProfit >= 0;
+            const currentActiveLines = isArchive 
+              ? (lines || []) 
+              : (selectedCardMonth === 'august' ? (augustLines || lines || []) : (selectedCardMonth === 'july' ? (julyLines || lines || []) : (lines || [])));
+            const recoveryPercent = displayStats.totalCost > 0 
+              ? ((displayStats.totalIncome / displayStats.totalCost) * 100) 
+              : 0;
 
             return (
               <>
-                {/* ── MOBILE VIEW ONLY: 1 Big Top Highlighted Card + 2x2 Grid (4 Cards) ── */}
-                <div className="md:hidden flex flex-col gap-2 relative z-10 px-0.5">
+                {/* ── MOBILE VIEW ONLY: Wireframe-matched Redesign Layout ── */}
+                <div className="md:hidden flex flex-col gap-2.5 relative z-10 px-0.5">
                   
-                  {/* 1. TOP HIGHLIGHTED NET LOSS / PROFIT CARD */}
+                  {/* 1. TOP COMBINED CARD: NET LOSS (TOP) + AVERAGE DAILY LOSS (BOTTOM) */}
                   <Card 
                     hover 
                     data-color={isNetProfit ? 'success' : 'danger'}
@@ -634,8 +649,8 @@ export function DashboardContent({ month, isArchive = false }) {
                         : 'linear-gradient(135deg, var(--color-bg-card) 55%, rgba(239, 68, 68, 0.12) 100%)'
                     }}
                   >
+                    {/* Top Row: Net Loss Title & Value + Animated Trend Curve */}
                     <div className="flex items-center justify-between gap-3">
-                      {/* Left Side: Title + Bigger Number with reduced spacing */}
                       <div className="min-w-0 flex-1">
                         <h3 className="text-[11px] sm:text-xs font-bold uppercase tracking-widest text-[var(--color-text-secondary)] leading-none">
                           {isNetProfit ? "Net Profit" : "Net Loss"}
@@ -652,69 +667,199 @@ export function DashboardContent({ month, isArchive = false }) {
                         </p>
                       </div>
 
-                      {/* Right Side: Larger Animating Trend Curve vertically aligned in middle */}
+                      {/* Right Side Trend Curve */}
                       <div className="shrink-0 flex items-center justify-center pl-1">
                         <AnimatedTrendCurve isProfit={isNetProfit} className="w-20 sm:w-24 h-14 sm:h-16" />
                       </div>
                     </div>
 
-                    {/* Comparison Note across bottom */}
-                    {netComp && (
-                      <div className="flex flex-wrap items-baseline gap-x-1 gap-y-0.5 mt-2 pt-1.5 border-t border-[var(--color-border)]/40 text-[10.5px] leading-tight italic">
-                        <span className={cn(
-                          "font-bold inline-flex items-center gap-0.5 shrink-0 whitespace-nowrap",
-                          netComp.trend === 'neutral'
-                            ? "text-[var(--color-primary)]"
-                            : netComp.isPositive
-                              ? "text-[var(--color-success-text)]"
-                              : "text-[var(--color-danger-text)]"
-                        )}>
-                          {netComp.trend === 'up' && '▲ '}
-                          {netComp.trend === 'down' && '▼ '}
-                          {netComp.trend === 'neutral' && '• '}
-                          {netComp.highlight}
-                        </span>
-                        <span className="text-[var(--color-text-secondary)] font-medium break-words">
-                          {netComp.label}
-                        </span>
+                    {/* Divider Separator Line */}
+                    <div className="w-full h-px bg-[var(--color-border)]/60 my-2" />
+
+                    {/* Bottom Row: Comparing Context (Left) + Average Daily Loss (Right) */}
+                    <div className="flex items-center justify-between gap-2 pt-0.5">
+                      {/* Left: Comparing Text (Vertically centered / under divider) */}
+                      <div className="min-w-0 flex-1 pr-1">
+                        {netComp && (
+                          <div className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-[10.5px] leading-tight italic">
+                            <span className={cn(
+                              "font-bold inline-flex items-center gap-0.5 shrink-0 whitespace-nowrap",
+                              netComp.trend === 'neutral'
+                                ? "text-[var(--color-primary)]"
+                                : netComp.isPositive
+                                  ? "text-[var(--color-success-text)]"
+                                  : "text-[var(--color-danger-text)]"
+                            )}>
+                              {netComp.trend === 'up' && '▲ '}
+                              {netComp.trend === 'down' && '▼ '}
+                              {netComp.trend === 'neutral' && '• '}
+                              {netComp.highlight}
+                            </span>
+                            <span className="text-[var(--color-text-secondary)] font-medium break-words">
+                              {netComp.label}
+                            </span>
+                          </div>
+                        )}
                       </div>
-                    )}
+
+                      {/* Right: Average Daily Loss Metric */}
+                      <div className="shrink-0 text-right flex flex-col items-end justify-center">
+                        <span className="text-[9px] sm:text-[9.5px] font-bold uppercase tracking-wider text-[var(--color-text-secondary)] leading-none">
+                          {isAvgDailyProfit ? "Avg Daily Profit" : "Average Daily Loss"}
+                        </span>
+                        <p className={cn(
+                          "font-extrabold text-[14.5px] sm:text-[16px] tracking-tight mt-1 leading-none [filter:var(--shadow-text)] whitespace-nowrap",
+                          isAvgDailyProfit ? "text-[var(--color-success)]" : "text-[var(--color-danger)]"
+                        )}>
+                          <AnimatedNumber 
+                            value={Math.abs(Math.round(displayStats.averageDailyProfit))} 
+                            prefix={isAvgDailyProfit ? "+BDT " : "BDT -"} 
+                            suffix=" / day"
+                          />
+                        </p>
+                      </div>
+                    </div>
                   </Card>
 
-                  {/* 2. 2-COLUMN 2-ROW GRID (4 Cards) */}
+                  {/* 2. MIDDLE 2-COLUMN SECTION: Stacked Total Income/Cost (Left) + Cost Recovery Jar (Right) */}
                   <div className="grid grid-cols-2 gap-2">
-                    {/* Row 1, Col 1: Total Cost */}
-                    <MetricCard 
-                      title="Total Cost" 
-                      value={<AnimatedNumber value={Math.round(displayStats.totalCost)} prefix="BDT " />} 
-                      color="default"
-                      comparison={costComp}
-                    />
+                    {/* Left Column: 2 Stacked Financial Cards */}
+                    <div className="flex flex-col gap-2 justify-between">
+                      {/* 2a. Total Income Card */}
+                      <Card
+                        hover
+                        data-color="primary"
+                        className="p-3 sm:p-3.5 rounded-2xl border border-[var(--color-border)] flex flex-col justify-between flex-1 shadow-sm transition-all"
+                        style={{ backgroundColor: 'var(--color-bg-card)' }}
+                      >
+                        <div>
+                          <h4 className="text-[10px] sm:text-[10.5px] font-bold uppercase tracking-wider text-[var(--color-text-muted)] leading-tight">
+                            Total Income
+                          </h4>
+                          <p className="font-black text-[18px] sm:text-[20px] tracking-tight text-[var(--color-primary)] mt-1 mb-0.5 leading-tight [filter:var(--shadow-text)] truncate">
+                            <AnimatedNumber value={Math.round(displayStats.totalIncome)} prefix="BDT " />
+                          </p>
+                        </div>
+                        {incomeComp && (
+                          <div className="flex flex-wrap items-baseline gap-x-1 text-[9px] sm:text-[9.5px] leading-tight italic pt-1 border-t border-[var(--color-border)]/40 mt-1">
+                            <span className={cn("font-bold shrink-0", incomeComp.isPositive ? "text-[var(--color-success-text)]" : "text-[var(--color-danger-text)]")}>
+                              {incomeComp.highlight}
+                            </span>
+                            <span className="text-[var(--color-text-muted)] truncate">{incomeComp.label}</span>
+                          </div>
+                        )}
+                      </Card>
 
-                    {/* Row 1, Col 2: Total Income */}
-                    <MetricCard 
-                      title="Total Income" 
-                      value={<AnimatedNumber value={Math.round(displayStats.totalIncome)} prefix="BDT " />}
-                      color="primary"
-                      comparison={incomeComp}
-                    />
+                      {/* 2b. Total Cost Card */}
+                      <Card
+                        hover
+                        className="p-3 sm:p-3.5 rounded-2xl border border-[var(--color-border)] flex flex-col justify-between flex-1 shadow-sm transition-all"
+                        style={{ backgroundColor: 'var(--color-bg-card)' }}
+                      >
+                        <div>
+                          <h4 className="text-[10px] sm:text-[10.5px] font-bold uppercase tracking-wider text-[var(--color-text-muted)] leading-tight">
+                            Total Cost
+                          </h4>
+                          <p className="font-black text-[18px] sm:text-[20px] tracking-tight text-[var(--color-text-main)] mt-1 mb-0.5 leading-tight [filter:var(--shadow-text)] truncate">
+                            <AnimatedNumber value={Math.round(displayStats.totalCost)} prefix="BDT " />
+                          </p>
+                        </div>
+                        {costComp && (
+                          <div className="flex flex-wrap items-baseline gap-x-1 text-[9px] sm:text-[9.5px] leading-tight italic pt-1 border-t border-[var(--color-border)]/40 mt-1">
+                            <span className={cn("font-bold shrink-0", costComp.isPositive ? "text-[var(--color-success-text)]" : "text-[var(--color-danger-text)]")}>
+                              {costComp.highlight}
+                            </span>
+                            <span className="text-[var(--color-text-muted)] truncate">{costComp.label}</span>
+                          </div>
+                        )}
+                      </Card>
+                    </div>
 
-                    {/* Row 2, Col 1: Avg Daily Loss / Profit */}
-                    <MetricCard 
-                      title={displayStats.averageDailyProfit >= 0 ? "Avg Daily Profit" : "Avg Daily Loss"} 
-                      value={<AnimatedNumber value={Math.abs(Math.round(displayStats.averageDailyProfit))} prefix={displayStats.averageDailyProfit >= 0 ? "+" : "-"} suffix=" / day" />}
-                      color={displayStats.averageDailyProfit >= 0 ? 'success' : 'danger'}
-                      comparison={avgDailyComp}
-                    />
-
-                    {/* Row 2, Col 2: Production Lines */}
-                    <MetricCard 
-                      title="Production Lines" 
-                      value={<AnimatedNumber value={actLinesCount} suffix=" Active" />}
-                      color="default"
-                      comparison={linesComp}
-                    />
+                    {/* Right Column: Animated Fluid Cost Recovery Jar Card */}
+                    <Card
+                      hover
+                      data-color={displayStats.totalIncome >= displayStats.totalCost ? "success" : "primary"}
+                      className="p-3 sm:p-3.5 rounded-2xl border border-[var(--color-border)] flex flex-col justify-between items-center shadow-sm relative overflow-hidden transition-all"
+                      style={{ backgroundColor: 'var(--color-bg-card)' }}
+                    >
+                      <CostRecoveryJar
+                        percentage={recoveryPercent}
+                        isProfitable={displayStats.totalIncome >= displayStats.totalCost}
+                      />
+                    </Card>
                   </div>
+
+                  {/* 3. BOTTOM FULL-WIDTH PRODUCTION LINES OVERVIEW CARD */}
+                  <Card
+                    hover
+                    className="p-3.5 sm:p-4 rounded-2xl border border-[var(--color-border)] shadow-sm flex flex-col gap-2.5 transition-all"
+                    style={{ backgroundColor: 'var(--color-bg-card)' }}
+                  >
+                    {/* Header Row: Title & Active Lines Counter */}
+                    <div className="flex items-center justify-between gap-2">
+                      <div>
+                        <h4 className="text-[11px] sm:text-xs font-bold uppercase tracking-widest text-[var(--color-text-secondary)] leading-none">
+                          Production Lines
+                        </h4>
+                        <p className="font-black text-[18px] sm:text-[20px] text-[var(--color-text-main)] tracking-tight mt-1 leading-none [filter:var(--shadow-text)]">
+                          <AnimatedNumber value={actLinesCount} /> of {totLinesCount} <span className="text-[13px] sm:text-[14px] font-bold text-[var(--color-primary)] uppercase">Active</span>
+                        </p>
+                      </div>
+
+                      <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[var(--color-surface)] border border-[var(--color-border)] text-[9px] font-bold uppercase tracking-wider text-[var(--color-text-muted)]">
+                        <span className={cn(
+                          "w-2 h-2 rounded-full",
+                          actLinesCount === totLinesCount 
+                            ? "bg-emerald-400 shadow-[0_0_8px_#34D399] animate-pulse" 
+                            : "bg-[var(--color-primary)] shadow-[0_0_8px_var(--color-primary-glow)]"
+                        )} />
+                        <span>{actLinesCount === totLinesCount ? "Full Lineup" : `${actLinesCount} Running`}</span>
+                      </div>
+                    </div>
+
+                    {/* Lines Badges List: Line & Item In Production (Without dots) */}
+                    <div className="grid grid-cols-2 gap-1.5 pt-2 border-t border-[var(--color-border)]/50">
+                      {['A', 'B', 'C', 'D'].map((lineId) => {
+                        const lineData = currentActiveLines?.find(l => l.id?.toUpperCase() === lineId);
+                        const isLineActive = lineData 
+                          ? (lineData.totalProduction > 0 || lineData.totalCost > 0 || (lineData.activeDaysCount && lineData.activeDaysCount > 0))
+                          : true;
+                        const itemDesc = lineData?.lastActiveDay?.item || lineData?.today?.item || lineData?.item || DEFAULT_LINE_ITEMS[lineId] || 'Polo Shirt';
+
+                        return (
+                          <div
+                            key={lineId}
+                            className={cn(
+                              "flex items-center gap-2 p-2 rounded-xl border transition-all",
+                              isLineActive
+                                ? "bg-[var(--color-surface)] border-[var(--color-border)]/80 shadow-xs"
+                                : "bg-[var(--color-surface)]/30 border-[var(--color-border)]/30 opacity-60"
+                            )}
+                          >
+                            {/* Line Letter Pill */}
+                            <div className={cn(
+                              "w-7 h-7 rounded-lg flex items-center justify-center text-[11px] font-black shrink-0 tracking-tight",
+                              isLineActive
+                                ? "bg-[var(--color-primary)] text-[var(--color-on-primary,white)] shadow-xs"
+                                : "bg-zinc-700/40 text-[var(--color-text-muted)]"
+                            )}>
+                              {lineId}
+                            </div>
+
+                            {/* Line Info */}
+                            <div className="min-w-0 flex-1">
+                              <span className="text-[10.5px] font-bold text-[var(--color-text-main)] truncate block">
+                                Line {lineId}
+                              </span>
+                              <p className="text-[9px] font-medium text-[var(--color-text-muted)] truncate mt-0.5">
+                                {isLineActive ? itemDesc : 'Standby'}
+                              </p>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </Card>
                 </div>
 
                 {/* ── DESKTOP VIEW: Full 6-Card Grid ── */}
@@ -838,6 +983,10 @@ export function DashboardContent({ month, isArchive = false }) {
             return formatDateRangeInfo(startDate, endDate);
           })();
 
+          const currentStatsForDate = isArchive
+            ? stats
+            : (selectedCardMonth === 'august' ? augustStats : (selectedCardMonth === 'july' ? julyStats : stats));
+
           return (
             <div className="mt-12 mb-10 relative z-10">
               {/* Header Title & Date Subtitle */}
@@ -846,7 +995,7 @@ export function DashboardContent({ month, isArchive = false }) {
                   LINE SUMMARY {activeMonthName.toUpperCase()}
                 </h2>
                 <div className="mt-1 flex items-center justify-center">
-                  <DashboardDateRange dateInfo={activeDateInfo} />
+                  <DashboardDateRange dateInfo={activeDateInfo} workingDays={currentStatsForDate?.workingDays} />
                 </div>
               </div>
 
@@ -917,34 +1066,48 @@ export function DashboardContent({ month, isArchive = false }) {
                               )}
                             </div>
 
-                            <div className="flex flex-wrap items-center gap-x-3 sm:gap-x-4 gap-y-1 text-[11px] md:text-xs">
-                              <div className="font-semibold tracking-tight uppercase flex items-center gap-1">
-                                <span className="text-[var(--color-text-muted)] text-[10px]">ITEM :</span>
-                                <span className="text-[var(--color-primary)] font-bold">
-                                  {isInactive ? 'Standby / Idle' : (line.item || 'Unknown')}
-                                </span>
-                              </div>
-                              <div className="font-semibold tracking-tight uppercase flex items-center gap-1">
-                                <span className="text-[var(--color-text-muted)] text-[10px]">Efficiency :</span>
-                                <span className={cn(
-                                  "font-extrabold",
-                                  isInactive 
-                                    ? "text-[var(--color-text-muted)]"
+                            <div className="flex items-center gap-1 text-[11px] md:text-xs">
+                              <span className="text-[var(--color-text-muted)] text-[10px] font-semibold uppercase">ITEM :</span>
+                              <span className="text-[var(--color-primary)] font-bold uppercase">
+                                {isInactive ? 'Standby / Idle' : (line.item || 'Unknown')}
+                              </span>
+                            </div>
+                          </div>
+
+                          {/* Cost Recovery Progress Bar & Percentage */}
+                          <div className="space-y-1.5 mb-2.5">
+                            <div className="flex items-center justify-between text-[10px] sm:text-[11px] font-bold uppercase tracking-wider">
+                              <span className="text-[var(--color-text-muted)]">Cost Recovery</span>
+                              <span className={cn(
+                                "font-extrabold",
+                                isInactive 
+                                  ? "text-[var(--color-text-muted)]"
+                                  : parseFloat(line.monthCostRecovery || 0) >= 100 
+                                    ? "text-[var(--color-success-text)]" 
+                                    : "text-[var(--color-danger-text)]"
+                              )}>
+                                {line.monthCostRecovery || '0.0'}%
+                              </span>
+                            </div>
+
+                            {/* Progress Bar towards 100% Cost Recovery */}
+                            <div className="w-full bg-[var(--color-surface)] h-2 rounded-full overflow-hidden border border-[var(--color-border)]/40 relative">
+                              <div 
+                                className={cn(
+                                  "h-full rounded-full transition-all duration-700",
+                                  isInactive
+                                    ? "bg-zinc-600/30"
                                     : parseFloat(line.monthCostRecovery || 0) >= 100 
-                                      ? "text-[var(--color-success-text)]" 
-                                      : "text-[var(--color-danger-text)]"
-                                )}>
-                                  {line.monthCostRecovery || '0.0'}%
-                                </span>
-                              </div>
+                                      ? "bg-[var(--color-success)]" 
+                                      : "bg-[var(--color-danger)]"
+                                )}
+                                style={{ width: `${isInactive ? 0 : Math.min(parseFloat(line.monthCostRecovery || 0), 100)}%` }}
+                              />
                             </div>
                           </div>
 
                           {/* Cumulative Month Performance Grid (4-Card Row on Large / 2-Col on Tablet) */}
                           <div>
-                            <p className="text-[9.5px] uppercase tracking-wider font-bold text-[var(--color-text-muted)] mb-1.5">
-                              Month Total Summary ({activeMonthName})
-                            </p>
                             <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 md:gap-2.5">
                               <div className="bg-[var(--color-surface)] p-2.5 sm:p-3 rounded-xl border border-[var(--color-border)] shadow-xs">
                                 <p className="text-[9px] text-[var(--color-text-muted)] font-medium uppercase tracking-wider mb-0.5">Production</p>
