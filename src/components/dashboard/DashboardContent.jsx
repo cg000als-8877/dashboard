@@ -160,7 +160,7 @@ function AnimatedTrendCurve({ isProfit = false, className = "" }) {
               : "M 6 8 C 12 24, 16 44, 22 44 C 28 44, 30 28, 36 28 C 42 28, 44 58, 50 58 C 58 58, 62 32, 68 32 C 72 32, 74 48, 77 48 C 79 48, 80 42, 83 42 C 86 42, 88 64, 92 64 C 95 64, 97 52, 100 52 C 104 52, 106 70, 110 76"
           }
           stroke={`url(#${gradId})`}
-          strokeWidth="5.5"
+          strokeWidth="4.5"
           strokeLinecap="round"
           strokeLinejoin="round"
           style={{
@@ -174,12 +174,12 @@ function AnimatedTrendCurve({ isProfit = false, className = "" }) {
         <polygon
           points={
             isProfit
-              ? "124,6 116,30 96,16"
-              : "124,94 96,84 116,70"
+              ? "122,8 115,28 99,16"
+              : "122,92 99,80 115,68"
           }
           fill={solidColor}
           stroke={solidColor}
-          strokeWidth="2"
+          strokeWidth="1.5"
           strokeLinejoin="round"
           strokeLinecap="round"
           style={{
@@ -678,7 +678,7 @@ export function DashboardContent({ month, isArchive = false }) {
 
                       {/* Right Side Trend Curve */}
                       <div className="shrink-0 flex items-center justify-center pl-1">
-                        <AnimatedTrendCurve isProfit={isNetProfit} className="w-20 sm:w-24 h-14 sm:h-16" />
+                        <AnimatedTrendCurve isProfit={isNetProfit} className="w-14 sm:w-16 h-10 sm:h-11" />
                       </div>
                     </div>
 
@@ -902,7 +902,7 @@ export function DashboardContent({ month, isArchive = false }) {
 
                         {/* Right Side Trend Curve */}
                         <div className="shrink-0 flex items-center justify-center pl-2">
-                          <AnimatedTrendCurve isProfit={isNetProfit} className="w-24 sm:w-28 xl:w-32 h-16 sm:h-18 xl:h-20" />
+                          <AnimatedTrendCurve isProfit={isNetProfit} className="w-16 sm:w-20 xl:w-22 h-11 sm:h-13 xl:h-14" />
                         </div>
                       </div>
 
