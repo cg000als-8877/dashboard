@@ -631,6 +631,12 @@ export function DashboardContent({ month, isArchive = false }) {
             const currentActiveLines = isArchive 
               ? (lines || []) 
               : (selectedCardMonth === 'august' ? (augustLines || lines || []) : (selectedCardMonth === 'july' ? (julyLines || lines || []) : (lines || [])));
+            const activeLinesToRender = ['A', 'B', 'C', 'D'].filter((lineId) => {
+              const lineData = currentActiveLines?.find(l => l.id?.toUpperCase() === lineId);
+              if (!lineData) return false;
+              return (lineData.totalProduction > 0 || lineData.totalCost > 0 || (lineData.activeDaysCount && lineData.activeDaysCount > 0));
+            });
+            const renderedActiveLines = activeLinesToRender.length > 0 ? activeLinesToRender : ['A', 'B', 'C'];
             const recoveryPercent = displayStats.totalCost > 0 
               ? ((displayStats.totalIncome / displayStats.totalCost) * 100) 
               : 0;
@@ -820,25 +826,17 @@ export function DashboardContent({ month, isArchive = false }) {
                       </div>
                     </div>
 
-                    {/* Lines Badges List: Line Name, Item, & Total Production (No A/B/C/D letter pill) */}
-                    <div className="grid grid-cols-2 gap-1.5 pt-2 border-t border-[var(--color-border)]/50">
-                      {['A', 'B', 'C', 'D'].map((lineId) => {
+                    {/* Lines Badges List: Line Name, Item, & Total Production (Active lines only) */}
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-1.5 pt-2 border-t border-[var(--color-border)]/50">
+                      {renderedActiveLines.map((lineId) => {
                         const lineData = currentActiveLines?.find(l => l.id?.toUpperCase() === lineId);
-                        const isLineActive = lineData 
-                          ? (lineData.totalProduction > 0 || lineData.totalCost > 0 || (lineData.activeDaysCount && lineData.activeDaysCount > 0))
-                          : true;
                         const itemDesc = lineData?.lastActiveDay?.item || lineData?.today?.item || lineData?.item || DEFAULT_LINE_ITEMS[lineId] || 'Polo Shirt';
                         const totalProd = lineData?.totalProduction || 0;
 
                         return (
                           <div
                             key={lineId}
-                            className={cn(
-                              "flex items-center justify-between gap-1.5 p-2 rounded-xl border transition-all",
-                              isLineActive
-                                ? "bg-[var(--color-surface)] border-[var(--color-border)]/80 shadow-xs"
-                                : "bg-[var(--color-surface)]/30 border-[var(--color-border)]/30 opacity-60"
-                            )}
+                            className="flex items-center justify-between gap-1.5 p-2 rounded-xl border transition-all bg-[var(--color-surface)] border-[var(--color-border)]/80 shadow-xs"
                           >
                             {/* Line Info: Line Name & Item Name */}
                             <div className="min-w-0 flex-1">
@@ -846,21 +844,19 @@ export function DashboardContent({ month, isArchive = false }) {
                                 Line {lineId}
                               </span>
                               <p className="text-[9px] sm:text-[9.5px] font-medium text-[var(--color-text-muted)] truncate mt-0.5 leading-tight">
-                                {isLineActive ? itemDesc : 'Standby'}
+                                {itemDesc}
                               </p>
                             </div>
 
                             {/* Total Production Output */}
-                            {isLineActive && (
-                              <div className="text-right shrink-0 pl-1">
-                                <span className="text-[11px] sm:text-xs font-bold text-[var(--color-text-main)] block leading-tight">
-                                  <AnimatedNumber value={totalProd} />
-                                </span>
-                                <span className="text-[8px] font-semibold uppercase text-[var(--color-text-muted)] block leading-none">
-                                  pcs
-                                </span>
-                              </div>
-                            )}
+                            <div className="text-right shrink-0 pl-1">
+                              <span className="text-[11px] sm:text-xs font-bold text-[var(--color-text-main)] block leading-tight">
+                                <AnimatedNumber value={totalProd} />
+                              </span>
+                              <span className="text-[8px] font-semibold uppercase text-[var(--color-text-muted)] block leading-none">
+                                pcs
+                              </span>
+                            </div>
                           </div>
                         );
                       })}
@@ -1060,13 +1056,10 @@ export function DashboardContent({ month, isArchive = false }) {
                         </div>
                       </div>
 
-                      {/* Lines Badges List: Line & Item In Production */}
+                      {/* Lines Badges List: Line & Item In Production (Only active lines) */}
                       <div className="flex flex-col gap-2.5 pt-4 border-t border-[var(--color-border)]/50 flex-1 justify-around">
-                        {['A', 'B', 'C', 'D'].map((lineId) => {
+                        {renderedActiveLines.map((lineId) => {
                           const lineData = currentActiveLines?.find(l => l.id?.toUpperCase() === lineId);
-                          const isLineActive = lineData 
-                            ? (lineData.totalProduction > 0 || lineData.totalCost > 0 || (lineData.activeDaysCount && lineData.activeDaysCount > 0))
-                            : true;
                           const itemDesc = lineData?.lastActiveDay?.item || lineData?.today?.item || lineData?.item || DEFAULT_LINE_ITEMS[lineId] || 'Polo Shirt';
                           const workers = lineData?.lastDay?.worker_count || lineData?.averageWorkers || 0;
                           const output = lineData?.totalProduction || 0;
@@ -1074,21 +1067,11 @@ export function DashboardContent({ month, isArchive = false }) {
                           return (
                             <div
                               key={lineId}
-                              className={cn(
-                                "flex items-center justify-between gap-3 p-2.5 xl:p-3 rounded-xl border transition-all",
-                                isLineActive
-                                  ? "bg-[var(--color-surface)] border-[var(--color-border)]/80 shadow-xs"
-                                  : "bg-[var(--color-surface)]/30 border-[var(--color-border)]/30 opacity-60"
-                              )}
+                              className="flex items-center justify-between gap-3 p-2.5 xl:p-3 rounded-xl border transition-all bg-[var(--color-surface)] border-[var(--color-border)]/80 shadow-xs"
                             >
                               <div className="flex items-center gap-3 min-w-0">
                                 {/* Line Letter Pill */}
-                                <div className={cn(
-                                  "w-8 h-8 rounded-lg flex items-center justify-center text-xs font-black shrink-0 tracking-tight",
-                                  isLineActive
-                                    ? "bg-[var(--color-primary)] text-[var(--color-on-primary,white)] shadow-xs"
-                                    : "bg-zinc-700/40 text-[var(--color-text-muted)]"
-                                )}>
+                                <div className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-black shrink-0 tracking-tight bg-[var(--color-primary)] text-[var(--color-on-primary,white)] shadow-xs">
                                   {lineId}
                                 </div>
 
@@ -1098,21 +1081,15 @@ export function DashboardContent({ month, isArchive = false }) {
                                     Line {lineId}
                                   </span>
                                   <p className="text-[10.5px] sm:text-xs font-medium text-[var(--color-text-muted)] truncate">
-                                    {isLineActive ? itemDesc : 'Standby'}
+                                    {itemDesc}
                                   </p>
                                 </div>
                               </div>
 
                               <div className="text-right shrink-0">
-                                {isLineActive ? (
-                                  <span className="text-xs sm:text-[13px] font-bold text-[var(--color-text-main)] block">
-                                    {output > 0 ? `${output.toLocaleString()} pcs` : `${workers} w`}
-                                  </span>
-                                ) : (
-                                  <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">
-                                    Idle
-                                  </span>
-                                )}
+                                <span className="text-xs sm:text-[13px] font-bold text-[var(--color-text-main)] block">
+                                  {output > 0 ? `${output.toLocaleString()} pcs` : `${workers} w`}
+                                </span>
                               </div>
                             </div>
                           );
