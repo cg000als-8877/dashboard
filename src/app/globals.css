@@ -1650,44 +1650,43 @@ body {
 @keyframes emergency-strobe {
   0%, 100% {
     opacity: 1;
-    transform: scale(1);
-    filter: drop-shadow(0 0 10px rgba(239, 68, 68, 0.95));
-    box-shadow: 0 0 16px rgba(239, 68, 68, 0.6), inset 0 0 6px rgba(255, 59, 48, 0.4);
-    background-color: rgba(220, 38, 38, 0.35);
-    border-color: #FF3B30;
-    color: #FFFFFF;
-  }
-  25% {
-    opacity: 0.9;
-    transform: scale(1.05);
-    filter: drop-shadow(0 0 18px rgba(255, 0, 0, 1));
-    box-shadow: 0 0 22px rgba(255, 0, 0, 0.85), inset 0 0 10px rgba(255, 59, 48, 0.7);
-    background-color: rgba(239, 68, 68, 0.55);
-    border-color: #FF1A0D;
-    color: #FFFFFF;
+    box-shadow: 0 0 10px rgba(244, 63, 94, 0.25);
+    background-color: rgba(244, 63, 94, 0.15);
+    border-color: rgba(244, 63, 94, 0.45);
+    color: #FB7185;
   }
   50% {
-    opacity: 0.4;
-    transform: scale(0.97);
-    filter: drop-shadow(0 0 3px rgba(239, 68, 68, 0.3));
-    box-shadow: 0 0 5px rgba(239, 68, 68, 0.25);
-    background-color: rgba(220, 38, 38, 0.15);
-    border-color: rgba(255, 59, 48, 0.35);
-    color: rgba(255, 255, 255, 0.7);
+    opacity: 0.85;
+    box-shadow: 0 0 4px rgba(244, 63, 94, 0.1);
+    background-color: rgba(244, 63, 94, 0.08);
+    border-color: rgba(244, 63, 94, 0.25);
+    color: #F43F5E;
   }
-  75% {
-    opacity: 0.95;
-    transform: scale(1.03);
-    filter: drop-shadow(0 0 16px rgba(255, 59, 48, 0.95));
-    box-shadow: 0 0 18px rgba(255, 59, 48, 0.75), inset 0 0 8px rgba(255, 59, 48, 0.5);
-    background-color: rgba(239, 68, 68, 0.45);
-    border-color: #FF3B30;
-    color: #FFFFFF;
+}
+
+@keyframes emergency-strobe-light {
+  0%, 100% {
+    opacity: 1;
+    box-shadow: 0 1px 4px rgba(225, 29, 72, 0.12);
+    background-color: #FFE4E6;
+    border-color: #FDA4AF;
+    color: #BE123C;
+  }
+  50% {
+    opacity: 0.88;
+    box-shadow: 0 1px 2px rgba(225, 29, 72, 0.06);
+    background-color: #FFF1F2;
+    border-color: #FECDD3;
+    color: #E11D48;
   }
 }
 
 .animate-emergency-strobe {
-  animation: emergency-strobe 0.45s infinite ease-in-out;
+  animation: emergency-strobe 2.2s infinite ease-in-out;
+}
+
+.light-mode .animate-emergency-strobe {
+  animation: emergency-strobe-light 2.2s infinite ease-in-out;
 }
 
 @keyframes marquee {

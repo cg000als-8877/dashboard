@@ -21,16 +21,11 @@ const DEFAULT_LINE_ITEMS = {
   D: 'Fleece Hoodie'
 };
 
-// High-speed emergency ambulance siren beacon
+// Gentle emergency siren indicator
 function AmbulanceBeacon() {
   return (
-    <span className="relative flex items-center justify-center shrink-0 w-3.5 h-3.5 mr-0.5">
-      {/* Outer pulsing red emergency halo */}
-      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-80 duration-200" />
-      {/* Rotating emergency strobe ring */}
-      <span className="animate-spin absolute inline-flex h-4 w-4 rounded-full border border-red-300/60 border-t-white" style={{ animationDuration: '0.35s' }} />
-      {/* High-visibility Siren icon with rapid red/white strobe flash */}
-      <Siren className="relative w-3.5 h-3.5 text-white drop-shadow-[0_0_8px_#ff0000] animate-[pulse_0.2s_infinite]" />
+    <span className="relative flex items-center justify-center shrink-0 w-3 h-3 mr-0.5">
+      <Siren className="w-3 h-3 text-rose-600 dark:text-rose-400 shrink-0" />
     </span>
   );
 }
@@ -1257,12 +1252,12 @@ export function DashboardContent({ month, isArchive = false }) {
                                   Optimal
                                 </span>
                               ) : isLiveCurrent ? (
-                                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[8.5px] md:text-[9.5px] font-black uppercase tracking-widest transition-all animate-emergency-strobe cursor-default shadow-lg">
+                                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[8.5px] md:text-[9.5px] font-black uppercase tracking-widest border transition-all animate-emergency-strobe cursor-default">
                                   <AmbulanceBeacon />
                                   <span>Critical</span>
                                 </span>
                               ) : (
-                                <span className="inline-flex items-center px-2 py-0.5 rounded text-[8.5px] md:text-[9px] font-bold uppercase tracking-widest bg-rose-500/15 text-rose-700 dark:text-rose-400 border border-rose-500/30">
+                                <span className="inline-flex items-center px-2 py-0.5 rounded text-[8.5px] md:text-[9px] font-bold uppercase tracking-widest bg-rose-50 dark:bg-rose-500/15 text-rose-700 dark:text-rose-400 border border-rose-200 dark:border-rose-500/30">
                                   Critical
                                 </span>
                               )}
