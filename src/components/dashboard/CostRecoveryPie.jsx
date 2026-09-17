@@ -75,17 +75,20 @@ export function CostRecoveryPie({
     </span>
   );
 
+  const recoveryLabel = isCovered && Math.round(clamped) >= 100
+    ? `COST RECOVERED ${Math.round(clamped)}%`
+    : `COST RECOVERED ${Math.round(clamped)}% ONLY`;
+
   const defaultSubtitle = (
     <div className="flex flex-col items-center justify-center text-center mt-1 sm:mt-1.5 leading-tight">
       <span className={cn(
-        "font-semibold whitespace-nowrap",
-        isCovered ? "text-[var(--color-text-secondary)]" : "text-[var(--color-text-muted)]",
+        "font-semibold uppercase whitespace-nowrap text-[var(--color-text-secondary)]",
         compact ? "text-[8px] min-[350px]:text-[8.5px] min-[390px]:text-[9.5px] sm:text-[10.5px]" : "text-[11px] sm:text-xs xl:text-[13px]"
       )}>
-        {toneStatus.line2}
+        {recoveryLabel}
       </span>
       <span className={cn(
-        "font-bold whitespace-nowrap mt-0.5",
+        "font-normal italic whitespace-nowrap mt-0.5",
         toneStatus.line3Color,
         compact ? "text-[7.5px] min-[350px]:text-[8px] min-[390px]:text-[9px] sm:text-[10px]" : "text-[10px] sm:text-[11px] xl:text-xs"
       )}>
@@ -148,12 +151,12 @@ export function CostRecoveryPie({
             <AnimatedNumber value={Math.round(clamped)} suffix="%" />
           </span>
           <span className={cn(
-            "font-extrabold uppercase tracking-widest text-[var(--color-text-secondary)]",
+            "font-extrabold uppercase tracking-widest text-[var(--color-text-secondary)] leading-none",
             compact 
-              ? "text-[8px] min-[350px]:text-[8.5px] sm:text-[9.5px] mt-1" 
-              : "text-[8px] sm:text-[9.5px] md:text-[11px] mt-1.5"
+              ? "text-[7px] min-[350px]:text-[7.5px] sm:text-[9px] -mt-1 sm:-mt-0.5" 
+              : "text-[8px] sm:text-[9.5px] md:text-[11px] -mt-0.5 md:mt-1.5"
           )}>
-            {toneStatus.centerLabel}
+            Progress
           </span>
         </div>
       </div>
