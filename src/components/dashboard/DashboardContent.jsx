@@ -833,7 +833,7 @@ export function DashboardContent({ month, isArchive = false }) {
                         return (
                           <div
                             key={lineId}
-                            className="flex items-center justify-between gap-1.5 p-2 rounded-xl border transition-all bg-[var(--color-surface)] border-[var(--color-border)]/80 shadow-xs"
+                            className="flex items-center justify-between gap-1.5 p-2 rounded-[4px] border transition-all bg-[var(--color-surface)] border-[var(--color-border)]/80 shadow-xs"
                           >
                             {/* Line Info: Line Name & Item Name */}
                             <div className="min-w-0 flex-1">
@@ -1064,11 +1064,11 @@ export function DashboardContent({ month, isArchive = false }) {
                           return (
                             <div
                               key={lineId}
-                              className="flex items-center justify-between gap-2.5 p-2 xl:p-2.5 rounded-xl border transition-all bg-[var(--color-surface)] border-[var(--color-border)]/80 shadow-xs"
+                              className="flex items-center justify-between gap-2.5 p-2 xl:p-2.5 rounded-[4px] border transition-all bg-[var(--color-surface)] border-[var(--color-border)]/80 shadow-xs"
                             >
                               <div className="flex items-center gap-2.5 min-w-0 flex-1">
                                 {/* Line Letter Pill */}
-                                <div className="w-7 h-7 xl:w-8 xl:h-8 rounded-lg flex items-center justify-center text-xs font-black shrink-0 tracking-tight bg-[var(--color-primary)] text-[var(--color-on-primary,white)] shadow-xs">
+                                <div className="w-7 h-7 xl:w-8 xl:h-8 rounded-[2px] flex items-center justify-center text-xs font-black shrink-0 tracking-tight bg-[var(--color-primary)] text-[var(--color-on-primary,white)] shadow-xs">
                                   {lineId}
                                 </div>
 
@@ -1244,20 +1244,20 @@ export function DashboardContent({ month, isArchive = false }) {
                               </h2>
                               
                               {isInactive ? (
-                                <span className="inline-flex items-center px-2 py-0.5 rounded text-[8.5px] md:text-[9px] font-bold uppercase tracking-widest bg-zinc-500/15 text-zinc-700 dark:text-zinc-400 border border-zinc-500/30">
+                                <span className="inline-flex items-center px-2 py-0.5 rounded-[2px] text-[8.5px] md:text-[9px] font-bold uppercase tracking-widest bg-zinc-500/15 text-zinc-700 dark:text-zinc-400 border border-zinc-500/30">
                                   Idle
                                 </span>
                               ) : isProfitable ? (
-                                <span className="inline-flex items-center px-2 py-0.5 rounded text-[8.5px] md:text-[9px] font-bold uppercase tracking-widest bg-[var(--color-success-glow)] text-[var(--color-success-text)] border border-[rgba(16,185,129,0.2)]">
+                                <span className="inline-flex items-center px-2 py-0.5 rounded-[2px] text-[8.5px] md:text-[9px] font-bold uppercase tracking-widest bg-[var(--color-success-glow)] text-[var(--color-success-text)] border border-[rgba(16,185,129,0.2)]">
                                   Optimal
                                 </span>
                               ) : isLiveCurrent ? (
-                                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[8.5px] md:text-[9.5px] font-black uppercase tracking-widest border transition-all animate-emergency-strobe cursor-default">
+                                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[2px] text-[8.5px] md:text-[9.5px] font-black uppercase tracking-widest border transition-all animate-emergency-strobe cursor-default">
                                   <AmbulanceBeacon />
                                   <span>Critical</span>
                                 </span>
                               ) : (
-                                <span className="inline-flex items-center px-2 py-0.5 rounded text-[8.5px] md:text-[9px] font-bold uppercase tracking-widest bg-rose-50 dark:bg-rose-500/15 text-rose-700 dark:text-rose-400 border border-rose-200 dark:border-rose-500/30">
+                                <span className="inline-flex items-center px-2 py-0.5 rounded-[2px] text-[8.5px] md:text-[9px] font-bold uppercase tracking-widest bg-rose-50 dark:bg-rose-500/15 text-rose-700 dark:text-rose-400 border border-rose-200 dark:border-rose-500/30">
                                   Critical
                                 </span>
                               )}

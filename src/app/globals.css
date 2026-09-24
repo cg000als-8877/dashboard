@@ -31,6 +31,14 @@
   
   --shadow-text: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
 
+  --radius-3xl: 8px;
+  --radius-2xl: 8px;
+  --radius-xl: 6px;
+  --radius-lg: 6px;
+  --radius-md: 4px;
+  --radius-sm: 2px;
+  --radius-xs: 2px;
+
   --font-sans: 'Inter', sans-serif;
   --font-display: var(--font-space-grotesk), sans-serif;
 }
