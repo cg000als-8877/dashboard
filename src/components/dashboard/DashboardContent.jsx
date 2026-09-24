@@ -15,9 +15,9 @@ import { CostRecoveryJar } from '@/components/dashboard/CostRecoveryJar';
 import { CostRecoveryPie } from '@/components/dashboard/CostRecoveryPie';
 
 const DEFAULT_LINE_ITEMS = {
-  A: 'Polo Shirt',
-  B: 'Henley Shirt',
-  C: 'Crew Neck',
+  A: 'Sherpa Jacket, Boys Shirt',
+  B: 'Boxer, Boys Shirt',
+  C: 'Boxer',
   D: 'Fleece Hoodie'
 };
 
@@ -745,11 +745,11 @@ export function DashboardContent({ month, isArchive = false }) {
                           </p>
                         </div>
                         {incomeComp && (
-                          <div className="flex flex-wrap items-baseline gap-x-1 text-[9px] sm:text-[9.5px] leading-tight italic pt-1 border-t border-[var(--color-border)]/40 mt-1">
-                            <span className={cn("font-bold shrink-0", incomeComp.isPositive ? "text-[var(--color-success-text)]" : "text-[var(--color-danger-text)]")}>
+                          <div className="flex flex-col items-start gap-y-0.5 text-[9px] sm:text-[9.5px] leading-snug italic pt-1 border-t border-[var(--color-border)]/40 mt-1">
+                            <span className={cn("font-bold shrink-0 leading-normal", incomeComp.isPositive ? "text-[var(--color-success-text)]" : "text-[var(--color-danger-text)]")}>
                               {incomeComp.highlight}
                             </span>
-                            <span className="text-[var(--color-text-muted)] truncate">{incomeComp.label}</span>
+                            <span className="text-[var(--color-text-muted)] text-[8.5px] sm:text-[9px] leading-normal truncate w-full">{incomeComp.label}</span>
                           </div>
                         )}
                       </Card>
@@ -769,11 +769,11 @@ export function DashboardContent({ month, isArchive = false }) {
                           </p>
                         </div>
                         {costComp && (
-                          <div className="flex flex-wrap items-baseline gap-x-1 text-[9px] sm:text-[9.5px] leading-tight italic pt-1 border-t border-[var(--color-border)]/40 mt-1">
-                            <span className={cn("font-bold shrink-0", costComp.isPositive ? "text-[var(--color-success-text)]" : "text-[var(--color-danger-text)]")}>
+                          <div className="flex flex-col items-start gap-y-0.5 text-[9px] sm:text-[9.5px] leading-snug italic pt-1 border-t border-[var(--color-border)]/40 mt-1">
+                            <span className={cn("font-bold shrink-0 leading-normal", costComp.isPositive ? "text-[var(--color-success-text)]" : "text-[var(--color-danger-text)]")}>
                               {costComp.highlight}
                             </span>
-                            <span className="text-[var(--color-text-muted)] truncate">{costComp.label}</span>
+                            <span className="text-[var(--color-text-muted)] text-[8.5px] sm:text-[9px] leading-normal truncate w-full">{costComp.label}</span>
                           </div>
                         )}
                       </Card>
@@ -827,7 +827,7 @@ export function DashboardContent({ month, isArchive = false }) {
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-1.5 pt-2 border-t border-[var(--color-border)]/50">
                       {renderedActiveLines.map((lineId) => {
                         const lineData = currentActiveLines?.find(l => l.id?.toUpperCase() === lineId);
-                        const itemDesc = lineData?.lastActiveDay?.item || lineData?.today?.item || lineData?.item || DEFAULT_LINE_ITEMS[lineId] || 'Polo Shirt';
+                        const itemDesc = (lineData?.items && lineData.items.length > 0 ? lineData.items.join(', ') : null) || lineData?.item || lineData?.lastActiveDay?.item || lineData?.today?.item || DEFAULT_LINE_ITEMS[lineId] || 'Polo Shirt';
                         const totalProd = lineData?.totalProduction || 0;
 
                         return (
@@ -909,9 +909,9 @@ export function DashboardContent({ month, isArchive = false }) {
                         {/* Left: Comparing Text */}
                         <div className="min-w-0 flex-1 pr-1.5">
                           {netComp && (
-                            <div className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-[11px] sm:text-xs xl:text-[13px] leading-tight italic">
+                            <div className="flex flex-wrap items-baseline gap-x-1.5 gap-y-1 text-[11px] sm:text-xs xl:text-[13px] leading-snug italic">
                               <span className={cn(
-                                "font-bold inline-flex items-center gap-0.5 shrink-0 whitespace-nowrap",
+                                "font-bold inline-flex items-center gap-0.5 shrink-0 whitespace-nowrap leading-normal",
                                 netComp.trend === 'neutral'
                                   ? "text-[var(--color-primary)]"
                                   : netComp.isPositive
@@ -923,7 +923,7 @@ export function DashboardContent({ month, isArchive = false }) {
                                 {netComp.trend === 'neutral' && '• '}
                                 {netComp.highlight}
                               </span>
-                              <span className="text-[var(--color-text-secondary)] font-medium break-words">
+                              <span className="text-[var(--color-text-secondary)] font-medium break-words leading-normal">
                                 {netComp.label}
                               </span>
                             </div>
@@ -968,11 +968,11 @@ export function DashboardContent({ month, isArchive = false }) {
                           </p>
                         </div>
                         {incomeComp && (
-                          <div className="flex flex-wrap items-baseline gap-x-1 text-[10px] xl:text-xs leading-tight italic pt-1.5 border-t border-[var(--color-border)]/40 mt-1">
-                            <span className={cn("font-bold shrink-0", incomeComp.isPositive ? "text-[var(--color-success-text)]" : "text-[var(--color-danger-text)]")}>
+                          <div className="flex flex-col xl:flex-row xl:flex-wrap items-start xl:items-baseline gap-x-1.5 gap-y-0.5 text-[10px] xl:text-xs leading-snug italic pt-1.5 border-t border-[var(--color-border)]/40 mt-1.5">
+                            <span className={cn("font-bold shrink-0 leading-normal", incomeComp.isPositive ? "text-[var(--color-success-text)]" : "text-[var(--color-danger-text)]")}>
                               {incomeComp.highlight}
                             </span>
-                            <span className="text-[var(--color-text-muted)] text-[10px] xl:text-xs leading-tight">{incomeComp.label}</span>
+                            <span className="text-[var(--color-text-muted)] text-[10px] xl:text-[11px] leading-normal">{incomeComp.label}</span>
                           </div>
                         )}
                       </Card>
@@ -993,11 +993,11 @@ export function DashboardContent({ month, isArchive = false }) {
                           </p>
                         </div>
                         {costComp && (
-                          <div className="flex flex-wrap items-baseline gap-x-1 text-[10px] xl:text-xs leading-tight italic pt-1.5 border-t border-[var(--color-border)]/40 mt-1">
-                            <span className={cn("font-bold shrink-0", costComp.isPositive ? "text-[var(--color-success-text)]" : "text-[var(--color-danger-text)]")}>
+                          <div className="flex flex-col xl:flex-row xl:flex-wrap items-start xl:items-baseline gap-x-1.5 gap-y-0.5 text-[10px] xl:text-xs leading-snug italic pt-1.5 border-t border-[var(--color-border)]/40 mt-1.5">
+                            <span className={cn("font-bold shrink-0 leading-normal", costComp.isPositive ? "text-[var(--color-success-text)]" : "text-[var(--color-danger-text)]")}>
                               {costComp.highlight}
                             </span>
-                            <span className="text-[var(--color-text-muted)] text-[10px] xl:text-xs leading-tight">{costComp.label}</span>
+                            <span className="text-[var(--color-text-muted)] text-[10px] xl:text-[11px] leading-normal">{costComp.label}</span>
                           </div>
                         )}
                       </Card>
@@ -1057,7 +1057,7 @@ export function DashboardContent({ month, isArchive = false }) {
                       <div className="flex flex-col gap-2 xl:gap-2.5 pt-3.5 border-t border-[var(--color-border)]/50 flex-1 justify-around">
                         {renderedActiveLines.map((lineId) => {
                           const lineData = currentActiveLines?.find(l => l.id?.toUpperCase() === lineId);
-                          const itemDesc = lineData?.lastActiveDay?.item || lineData?.today?.item || lineData?.item || DEFAULT_LINE_ITEMS[lineId] || 'Polo Shirt';
+                          const itemDesc = (lineData?.items && lineData.items.length > 0 ? lineData.items.join(', ') : null) || lineData?.item || lineData?.lastActiveDay?.item || lineData?.today?.item || DEFAULT_LINE_ITEMS[lineId] || 'Polo Shirt';
                           const workers = lineData?.lastDay?.worker_count || lineData?.averageWorkers || 0;
                           const output = lineData?.totalProduction || 0;
 

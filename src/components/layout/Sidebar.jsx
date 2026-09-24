@@ -47,10 +47,10 @@ const navItems = [
 
 
 const DEFAULT_LINE_ITEMS = {
-  'A': 'Sherpa Jacket',
-  'B': 'Boxer',
+  'A': 'Sherpa Jacket, Boys Shirt',
+  'B': 'Boxer, Boys Shirt',
   'C': 'Boxer',
-  'D': "Men's Tshirt"
+  'D': "Fleece Hoodie"
 };
 
 export default function Sidebar({ onClose }) {
@@ -242,7 +242,7 @@ export default function Sidebar({ onClose }) {
                         const href = `/lines/${lineId}`;
                         const isLineActive = pathname === href;
                         const lineData = lines?.find(l => l.id?.toUpperCase() === lineId);
-                        const itemDesc = lineData?.lastActiveDay?.item || lineData?.today?.item || lineData?.item || DEFAULT_LINE_ITEMS[lineId] || 'N/A';
+                        const itemDesc = (lineData?.items && lineData.items.length > 0 ? lineData.items.join(', ') : null) || lineData?.item || lineData?.lastActiveDay?.item || lineData?.today?.item || DEFAULT_LINE_ITEMS[lineId] || 'N/A';
 
                         return (
                           <Link
