@@ -521,8 +521,8 @@ export function DashboardContent({ month, isArchive = false }) {
                   )}
                 >
                   <span>SEPTEMBER</span>
-                  <span className="text-[8.5px] sm:text-[10px] text-[var(--color-primary)] font-black tracking-wide">(LIVE)</span>
-                  <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[var(--color-primary)] shadow-[0_0_8px_var(--color-primary-glow)] animate-pulse shrink-0" />
+                  <span className="text-[8.5px] sm:text-[10px] text-red-500 font-black tracking-wide">(LIVE)</span>
+                  <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.8)] animate-pulse shrink-0" />
                 </button>
 
                 <button

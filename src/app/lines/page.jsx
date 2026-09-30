@@ -240,7 +240,8 @@ export default function ProductionLinesPage() {
               )}
             >
               <span>SEPTEMBER</span>
-              <span className="text-[7.5px] sm:text-[9.5px] text-rose-500 font-black tracking-wide">(LIVE)</span>
+              <span className="text-[7.5px] sm:text-[9.5px] text-red-500 font-black tracking-wide">(LIVE)</span>
+              <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.8)] animate-pulse shrink-0" />
             </button>
 
             <button
