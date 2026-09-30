@@ -238,8 +238,7 @@ export function MobileBottomNav({ isOthersOpen, onToggleOthers, onOthersClose })
           >
             <LayoutDashboard 
               size={18}
-              strokeWidth={isDashboard ? 2.6 : 2}
-              fill={isDashboard ? "currentColor" : "none"}
+              strokeWidth={isDashboard ? 2.5 : 1.8}
               className={cn(
                 "mb-0.5 transition-colors",
                 isDashboard ? "text-[var(--color-primary)]" : "text-[var(--color-text-muted)] group-hover:text-[var(--color-text-main)]"
@@ -263,8 +262,7 @@ export function MobileBottomNav({ isOthersOpen, onToggleOthers, onOthersClose })
           >
             <Factory 
               size={18}
-              strokeWidth={isLines ? 2.6 : 2}
-              fill={isLines ? "currentColor" : "none"}
+              strokeWidth={isLines ? 2.5 : 1.8}
               className={cn(
                 "mb-0.5 transition-colors",
                 isLines ? "text-[var(--color-primary)]" : "text-[var(--color-text-muted)] group-hover:text-[var(--color-text-main)]"
@@ -304,8 +302,7 @@ export function MobileBottomNav({ isOthersOpen, onToggleOthers, onOthersClose })
           >
             <History 
               size={18}
-              strokeWidth={isArchive ? 2.6 : 2}
-              fill={isArchive ? "currentColor" : "none"}
+              strokeWidth={isArchive ? 2.5 : 1.8}
               className={cn(
                 "mb-0.5 transition-colors",
                 isArchive ? "text-[var(--color-primary)]" : "text-[var(--color-text-muted)] group-hover:text-[var(--color-text-main)]"

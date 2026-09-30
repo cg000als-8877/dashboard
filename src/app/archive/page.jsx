@@ -115,7 +115,7 @@ export default function ArchiveDirectoryPage() {
     <div className="space-y-8 animate-[fade-up_0.4s_ease-out_both] md:pt-0">
       
       {/* Archive Header */}
-      <header className="flex flex-col mb-8 relative z-10">
+      <header className="flex flex-col items-center text-center md:items-start md:text-left mb-8 relative z-10">
         <h1 className="text-[26px] md:text-[42px] font-bold tracking-[0.04em] uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] via-[var(--color-text-secondary)] to-[var(--color-text-muted)] font-display">Archive</h1>
         <p className="text-[var(--color-primary)] font-medium tracking-wide uppercase text-[10px] md:text-xs mt-1 md:mt-2">Past Performance Records</p>
       </header>

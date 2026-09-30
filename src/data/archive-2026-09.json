@@ -1147,14 +1147,14 @@
       "line_id": "C",
       "style": "",
       "item": "BOXER",
-      "worker_count": 26,
+      "worker_count": 31,
       "per_head_cost": 1730,
-      "total_cost": 44980,
+      "total_cost": 53630,
       "production_qty": 2400,
       "production_dzn": 200,
       "cm_per_dzn": 150,
       "total_income": 30000,
-      "net_profit": -14980,
+      "net_profit": -23630,
       "status": "ACTIVE"
     },
     {
