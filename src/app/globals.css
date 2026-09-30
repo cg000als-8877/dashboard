@@ -1655,6 +1655,23 @@ body {
   animation: slow-blink 1.2s infinite ease-in-out;
 }
 
+@keyframes fast-arrow-blink {
+  0%, 100% {
+    color: #EF4444;
+    filter: drop-shadow(0 0 4px rgba(239, 68, 68, 0.75));
+    opacity: 1;
+  }
+  50% {
+    color: #94A3B8;
+    filter: none;
+    opacity: 0.45;
+  }
+}
+
+.animate-fast-arrow-blink {
+  animation: fast-arrow-blink 0.4s infinite ease-in-out;
+}
+
 @keyframes emergency-strobe {
   0%, 100% {
     opacity: 1;

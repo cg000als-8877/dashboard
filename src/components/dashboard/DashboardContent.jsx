@@ -461,8 +461,10 @@ export function DashboardContent({ month, isArchive = false }) {
               <ChevronDown 
                 size={11} 
                 className={cn(
-                  "text-[var(--color-text-muted)] group-hover:text-[var(--color-primary)] transition-transform duration-300",
-                  showAnimation && "rotate-180 text-[var(--color-primary)]"
+                  "transition-transform duration-300",
+                  showAnimation 
+                    ? "rotate-180 text-[var(--color-primary)]" 
+                    : "animate-fast-arrow-blink"
                 )} 
               />
             </button>
