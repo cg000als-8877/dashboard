@@ -4,7 +4,7 @@ import { useKpiData } from '@/utils/useKpiData';
 import { MetricCard, Card } from '@/components/ui/Card';
 import { DailyPerformanceChart, IncomeVsCostChart } from '@/components/dashboard/DashboardCharts';
 import { TitanicAnimation } from '@/components/ui/TitanicAnimation';
-import { Sparkles, ArrowRight, Download, FileText, Ship, Siren } from 'lucide-react';
+import { Sparkles, ArrowRight, Download, FileText, Ship, Siren, ChevronDown } from 'lucide-react';
 import Link from 'next/link';
 import { RealTimeClock } from '@/components/ui/RealTimeClock';
 import { PrintableArchiveReport } from '@/components/report/PrintableArchiveReport';
@@ -446,21 +446,44 @@ export function DashboardContent({ month, isArchive = false }) {
   return (
     <>
       <div className="space-y-6 animate-[fade-up_0.4s_ease-out_both] no-print">
-        {/* Titanic Animation (Live Dashboard Only) - 3:2 format, 0 top & left/right padding on mobile */}
+        {/* Mobile Attached Visual Condition Trigger (Attached directly to top nav bar) */}
+        {!isArchive && (
+          <div className="md:hidden -mx-3.5 sm:-mx-5 -mt-3.5 sm:-mt-5 mb-2">
+            <button
+              type="button"
+              onClick={() => setShowAnimation(!showAnimation)}
+              className="w-full py-1.5 px-3 bg-[var(--color-bg-card)]/90 backdrop-blur-md border-b border-[var(--color-border)]/70 flex items-center justify-center gap-1.5 transition-colors active:bg-[var(--color-surface-hover)] cursor-pointer group select-none shadow-xs"
+              aria-expanded={showAnimation}
+            >
+              <span className="text-[8.5px] italic text-[var(--color-text-muted)] group-hover:text-[var(--color-primary)] transition-colors leading-none">
+                {showAnimation ? 'hide visual condition of factory' : 'see visual condition of factory'}
+              </span>
+              <ChevronDown 
+                size={11} 
+                className={cn(
+                  "text-[var(--color-text-muted)] group-hover:text-[var(--color-primary)] transition-transform duration-300",
+                  showAnimation && "rotate-180 text-[var(--color-primary)]"
+                )} 
+              />
+            </button>
+          </div>
+        )}
+
+        {/* Titanic Animation (Live Dashboard Only) - Smoothly descends from above */}
         {!isArchive && showAnimation && (
-          <div className="flex flex-col relative z-10 -mt-10 md:-mt-8 -mx-4 md:-mx-8 w-[calc(100%+2rem)] md:w-[calc(100%+4rem)] overflow-hidden">
-            <div className="w-full transition-all duration-500 ease-in-out origin-top overflow-hidden border-none rounded-none opacity-100 mb-2 animate-[fade-down_0.3s_ease-out]">
+          <div className="flex flex-col relative z-10 -mx-3.5 sm:-mx-5 md:-mx-8 w-[calc(100%+1.75rem)] sm:w-[calc(100%+2.5rem)] md:w-[calc(100%+4rem)] overflow-hidden mb-3 animate-[fade-down_0.35s_cubic-bezier(0.16,1,0.3,1)] origin-top">
+            <div className="w-full transition-all duration-500 ease-in-out origin-top overflow-hidden border-none rounded-none opacity-100">
               <TitanicAnimation netProfit={stats.netProfit} simDay={displayDay} />
             </div>
           </div>
         )}
 
-        {/* Hide/Show Visuals Button (Above Factory Financials Title, Center Aligned on Desktop & Mobile) */}
+        {/* Desktop Visuals Toggle (Hidden on Mobile) */}
         {!isArchive && (
-          <div className={`flex justify-center items-center ${!showAnimation ? 'mt-[2px] md:mt-0 mb-3' : 'mt-2 mb-3'}`}>
+          <div className="hidden md:flex justify-center items-center mb-3">
             <button
               onClick={() => setShowAnimation(!showAnimation)}
-              className={`px-2 py-0.5 md:px-3 md:py-1 rounded-full border border-[var(--color-border)] text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:border-[var(--color-border-strong,var(--color-primary))] bg-transparent text-[8.5px] md:text-[10px] font-medium tracking-wider uppercase transition-all active:scale-95 cursor-pointer select-none leading-tight ${!showAnimation ? 'animate-slow-blink' : ''}`}
+              className="px-3 py-1 rounded-full border border-[var(--color-border)] text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:border-[var(--color-primary)] bg-transparent text-[10px] font-medium tracking-wider uppercase transition-all active:scale-95 cursor-pointer select-none leading-tight"
             >
               {showAnimation ? 'Hide Visuals' : 'Show Visuals'}
             </button>
