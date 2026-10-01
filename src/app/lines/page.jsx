@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import { useKpiData } from '@/utils/useKpiData';
 import { useDensity } from '@/components/providers/DensityProvider';
 import { DensitySwitcher } from '@/components/ui/DensitySwitcher';
@@ -33,8 +33,19 @@ import {
 // Formats date range as e.g. FROM "01 SEP TO 02 SEP, 2026" with highlight (all uppercase)
 function formatDateRangeInfo(startDateStr, endDateStr, overrideMonth, overrideYear) {
   if (overrideMonth && overrideYear) {
+    const isSep = overrideMonth.toLowerCase().startsWith('sep');
     const isAug = overrideMonth.toLowerCase().startsWith('aug');
     const isJul = overrideMonth.toLowerCase().startsWith('jul');
+    if (isSep) {
+      return {
+        isRange: true,
+        startDay: '01',
+        endDay: '30',
+        startMonthShort: 'SEP',
+        endMonthShort: 'SEP',
+        year: overrideYear
+      };
+    }
     if (isAug) {
       return {
         isRange: true,
@@ -58,7 +69,7 @@ function formatDateRangeInfo(startDateStr, endDateStr, overrideMonth, overrideYe
   }
 
   if (!startDateStr || !endDateStr) {
-    const m = (overrideMonth || 'SEP').slice(0, 3).toUpperCase();
+    const m = (overrideMonth || 'OCT').slice(0, 3).toUpperCase();
     return {
       isRange: false,
       startDay: '01',
@@ -129,6 +140,43 @@ function LinesDateRange({ dateInfo, workingDays = null, className = "" }) {
 export default function ProductionLinesPage() {
   const [selectedMonthTab, setSelectedMonthTab] = useState('current'); // 'current' | 'august' | 'july'
   const [selectedMobileLine, setSelectedMobileLine] = useState('A');
+  const touchStartXRef = useRef(null);
+  const touchStartYRef = useRef(null);
+
+  const handleTouchStart = (e) => {
+    touchStartXRef.current = e.touches[0].clientX;
+    touchStartYRef.current = e.touches[0].clientY;
+  };
+
+  const handleTouchEnd = (e) => {
+    if (touchStartXRef.current === null) return;
+    const touchEndX = e.changedTouches[0].clientX;
+    const touchEndY = e.changedTouches[0].clientY;
+    
+    const deltaX = touchEndX - touchStartXRef.current;
+    const deltaY = touchEndY - touchStartYRef.current;
+    
+    // Check horizontal swipe threshold (minimum 25px motion where horizontal exceeds vertical)
+    if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 25) {
+      const linesOrder = ['A', 'B', 'C', 'D'];
+      const currentIndex = linesOrder.indexOf(selectedMobileLine);
+      
+      if (deltaX < 0) {
+        // Swiped left -> Advance to next line (exactly 1 step)
+        if (currentIndex < linesOrder.length - 1) {
+          setSelectedMobileLine(linesOrder[currentIndex + 1]);
+        }
+      } else if (deltaX > 0) {
+        // Swiped right -> Go back to previous line (exactly 1 step)
+        if (currentIndex > 0) {
+          setSelectedMobileLine(linesOrder[currentIndex - 1]);
+        }
+      }
+    }
+    
+    touchStartXRef.current = null;
+    touchStartYRef.current = null;
+  };
   const { density: globalDensity } = useDensity();
   const [density, setDensityState] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -145,29 +193,32 @@ export default function ProductionLinesPage() {
     } catch (e) {}
   };
 
-  // Load datasets for Live (September), August archive, and July archive
+  // Load datasets for Live (October), September archive, August archive, and July archive
   const { rawEngine: liveEngine, stats: liveStats, dailyTrends: liveDailyTrends, lines: liveLines, loading: liveLoading, error: liveError } = useKpiData('live');
+  const { rawEngine: septemberEngine, stats: septemberStats, dailyTrends: septemberDailyTrends, lines: septemberLines, loading: septemberLoading } = useKpiData('2026-09');
   const { rawEngine: augustEngine, stats: augustStats, dailyTrends: augustDailyTrends, lines: augustLines, loading: augustLoading } = useKpiData('2026-08');
   const { rawEngine: julyEngine, stats: julyStats, dailyTrends: julyDailyTrends, lines: julyLines, loading: julyLoading } = useKpiData('2026-07');
 
   // Active dataset determination
+  const isSeptember = selectedMonthTab === 'september';
   const isAugust = selectedMonthTab === 'august';
   const isJuly = selectedMonthTab === 'july';
   const isLive = selectedMonthTab === 'current';
 
-  const currentStats = isAugust ? (augustStats || liveStats) : (isJuly ? (julyStats || liveStats) : liveStats);
-  const currentLines = isAugust ? (augustLines || liveLines || []) : (isJuly ? (julyLines || liveLines || []) : (liveLines || []));
-  const currentEngine = isAugust ? augustEngine : (isJuly ? julyEngine : liveEngine);
-  const activeMonthName = isAugust ? 'AUGUST' : (isJuly ? 'JULY' : 'SEPTEMBER');
+  const currentStats = isSeptember ? (septemberStats || liveStats) : (isAugust ? (augustStats || liveStats) : (isJuly ? (julyStats || liveStats) : liveStats));
+  const currentLines = isSeptember ? (septemberLines || liveLines || []) : (isAugust ? (augustLines || liveLines || []) : (isJuly ? (julyLines || liveLines || []) : (liveLines || [])));
+  const currentEngine = isSeptember ? septemberEngine : (isAugust ? augustEngine : (isJuly ? julyEngine : liveEngine));
+  const activeMonthName = isSeptember ? 'SEPTEMBER' : (isAugust ? 'AUGUST' : (isJuly ? 'JULY' : 'OCTOBER'));
 
   const startDate = liveDailyTrends?.length > 0 ? liveDailyTrends[0].date : null;
   const endDate = liveDailyTrends?.length > 0 ? liveDailyTrends[liveDailyTrends.length - 1].date : null;
 
   const activeDateInfo = useMemo(() => {
+    if (isSeptember) return formatDateRangeInfo(null, null, 'september', '2026');
     if (isAugust) return formatDateRangeInfo(null, null, 'august', '2026');
     if (isJuly) return formatDateRangeInfo(null, null, 'july', '2026');
     return formatDateRangeInfo(startDate, endDate);
-  }, [isAugust, isJuly, startDate, endDate]);
+  }, [isSeptember, isAugust, isJuly, startDate, endDate]);
 
   // Compute Floor Leadership Rankings across lines (Only active lines with actual production and costs qualify)
   const floorRankings = useMemo(() => {
@@ -226,52 +277,71 @@ export default function ProductionLinesPage() {
           Real-time performance, output, worker telemetry, and unit economics for all factory lines
         </p>
 
-        {/* Month Switcher Tabs & Density Switcher — Strictly Single Row Side-by-Side on all screens */}
-        <div className="flex flex-nowrap justify-center items-center gap-1.5 sm:gap-2.5 mt-3 sm:mt-4 mb-2 relative z-10 w-full max-w-full overflow-x-auto hide-scrollbar px-0.5">
-          <div className="inline-flex p-0.5 sm:p-1 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl gap-0.5 sm:gap-1 shadow-sm backdrop-blur-md shrink-0">
-            <button
-              type="button"
-              onClick={() => setSelectedMonthTab('current')}
-              className={cn(
-                "flex items-center gap-1 sm:gap-1.5 px-2 sm:px-4 py-1 sm:py-1.5 rounded-lg text-[9px] sm:text-xs uppercase tracking-wider font-bold transition-all duration-200 cursor-pointer select-none shrink-0",
-                isLive
-                  ? "bg-[var(--color-bg-card)] text-[var(--color-text-main)] border border-[var(--color-border)] shadow-sm"
-                  : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)] font-medium"
-              )}
-            >
-              <span>SEPTEMBER</span>
-              <span className="text-[7.5px] sm:text-[9.5px] text-red-500 font-black tracking-wide">(LIVE)</span>
-              <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.8)] animate-pulse shrink-0" />
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setSelectedMonthTab('august')}
-              className={cn(
-                "px-2 sm:px-4 py-1 sm:py-1.5 rounded-lg text-[9px] sm:text-xs uppercase tracking-wider font-bold transition-all duration-200 cursor-pointer select-none shrink-0",
-                isAugust
-                  ? "bg-[var(--color-bg-card)] text-[var(--color-text-main)] border border-[var(--color-border)] shadow-sm"
-                  : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)] font-medium"
-              )}
-            >
-              AUGUST
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setSelectedMonthTab('july')}
-              className={cn(
-                "px-2 sm:px-4 py-1 sm:py-1.5 rounded-lg text-[9px] sm:text-xs uppercase tracking-wider font-bold transition-all duration-200 cursor-pointer select-none shrink-0",
-                isJuly
-                  ? "bg-[var(--color-bg-card)] text-[var(--color-text-main)] border border-[var(--color-border)] shadow-sm"
-                  : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)] font-medium"
-              )}
-            >
-              JULY
-            </button>
+        {/* Month Switcher Tabs & Density Switcher (List/Cards top on mobile, Month tabs under it) */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-2.5 mt-3 sm:mt-4 mb-2 relative z-10 w-full">
+          {/* 1. View Mode Switcher (List / Cards) - Top on Mobile */}
+          <div className="order-1 sm:order-2 shrink-0">
+            <DensitySwitcher value={density} onChange={setDensity} />
           </div>
 
-          <DensitySwitcher value={density} onChange={setDensity} className="shrink-0" />
+          {/* 2. Month Tabs Switcher - Underneath on Mobile */}
+          <div className="order-2 sm:order-1 flex justify-center items-center max-w-full overflow-x-auto hide-scrollbar px-0.5">
+            <div className="inline-flex p-0.5 sm:p-1 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl gap-0.5 sm:gap-1 shadow-sm backdrop-blur-md shrink-0">
+              <button
+                type="button"
+                onClick={() => setSelectedMonthTab('current')}
+                className={cn(
+                  "flex items-center gap-1 sm:gap-1.5 px-2 sm:px-4 py-1 sm:py-1.5 rounded-lg text-[9px] sm:text-xs uppercase tracking-wider font-bold transition-all duration-200 cursor-pointer select-none shrink-0",
+                  isLive
+                    ? "bg-[var(--color-bg-card)] text-[var(--color-text-main)] border border-[var(--color-border)] shadow-sm"
+                    : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)] font-medium"
+                )}
+              >
+                <span>OCTOBER</span>
+                <span className="text-[7.5px] sm:text-[9.5px] text-red-500 font-black tracking-wide">(LIVE)</span>
+                <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.8)] animate-pulse shrink-0" />
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setSelectedMonthTab('september')}
+                className={cn(
+                  "px-2 sm:px-4 py-1 sm:py-1.5 rounded-lg text-[9px] sm:text-xs uppercase tracking-wider font-bold transition-all duration-200 cursor-pointer select-none shrink-0",
+                  isSeptember
+                    ? "bg-[var(--color-bg-card)] text-[var(--color-text-main)] border border-[var(--color-border)] shadow-sm"
+                    : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)] font-medium"
+                )}
+              >
+                SEPTEMBER
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setSelectedMonthTab('august')}
+                className={cn(
+                  "px-2 sm:px-4 py-1 sm:py-1.5 rounded-lg text-[9px] sm:text-xs uppercase tracking-wider font-bold transition-all duration-200 cursor-pointer select-none shrink-0",
+                  isAugust
+                    ? "bg-[var(--color-bg-card)] text-[var(--color-text-main)] border border-[var(--color-border)] shadow-sm"
+                    : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)] font-medium"
+                )}
+              >
+                AUGUST
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setSelectedMonthTab('july')}
+                className={cn(
+                  "px-2 sm:px-4 py-1 sm:py-1.5 rounded-lg text-[9px] sm:text-xs uppercase tracking-wider font-bold transition-all duration-200 cursor-pointer select-none shrink-0",
+                  isJuly
+                    ? "bg-[var(--color-bg-card)] text-[var(--color-text-main)] border border-[var(--color-border)] shadow-sm"
+                    : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)] font-medium"
+                )}
+              >
+                JULY
+              </button>
+            </div>
+          </div>
         </div>
 
         {/* Unified Date Range Subtitle */}
@@ -542,75 +612,76 @@ export default function ProductionLinesPage() {
           })}
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
-          {/* ── 4. PRODUCTION LINES GRID (Cards Mode) ──────────────────────────── */}
-            {currentLines.sort((a,b) => a.id.localeCompare(b.id)).map((line) => {
-              const isHiddenOnMobile = selectedMobileLine !== line.id;
-              
-              // Accurate active vs inactive vs profitability checks
-              const isInactive = (line.totalProduction || 0) === 0 && (line.totalCost || 0) === 0;
-              const isProfitable = !isInactive && (line.netProfit || 0) >= 0;
-              const lastDayDateStr = line.lastDayDate ? format(parseISO(line.lastDayDate), 'dd MMM, yyyy') : '02 Sep, 2026';
+        (() => {
+          const linesOrder = ['A', 'B', 'C', 'D'];
+          const sortedCurrentLines = [...currentLines].sort((a,b) => a.id.localeCompare(b.id));
+          const activeLineIndex = Math.max(0, linesOrder.indexOf(selectedMobileLine));
 
-              // Unit economics & productivity calculations
-              const lastDay = line.lastDay || null;
-              const lastDayOutput = line.lastDayOutput || 0;
-              const lastDayCost = line.lastDayCost || 0;
-              const lastDayIncome = line.lastDayIncome || 0;
-              const workerCount = lastDay?.worker_count || line.averageWorkers || 0;
-              const pcsPerOperator = (workerCount > 0 && lastDayOutput > 0) 
-                ? (lastDayOutput / workerCount).toFixed(1) 
-                : '0.0';
+          const renderLineCardItem = (line, isMobile = false) => {
+            // Accurate active vs inactive vs profitability checks
+            const isInactive = (line.totalProduction || 0) === 0 && (line.totalCost || 0) === 0;
+            const isProfitable = !isInactive && (line.netProfit || 0) >= 0;
+            const lastDayDateStr = line.lastDayDate ? format(parseISO(line.lastDayDate), 'dd MMM, yyyy') : '02 Sep, 2026';
 
-              const cmPerDzn = lastDay?.cm_per_dzn || 1200;
-              const cmPerPc = cmPerDzn / 12;
-              const breakEvenTarget = (lastDayCost > 0 && cmPerPc > 0)
-                ? Math.round(lastDayCost / cmPerPc)
-                : 0;
+            // Unit economics & productivity calculations
+            const lastDay = line.lastDay || null;
+            const lastDayOutput = line.lastDayOutput || 0;
+            const lastDayCost = line.lastDayCost || 0;
+            const lastDayIncome = line.lastDayIncome || 0;
+            const workerCount = lastDay?.worker_count || line.averageWorkers || 0;
+            const pcsPerOperator = (workerCount > 0 && lastDayOutput > 0) 
+              ? (lastDayOutput / workerCount).toFixed(1) 
+              : '0.0';
 
-              // Floor Leadership Badges (Only for active producing lines)
-              const isTopProfit = !isInactive && floorRankings.topProfitId === line.id;
-              const isTopOutput = !isInactive && !isTopProfit && floorRankings.topOutputId === line.id;
-              const isTopRecovery = !isInactive && !isTopProfit && !isTopOutput && floorRankings.topRecoveryId === line.id;
+            const cmPerDzn = lastDay?.cm_per_dzn || 1200;
+            const cmPerPc = cmPerDzn / 12;
+            const breakEvenTarget = (lastDayCost > 0 && cmPerPc > 0)
+              ? Math.round(lastDayCost / cmPerPc)
+              : 0;
 
-              // Target line details URL
-              const detailsUrl = isAugust 
-                ? `/archive/2026-08/lines/${line.id}` 
-                : (isJuly 
-                    ? `/archive/2026-07/lines/${line.id}` 
-                    : `/lines/${line.id}`);
+            // Floor Leadership Badges (Only for active producing lines)
+            const isTopProfit = !isInactive && floorRankings.topProfitId === line.id;
+            const isTopOutput = !isInactive && !isTopProfit && floorRankings.topOutputId === line.id;
+            const isTopRecovery = !isInactive && !isTopProfit && !isTopOutput && floorRankings.topRecoveryId === line.id;
 
-              return (
-                <div 
-                  key={line.id} 
-                  className={cn("w-full h-full", isHiddenOnMobile && "hidden md:block")}
-                >
-                  <Card className="relative overflow-hidden w-full h-full p-0 flex flex-col justify-between border border-[var(--color-border)] shadow-md hover:shadow-xl transition-all duration-300">
-                    <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-surface)] to-transparent pointer-events-none rounded-[inherit]" />
+            // Target line details URL
+            const detailsUrl = isSeptember 
+              ? `/archive/2026-09/lines/${line.id}` 
+              : (isAugust 
+                  ? `/archive/2026-08/lines/${line.id}` 
+                  : (isJuly 
+                      ? `/archive/2026-07/lines/${line.id}` 
+                      : `/lines/${line.id}`));
 
-                    {/* Attached Mobile Line Switcher Tabs (Directly on top of the card on mobile) */}
-                    <div className="md:hidden w-full border-b border-[var(--color-border)] bg-[var(--color-surface)]/60 p-1 rounded-t-[inherit]">
-                      <div className="grid grid-cols-4 gap-1">
-                        {['A', 'B', 'C', 'D'].map(lineId => {
-                          const isSelected = selectedMobileLine === lineId;
-                          return (
-                            <button
-                              key={lineId}
-                              type="button"
-                              onClick={() => setSelectedMobileLine(lineId)}
-                              className={cn(
-                                "py-2 rounded-lg text-xs font-bold uppercase transition-all duration-200 cursor-pointer select-none text-center flex items-center justify-center",
-                                isSelected
-                                  ? "bg-[var(--color-primary)] text-[var(--color-on-primary,white)] shadow-xs"
-                                  : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)]"
-                              )}
-                            >
-                              <span>LINE {lineId}</span>
-                            </button>
-                          );
-                        })}
-                      </div>
+            return (
+              <Card className="relative overflow-hidden w-full h-full p-0 flex flex-col justify-between border border-[var(--color-border)] shadow-md hover:shadow-xl transition-all duration-300">
+                <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-surface)] to-transparent pointer-events-none rounded-[inherit]" />
+
+                {/* Attached Mobile Line Switcher Tabs (Directly on top of the card on mobile) */}
+                {isMobile && (
+                  <div className="w-full border-b border-[var(--color-border)] bg-[var(--color-surface)]/60 p-1 rounded-t-[inherit]">
+                    <div className="grid grid-cols-4 gap-1">
+                      {linesOrder.map(lineId => {
+                        const isSelected = selectedMobileLine === lineId;
+                        return (
+                          <button
+                            key={lineId}
+                            type="button"
+                            onClick={() => setSelectedMobileLine(lineId)}
+                            className={cn(
+                              "py-2 rounded-lg text-xs font-bold uppercase transition-all duration-200 cursor-pointer select-none text-center flex items-center justify-center",
+                              isSelected
+                                ? "bg-[var(--color-primary)] text-[var(--color-on-primary,white)] shadow-xs"
+                                : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)]"
+                            )}
+                          >
+                            <span>LINE {lineId}</span>
+                          </button>
+                        );
+                      })}
                     </div>
+                  </div>
+                )}
 
                     <div className="flex flex-col gap-4 p-4 sm:p-5 relative z-10 flex-1">
                       
@@ -848,14 +919,66 @@ export default function ProductionLinesPage() {
                           <ArrowRight size={15} className="group-hover:translate-x-1 transition-transform" />
                         </Link>
                       </div>
-
                     </div>
                   </Card>
-                </div>
-              );
-            })}
-          </div>
-      )}
+                );
+              };
+
+                return (
+                  <div>
+                    {/* Desktop View (2-Column Grid) */}
+                    <div className="hidden md:grid md:grid-cols-2 gap-5 sm:gap-6">
+                      {sortedCurrentLines.map(line => (
+                        <div key={line.id} className="w-full h-full">
+                          {renderLineCardItem(line, false)}
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Mobile View: Smooth Touch Carousel + Scroll Indicator Dots */}
+                    <div className="md:hidden flex flex-col gap-3">
+                      <div 
+                        className="w-full overflow-hidden touch-pan-y select-none"
+                        onTouchStart={handleTouchStart}
+                        onTouchEnd={handleTouchEnd}
+                      >
+                        <div 
+                          className="flex transition-transform duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] will-change-transform"
+                          style={{ transform: `translateX(-${activeLineIndex * 100}%)` }}
+                        >
+                          {sortedCurrentLines.map(line => (
+                            <div key={line.id} className="w-full flex-none shrink-0 px-0.5">
+                              {renderLineCardItem(line, true)}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Small Scroll Indicator Dots */}
+                      <div className="flex items-center justify-center gap-1.5 pt-1">
+                        {linesOrder.map(lineId => {
+                          const isSelected = selectedMobileLine === lineId;
+                          return (
+                            <button
+                              key={lineId}
+                              type="button"
+                              onClick={() => setSelectedMobileLine(lineId)}
+                              className={cn(
+                                "transition-all duration-300 rounded-full cursor-pointer p-0 border-0 outline-none",
+                                isSelected
+                                  ? "w-6 h-1.5 bg-[var(--color-primary)] shadow-[0_0_8px_var(--color-primary-glow)]"
+                                  : "w-1.5 h-1.5 bg-[var(--color-text-muted)]/35 hover:bg-[var(--color-text-muted)]"
+                              )}
+                              aria-label={`Slide to Line ${lineId}`}
+                            />
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()
+            )}
 
     </div>
   );

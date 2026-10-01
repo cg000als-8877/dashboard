@@ -30,11 +30,22 @@ function AmbulanceBeacon() {
   );
 }
 
-// Formats date range as e.g. FROM "01 SEP TO 02 SEP, 2026" with highlight (all uppercase)
+// Formats date range as e.g. FROM "01 OCT TO 02 OCT, 2026" with highlight (all uppercase)
 function formatDateRangeInfo(startDateStr, endDateStr, overrideMonth, overrideYear) {
   if (overrideMonth && overrideYear) {
+    const isSep = overrideMonth.toLowerCase().startsWith('sep');
     const isAug = overrideMonth.toLowerCase().startsWith('aug');
     const isJul = overrideMonth.toLowerCase().startsWith('jul');
+    if (isSep) {
+      return {
+        isRange: true,
+        startDay: '01',
+        endDay: '30',
+        startMonthShort: 'SEP',
+        endMonthShort: 'SEP',
+        year: overrideYear
+      };
+    }
     if (isAug) {
       return {
         isRange: true,
@@ -58,7 +69,7 @@ function formatDateRangeInfo(startDateStr, endDateStr, overrideMonth, overrideYe
   }
 
   if (!startDateStr || !endDateStr) {
-    const m = (overrideMonth || 'SEP').slice(0, 3).toUpperCase();
+    const m = (overrideMonth || 'OCT').slice(0, 3).toUpperCase();
     return {
       isRange: false,
       startDay: '01',
@@ -192,15 +203,53 @@ function AnimatedTrendCurve({ isProfit = false, className = "" }) {
 export function DashboardContent({ month, isArchive = false }) {
   const { stats, dailyTrends, insights, lines, loading, error } = useKpiData(month);
 
-  // For Live Dashboard: Load August ('2026-08') and July ('2026-07') archives for tabs & comparisons
+  // For Live Dashboard: Load September ('2026-09'), August ('2026-08'), and July ('2026-07') archives for tabs & comparisons
+  const { stats: septemberStats, dailyTrends: septemberDailyTrends, lines: septemberLines } = useKpiData('2026-09');
   const { stats: augustStats, dailyTrends: augustDailyTrends, lines: augustLines } = useKpiData('2026-08');
   const { stats: julyStats, dailyTrends: julyDailyTrends, lines: julyLines } = useKpiData('2026-07');
-  const [selectedCardMonth, setSelectedCardMonth] = useState('current'); // 'current' | 'august' | 'july'
+  const [selectedCardMonth, setSelectedCardMonth] = useState('current'); // 'current' | 'september' | 'august' | 'july'
   const [selectedMobileLine, setSelectedMobileLine] = useState('A');
   const [interactiveDay, setInteractiveDay] = useState(null);
   const [showAnimation, setShowAnimation] = useState(false);
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
   const pdfRef = useRef(null);
+  const touchStartXRef = useRef(null);
+  const touchStartYRef = useRef(null);
+
+  const handleTouchStart = (e) => {
+    touchStartXRef.current = e.touches[0].clientX;
+    touchStartYRef.current = e.touches[0].clientY;
+  };
+
+  const handleTouchEnd = (e) => {
+    if (touchStartXRef.current === null) return;
+    const touchEndX = e.changedTouches[0].clientX;
+    const touchEndY = e.changedTouches[0].clientY;
+    
+    const deltaX = touchEndX - touchStartXRef.current;
+    const deltaY = touchEndY - touchStartYRef.current;
+    
+    // Only handle horizontal swipes with at least 25px motion where horizontal exceeds vertical
+    if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 25) {
+      const linesOrder = ['A', 'B', 'C', 'D'];
+      const currentIndex = linesOrder.indexOf(selectedMobileLine);
+      
+      if (deltaX < 0) {
+        // Swiped left -> Advance to next line (exactly 1 step)
+        if (currentIndex < linesOrder.length - 1) {
+          setSelectedMobileLine(linesOrder[currentIndex + 1]);
+        }
+      } else if (deltaX > 0) {
+        // Swiped right -> Go back to previous line (exactly 1 step)
+        if (currentIndex > 0) {
+          setSelectedMobileLine(linesOrder[currentIndex - 1]);
+        }
+      }
+    }
+    
+    touchStartXRef.current = null;
+    touchStartYRef.current = null;
+  };
 
   const generatePdf = async () => {
     // We use the browser's native print engine for perfect color rendering (supports LAB/OKLCH colors natively)
@@ -243,6 +292,13 @@ export function DashboardContent({ month, isArchive = false }) {
     currentCalendarDay = parseInt(endDate.split('-')[2], 10);
   }
 
+  const septemberDateComponents = {
+    startDay: '1st',
+    endDay: '30th',
+    month: 'September',
+    year: '2026'
+  };
+
   const augustDateComponents = {
     startDay: '1st',
     endDay: '31st',
@@ -261,17 +317,17 @@ export function DashboardContent({ month, isArchive = false }) {
   const displayDay = interactiveDay !== null ? interactiveDay : currentCalendarDay;
   const currentDayData = dailyTrends && dailyTrends.length >= displayDay ? dailyTrends[displayDay - 1] : null;
 
-  // ── LIKE-FOR-LIKE COMPARISON WITH AUGUST (Exact Same Elapsed Working Days in August) ──
-  let augustComparisonStats = augustStats;
-  if (augustDailyTrends && augustDailyTrends.length > 0 && stats?.workingDays > 0) {
-    const elapsedAugustDays = augustDailyTrends.slice(0, stats.workingDays);
+  // ── LIKE-FOR-LIKE COMPARISON WITH SEPTEMBER (Exact Same Elapsed Working Days in September) ──
+  let septemberComparisonStats = septemberStats;
+  if (septemberDailyTrends && septemberDailyTrends.length > 0 && stats?.workingDays > 0) {
+    const elapsedSeptemberDays = septemberDailyTrends.slice(0, stats.workingDays);
     let prevCost = 0;
     let prevIncome = 0;
     let prevProfit = 0;
     let prevProduction = 0;
     let prevWorkingDays = 0;
 
-    elapsedAugustDays.forEach(d => {
+    elapsedSeptemberDays.forEach(d => {
       prevCost += d.cost || 0;
       prevIncome += d.income || 0;
       prevProfit += d.profit || 0;
@@ -281,10 +337,10 @@ export function DashboardContent({ month, isArchive = false }) {
       }
     });
 
-    const activeDaysCount = prevWorkingDays > 0 ? prevWorkingDays : elapsedAugustDays.length;
+    const activeDaysCount = prevWorkingDays > 0 ? prevWorkingDays : elapsedSeptemberDays.length;
     const avgDailyProfit = activeDaysCount > 0 ? (prevProfit / activeDaysCount) : 0;
 
-    augustComparisonStats = {
+    septemberComparisonStats = {
       totalCost: prevCost,
       totalIncome: prevIncome,
       netProfit: prevProfit,
@@ -294,17 +350,17 @@ export function DashboardContent({ month, isArchive = false }) {
     };
   }
 
-  const prevComparisonStats = augustComparisonStats;
+  const prevComparisonStats = septemberComparisonStats || augustComparisonStats;
 
   if (!stats) return <DashboardSkeleton />;
 
   // Contextual KPI delta computations (Dynamically matches the active date range of the month)
-  let prevPeriodLabel = isArchive ? "Previous Period" : "August";
+  let prevPeriodLabel = isArchive ? "Previous Period" : "September";
   if (!isArchive) {
     if (dateComponents?.startDay && dateComponents?.endDay) {
       prevPeriodLabel = dateComponents.startDay === dateComponents.endDay
-        ? `August (${dateComponents.startDay})`
-        : `August (${dateComponents.startDay}–${dateComponents.endDay})`;
+        ? `September (${dateComponents.startDay})`
+        : `September (${dateComponents.startDay}–${dateComponents.endDay})`;
     }
   }
 
@@ -499,7 +555,7 @@ export function DashboardContent({ month, isArchive = false }) {
           </h2>
           <p className="text-[10.5px] sm:text-[11.5px] md:text-xs text-[var(--color-text-muted)] font-medium tracking-normal text-center mt-0.5 flex items-center justify-center flex-wrap gap-1">
             <span>Financial Data Analyst :</span>
-            <span className="text-[var(--color-primary)] font-bold">Rofiqul Islam Zia</span>
+            <span className="text-[var(--color-primary)] font-bold uppercase italic">Rofiqul Islam Zia</span>
             <span className="text-[var(--color-text-secondary)] font-semibold">(Merchandiser)</span>
           </p>
         </div>
@@ -511,7 +567,7 @@ export function DashboardContent({ month, isArchive = false }) {
           {/* Month Tab Switcher for 6 KPI Stat Cards (Live Dashboard Only) */}
           {!isArchive && (
             <div className="flex justify-center items-center w-full mb-2 sm:mb-2.5 relative z-10">
-              <div className="inline-flex p-0.5 sm:p-1 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl gap-1 shadow-sm backdrop-blur-md">
+              <div className="inline-flex p-0.5 sm:p-1 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl gap-0.5 sm:gap-1 shadow-sm backdrop-blur-md">
                 <button
                   type="button"
                   onClick={() => setSelectedCardMonth('current')}
@@ -522,9 +578,22 @@ export function DashboardContent({ month, isArchive = false }) {
                       : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)] font-medium"
                   )}
                 >
-                  <span>SEPTEMBER</span>
+                  <span>OCTOBER</span>
                   <span className="text-[8.5px] sm:text-[10px] text-red-500 font-black tracking-wide">(LIVE)</span>
                   <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.8)] animate-pulse shrink-0" />
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setSelectedCardMonth('september')}
+                  className={cn(
+                    "px-2.5 sm:px-4 py-1 sm:py-1.5 rounded-lg text-[10px] sm:text-xs uppercase tracking-wider transition-all duration-200 cursor-pointer select-none",
+                    selectedCardMonth === 'september'
+                      ? "bg-[var(--color-bg-card)] text-[var(--color-text-main)] font-bold border border-[var(--color-border)] shadow-sm"
+                      : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)] font-medium"
+                  )}
+                >
+                  SEPTEMBER
                 </button>
 
                 <button
@@ -560,7 +629,9 @@ export function DashboardContent({ month, isArchive = false }) {
           {(() => {
             let activeDateInfo = null;
             if (!isArchive) {
-              if (selectedCardMonth === 'august') {
+              if (selectedCardMonth === 'september') {
+                activeDateInfo = formatDateRangeInfo(null, null, 'september', '2026');
+              } else if (selectedCardMonth === 'august') {
                 activeDateInfo = formatDateRangeInfo(null, null, 'august', '2026');
               } else if (selectedCardMonth === 'july') {
                 activeDateInfo = formatDateRangeInfo(null, null, 'july', '2026');
@@ -571,9 +642,10 @@ export function DashboardContent({ month, isArchive = false }) {
               activeDateInfo = formatDateRangeInfo(startDate, endDate, dateComponents?.month, dateComponents?.year);
             }
 
+            const isSeptember = !isArchive && selectedCardMonth === 'september' && !!septemberStats;
             const isAugust = !isArchive && selectedCardMonth === 'august' && !!augustStats;
             const isJuly = !isArchive && selectedCardMonth === 'july' && !!julyStats;
-            const currentStatsForDate = isAugust ? augustStats : (isJuly ? julyStats : stats);
+            const currentStatsForDate = isSeptember ? septemberStats : (isAugust ? augustStats : (isJuly ? julyStats : stats));
 
             return (
               <div className="flex justify-center items-center w-full mt-0.5 mb-2.5 sm:mb-3.5 relative z-10">
@@ -584,43 +656,56 @@ export function DashboardContent({ month, isArchive = false }) {
 
           {/* 6 KPI Metric Cards Grid */}
           {(() => {
+            const isSeptember = !isArchive && selectedCardMonth === 'september' && !!septemberStats;
             const isAugust = !isArchive && selectedCardMonth === 'august' && !!augustStats;
             const isJuly = !isArchive && selectedCardMonth === 'july' && !!julyStats;
-            const displayStats = isAugust ? augustStats : (isJuly ? julyStats : stats);
+            const displayStats = isSeptember ? septemberStats : (isAugust ? augustStats : (isJuly ? julyStats : stats));
 
             const costComp = isArchive ? null : (
-              isAugust 
-                ? { highlight: "August Total", label: "full month actual spending", trend: "neutral", isPositive: true }
-                : (isJuly 
-                    ? { highlight: "July Total", label: "full month actual spending", trend: "neutral", isPositive: true }
-                    : costComparison
+              isSeptember
+                ? { highlight: "September Total", label: "full month actual spending", trend: "neutral", isPositive: true }
+                : (isAugust 
+                    ? { highlight: "August Total", label: "full month actual spending", trend: "neutral", isPositive: true }
+                    : (isJuly 
+                        ? { highlight: "July Total", label: "full month actual spending", trend: "neutral", isPositive: true }
+                        : costComparison
+                      )
                   )
             );
 
             const incomeComp = isArchive ? null : (
-              isAugust 
-                ? { highlight: "August Total", label: "full month earned revenue", trend: "neutral", isPositive: true }
-                : (isJuly 
-                    ? { highlight: "July Total", label: "full month earned revenue", trend: "neutral", isPositive: true }
-                    : incomeComparison
+              isSeptember
+                ? { highlight: "September Total", label: "full month earned revenue", trend: "neutral", isPositive: true }
+                : (isAugust 
+                    ? { highlight: "August Total", label: "full month earned revenue", trend: "neutral", isPositive: true }
+                    : (isJuly 
+                        ? { highlight: "July Total", label: "full month earned revenue", trend: "neutral", isPositive: true }
+                        : incomeComparison
+                      )
                   )
             );
 
             const netComp = isArchive ? null : (
-              isAugust 
-                ? { highlight: "August Balance", label: displayStats.netProfit >= 0 ? "net monthly profit" : "net monthly loss", trend: "neutral", isPositive: displayStats.netProfit >= 0 }
-                : (isJuly 
-                    ? { highlight: "July Balance", label: displayStats.netProfit >= 0 ? "net monthly profit" : "net monthly loss", trend: "neutral", isPositive: displayStats.netProfit >= 0 }
-                    : netComparison
+              isSeptember
+                ? { highlight: "September Balance", label: displayStats.netProfit >= 0 ? "net monthly profit" : "net monthly loss", trend: "neutral", isPositive: displayStats.netProfit >= 0 }
+                : (isAugust 
+                    ? { highlight: "August Balance", label: displayStats.netProfit >= 0 ? "net monthly profit" : "net monthly loss", trend: "neutral", isPositive: displayStats.netProfit >= 0 }
+                    : (isJuly 
+                        ? { highlight: "July Balance", label: displayStats.netProfit >= 0 ? "net monthly profit" : "net monthly loss", trend: "neutral", isPositive: displayStats.netProfit >= 0 }
+                        : netComparison
+                      )
                   )
             );
 
             const avgDailyComp = isArchive ? null : (
-              isAugust 
-                ? { highlight: "August Pace", label: "overall daily average rate", trend: "neutral", isPositive: displayStats.averageDailyProfit >= 0 }
-                : (isJuly 
-                    ? { highlight: "July Pace", label: "overall daily average rate", trend: "neutral", isPositive: displayStats.averageDailyProfit >= 0 }
-                    : avgDailyComparison
+              isSeptember
+                ? { highlight: "September Pace", label: "overall daily average rate", trend: "neutral", isPositive: displayStats.averageDailyProfit >= 0 }
+                : (isAugust 
+                    ? { highlight: "August Pace", label: "overall daily average rate", trend: "neutral", isPositive: displayStats.averageDailyProfit >= 0 }
+                    : (isJuly 
+                        ? { highlight: "July Pace", label: "overall daily average rate", trend: "neutral", isPositive: displayStats.averageDailyProfit >= 0 }
+                        : avgDailyComparison
+                      )
                   )
             );
 
@@ -631,18 +716,21 @@ export function DashboardContent({ month, isArchive = false }) {
             const linesComp = isArchive ? null : (() => {
               return {
                 highlight: isAllLines ? `All ${totLinesCount} Lines` : `${actLinesCount} of ${totLinesCount} Lines`,
-                label: isAugust || isJuly ? "active manufacturing operations" : "active & producing",
+                label: isSeptember || isAugust || isJuly ? "active manufacturing operations" : "active & producing",
                 trend: "neutral",
                 isPositive: true
               };
             })();
 
             const daysComp = isArchive ? null : (
-              isAugust 
-                ? { highlight: `${displayStats.workingDays} Days`, label: "total active factory days in August", trend: "neutral", isPositive: true }
-                : (isJuly 
-                    ? { highlight: `${displayStats.workingDays} Days`, label: "total active factory days in July", trend: "neutral", isPositive: true }
-                    : daysComparison
+              isSeptember
+                ? { highlight: `${displayStats.workingDays} Days`, label: "total active factory days in September", trend: "neutral", isPositive: true }
+                : (isAugust 
+                    ? { highlight: `${displayStats.workingDays} Days`, label: "total active factory days in August", trend: "neutral", isPositive: true }
+                    : (isJuly 
+                        ? { highlight: `${displayStats.workingDays} Days`, label: "total active factory days in July", trend: "neutral", isPositive: true }
+                        : daysComparison
+                      )
                   )
             );
 
@@ -650,7 +738,7 @@ export function DashboardContent({ month, isArchive = false }) {
             const isAvgDailyProfit = displayStats.averageDailyProfit >= 0;
             const currentActiveLines = isArchive 
               ? (lines || []) 
-              : (selectedCardMonth === 'august' ? (augustLines || lines || []) : (selectedCardMonth === 'july' ? (julyLines || lines || []) : (lines || [])));
+              : (selectedCardMonth === 'september' ? (septemberLines || lines || []) : (selectedCardMonth === 'august' ? (augustLines || lines || []) : (selectedCardMonth === 'july' ? (julyLines || lines || []) : (lines || []))));
             const activeLinesToRender = ['A', 'B', 'C', 'D'].filter((lineId) => {
               const lineData = currentActiveLines?.find(l => l.id?.toUpperCase() === lineId);
               if (!lineData) return false;
@@ -827,25 +915,13 @@ export function DashboardContent({ month, isArchive = false }) {
                     style={{ backgroundColor: 'var(--color-bg-card)' }}
                   >
                     {/* Header Row: Title & Active Lines Counter */}
-                    <div className="flex items-center justify-between gap-2">
-                      <div>
-                        <h4 className="text-[11px] sm:text-xs font-bold uppercase tracking-widest text-[var(--color-text-secondary)] leading-none">
-                          Production Lines
-                        </h4>
-                        <p className="font-black text-[18px] sm:text-[20px] text-[var(--color-text-main)] tracking-tight mt-1 leading-none [filter:var(--shadow-text)]">
-                          <AnimatedNumber value={actLinesCount} /> of {totLinesCount} <span className="text-[13px] sm:text-[14px] font-bold text-[var(--color-primary)] uppercase">Active</span>
-                        </p>
-                      </div>
-
-                      <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[var(--color-surface)] border border-[var(--color-border)] text-[9px] font-bold uppercase tracking-wider text-[var(--color-text-muted)]">
-                        <span className={cn(
-                          "w-2 h-2 rounded-full",
-                          actLinesCount === totLinesCount 
-                            ? "bg-emerald-400 shadow-[0_0_8px_#34D399] animate-pulse" 
-                            : "bg-[var(--color-primary)] shadow-[0_0_8px_var(--color-primary-glow)]"
-                        )} />
-                        <span>{actLinesCount === totLinesCount ? "Full Lineup" : `${actLinesCount} Running`}</span>
-                      </div>
+                    <div>
+                      <h4 className="text-[11px] sm:text-xs font-bold uppercase tracking-widest text-[var(--color-text-secondary)] leading-none">
+                        Production Lines
+                      </h4>
+                      <p className="font-black text-[18px] sm:text-[20px] text-[var(--color-text-main)] tracking-tight mt-1 leading-none [filter:var(--shadow-text)]">
+                        <AnimatedNumber value={actLinesCount} /> of {totLinesCount} <span className="text-[13px] sm:text-[14px] font-bold text-[var(--color-primary)] uppercase">Active</span>
+                      </p>
                     </div>
 
                     {/* Lines Badges List: Line Name, Item, & Total Production (Active lines only) */}
@@ -1054,28 +1130,16 @@ export function DashboardContent({ month, isArchive = false }) {
                       style={{ backgroundColor: 'var(--color-bg-card)' }}
                     >
                       {/* Header Row: Title & Active Lines Counter */}
-                      <div className="flex items-start justify-between gap-2">
-                        <div>
-                          <h4 className="text-xs sm:text-sm font-bold uppercase tracking-widest text-[var(--color-text-secondary)] leading-none">
-                            Production Lines
-                          </h4>
-                          <p className="font-black text-2xl sm:text-3xl xl:text-[36px] text-[var(--color-text-main)] tracking-tight mt-1.5 leading-none [filter:var(--shadow-text)]">
-                            <AnimatedNumber value={actLinesCount} /> of {totLinesCount} <span className="text-sm sm:text-base xl:text-lg font-bold text-[var(--color-primary)] uppercase ml-0.5">Active</span>
-                          </p>
-                          <p className="text-[11px] sm:text-xs xl:text-[13px] text-[var(--color-text-muted)] font-medium mt-1">
-                            Details lines and items
-                          </p>
-                        </div>
-
-                        <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[var(--color-surface)] border border-[var(--color-border)] text-[9.5px] sm:text-xs font-bold uppercase tracking-wider text-[var(--color-text-muted)] shrink-0">
-                          <span className={cn(
-                            "w-2 h-2 rounded-full",
-                            actLinesCount === totLinesCount 
-                              ? "bg-emerald-400 shadow-[0_0_8px_#34D399] animate-pulse" 
-                              : "bg-[var(--color-primary)] shadow-[0_0_8px_var(--color-primary-glow)]"
-                          )} />
-                          <span>{actLinesCount === totLinesCount ? "Full Lineup" : `${actLinesCount} Running`}</span>
-                        </div>
+                      <div>
+                        <h4 className="text-xs sm:text-sm font-bold uppercase tracking-widest text-[var(--color-text-secondary)] leading-none">
+                          Production Lines
+                        </h4>
+                        <p className="font-black text-2xl sm:text-3xl xl:text-[36px] text-[var(--color-text-main)] tracking-tight mt-1.5 leading-none [filter:var(--shadow-text)]">
+                          <AnimatedNumber value={actLinesCount} /> of {totLinesCount} <span className="text-sm sm:text-base xl:text-lg font-bold text-[var(--color-primary)] uppercase ml-0.5">Active</span>
+                        </p>
+                        <p className="text-[11px] sm:text-xs xl:text-[13px] text-[var(--color-text-muted)] font-medium mt-1">
+                          Details lines and items
+                        </p>
                       </div>
 
                       {/* Lines Badges List: Line & Item In Production (Only active lines) */}
@@ -1160,6 +1224,10 @@ export function DashboardContent({ month, isArchive = false }) {
             '2026-08': {
               url: 'https://drive.google.com/file/d/1-Jug6L8J5_CttfrAyrh2NCFuV70g0pvu/view?usp=sharing',
               label: 'Download PDF of August Sheets'
+            },
+            '2026-09': {
+              url: 'https://drive.google.com/file/d/1w_yHdr0iV1AHTQcfw1TFh3igL9E9l_OQ/view?usp=sharing',
+              label: 'Download PDF of September Sheets'
             }
           };
 
@@ -1186,15 +1254,18 @@ export function DashboardContent({ month, isArchive = false }) {
         {(() => {
           const activeLines = isArchive
             ? (lines || [])
-            : (selectedCardMonth === 'august' ? (augustLines || lines || []) : (selectedCardMonth === 'july' ? (julyLines || lines || []) : (lines || [])));
+            : (selectedCardMonth === 'september' ? (septemberLines || lines || []) : (selectedCardMonth === 'august' ? (augustLines || lines || []) : (selectedCardMonth === 'july' ? (julyLines || lines || []) : (lines || []))));
 
           const activeMonthName = isArchive
             ? (dateComponents?.month || 'Archive')
-            : (selectedCardMonth === 'august' ? 'August' : (selectedCardMonth === 'july' ? 'July' : (dateComponents?.month || 'September')));
+            : (selectedCardMonth === 'september' ? 'September' : (selectedCardMonth === 'august' ? 'August' : (selectedCardMonth === 'july' ? 'July' : (dateComponents?.month || 'October'))));
 
           const activeDateInfo = (() => {
             if (isArchive) {
               return formatDateRangeInfo(startDate, endDate, dateComponents?.month, dateComponents?.year);
+            }
+            if (selectedCardMonth === 'september') {
+              return formatDateRangeInfo(null, null, 'september', '2026');
             }
             if (selectedCardMonth === 'august') {
               return formatDateRangeInfo(null, null, 'august', '2026');
@@ -1207,7 +1278,7 @@ export function DashboardContent({ month, isArchive = false }) {
 
           const currentStatsForDate = isArchive
             ? stats
-            : (selectedCardMonth === 'august' ? augustStats : (selectedCardMonth === 'july' ? julyStats : stats));
+            : (selectedCardMonth === 'september' ? septemberStats : (selectedCardMonth === 'august' ? augustStats : (selectedCardMonth === 'july' ? julyStats : stats)));
 
           return (
             <div className="mt-12 mb-10 relative z-10">
@@ -1221,24 +1292,27 @@ export function DashboardContent({ month, isArchive = false }) {
                 </div>
               </div>
 
-              {/* Line Cards Grid (2 Column, 2 Row: Line A & B top, Line C & D bottom on Desktop) */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-4 md:gap-5">
-                {activeLines.sort((a,b) => a.id.localeCompare(b.id)).map((line) => {
-                  const isHiddenOnMobile = selectedMobileLine !== line.id;
+              {/* Line Cards: Desktop 2x2 Grid + Mobile Smooth Sliding Track with Scroll Dots */}
+              {(() => {
+                const linesOrder = ['A', 'B', 'C', 'D'];
+                const sortedActiveLines = [...activeLines].sort((a,b) => a.id.localeCompare(b.id));
+                const activeLineIndex = Math.max(0, linesOrder.indexOf(selectedMobileLine));
+
+                const renderCardInner = (line, isMobile = false) => {
                   const lastDayDateStr = line.lastDayDate ? format(parseISO(line.lastDayDate), 'do MMMM, yyyy') : (dateComponents?.endDay ? `${dateComponents.endDay} ${dateComponents.month}, ${dateComponents.year}` : '1st September, 2026');
                   const isLiveCurrent = !isArchive && selectedCardMonth === 'current';
                   const isInactive = (line.totalProduction || 0) === 0 && (line.totalCost || 0) === 0;
                   const isProfitable = !isInactive && (line.netProfit || 0) >= 0;
 
                   return (
-                    <div key={line.id} className={cn("w-full flex flex-col", isHiddenOnMobile && "hidden md:flex")}>
-                      <Card className="relative overflow-hidden w-full h-full p-0 flex flex-col justify-between border border-[var(--color-border)] hover:border-[var(--color-primary)]/40 transition-all duration-300">
-                        <div className="absolute inset-0 bg-gradient-to-b from-[var(--color-surface)] to-transparent pointer-events-none rounded-[inherit]"></div>
+                    <Card className="relative overflow-hidden w-full h-full p-0 flex flex-col justify-between border border-[var(--color-border)] hover:border-[var(--color-primary)]/40 transition-all duration-300">
+                      <div className="absolute inset-0 bg-gradient-to-b from-[var(--color-surface)] to-transparent pointer-events-none rounded-[inherit]"></div>
 
-                        {/* Attached Mobile Line Switcher Tabs (Directly on top of the card on mobile) */}
-                        <div className="md:hidden w-full border-b border-[var(--color-border)] bg-[var(--color-surface)] p-1 rounded-t-[inherit]">
+                      {/* Attached Mobile Line Switcher Tabs (Directly on top of the card on mobile) */}
+                      {isMobile && (
+                        <div className="w-full border-b border-[var(--color-border)] bg-[var(--color-surface)] p-1 rounded-t-[inherit]">
                           <div className="grid grid-cols-4 gap-1">
-                            {['A', 'B', 'C', 'D'].map(lineId => {
+                            {linesOrder.map(lineId => {
                               const isSelected = selectedMobileLine === lineId;
                               return (
                                 <button
@@ -1258,198 +1332,252 @@ export function DashboardContent({ month, isArchive = false }) {
                             })}
                           </div>
                         </div>
+                      )}
 
-                        <div className="flex flex-col gap-3.5 p-3.5 sm:p-5 pt-4.5 relative z-10 flex-1 justify-between">
-                          
-                          {/* Line Top Header: Name, Status Badge, Item, Month Efficiency */}
-                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[var(--color-border)]/50 pb-3">
-                            <div className="flex items-center justify-between sm:justify-start gap-3">
-                              <h2 className="text-[20px] sm:text-[22px] md:text-[24px] font-black tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-[var(--color-text-main)] to-[var(--color-text-secondary)] [filter:var(--shadow-text)]">
-                                {line.name}
-                              </h2>
-                              
-                              {isInactive ? (
-                                <span className="inline-flex items-center px-2 py-0.5 rounded-[2px] text-[8.5px] md:text-[9px] font-bold uppercase tracking-widest bg-zinc-500/15 text-zinc-700 dark:text-zinc-400 border border-zinc-500/30">
-                                  Idle
-                                </span>
-                              ) : isProfitable ? (
-                                <span className="inline-flex items-center px-2 py-0.5 rounded-[2px] text-[8.5px] md:text-[9px] font-bold uppercase tracking-widest bg-[var(--color-success-glow)] text-[var(--color-success-text)] border border-[rgba(16,185,129,0.2)]">
-                                  Optimal
-                                </span>
-                              ) : isLiveCurrent ? (
-                                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[2px] text-[8.5px] md:text-[9.5px] font-black uppercase tracking-widest border transition-all animate-emergency-strobe cursor-default">
-                                  <AmbulanceBeacon />
-                                  <span>Critical</span>
-                                </span>
-                              ) : (
-                                <span className="inline-flex items-center px-2 py-0.5 rounded-[2px] text-[8.5px] md:text-[9px] font-bold uppercase tracking-widest bg-rose-50 dark:bg-rose-500/15 text-rose-700 dark:text-rose-400 border border-rose-200 dark:border-rose-500/30">
-                                  Critical
-                                </span>
-                              )}
-                            </div>
-
-                            <div className="flex items-center gap-1 text-[11px] md:text-xs">
-                              <span className="text-[var(--color-text-muted)] text-[10px] font-semibold uppercase">ITEM :</span>
-                              <span className="text-[var(--color-primary)] font-bold uppercase">
-                                {isInactive ? 'Standby / Idle' : (line.item || 'Unknown')}
+                      <div className="flex flex-col gap-3.5 p-3.5 sm:p-5 pt-4.5 relative z-10 flex-1 justify-between">
+                        {/* Line Top Header: Name, Status Badge, Item, Month Efficiency */}
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[var(--color-border)]/50 pb-3">
+                          <div className="flex items-center justify-between sm:justify-start gap-3">
+                            <h2 className="text-[20px] sm:text-[22px] md:text-[24px] font-black tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-[var(--color-text-main)] to-[var(--color-text-secondary)] [filter:var(--shadow-text)]">
+                              {line.name}
+                            </h2>
+                            
+                            {isInactive ? (
+                              <span className="inline-flex items-center px-2 py-0.5 rounded-[2px] text-[8.5px] md:text-[9px] font-bold uppercase tracking-widest bg-zinc-500/15 text-zinc-700 dark:text-zinc-400 border border-zinc-500/30">
+                                Idle
                               </span>
-                            </div>
+                            ) : isProfitable ? (
+                              <span className="inline-flex items-center px-2 py-0.5 rounded-[2px] text-[8.5px] md:text-[9px] font-bold uppercase tracking-widest bg-[var(--color-success-glow)] text-[var(--color-success-text)] border border-[rgba(16,185,129,0.2)]">
+                                Optimal
+                              </span>
+                            ) : isLiveCurrent ? (
+                              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[2px] text-[8.5px] md:text-[9.5px] font-black uppercase tracking-widest border transition-all animate-emergency-strobe cursor-default">
+                                <AmbulanceBeacon />
+                                <span>Critical</span>
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center px-2 py-0.5 rounded-[2px] text-[8.5px] md:text-[9px] font-bold uppercase tracking-widest bg-rose-50 dark:bg-rose-500/15 text-rose-700 dark:text-rose-400 border border-rose-200 dark:border-rose-500/30">
+                                Critical
+                              </span>
+                            )}
                           </div>
 
-                          {/* Cost Recovery Progress Bar & Percentage */}
-                          <div className="space-y-1.5 mb-2.5">
-                            <div className="flex items-center justify-between text-[10px] sm:text-[11px] font-bold uppercase tracking-wider">
-                              <span className="text-[var(--color-text-muted)]">Cost Recovery</span>
-                              <span className={cn(
-                                "font-extrabold",
-                                isInactive 
-                                  ? "text-[var(--color-text-muted)]"
+                          <div className="flex items-center gap-1 text-[11px] md:text-xs">
+                            <span className="text-[var(--color-text-muted)] text-[10px] font-semibold uppercase">ITEM :</span>
+                            <span className="text-[var(--color-primary)] font-bold uppercase">
+                              {isInactive ? 'Standby / Idle' : (line.item || 'Unknown')}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Cost Recovery Progress Bar & Percentage */}
+                        <div className="space-y-1.5 mb-2.5">
+                          <div className="flex items-center justify-between text-[10px] sm:text-[11px] font-bold uppercase tracking-wider">
+                            <span className="text-[var(--color-text-muted)]">Cost Recovery</span>
+                            <span className={cn(
+                              "font-extrabold",
+                              isInactive 
+                                ? "text-[var(--color-text-muted)]"
+                                : parseFloat(line.monthCostRecovery || 0) >= 100 
+                                  ? "text-[var(--color-success-text)]" 
+                                  : "text-[var(--color-danger-text)]"
+                            )}>
+                              {line.monthCostRecovery || '0.0'}%
+                            </span>
+                          </div>
+
+                          {/* Progress Bar towards 100% Cost Recovery */}
+                          <div className="w-full bg-[var(--color-surface)] h-2 rounded-full overflow-hidden border border-[var(--color-border)]/40 relative">
+                            <div 
+                              className={cn(
+                                "h-full rounded-full transition-all duration-700",
+                                isInactive
+                                  ? "bg-zinc-600/30"
                                   : parseFloat(line.monthCostRecovery || 0) >= 100 
+                                    ? "bg-[var(--color-success)]" 
+                                    : "bg-[var(--color-danger)]"
+                              )}
+                              style={{ width: `${isInactive ? 0 : Math.min(parseFloat(line.monthCostRecovery || 0), 100)}%` }}
+                            />
+                          </div>
+                        </div>
+
+                        {/* Cumulative Month Performance Grid */}
+                        <div>
+                          <div className="grid grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-2">
+                            <div className="bg-[var(--color-surface)] p-2 sm:p-2.5 xl:p-3 rounded-xl border border-[var(--color-border)] shadow-xs flex flex-col justify-between min-w-0">
+                              <p className="text-[9px] text-[var(--color-text-muted)] font-medium uppercase tracking-wider mb-0.5 truncate">Production</p>
+                              <p className="text-xs sm:text-sm md:text-xs xl:text-sm 2xl:text-base font-black text-[var(--color-text-main)] truncate flex items-baseline">
+                                <AnimatedNumber value={line.totalProduction} />
+                                <span className="text-[9px] sm:text-[10px] font-semibold text-[var(--color-text-muted)] ml-1">PCS</span>
+                              </p>
+                            </div>
+                            
+                            <div className="bg-[var(--color-surface)] p-2 sm:p-2.5 xl:p-3 rounded-xl border border-[var(--color-border)] shadow-xs flex flex-col justify-between min-w-0">
+                              <p className="text-[9px] text-[var(--color-text-muted)] font-medium uppercase tracking-wider mb-0.5 truncate">Income</p>
+                              <p className="text-xs sm:text-sm md:text-xs xl:text-sm 2xl:text-base font-black text-[var(--color-primary)] truncate flex items-baseline">
+                                <span className="text-[9.5px] sm:text-[10px] font-semibold opacity-75 mr-0.5 shrink-0">BDT</span>
+                                <AnimatedNumber value={Math.round(line.totalIncome)} />
+                              </p>
+                            </div>
+
+                            <div className="bg-[var(--color-surface)] p-2 sm:p-2.5 xl:p-3 rounded-xl border border-[var(--color-border)] shadow-xs flex flex-col justify-between min-w-0">
+                              <p className="text-[9px] text-[var(--color-text-muted)] font-medium uppercase tracking-wider mb-0.5 truncate">Cost</p>
+                              <p className="text-xs sm:text-sm md:text-xs xl:text-sm 2xl:text-base font-black text-[var(--color-text-main)] truncate flex items-baseline">
+                                <span className="text-[9.5px] sm:text-[10px] font-semibold opacity-75 mr-0.5 shrink-0">BDT</span>
+                                <AnimatedNumber value={Math.round(line.totalCost)} />
+                              </p>
+                            </div>
+
+                            <div className={cn(
+                              "p-2 sm:p-2.5 xl:p-3 rounded-xl border shadow-xs flex flex-col justify-between min-w-0",
+                              isInactive
+                                ? 'border-[var(--color-border)] bg-[var(--color-surface)]'
+                                : isProfitable 
+                                  ? 'border-[rgba(16,185,129,0.2)] bg-[var(--color-success-glow)]/40' 
+                                  : 'border-[rgba(255,59,48,0.2)] bg-[var(--color-danger-glow)]/40'
+                            )}>
+                              <p className="text-[9px] text-[var(--color-text-muted)] font-medium uppercase tracking-wider mb-0.5 truncate">
+                                {isInactive ? 'Net Balance' : isProfitable ? 'Net Profit' : 'Net Loss'}
+                              </p>
+                              <p className={cn(
+                                "text-xs sm:text-sm md:text-xs xl:text-sm 2xl:text-base font-black [filter:var(--shadow-text)] truncate flex items-baseline",
+                                isInactive
+                                  ? 'text-[var(--color-text-muted)]'
+                                  : isProfitable 
+                                    ? 'text-[var(--color-success-text)]' 
+                                    : 'text-[var(--color-danger-text)]'
+                              )}>
+                                <span className="text-[9.5px] sm:text-[10px] font-semibold opacity-75 mr-0.5 shrink-0">BDT</span>
+                                <AnimatedNumber value={Math.round(line.netProfit || 0)} />
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Last Recorded Day Input & Cost Recovery Efficiency */}
+                        <div className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl p-2 sm:p-2.5 md:p-3">
+                          <div className="flex items-center justify-between gap-1 mb-2">
+                            <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-[var(--color-text-secondary)] truncate">
+                              Last Day Input ({lastDayDateStr})
+                            </span>
+                            <span className="text-[9px] sm:text-[10px] md:text-[10.5px] font-bold text-[var(--color-text-muted)] shrink-0">
+                              Cost Recovery: <span className={cn("font-extrabold", isInactive ? "text-[var(--color-text-muted)]" : (parseFloat(line.lastDayCostRecovery || 0) >= 100 ? "text-[var(--color-success-text)]" : "text-[var(--color-danger-text)]"))}>{line.lastDayCostRecovery || '0.0'}%</span>
+                            </span>
+                          </div>
+
+                          <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
+                            <div className="bg-[var(--color-bg-card)] p-1.5 sm:p-2 rounded-lg border border-[var(--color-border)]/60 text-center min-w-0 flex flex-col justify-center">
+                              <p className="text-[8px] sm:text-[9px] text-[var(--color-text-muted)] font-medium uppercase truncate">Day Output</p>
+                              <p className="text-[11px] sm:text-xs md:text-sm font-bold text-[var(--color-text-main)] truncate">
+                                {(line.lastDayOutput || 0).toLocaleString()} <span className="text-[8.5px] sm:text-[9px] text-[var(--color-text-muted)]">PCS</span>
+                              </p>
+                            </div>
+
+                            <div className="bg-[var(--color-bg-card)] p-1.5 sm:p-2 rounded-lg border border-[var(--color-border)]/60 text-center min-w-0 flex flex-col justify-center">
+                              <p className="text-[8px] sm:text-[9px] text-[var(--color-text-muted)] font-medium uppercase truncate">Day Income</p>
+                              <p className="text-[11px] sm:text-xs md:text-sm font-bold text-[var(--color-primary)] truncate flex items-center justify-center">
+                                <span className="text-[8.5px] sm:text-[9.5px] font-semibold opacity-75 mr-0.5">BDT</span>
+                                <span>{(line.lastDayIncome || 0).toLocaleString()}</span>
+                              </p>
+                            </div>
+
+                            <div className="bg-[var(--color-bg-card)] p-1.5 sm:p-2 rounded-lg border border-[var(--color-border)]/60 text-center min-w-0 flex flex-col justify-center">
+                              <p className="text-[8px] sm:text-[9px] text-[var(--color-text-muted)] font-medium uppercase truncate">
+                                Day Net {isInactive ? 'Bal' : (line.lastDayProfit >= 0 ? 'Profit' : 'Loss')}
+                              </p>
+                              <p className={cn(
+                                "text-[11px] sm:text-xs md:text-sm font-bold truncate flex items-center justify-center",
+                                isInactive || ((line.lastDayOutput || 0) === 0 && (line.lastDayCost || 0) === 0)
+                                  ? "text-[var(--color-text-muted)]"
+                                  : line.lastDayProfit >= 0 
                                     ? "text-[var(--color-success-text)]" 
                                     : "text-[var(--color-danger-text)]"
                               )}>
-                                {line.monthCostRecovery || '0.0'}%
-                              </span>
-                            </div>
-
-                            {/* Progress Bar towards 100% Cost Recovery */}
-                            <div className="w-full bg-[var(--color-surface)] h-2 rounded-full overflow-hidden border border-[var(--color-border)]/40 relative">
-                              <div 
-                                className={cn(
-                                  "h-full rounded-full transition-all duration-700",
-                                  isInactive
-                                    ? "bg-zinc-600/30"
-                                    : parseFloat(line.monthCostRecovery || 0) >= 100 
-                                      ? "bg-[var(--color-success)]" 
-                                      : "bg-[var(--color-danger)]"
-                                )}
-                                style={{ width: `${isInactive ? 0 : Math.min(parseFloat(line.monthCostRecovery || 0), 100)}%` }}
-                              />
+                                <span className="text-[8.5px] sm:text-[9.5px] font-semibold opacity-75 mr-0.5">BDT</span>
+                                <span>{(line.lastDayProfit || 0).toLocaleString()}</span>
+                              </p>
                             </div>
                           </div>
+                        </div>
 
-                          {/* Cumulative Month Performance Grid (Responsive 2-Col Tablet / 4-Col Large Desktop) */}
-                          <div>
-                            <div className="grid grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-2">
-                              <div className="bg-[var(--color-surface)] p-2 sm:p-2.5 xl:p-3 rounded-xl border border-[var(--color-border)] shadow-xs flex flex-col justify-between min-w-0">
-                                <p className="text-[9px] text-[var(--color-text-muted)] font-medium uppercase tracking-wider mb-0.5 truncate">Production</p>
-                                <p className="text-xs sm:text-sm md:text-xs xl:text-sm 2xl:text-base font-black text-[var(--color-text-main)] truncate flex items-baseline">
-                                  <AnimatedNumber value={line.totalProduction} />
-                                  <span className="text-[9px] sm:text-[10px] font-semibold text-[var(--color-text-muted)] ml-1">PCS</span>
-                                </p>
-                              </div>
-                              
-                              <div className="bg-[var(--color-surface)] p-2 sm:p-2.5 xl:p-3 rounded-xl border border-[var(--color-border)] shadow-xs flex flex-col justify-between min-w-0">
-                                <p className="text-[9px] text-[var(--color-text-muted)] font-medium uppercase tracking-wider mb-0.5 truncate">Income</p>
-                                <p className="text-xs sm:text-sm md:text-xs xl:text-sm 2xl:text-base font-black text-[var(--color-primary)] truncate flex items-baseline">
-                                  <span className="text-[9.5px] sm:text-[10px] font-semibold opacity-75 mr-0.5 shrink-0">BDT</span>
-                                  <AnimatedNumber value={Math.round(line.totalIncome)} />
-                                </p>
-                              </div>
-
-                              <div className="bg-[var(--color-surface)] p-2 sm:p-2.5 xl:p-3 rounded-xl border border-[var(--color-border)] shadow-xs flex flex-col justify-between min-w-0">
-                                <p className="text-[9px] text-[var(--color-text-muted)] font-medium uppercase tracking-wider mb-0.5 truncate">Cost</p>
-                                <p className="text-xs sm:text-sm md:text-xs xl:text-sm 2xl:text-base font-black text-[var(--color-text-main)] truncate flex items-baseline">
-                                  <span className="text-[9.5px] sm:text-[10px] font-semibold opacity-75 mr-0.5 shrink-0">BDT</span>
-                                  <AnimatedNumber value={Math.round(line.totalCost)} />
-                                </p>
-                              </div>
-
-                              <div className={cn(
-                                "p-2 sm:p-2.5 xl:p-3 rounded-xl border shadow-xs flex flex-col justify-between min-w-0",
-                                isInactive
-                                  ? 'border-[var(--color-border)] bg-[var(--color-surface)]'
-                                  : isProfitable 
-                                    ? 'border-[rgba(16,185,129,0.2)] bg-[var(--color-success-glow)]/40' 
-                                    : 'border-[rgba(255,59,48,0.2)] bg-[var(--color-danger-glow)]/40'
-                              )}>
-                                <p className="text-[9px] text-[var(--color-text-muted)] font-medium uppercase tracking-wider mb-0.5 truncate">
-                                  {isInactive ? 'Net Balance' : isProfitable ? 'Net Profit' : 'Net Loss'}
-                                </p>
-                                <p className={cn(
-                                  "text-xs sm:text-sm md:text-xs xl:text-sm 2xl:text-base font-black [filter:var(--shadow-text)] truncate flex items-baseline",
-                                  isInactive
-                                    ? 'text-[var(--color-text-muted)]'
-                                    : isProfitable 
-                                      ? 'text-[var(--color-success-text)]' 
-                                      : 'text-[var(--color-danger-text)]'
-                                )}>
-                                  <span className="text-[9.5px] sm:text-[10px] font-semibold opacity-75 mr-0.5 shrink-0">BDT</span>
-                                  <AnimatedNumber value={Math.round(line.netProfit || 0)} />
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-
-                          {/* Last Recorded Day Input & Cost Recovery Efficiency */}
-                          <div className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl p-2 sm:p-2.5 md:p-3">
-                            <div className="flex items-center justify-between gap-1 mb-2">
-                              <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-[var(--color-text-secondary)] truncate">
-                                Last Day Input ({lastDayDateStr})
-                              </span>
-                              <span className="text-[9px] sm:text-[10px] md:text-[10.5px] font-bold text-[var(--color-text-muted)] shrink-0">
-                                Cost Recovery: <span className={cn("font-extrabold", isInactive ? "text-[var(--color-text-muted)]" : (parseFloat(line.lastDayCostRecovery || 0) >= 100 ? "text-[var(--color-success-text)]" : "text-[var(--color-danger-text)]"))}>{line.lastDayCostRecovery || '0.0'}%</span>
-                              </span>
-                            </div>
-
-                            <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
-                              <div className="bg-[var(--color-bg-card)] p-1.5 sm:p-2 rounded-lg border border-[var(--color-border)]/60 text-center min-w-0 flex flex-col justify-center">
-                                <p className="text-[8px] sm:text-[9px] text-[var(--color-text-muted)] font-medium uppercase truncate">Day Output</p>
-                                <p className="text-[11px] sm:text-xs md:text-sm font-bold text-[var(--color-text-main)] truncate">
-                                  {(line.lastDayOutput || 0).toLocaleString()} <span className="text-[8.5px] sm:text-[9px] text-[var(--color-text-muted)]">PCS</span>
-                                </p>
-                              </div>
-
-                              <div className="bg-[var(--color-bg-card)] p-1.5 sm:p-2 rounded-lg border border-[var(--color-border)]/60 text-center min-w-0 flex flex-col justify-center">
-                                <p className="text-[8px] sm:text-[9px] text-[var(--color-text-muted)] font-medium uppercase truncate">Day Income</p>
-                                <p className="text-[11px] sm:text-xs md:text-sm font-bold text-[var(--color-primary)] truncate flex items-center justify-center">
-                                  <span className="text-[8.5px] sm:text-[9.5px] font-semibold opacity-75 mr-0.5">BDT</span>
-                                  <span>{(line.lastDayIncome || 0).toLocaleString()}</span>
-                                </p>
-                              </div>
-
-                              <div className="bg-[var(--color-bg-card)] p-1.5 sm:p-2 rounded-lg border border-[var(--color-border)]/60 text-center min-w-0 flex flex-col justify-center">
-                                <p className="text-[8px] sm:text-[9px] text-[var(--color-text-muted)] font-medium uppercase truncate">
-                                  Day Net {isInactive ? 'Bal' : (line.lastDayProfit >= 0 ? 'Profit' : 'Loss')}
-                                </p>
-                                <p className={cn(
-                                  "text-[11px] sm:text-xs md:text-sm font-bold truncate flex items-center justify-center",
-                                  isInactive || ((line.lastDayOutput || 0) === 0 && (line.lastDayCost || 0) === 0)
-                                    ? "text-[var(--color-text-muted)]"
-                                    : line.lastDayProfit >= 0 
-                                      ? "text-[var(--color-success-text)]" 
-                                      : "text-[var(--color-danger-text)]"
-                                )}>
-                                  <span className="text-[8.5px] sm:text-[9.5px] font-semibold opacity-75 mr-0.5">BDT</span>
-                                  <span>{(line.lastDayProfit || 0).toLocaleString()}</span>
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-
-                          {/* View Full Details CTA Button */}
-                          <Link
-                            href={
-                              isArchive
-                                ? `/archive/${month}/lines/${line.id}`
+                        {/* View Full Details CTA Button */}
+                        <Link
+                          href={
+                            isArchive
+                              ? `/archive/${month}/lines/${line.id}`
+                              : selectedCardMonth === 'september'
+                                ? `/archive/2026-09/lines/${line.id}`
                                 : selectedCardMonth === 'august'
                                   ? `/archive/2026-08/lines/${line.id}`
                                   : selectedCardMonth === 'july'
                                     ? `/archive/2026-07/lines/${line.id}`
                                     : `/lines/${line.id}`
-                            }
-                            className="w-full py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer select-none group mt-0.5 bg-[var(--color-primary)] hover:opacity-90 text-[var(--color-on-primary,white)] shadow-md"
-                          >
-                            <span>View Full Details</span>
-                            <ArrowRight size={15} className="group-hover:translate-x-1 transition-transform" />
-                          </Link>
-
-                        </div>
-                      </Card>
-                    </div>
+                          }
+                          className="w-full py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer select-none group mt-0.5 bg-[var(--color-primary)] hover:opacity-90 text-[var(--color-on-primary,white)] shadow-md"
+                        >
+                          <span>View Full Details</span>
+                          <ArrowRight size={15} className="group-hover:translate-x-1 transition-transform" />
+                        </Link>
+                      </div>
+                    </Card>
                   );
-                })}
-              </div>
+                };
+
+                return (
+                  <div>
+                    {/* Desktop View (2-Column Grid) */}
+                    <div className="hidden md:grid md:grid-cols-2 gap-4 sm:gap-4 md:gap-5">
+                      {sortedActiveLines.map(line => (
+                        <div key={line.id} className="w-full flex flex-col">
+                          {renderCardInner(line, false)}
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Mobile View: Smooth Touch Carousel + Scroll Indicator Dots */}
+                    <div className="md:hidden flex flex-col gap-3">
+                      <div 
+                        className="w-full overflow-hidden touch-pan-y select-none"
+                        onTouchStart={handleTouchStart}
+                        onTouchEnd={handleTouchEnd}
+                      >
+                        <div 
+                          className="flex transition-transform duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] will-change-transform"
+                          style={{ transform: `translateX(-${activeLineIndex * 100}%)` }}
+                        >
+                          {sortedActiveLines.map(line => (
+                            <div key={line.id} className="w-full flex-none shrink-0 px-0.5">
+                              {renderCardInner(line, true)}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Small Scroll Indicator Dots */}
+                      <div className="flex items-center justify-center gap-1.5 pt-1">
+                        {linesOrder.map(lineId => {
+                          const isSelected = selectedMobileLine === lineId;
+                          return (
+                            <button
+                              key={lineId}
+                              type="button"
+                              onClick={() => setSelectedMobileLine(lineId)}
+                              className={cn(
+                                "transition-all duration-300 rounded-full cursor-pointer p-0 border-0 outline-none",
+                                isSelected
+                                  ? "w-6 h-1.5 bg-[var(--color-primary)] shadow-[0_0_8px_var(--color-primary-glow)]"
+                                  : "w-1.5 h-1.5 bg-[var(--color-text-muted)]/35 hover:bg-[var(--color-text-muted)]"
+                              )}
+                              aria-label={`Slide to Line ${lineId}`}
+                            />
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
             </div>
           );
         })()}
