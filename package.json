@@ -12,6 +12,7 @@
     "@capacitor/android": "^8.5.0",
     "@capacitor/cli": "^8.5.0",
     "@capacitor/core": "^8.5.0",
+    "@capacitor/push-notifications": "^8.1.2",
     "@hookform/resolvers": "^5.9.1",
     "@opentelemetry/api": "^1.9.1",
     "clsx": "^2.1.1",

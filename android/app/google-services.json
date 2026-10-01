@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "189491617138",
+    "project_id": "byzid-apparels",
+    "storage_bucket": "byzid-apparels.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:189491617138:android:09508f80d8d2d74f7d51eb",
+        "android_client_info": {
+          "package_name": "com.byzid.apparels"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBwC4umm2va-VJKLdRBRRJYeECZ52ymYIA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

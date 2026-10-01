@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import { DensityProvider } from "@/components/providers/DensityProvider";
 import { ClientAutoRefresh } from "@/components/providers/ClientAutoRefresh";
 import { PwaManager } from "@/components/providers/PwaManager";
+import { PushNotificationManager } from "@/components/providers/PushNotificationManager";
 import { AppWelcomeSplash } from "@/components/ui/AppWelcomeSplash";
 
 
@@ -78,6 +79,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <MonthProvider>
             <DensityProvider>
               <ClientAutoRefresh />
+              <PushNotificationManager />
               <PwaManager>
                 <AppWelcomeSplash />
                 <DashboardLayout>

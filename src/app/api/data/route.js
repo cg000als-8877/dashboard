@@ -291,6 +291,75 @@ export async function GET(request) {
         console.error('Failed to auto-backup month to Firebase:', firebaseError);
     }
 
+    // Auto-detect new day production data and send push notification
+    try {
+      if (dailyProduction.length > 0) {
+        const activeDates = dailyProduction
+          .filter(d => d.date && d.status === 'ACTIVE' && (Number(d.production_qty) > 0 || Number(d.total_income) > 0))
+          .map(d => d.date)
+          .sort();
+
+        if (activeDates.length > 0) {
+          const latestActiveDate = activeDates[activeDates.length - 1];
+          const trackerFilePath = path.join(process.cwd(), 'src', 'data', 'last-notified-day.json');
+          let lastNotifiedDate = null;
+
+          try {
+            const trackerFile = await fs.readFile(trackerFilePath, 'utf-8');
+            lastNotifiedDate = JSON.parse(trackerFile)?.date;
+          } catch (e) {}
+
+          const { db, sendPushNotification } = await import('@/lib/firebase');
+
+          if (db && !lastNotifiedDate) {
+            try {
+              const metaDoc = await db.collection('system_meta').doc('day_tracker').get();
+              if (metaDoc.exists) {
+                lastNotifiedDate = metaDoc.data()?.lastNotifiedDate;
+              }
+            } catch (e) {}
+          }
+
+          if (!lastNotifiedDate) {
+            // First run: save current latest date so we only notify when a subsequent day is added
+            await fs.writeFile(trackerFilePath, JSON.stringify({ date: latestActiveDate, initializedAt: new Date().toISOString() }, null, 2)).catch(() => {});
+            if (db) {
+              await db.collection('system_meta').doc('day_tracker').set({
+                lastNotifiedDate: latestActiveDate,
+                initializedAt: new Date().toISOString(),
+              }, { merge: true }).catch(() => {});
+            }
+          } else if (latestActiveDate > lastNotifiedDate) {
+            // Brand new day detected!
+            const [y, m, d] = latestActiveDate.split('-');
+            const monthsNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const formattedDate = `${parseInt(d, 10)} ${monthsNames[parseInt(m, 10) - 1]} ${y}`;
+
+            console.log(`[Push Notification] New day production detected: ${latestActiveDate}. Broadcasting notification...`);
+
+            await sendPushNotification({
+              title: `📢 New Production Update (${formattedDate})`,
+              body: `Production data for ${formattedDate} has been updated. Tap to check the latest stats.`,
+              data: {
+                date: latestActiveDate,
+                url: '/',
+              },
+            });
+
+            await fs.writeFile(trackerFilePath, JSON.stringify({ date: latestActiveDate, notifiedAt: new Date().toISOString() }, null, 2)).catch(() => {});
+            if (db) {
+              await db.collection('system_meta').doc('day_tracker').set({
+                lastNotifiedDate: latestActiveDate,
+                lastNotifiedAt: new Date().toISOString(),
+              }, { merge: true }).catch(() => {});
+            }
+          }
+        }
+      }
+    } catch (pushErr) {
+      console.error('Error during auto push notification check:', pushErr);
+    }
+
     return NextResponse.json(payload);
 
   } catch (error) {

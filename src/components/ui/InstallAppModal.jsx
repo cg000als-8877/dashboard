@@ -96,21 +96,31 @@ export function InstallAppModal({ isOpen, isIOS, onInstall, onDismiss }) {
 
         {/* Action Buttons */}
         <div className="flex flex-col gap-2 relative z-10">
+          {!isIOS && (
+            <a
+              href="/bapl.apk"
+              download="bapl.apk"
+              className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-[var(--color-primary)] to-blue-600 hover:opacity-95 text-white font-bold text-xs sm:text-sm uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-blue-900/30 transition-all active:scale-[0.98] cursor-pointer text-center"
+            >
+              <Download className="w-4 h-4 shrink-0" />
+              <span>Download Android App (APK)</span>
+            </a>
+          )}
+
           {!isIOS && onInstall && (
             <button
               type="button"
               onClick={onInstall}
-              className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-[var(--color-primary)] to-blue-600 hover:opacity-95 text-white font-bold text-xs sm:text-sm uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-blue-900/30 transition-all active:scale-[0.98] cursor-pointer"
+              className="w-full py-2 px-4 rounded-xl bg-[var(--color-surface)] hover:bg-[var(--color-surface-hover)] text-[var(--color-text-main)] font-semibold text-xs flex items-center justify-center gap-2 border border-[var(--color-border)] transition-all cursor-pointer"
             >
-              <Download className="w-4 h-4" />
-              <span>Install App Now</span>
+              <span>Or Add to Home Screen (Web)</span>
             </button>
           )}
 
           <button
             type="button"
             onClick={onDismiss}
-            className={`w-full py-2.5 px-4 rounded-xl text-xs font-semibold text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)] transition-all cursor-pointer text-center ${
+            className={`w-full py-2 px-4 rounded-xl text-xs font-semibold text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] transition-all cursor-pointer text-center ${
               isIOS ? 'bg-[var(--color-surface)] text-[var(--color-text-main)] font-bold py-3 mt-1' : ''
             }`}
           >
