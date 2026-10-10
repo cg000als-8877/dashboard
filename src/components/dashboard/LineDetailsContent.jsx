@@ -143,47 +143,57 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false }) {
     >
       
       {!isEmbed && (
-        <header className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 md:gap-4 mb-4 md:mb-8 relative z-10">
-          <div className="flex flex-col gap-1.5 md:gap-2">
-            {/* Breadcrumb Trail */}
-            <nav className="flex items-center gap-1.5 text-[10px] md:text-xs font-semibold uppercase tracking-wider text-[var(--color-text-muted)]">
-              <Link href="/" className="hover:text-[var(--color-primary)] transition-colors">Dashboard</Link>
-              <ChevronRight size={12} className="opacity-60" />
-              <Link href={backUrl || '/lines'} className="hover:text-[var(--color-primary)] transition-colors">Lines</Link>
-              <ChevronRight size={12} className="opacity-60" />
-              <span className="text-[var(--color-primary)] font-bold">Line {safeId}</span>
-              <ChevronRight size={12} className="opacity-60" />
-              <span className="text-[var(--color-text-main)] font-bold">Telemetry</span>
-            </nav>
+        <header className="flex flex-col mb-6 md:mb-8 relative z-10">
+          {/* Top navigation row: Breadcrumbs + mobile controls */}
+          <div className="flex items-center justify-between gap-2 mb-3">
+            <div className="flex items-center gap-2">
+              <Link 
+                href={backUrl || '/lines'} 
+                className="md:hidden p-1.5 rounded-lg bg-[var(--color-surface)] hover:bg-[var(--color-surface-hover)] border-0 text-[var(--color-text-main)] transition-all"
+                aria-label="Back to lines"
+              >
+                <ArrowLeft className="w-3.5 h-3.5" />
+              </Link>
+              <nav className="flex items-center gap-1.5 text-[10px] md:text-xs font-semibold uppercase tracking-normal text-[var(--color-text-muted)]">
+                <Link href="/" className="hover:text-[var(--color-primary)] transition-colors">Dashboard</Link>
+                <ChevronRight size={12} className="opacity-60" />
+                <Link href={backUrl || '/lines'} className="hover:text-[var(--color-primary)] transition-colors">Lines</Link>
+                <ChevronRight size={12} className="opacity-60" />
+                <span className="text-[var(--color-primary)] font-bold">Line {safeId}</span>
+                <ChevronRight size={12} className="opacity-60" />
+                <span className="text-[var(--color-text-main)] font-bold">Telemetry</span>
+              </nav>
+            </div>
 
-            <div className="flex items-center justify-between gap-2 mt-0.5 md:mt-1">
-              <div className="flex items-center gap-2.5 md:gap-5">
-                <Link 
-                  href={backUrl || '/lines'} 
-                  className="p-1.5 md:p-3 rounded-xl bg-[var(--color-surface)] hover:bg-[var(--color-surface-hover)] border border-[var(--color-border)] text-[var(--color-text-main)] transition-all hover:scale-105 active:scale-95 shadow-[0_0_15px_rgba(0,0,0,0.5)]"
-                >
-                  <ArrowLeft className="w-3.5 h-3.5 md:w-5 md:h-5" />
-                </Link>
-                <div>
-                  <h1 className="text-base md:text-3xl font-semibold md:font-bold tracking-tighter uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] via-[var(--color-text-secondary)] to-[var(--color-text-muted)] leading-tight">
-                    Line {safeId} Telemetry
-                  </h1>
-                  <p className="hidden md:block text-[var(--color-primary)] font-normal text-xs mt-0.5 tracking-normal">
-                    Detailed breakdown synced from source records.
-                  </p>
-                </div>
-              </div>
-
-              {/* Density Switcher on Mobile (Right-Aligned in Header) */}
-              <div className="md:hidden flex items-center shrink-0">
-                <DensitySwitcher value={density} onChange={setDensity} />
-              </div>
+            {/* Density Switcher on Mobile */}
+            <div className="md:hidden flex items-center shrink-0">
+              <DensitySwitcher value={density} onChange={setDensity} />
             </div>
           </div>
 
-          {/* Density Switcher on Desktop */}
-          <div className="hidden md:flex items-center gap-2 self-start md:self-auto">
-            <DensitySwitcher value={density} onChange={setDensity} />
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div className="flex flex-col items-center text-center md:items-start md:text-left">
+              <div className="flex items-center gap-3 md:gap-4">
+                <Link 
+                  href={backUrl || '/lines'} 
+                  className="hidden md:flex p-2.5 rounded-xl bg-[var(--color-surface)] hover:bg-[var(--color-surface-hover)] border-0 text-[var(--color-text-main)] transition-all hover:scale-105 active:scale-95"
+                  aria-label="Back to lines"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                </Link>
+                <h1 className="text-[24px] sm:text-[30px] md:text-[38px] font-black tracking-normal leading-tight uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] via-[var(--color-text-secondary)] to-[var(--color-text-muted)]">
+                  Line {safeId} Telemetry
+                </h1>
+              </div>
+              <p className="text-xs sm:text-sm md:text-base text-[var(--color-text-muted)] font-normal tracking-normal mt-1 md:mt-2 max-w-2xl">
+                Granular hourly output metrics, operator efficiency logs, and line-specific performance telemetry.
+              </p>
+            </div>
+
+            {/* Density Switcher on Desktop */}
+            <div className="hidden md:flex items-center gap-2 self-start md:self-auto shrink-0">
+              <DensitySwitcher value={density} onChange={setDensity} />
+            </div>
           </div>
         </header>
       )}
@@ -192,7 +202,7 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false }) {
         <div className="flex items-center justify-between gap-3 mb-4 md:mb-6 mt-6 md:mt-12 pt-6 md:pt-12 border-t border-[var(--color-border)]">
           <div className="flex items-center gap-2 md:gap-3">
             <div className="h-4 md:h-6 w-1.5 md:w-2 bg-[var(--color-primary)] rounded-full shadow-[0_0_10px_var(--color-primary)]"></div>
-            <h2 className="text-base md:text-3xl font-bold tracking-widest uppercase text-[var(--color-text-main)]">Line {id.toUpperCase()} Telemetry Details</h2>
+            <h2 className="text-base md:text-3xl font-bold tracking-normal uppercase text-[var(--color-text-main)]">Line {id.toUpperCase()} Telemetry Details</h2>
           </div>
           <DensitySwitcher value={density} onChange={setDensity} />
         </div>

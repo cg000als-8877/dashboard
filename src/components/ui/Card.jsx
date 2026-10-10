@@ -1,10 +1,11 @@
 import { cn } from "@/components/layout/Sidebar";
+import { AnimatedNumber } from "@/components/ui/AnimatedNumber";
 
 export function Card({ children, className, hover = false, ...props }) {
   return (
     <div className={cn(
-      "relative bg-[var(--color-bg-card)] border border-[var(--color-border)]/60 rounded-2xl p-4 md:p-6 transition-all duration-500 overflow-hidden shadow-sm",
-      hover && "hover:bg-[var(--color-bg-card-hover)] hover:-translate-y-0.5 hover:border-[var(--color-primary)]/40 hover:shadow-[0_12px_40px_var(--color-primary-glow)] group",
+      "relative bg-[var(--color-bg-card)] border-0 rounded-2xl p-4 md:p-6 transition-all duration-500 overflow-hidden shadow-sm",
+      hover && "hover:bg-[var(--color-bg-card-hover)] hover:-translate-y-0.5 hover:shadow-[0_12px_40px_var(--color-primary-glow)] group",
       className
     )}
     {...props}
@@ -43,7 +44,7 @@ export function MetricCard({
         <div className="min-w-0 flex-1 flex flex-col justify-start md:justify-between">
           <div>
             <p className={cn("font-medium md:font-semibold tracking-tight whitespace-nowrap text-xl sm:text-2xl md:text-3xl lg:text-4xl leading-tight", colors[color] || colors.default)}>
-              {value}
+              {typeof value === 'number' ? <AnimatedNumber value={value} /> : value}
             </p>
             {(subtitle || trendValue) && (
               <div className="flex items-center gap-2 mt-1 md:mt-2">

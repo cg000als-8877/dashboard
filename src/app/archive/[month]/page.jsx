@@ -18,7 +18,7 @@ export default function ArchiveMonthPage({ params }) {
       <div className="flex items-center justify-between gap-4 mb-6 md:mt-0 relative z-20">
         <Link 
           href="/archive"
-          className="hidden md:flex items-center gap-2 text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)] transition-colors bg-[var(--color-surface)] hover:bg-[var(--color-surface-hover)] px-3 sm:px-4 py-2 rounded-xl border border-[var(--color-border)] text-xs font-medium uppercase tracking-widest"
+          className="hidden md:flex items-center gap-2 text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)] transition-colors bg-[var(--color-surface)] hover:bg-[var(--color-surface-hover)] px-3 sm:px-4 py-2 rounded-xl border border-[var(--color-border)] text-xs font-medium uppercase tracking-normal"
         >
           <ArrowLeft size={16} /> 
           <span className="hidden sm:inline">Back to Archives</span>
@@ -37,8 +37,8 @@ export default function ArchiveMonthPage({ params }) {
             <div className="p-3 md:p-4 rounded-xl md:rounded-2xl bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.05)] inline-block mb-2 md:mb-3">
               <Database className="text-gray-400 w-5 h-5 md:w-8 md:h-8" />
             </div>
-            <h2 className="text-sm md:text-2xl font-bold text-[var(--color-text-main)] uppercase tracking-[0.2em] md:tracking-[0.3em] leading-relaxed md:leading-normal">Comprehensive Data Sheets</h2>
-            <p className="text-[9px] md:text-sm text-[var(--color-text-muted)] mt-1 md:mt-2 font-light tracking-widest uppercase">Deep dive metrics for all active lines</p>
+            <h2 className="text-base md:text-2xl font-bold text-[var(--color-text-main)] uppercase tracking-normal leading-relaxed md:leading-normal">Comprehensive Data Sheets</h2>
+            <p className="text-xs md:text-sm text-[var(--color-text-muted)] mt-1 md:mt-2 font-normal tracking-normal">Deep dive telemetry metrics for all active production lines.</p>
           </div>
         </div>
 

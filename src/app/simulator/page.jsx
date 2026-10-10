@@ -23,7 +23,17 @@ export default function SimulatorPage() {
   }
 
   return (
-    <div className="space-y-8 animate-[fade-up_0.4s_ease-out_both]">
+    <div className="space-y-6 md:space-y-8 animate-[fade-up_0.4s_ease-out_both]">
+      {/* Page Header */}
+      <header className="flex flex-col items-center text-center md:items-start md:text-left mb-6 md:mb-8 relative z-10">
+        <h1 className="text-[24px] sm:text-[30px] md:text-[38px] font-black tracking-normal leading-tight uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] via-[var(--color-text-secondary)] to-[var(--color-text-muted)]">
+          Voyage Simulator
+        </h1>
+        <p className="text-xs sm:text-sm md:text-base text-[var(--color-text-muted)] font-normal tracking-normal mt-1 md:mt-2 max-w-2xl">
+          Interactive trajectory modeling and financial stress simulation for factory operations.
+        </p>
+      </header>
+
       {/* SIMULATOR EXPLANATION (Accordion styled with plus sign) */}
       <div className="bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-2xl overflow-hidden shadow-sm">
         <button

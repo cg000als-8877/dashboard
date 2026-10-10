@@ -264,15 +264,17 @@ export default function ProductionLinesPage() {
     <div className="space-y-6 sm:space-y-8 animate-[fade-up_0.4s_ease-out_both]">
       
       {/* ── 1. PAGE HEADER & TITLE ───────────────────────────────────── */}
-      <div className="relative flex flex-col items-center justify-center text-center pt-2 sm:pt-4">
-        <h1 className="text-[22px] sm:text-[28px] md:text-[36px] font-black tracking-tight uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] via-[var(--color-text-secondary)] to-[var(--color-text-muted)] leading-tight">
+      <header className="flex flex-col items-center text-center md:items-start md:text-left mb-6 md:mb-8 relative z-10">
+        <h1 className="text-[24px] sm:text-[30px] md:text-[38px] font-black tracking-normal leading-tight uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] via-[var(--color-text-secondary)] to-[var(--color-text-muted)]">
           Production Lines
         </h1>
-        <p className="text-[11px] sm:text-xs text-[var(--color-text-muted)] font-medium tracking-wide uppercase mt-1">
-          Real-time performance, output, worker telemetry, and unit economics for all factory lines
+        <p className="text-xs sm:text-sm md:text-base text-[var(--color-text-muted)] font-normal tracking-normal mt-1 md:mt-2 max-w-2xl">
+          Floor telemetry, daily output metrics, and cost recovery tracking across all active lines.
         </p>
+      </header>
 
-        {/* Month Switcher Tabs & Density Switcher (List/Cards top on mobile, Month tabs under it) */}
+      {/* Month Switcher Tabs & Density Switcher (List/Cards top on mobile, Month tabs under it) */}
+      <div className="flex flex-col items-center justify-center w-full">
         <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-2.5 mt-3 sm:mt-4 mb-2 relative z-10 w-full">
           {/* 1. View Mode Switcher (List / Cards) - Top on Mobile */}
           <div className="order-1 sm:order-2 shrink-0">

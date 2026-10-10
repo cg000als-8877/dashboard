@@ -2090,6 +2090,88 @@ body {
 }
 
 /* ─────────────────────────────────────────────────────────────
+   404 ERROR PAGE ANIMATIONS (Sinking Voyage Nautical & Radar Telemetry)
+───────────────────────────────────────────────────────────── */
+@keyframes oceanic-float-404 {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  33% {
+    transform: translateY(-14px) rotate(1.2deg);
+  }
+  66% {
+    transform: translateY(-6px) rotate(-1deg);
+  }
+}
+
+@keyframes sonar-radar-ping {
+  0% {
+    transform: scale(0.65);
+    opacity: 0.85;
+  }
+  50% {
+    opacity: 0.45;
+  }
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
+@keyframes sonar-sweep-404 {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes oceanic-wave-drift {
+  0% {
+    transform: translateX(0) translateZ(0) scaleY(1);
+  }
+  50% {
+    transform: translateX(-25%) translateZ(0) scaleY(0.85);
+  }
+  100% {
+    transform: translateX(-50%) translateZ(0) scaleY(1);
+  }
+}
+
+.animate-oceanic-float-404 {
+  animation: oceanic-float-404 5.5s ease-in-out infinite;
+  will-change: transform;
+}
+
+.animate-sonar-radar-ping-1 {
+  animation: sonar-radar-ping 3.6s cubic-bezier(0.2, 0.8, 0.4, 1) infinite;
+  will-change: transform, opacity;
+}
+
+.animate-sonar-radar-ping-2 {
+  animation: sonar-radar-ping 3.6s cubic-bezier(0.2, 0.8, 0.4, 1) infinite;
+  animation-delay: 1.2s;
+  will-change: transform, opacity;
+}
+
+.animate-sonar-radar-ping-3 {
+  animation: sonar-radar-ping 3.6s cubic-bezier(0.2, 0.8, 0.4, 1) infinite;
+  animation-delay: 2.4s;
+  will-change: transform, opacity;
+}
+
+.animate-sonar-sweep-404 {
+  animation: sonar-sweep-404 4s linear infinite;
+  will-change: transform;
+}
+
+.animate-oceanic-wave-drift {
+  animation: oceanic-wave-drift 12s linear infinite;
+  will-change: transform;
+}
+
+/* ─────────────────────────────────────────────────────────────
    DASHBOARD MOBILE VIEW: STROKE-FREE DESIGN
    Removes all borders and strokes from cards, badges, stat cards,
    tabs, dividers, and containers on the Dashboard page in mobile view.
@@ -2133,5 +2215,49 @@ body {
   .dashboard-mobile-stroke-free hr {
     display: none !important;
   }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   NON-DASHBOARD PAGES: COMPLETE STROKE-FREE DESIGN
+   Removes all borders and strokes from cards, stat cards,
+   badges, tabs, buttons, tables, and containers across all pages
+   except the dashboard.
+───────────────────────────────────────────────────────────── */
+.non-dashboard-stroke-free div:not([data-preserve-stroke]),
+.non-dashboard-stroke-free section:not([data-preserve-stroke]),
+.non-dashboard-stroke-free article:not([data-preserve-stroke]),
+.non-dashboard-stroke-free span:not(.animate-emergency-strobe):not([data-preserve-stroke]),
+.non-dashboard-stroke-free button:not([data-preserve-stroke]),
+.non-dashboard-stroke-free a:not([data-preserve-stroke]),
+.non-dashboard-stroke-free ul,
+.non-dashboard-stroke-free li,
+.non-dashboard-stroke-free table,
+.non-dashboard-stroke-free tr,
+.non-dashboard-stroke-free td,
+.non-dashboard-stroke-free th,
+.non-dashboard-stroke-free p:not([data-preserve-stroke]),
+.non-dashboard-stroke-free header:not([data-preserve-stroke]),
+.non-dashboard-stroke-free footer:not([data-preserve-stroke]) {
+  border-color: transparent !important;
+  border-width: 0 !important;
+  border-style: none !important;
+  outline: none !important;
+}
+
+.non-dashboard-stroke-free [class*="border"]:not(.animate-emergency-strobe):not([data-preserve-stroke]) {
+  border-color: transparent !important;
+  border-width: 0 !important;
+  border-style: none !important;
+}
+
+.non-dashboard-stroke-free [class*="divide-"] > * {
+  border-color: transparent !important;
+  border-width: 0 !important;
+  border-style: none !important;
+}
+
+.non-dashboard-stroke-free div[class*="h-px"]:not([data-preserve-line]),
+.non-dashboard-stroke-free hr {
+  display: none !important;
 }
 

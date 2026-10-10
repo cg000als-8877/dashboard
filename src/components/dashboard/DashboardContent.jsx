@@ -916,7 +916,7 @@ export function DashboardContent({ month, isArchive = false }) {
                         Production Lines
                       </h4>
                       <p className="font-black text-[18px] sm:text-[20px] text-[var(--color-text-main)] tracking-tight mt-1 leading-none [filter:var(--shadow-text)]">
-                        <AnimatedNumber value={actLinesCount} /> of {totLinesCount} <span className="text-[13px] sm:text-[14px] font-bold text-[var(--color-primary)] uppercase">Active</span>
+                        <AnimatedNumber value={actLinesCount} /> of <AnimatedNumber value={totLinesCount} /> <span className="text-[13px] sm:text-[14px] font-bold text-[var(--color-primary)] uppercase">Active</span>
                       </p>
                     </div>
 
@@ -1173,7 +1173,7 @@ export function DashboardContent({ month, isArchive = false }) {
                           Production Lines
                         </h4>
                         <p className="font-black text-2xl sm:text-3xl xl:text-[36px] text-[var(--color-text-main)] tracking-tight mt-1.5 leading-none [filter:var(--shadow-text)]">
-                          <AnimatedNumber value={actLinesCount} /> of {totLinesCount} <span className="text-sm sm:text-base xl:text-lg font-bold text-[var(--color-primary)] uppercase ml-0.5">Active</span>
+                          <AnimatedNumber value={actLinesCount} /> of <AnimatedNumber value={totLinesCount} /> <span className="text-sm sm:text-base xl:text-lg font-bold text-[var(--color-primary)] uppercase ml-0.5">Active</span>
                         </p>
                         <p className="text-[11px] sm:text-xs xl:text-[13px] text-[var(--color-text-muted)] font-medium mt-1">
                           Details lines and items
@@ -1212,7 +1212,7 @@ export function DashboardContent({ month, isArchive = false }) {
 
                               <div className="text-right shrink-0 pl-1">
                                 <span className="text-xs xl:text-[13px] font-bold text-[var(--color-text-main)] block whitespace-nowrap">
-                                  {output > 0 ? `${output.toLocaleString()} pcs` : `${workers} w`}
+                                  {output > 0 ? <><AnimatedNumber value={output} /> pcs</> : <><AnimatedNumber value={workers} /> w</>}
                                 </span>
                               </div>
                             </div>
@@ -1485,7 +1485,9 @@ export function DashboardContent({ month, isArchive = false }) {
                               <span className="hidden md:inline">Last Day Input ({lastDayDateFull})</span>
                             </span>
                             <span className="text-[9px] sm:text-[10px] md:text-[10.5px] font-bold text-[var(--color-text-muted)] shrink-0">
-                              Cost Recovery: <span className={cn("font-extrabold", isInactive ? "text-[var(--color-text-muted)]" : (parseFloat(line.lastDayCostRecovery || 0) >= 100 ? "text-[var(--color-success-text)]" : "text-[var(--color-danger-text)]"))}>{line.lastDayCostRecovery || '0.0'}%</span>
+                              Cost Recovery: <span className={cn("font-extrabold", isInactive ? "text-[var(--color-text-muted)]" : (parseFloat(line.lastDayCostRecovery || 0) >= 100 ? "text-[var(--color-success-text)]" : "text-[var(--color-danger-text)]"))}>
+                                <AnimatedNumber value={parseFloat(line.lastDayCostRecovery || 0)} suffix="%" decimals={1} />
+                              </span>
                             </span>
                           </div>
 
@@ -1493,7 +1495,7 @@ export function DashboardContent({ month, isArchive = false }) {
                             <div className={cn("bg-[var(--color-bg-card)] border border-[var(--color-border)]/60 text-center min-w-0 flex flex-col justify-center", isMobile ? "p-1 rounded-md" : "p-1.5 sm:p-2 rounded-lg")}>
                               <p className="text-[8px] sm:text-[9px] text-[var(--color-text-muted)] font-medium uppercase truncate">Day Output</p>
                               <p className="text-[11px] sm:text-xs md:text-sm font-bold text-[var(--color-text-main)] truncate">
-                                {(line.lastDayOutput || 0).toLocaleString()} <span className="text-[8.5px] sm:text-[9px] text-[var(--color-text-muted)]">PCS</span>
+                                <AnimatedNumber value={line.lastDayOutput || 0} /> <span className="text-[8.5px] sm:text-[9px] text-[var(--color-text-muted)]">PCS</span>
                               </p>
                             </div>
 
@@ -1501,7 +1503,7 @@ export function DashboardContent({ month, isArchive = false }) {
                               <p className="text-[8px] sm:text-[9px] text-[var(--color-text-muted)] font-medium uppercase truncate">Day Income</p>
                               <p className="text-[11px] sm:text-xs md:text-sm font-bold text-[var(--color-primary)] truncate flex items-center justify-center">
                                 <span className="text-[8.5px] sm:text-[9.5px] font-semibold opacity-75 mr-0.5">BDT</span>
-                                <span>{(line.lastDayIncome || 0).toLocaleString()}</span>
+                                <AnimatedNumber value={Math.round(line.lastDayIncome || 0)} />
                               </p>
                             </div>
 
@@ -1518,7 +1520,7 @@ export function DashboardContent({ month, isArchive = false }) {
                                       : "text-[var(--color-danger-text)]"
                               )}>
                                 <span className="text-[8.5px] sm:text-[9.5px] font-semibold opacity-75 mr-0.5">BDT</span>
-                                <span>{(line.lastDayProfit || 0).toLocaleString()}</span>
+                                <AnimatedNumber value={Math.round(line.lastDayProfit || 0)} />
                               </p>
                             </div>
                           </div>

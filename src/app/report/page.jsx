@@ -49,8 +49,8 @@ export default function ReportPage() {
       {/* Print Controls (hidden on print) */}
       <div className="hide-on-print p-6 flex justify-between items-center bg-[rgba(0,0,0,0.5)] border-b border-[rgba(255,255,255,0.05)] sticky top-0 z-50 backdrop-blur-xl">
         <div>
-          <h1 className="text-xl font-bold uppercase tracking-widest text-[var(--color-text-main)]">Full System Report</h1>
-          <p className="text-[var(--color-primary)] text-xs font-medium">{monthLabel}</p>
+          <h1 className="text-xl font-bold uppercase tracking-normal text-[var(--color-text-main)]">Full System Report</h1>
+          <p className="text-[var(--color-primary)] text-xs font-normal tracking-normal mt-0.5">Comprehensive factory telemetry report for {monthLabel}.</p>
         </div>
         <button 
           onClick={() => window.print()}

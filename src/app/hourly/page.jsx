@@ -328,23 +328,14 @@ export default function HourlyPage() {
     <div className="space-y-6 sm:space-y-8 animate-[fade-up_0.4s_ease-out_both] w-full">
       <div className="w-full space-y-6 sm:space-y-8">
         {/* Header Section */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-2">
           <div className="flex flex-col items-center md:items-start text-center md:text-left">
-            <h1 className="text-[20px] sm:text-[24px] md:text-5xl font-bold tracking-normal [letter-spacing:0] uppercase mb-1 md:mb-2 bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] to-[var(--color-text-muted)] flex flex-wrap items-center justify-center md:justify-start gap-2 md:gap-3">
-              {/* Mobile view: LIVE PRODUCTION */}
-              <span className="md:hidden">
-                LIVE PRODUCTION{selectedDate ? ` ${format(parseISO(selectedDate), 'dd MMM, yy')}` : ''}
-              </span>
-
-              {/* Desktop view: Hourly Tracking */}
-              <span className="hidden md:inline-flex items-center gap-3">
-                <span>Hourly Tracking</span>
-                {selectedDate && <span className="opacity-80 font-semibold">- {format(parseISO(selectedDate), 'dd MMM, yy')}</span>}
-              </span>
+            <h1 className="text-[24px] sm:text-[30px] md:text-[38px] font-black tracking-normal leading-tight uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] via-[var(--color-text-secondary)] to-[var(--color-text-muted)] flex flex-wrap items-center justify-center md:justify-start gap-2">
+              <span>Hourly Tracking</span>
+              {selectedDate && <span className="opacity-75 font-semibold text-lg sm:text-xl md:text-2xl">- {format(parseISO(selectedDate), 'dd MMM, yy')}</span>}
             </h1>
-            <p className="text-[var(--color-text-secondary)] text-[10px] md:text-base tracking-wide font-medium flex items-center justify-center md:justify-start gap-1.5 md:gap-2">
-              <Clock className="hidden md:block md:w-4 md:h-4 text-[var(--color-primary)]" />
-              Intraday production breakdown
+            <p className="text-xs sm:text-sm md:text-base text-[var(--color-text-muted)] font-normal tracking-normal mt-1 md:mt-2 max-w-2xl">
+              Intraday output targets, hourly pace tracking, and shift achievement monitoring.
             </p>
           </div>
           

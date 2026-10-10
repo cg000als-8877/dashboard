@@ -18,12 +18,14 @@ export default function Analytics() {
 
   return (
     <div className="space-y-8 animate-[fade-up_0.4s_ease-out_both]">
-      <header className="mb-10 relative z-10">
+      <header className="flex flex-col items-center text-center md:items-start md:text-left mb-6 md:mb-8 relative z-10">
         <div className="absolute -top-10 -left-10 w-40 h-40 bg-[var(--color-primary)] opacity-10 rounded-full blur-3xl pointer-events-none"></div>
-        <h1 className="text-[26px] md:text-[42px] font-bold tracking-[0.04em] uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] via-[var(--color-text-secondary)] to-[var(--color-text-muted)]">
+        <h1 className="text-[24px] sm:text-[30px] md:text-[38px] font-black tracking-normal leading-tight uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] via-[var(--color-text-secondary)] to-[var(--color-text-muted)]">
           Analytics
         </h1>
-        <p className="text-[var(--color-primary)] font-medium tracking-widest uppercase text-xs mt-2">Deep dive into financial and production metrics.</p>
+        <p className="text-xs sm:text-sm md:text-base text-[var(--color-text-muted)] font-normal tracking-normal mt-1 md:mt-2 max-w-2xl">
+          Comprehensive trends, cost efficiency breakdowns, and performance analytics.
+        </p>
       </header>
 
       <div className="grid grid-cols-1 gap-6">
