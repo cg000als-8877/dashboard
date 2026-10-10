@@ -11,7 +11,6 @@ import { cn } from '@/components/layout/Sidebar';
 import { format, parseISO } from 'date-fns';
 import Link from 'next/link';
 import {
-  Factory,
   Layers,
   ArrowRight,
   TrendingUp,
@@ -349,45 +348,40 @@ export default function ProductionLinesPage() {
 
       {/* ── 2. FACTORY FLOOR SUMMARY STRIP ───────────────────────────── */}
       {currentStats && (
-        <div className="relative overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-card)] p-4 sm:p-5 shadow-lg">
+        <div className="relative overflow-hidden rounded-2xl bg-[var(--color-bg-card)] p-4 sm:p-5 shadow-lg border-0">
           <div className="absolute top-0 right-0 w-64 h-32 bg-[var(--color-primary)] opacity-5 rounded-full blur-3xl pointer-events-none" />
           
-          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 sm:gap-6">
+          <div className="flex flex-col gap-3.5 sm:gap-4.5">
             
-            {/* Left Status Block */}
-            <div className="flex items-center gap-3 w-full lg:w-[230px] xl:w-[260px] pb-3 lg:pb-0 border-b lg:border-b-0 border-[var(--color-border)] shrink-0">
-              <div className="w-10 h-10 rounded-xl bg-[var(--color-primary)]/10 border border-[var(--color-primary)]/20 flex items-center justify-center text-[var(--color-primary)] shrink-0">
-                <Factory size={20} />
-              </div>
-              <div className="flex flex-col">
-                <span className="text-[10px] uppercase font-bold tracking-widest text-[var(--color-text-muted)]">
-                  Floor Status ({activeMonthName})
-                </span>
-                <div className="flex items-center gap-2 mt-1 flex-wrap">
-                  {profitableCount > 0 && (
-                    <span className="inline-flex items-center gap-1 text-[10px] sm:text-xs font-bold text-[var(--color-success-text)] bg-[var(--color-success-glow)] px-2.5 py-0.5 rounded-md border border-[rgba(16,185,129,0.2)]">
-                      <CheckCircle2 size={12} /> {profitableCount} Optimal
-                    </span>
-                  )}
-                  {criticalCount > 0 && (
-                    <span className="inline-flex items-center gap-1 text-[10px] sm:text-xs font-bold text-rose-700 dark:text-rose-400 bg-rose-500/15 px-2.5 py-0.5 rounded-md border border-rose-500/30">
-                      <AlertTriangle size={12} /> {criticalCount} Critical
-                    </span>
-                  )}
-                  {inactiveCount > 0 && (
-                    <span className="inline-flex items-center gap-1 text-[10px] sm:text-xs font-bold text-zinc-700 dark:text-zinc-400 bg-zinc-500/15 px-2.5 py-0.5 rounded-md border border-zinc-500/30">
-                      <Clock size={12} /> {inactiveCount} Inactive
-                    </span>
-                  )}
-                </div>
+            {/* Status Header: Title on top, Badges underneath (Center aligned on mobile, Left aligned on PC) */}
+            <div className="flex flex-col items-center text-center md:items-start md:text-left gap-1.5 sm:gap-2 w-full">
+              <h2 className="text-base sm:text-lg md:text-xl font-black uppercase tracking-normal text-[var(--color-text-main)]">
+                Floor Status ({activeMonthName})
+              </h2>
+              <div className="flex items-center justify-center md:justify-start gap-2 flex-wrap">
+                {profitableCount > 0 && (
+                  <span className="inline-flex items-center gap-1.5 text-[10.5px] sm:text-xs font-bold text-[var(--color-success-text)] bg-[var(--color-success-glow)] px-2.5 py-1 rounded-md border-0">
+                    <CheckCircle2 size={12} /> {profitableCount} Optimal
+                  </span>
+                )}
+                {criticalCount > 0 && (
+                  <span className="inline-flex items-center gap-1.5 text-[10.5px] sm:text-xs font-bold text-rose-700 dark:text-rose-400 bg-rose-500/15 px-2.5 py-1 rounded-md border-0">
+                    <AlertTriangle size={12} /> {criticalCount} Critical
+                  </span>
+                )}
+                {inactiveCount > 0 && (
+                  <span className="inline-flex items-center gap-1.5 text-[10.5px] sm:text-xs font-bold text-zinc-700 dark:text-zinc-400 bg-zinc-500/15 px-2.5 py-1 rounded-md border-0">
+                    <Clock size={12} /> {inactiveCount} Inactive
+                  </span>
+                )}
               </div>
             </div>
 
             {/* 4 Metric Summary Cards */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3.5 w-full flex-1">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3.5 w-full">
               
               {/* Total Factory Output */}
-              <div className="bg-[var(--color-surface)] border border-[var(--color-border)]/50 rounded-xl p-2.5 sm:p-3 flex flex-col justify-center">
+              <div className="bg-[var(--color-surface)] border-0 rounded-xl p-2.5 sm:p-3 flex flex-col justify-center">
                 <span className="text-[9px] sm:text-[10px] uppercase font-bold tracking-wider text-[var(--color-text-muted)]">
                   Total Output
                 </span>
@@ -398,7 +392,7 @@ export default function ProductionLinesPage() {
               </div>
 
               {/* Total Income */}
-              <div className="bg-[var(--color-surface)] border border-[var(--color-border)]/50 rounded-xl p-2.5 sm:p-3 flex flex-col justify-center">
+              <div className="bg-[var(--color-surface)] border-0 rounded-xl p-2.5 sm:p-3 flex flex-col justify-center">
                 <span className="text-[9px] sm:text-[10px] uppercase font-bold tracking-wider text-[var(--color-text-muted)]">
                   Total Income
                 </span>
@@ -408,7 +402,7 @@ export default function ProductionLinesPage() {
               </div>
 
               {/* Total Cost */}
-              <div className="bg-[var(--color-surface)] border border-[var(--color-border)]/50 rounded-xl p-2.5 sm:p-3 flex flex-col justify-center">
+              <div className="bg-[var(--color-surface)] border-0 rounded-xl p-2.5 sm:p-3 flex flex-col justify-center">
                 <span className="text-[9px] sm:text-[10px] uppercase font-bold tracking-wider text-[var(--color-text-muted)]">
                   Total Cost
                 </span>
@@ -419,10 +413,10 @@ export default function ProductionLinesPage() {
 
               {/* Net Profit / Loss */}
               <div className={cn(
-                "border rounded-xl p-2.5 sm:p-3 flex flex-col justify-center",
+                "border-0 rounded-xl p-2.5 sm:p-3 flex flex-col justify-center",
                 (currentStats.netProfit || 0) >= 0 
-                  ? "bg-[var(--color-success-glow)]/40 border-[rgba(16,185,129,0.25)]" 
-                  : "bg-[var(--color-danger-glow)]/40 border-[rgba(255,59,48,0.25)]"
+                  ? "bg-[var(--color-success-glow)]/40" 
+                  : "bg-[var(--color-danger-glow)]/40"
               )}>
                 <span className="text-[9px] sm:text-[10px] uppercase font-bold tracking-wider text-[var(--color-text-muted)]">
                   {(currentStats.netProfit || 0) >= 0 ? "Net Profit" : "Net Loss"}
