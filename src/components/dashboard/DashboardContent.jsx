@@ -4,7 +4,7 @@ import { useKpiData } from '@/utils/useKpiData';
 import { MetricCard, Card } from '@/components/ui/Card';
 import { DailyPerformanceChart, IncomeVsCostChart } from '@/components/dashboard/DashboardCharts';
 import { TitanicAnimation } from '@/components/ui/TitanicAnimation';
-import { Sparkles, ArrowRight, Download, FileText, Ship, Siren, ChevronDown } from 'lucide-react';
+import { Sparkles, ArrowRight, Download, FileText, Ship, Siren, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { RealTimeClock } from '@/components/ui/RealTimeClock';
 import { PrintableArchiveReport } from '@/components/report/PrintableArchiveReport';
@@ -13,6 +13,7 @@ import { DashboardSkeleton } from '@/components/ui/Skeletons';
 import { cn } from '@/components/layout/Sidebar';
 import { CostRecoveryJar } from '@/components/dashboard/CostRecoveryJar';
 import { CostRecoveryPie } from '@/components/dashboard/CostRecoveryPie';
+import { SystemIntelligenceCards } from '@/components/dashboard/SystemIntelligenceCards';
 
 const DEFAULT_LINE_ITEMS = {
   A: 'Sherpa Jacket, Boys Shirt',
@@ -21,11 +22,11 @@ const DEFAULT_LINE_ITEMS = {
   D: 'Fleece Hoodie'
 };
 
-// Gentle emergency siren indicator
+// Hot red emergency siren indicator
 function AmbulanceBeacon() {
   return (
     <span className="relative flex items-center justify-center shrink-0 w-3 h-3 mr-0.5">
-      <Siren className="w-3 h-3 text-rose-600 dark:text-rose-400 shrink-0" />
+      <Siren className="w-3.5 h-3.5 text-[#FF1744] shrink-0 drop-shadow-[0_0_8px_rgba(255,23,68,0.95)]" />
     </span>
   );
 }
@@ -115,19 +116,14 @@ function DashboardDateRange({ dateInfo, workingDays = null, className = "" }) {
   const { isRange, startDay, endDay, startMonthShort, endMonthShort, year } = dateInfo;
 
   return (
-    <span className={cn("inline-flex items-center justify-center flex-wrap whitespace-nowrap text-[13px] sm:text-[14px] md:text-[17px] font-medium tracking-wide text-[var(--color-text-muted)] leading-tight uppercase", className)}>
-      <span>FROM&nbsp;</span>
+    <span className={cn("inline-flex items-center justify-center flex-wrap whitespace-nowrap text-[13px] sm:text-[14px] md:text-[17px] font-bold tracking-wide text-[var(--color-primary)] leading-tight uppercase select-none", className)}>
       {isRange ? (
-        <>
-          <span className="font-extrabold text-[var(--color-primary)] tracking-wide">{startDay} {startMonthShort}</span>
-          <span>&nbsp;TO&nbsp;</span>
-          <span className="font-extrabold text-[var(--color-primary)] tracking-wide">{endDay} {endMonthShort}, {year}</span>
-        </>
+        <span>{startDay} {startMonthShort} - {endDay} {endMonthShort}, {year}</span>
       ) : (
-        <span className="font-extrabold text-[var(--color-primary)] tracking-wide">{startDay} {endMonthShort}, {year}</span>
+        <span>{startDay} {endMonthShort}, {year}</span>
       )}
       {workingDays !== null && workingDays !== undefined && (
-        <span className="font-bold text-[var(--color-text-secondary)] ml-1.5 tracking-wider">
+        <span className="font-bold ml-1.5 tracking-wider">
           ({workingDays} {workingDays === 1 ? 'DAY' : 'DAYS'})
         </span>
       )}
@@ -925,40 +921,82 @@ export function DashboardContent({ month, isArchive = false }) {
                     </div>
 
                     {/* Lines Badges List: Line Name, Item, & Total Production (Active lines only) */}
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-1.5 pt-2 border-t border-[var(--color-border)]/50">
-                      {renderedActiveLines.map((lineId) => {
-                        const lineData = currentActiveLines?.find(l => l.id?.toUpperCase() === lineId);
-                        const itemDesc = (lineData?.items && lineData.items.length > 0 ? lineData.items.join(', ') : null) || lineData?.item || lineData?.lastActiveDay?.item || lineData?.today?.item || DEFAULT_LINE_ITEMS[lineId] || 'Polo Shirt';
-                        const totalProd = lineData?.totalProduction || 0;
+                    {(() => {
+                      const linesCount = renderedActiveLines.length;
+                      // Side by side if 1, 2, or 3 lines; stack one over another when 4 lines
+                      const gridColsClass = linesCount === 2 
+                        ? 'grid-cols-2' 
+                        : linesCount === 3 
+                          ? 'grid-cols-3' 
+                          : 'grid-cols-1';
 
-                        return (
-                          <div
-                            key={lineId}
-                            className="flex items-center justify-between gap-1.5 p-2 rounded-[4px] border transition-all bg-[var(--color-surface)] border-[var(--color-border)]/80 shadow-xs"
-                          >
-                            {/* Line Info: Line Name & Item Name */}
-                            <div className="min-w-0 flex-1">
-                              <span className="text-[11px] sm:text-xs font-bold text-[var(--color-text-main)] truncate block leading-tight">
-                                Line {lineId}
-                              </span>
-                              <p className="text-[9px] sm:text-[9.5px] font-medium text-[var(--color-text-muted)] truncate mt-0.5 leading-tight">
-                                {itemDesc}
-                              </p>
-                            </div>
+                      return (
+                        <div className={cn(
+                          "grid gap-1.5 pt-2 border-t border-[var(--color-border)]/50",
+                          gridColsClass
+                        )}>
+                          {renderedActiveLines.map((lineId) => {
+                            const lineData = currentActiveLines?.find(l => l.id?.toUpperCase() === lineId);
+                            const itemDesc = (lineData?.items && lineData.items.length > 0 ? lineData.items.join(', ') : null) || lineData?.item || lineData?.lastActiveDay?.item || lineData?.today?.item || DEFAULT_LINE_ITEMS[lineId] || 'Polo Shirt';
+                            const totalProd = lineData?.totalProduction || 0;
 
-                            {/* Total Production Output */}
-                            <div className="text-right shrink-0 pl-1">
-                              <span className="text-[11px] sm:text-xs font-bold text-[var(--color-text-main)] block leading-tight">
-                                <AnimatedNumber value={totalProd} />
-                              </span>
-                              <span className="text-[8px] font-semibold uppercase text-[var(--color-text-muted)] block leading-none">
-                                pcs
-                              </span>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
+                            return (
+                              <div
+                                key={lineId}
+                                className={cn(
+                                  "rounded-[6px] border transition-all bg-[var(--color-surface)] border-[var(--color-border)]/80 shadow-xs min-w-0 flex items-center justify-between",
+                                  linesCount === 3 ? "p-1.5 gap-1" : linesCount === 2 ? "p-2 gap-1.5" : "p-2 sm:p-2.5 gap-2"
+                                )}
+                              >
+                                {/* Line Info: Line Name & Item Name */}
+                                <div className="min-w-0 flex-1">
+                                  <span className={cn(
+                                    "font-bold text-[var(--color-text-main)] truncate block leading-tight",
+                                    linesCount === 3 
+                                      ? "text-[9.5px] sm:text-[10.5px]" 
+                                      : linesCount === 2 
+                                        ? "text-[10.5px] sm:text-xs" 
+                                        : "text-[11px] sm:text-xs"
+                                  )}>
+                                    Line {lineId}
+                                  </span>
+                                  <p className={cn(
+                                    "font-medium text-[var(--color-text-muted)] truncate mt-0.5 leading-tight",
+                                    linesCount === 3 
+                                      ? "text-[7.5px] sm:text-[8.5px]" 
+                                      : linesCount === 2 
+                                        ? "text-[8.5px] sm:text-[9.5px]" 
+                                        : "text-[9px] sm:text-[9.5px]"
+                                  )}>
+                                    {itemDesc}
+                                  </p>
+                                </div>
+
+                                {/* Total Production Output */}
+                                <div className="text-right shrink-0 pl-0.5">
+                                  <span className={cn(
+                                    "font-bold text-[var(--color-text-main)] block leading-tight",
+                                    linesCount === 3 
+                                      ? "text-[9.5px] sm:text-[10.5px]" 
+                                      : linesCount === 2 
+                                        ? "text-[10.5px] sm:text-xs" 
+                                        : "text-[11px] sm:text-xs"
+                                  )}>
+                                    <AnimatedNumber value={totalProd} />
+                                  </span>
+                                  <span className={cn(
+                                    "font-semibold uppercase text-[var(--color-text-muted)] block leading-none",
+                                    linesCount === 3 ? "text-[7px] sm:text-[7.5px]" : "text-[7.5px] sm:text-[8px]"
+                                  )}>
+                                    pcs
+                                  </span>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      );
+                    })()}
                   </Card>
                 </div>
 
@@ -1299,44 +1337,31 @@ export function DashboardContent({ month, isArchive = false }) {
                 const activeLineIndex = Math.max(0, linesOrder.indexOf(selectedMobileLine));
 
                 const renderCardInner = (line, isMobile = false) => {
-                  const lastDayDateStr = line.lastDayDate ? format(parseISO(line.lastDayDate), 'do MMMM, yyyy') : (dateComponents?.endDay ? `${dateComponents.endDay} ${dateComponents.month}, ${dateComponents.year}` : '1st September, 2026');
+                  const lastDayDateFull = line.lastDayDate ? format(parseISO(line.lastDayDate), 'do MMMM, yyyy') : (dateComponents?.endDay ? `${dateComponents.endDay} ${dateComponents.month}, ${dateComponents.year}` : '1st September, 2026');
+                  const lastDayDateShort = line.lastDayDate ? format(parseISO(line.lastDayDate), 'd MMM').toUpperCase() : (dateComponents?.endDay ? `${parseInt(dateComponents.endDay, 10) || dateComponents.endDay} ${dateComponents.month.slice(0, 3)}`.toUpperCase() : '1 SEP');
                   const isLiveCurrent = !isArchive && selectedCardMonth === 'current';
                   const isInactive = (line.totalProduction || 0) === 0 && (line.totalCost || 0) === 0;
                   const isProfitable = !isInactive && (line.netProfit || 0) >= 0;
 
                   return (
-                    <Card className="relative overflow-hidden w-full h-full p-0 flex flex-col justify-between border border-[var(--color-border)] hover:border-[var(--color-primary)]/40 transition-all duration-300">
+                    <Card className={cn(
+                      "relative overflow-hidden w-full p-0 flex flex-col border border-[var(--color-border)] hover:border-[var(--color-primary)]/40 transition-all duration-300",
+                      isMobile ? "h-auto justify-start" : "h-full justify-between"
+                    )}>
                       <div className="absolute inset-0 bg-gradient-to-b from-[var(--color-surface)] to-transparent pointer-events-none rounded-[inherit]"></div>
-
-                      {/* Attached Mobile Line Switcher Tabs (Directly on top of the card on mobile) */}
-                      {isMobile && (
-                        <div className="w-full border-b border-[var(--color-border)] bg-[var(--color-surface)] p-1 rounded-t-[inherit]">
-                          <div className="grid grid-cols-4 gap-1">
-                            {linesOrder.map(lineId => {
-                              const isSelected = selectedMobileLine === lineId;
-                              return (
-                                <button
-                                  key={lineId}
-                                  type="button"
-                                  onClick={() => setSelectedMobileLine(lineId)}
-                                  className={cn(
-                                    "py-2 rounded-lg text-xs font-bold uppercase transition-all duration-200 cursor-pointer select-none text-center flex items-center justify-center",
-                                    isSelected
-                                      ? "bg-[var(--color-primary)] text-[var(--color-on-primary,white)] shadow-xs"
-                                      : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)]"
-                                  )}
-                                >
-                                  <span>LINE {lineId}</span>
-                                </button>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      )}
-
-                      <div className="flex flex-col gap-3.5 p-3.5 sm:p-5 pt-4.5 relative z-10 flex-1 justify-between">
+                      <div className={cn(
+                        "flex flex-col relative z-10 flex-1",
+                        isMobile 
+                          ? "gap-2 p-3 sm:p-5 pt-2.5 justify-start" 
+                          : "gap-3.5 p-3.5 sm:p-5 pt-4.5 justify-between"
+                      )}>
                         {/* Line Top Header: Name, Status Badge, Item, Month Efficiency */}
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[var(--color-border)]/50 pb-3">
+                        <div className={cn(
+                          "flex justify-between border-b border-[var(--color-border)]/50",
+                          isMobile 
+                            ? "flex-col gap-0.5 pb-1.5" 
+                            : "flex-col sm:flex-row sm:items-center gap-2 pb-3"
+                        )}>
                           <div className="flex items-center justify-between sm:justify-start gap-3">
                             <h2 className="text-[20px] sm:text-[22px] md:text-[24px] font-black tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-[var(--color-text-main)] to-[var(--color-text-secondary)] [filter:var(--shadow-text)]">
                               {line.name}
@@ -1350,14 +1375,10 @@ export function DashboardContent({ month, isArchive = false }) {
                               <span className="inline-flex items-center px-2 py-0.5 rounded-[2px] text-[8.5px] md:text-[9px] font-bold uppercase tracking-widest bg-[var(--color-success-glow)] text-[var(--color-success-text)] border border-[rgba(16,185,129,0.2)]">
                                 Optimal
                               </span>
-                            ) : isLiveCurrent ? (
+                            ) : (
                               <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[2px] text-[8.5px] md:text-[9.5px] font-black uppercase tracking-widest border transition-all animate-emergency-strobe cursor-default">
                                 <AmbulanceBeacon />
                                 <span>Critical</span>
-                              </span>
-                            ) : (
-                              <span className="inline-flex items-center px-2 py-0.5 rounded-[2px] text-[8.5px] md:text-[9px] font-bold uppercase tracking-widest bg-rose-50 dark:bg-rose-500/15 text-rose-700 dark:text-rose-400 border border-rose-200 dark:border-rose-500/30">
-                                Critical
                               </span>
                             )}
                           </div>
@@ -1371,7 +1392,7 @@ export function DashboardContent({ month, isArchive = false }) {
                         </div>
 
                         {/* Cost Recovery Progress Bar & Percentage */}
-                        <div className="space-y-1.5 mb-2.5">
+                        <div className={cn(isMobile ? "space-y-1 mb-0.5" : "space-y-1.5 mb-2.5")}>
                           <div className="flex items-center justify-between text-[10px] sm:text-[11px] font-bold uppercase tracking-wider">
                             <span className="text-[var(--color-text-muted)]">Cost Recovery</span>
                             <span className={cn(
@@ -1404,8 +1425,8 @@ export function DashboardContent({ month, isArchive = false }) {
 
                         {/* Cumulative Month Performance Grid */}
                         <div>
-                          <div className="grid grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-2">
-                            <div className="bg-[var(--color-surface)] p-2 sm:p-2.5 xl:p-3 rounded-xl border border-[var(--color-border)] shadow-xs flex flex-col justify-between min-w-0">
+                          <div className={cn("grid grid-cols-2 lg:grid-cols-2 xl:grid-cols-4", isMobile ? "gap-1.5" : "gap-2")}>
+                            <div className={cn("bg-[var(--color-surface)] border border-[var(--color-border)] shadow-xs flex flex-col justify-between min-w-0", isMobile ? "p-1.5 rounded-lg" : "p-2 sm:p-2.5 xl:p-3 rounded-xl")}>
                               <p className="text-[9px] text-[var(--color-text-muted)] font-medium uppercase tracking-wider mb-0.5 truncate">Production</p>
                               <p className="text-xs sm:text-sm md:text-xs xl:text-sm 2xl:text-base font-black text-[var(--color-text-main)] truncate flex items-baseline">
                                 <AnimatedNumber value={line.totalProduction} />
@@ -1413,7 +1434,7 @@ export function DashboardContent({ month, isArchive = false }) {
                               </p>
                             </div>
                             
-                            <div className="bg-[var(--color-surface)] p-2 sm:p-2.5 xl:p-3 rounded-xl border border-[var(--color-border)] shadow-xs flex flex-col justify-between min-w-0">
+                            <div className={cn("bg-[var(--color-surface)] border border-[var(--color-border)] shadow-xs flex flex-col justify-between min-w-0", isMobile ? "p-1.5 rounded-lg" : "p-2 sm:p-2.5 xl:p-3 rounded-xl")}>
                               <p className="text-[9px] text-[var(--color-text-muted)] font-medium uppercase tracking-wider mb-0.5 truncate">Income</p>
                               <p className="text-xs sm:text-sm md:text-xs xl:text-sm 2xl:text-base font-black text-[var(--color-primary)] truncate flex items-baseline">
                                 <span className="text-[9.5px] sm:text-[10px] font-semibold opacity-75 mr-0.5 shrink-0">BDT</span>
@@ -1421,7 +1442,7 @@ export function DashboardContent({ month, isArchive = false }) {
                               </p>
                             </div>
 
-                            <div className="bg-[var(--color-surface)] p-2 sm:p-2.5 xl:p-3 rounded-xl border border-[var(--color-border)] shadow-xs flex flex-col justify-between min-w-0">
+                            <div className={cn("bg-[var(--color-surface)] border border-[var(--color-border)] shadow-xs flex flex-col justify-between min-w-0", isMobile ? "p-1.5 rounded-lg" : "p-2 sm:p-2.5 xl:p-3 rounded-xl")}>
                               <p className="text-[9px] text-[var(--color-text-muted)] font-medium uppercase tracking-wider mb-0.5 truncate">Cost</p>
                               <p className="text-xs sm:text-sm md:text-xs xl:text-sm 2xl:text-base font-black text-[var(--color-text-main)] truncate flex items-baseline">
                                 <span className="text-[9.5px] sm:text-[10px] font-semibold opacity-75 mr-0.5 shrink-0">BDT</span>
@@ -1430,7 +1451,8 @@ export function DashboardContent({ month, isArchive = false }) {
                             </div>
 
                             <div className={cn(
-                              "p-2 sm:p-2.5 xl:p-3 rounded-xl border shadow-xs flex flex-col justify-between min-w-0",
+                              "border shadow-xs flex flex-col justify-between min-w-0",
+                              isMobile ? "p-1.5 rounded-lg" : "p-2 sm:p-2.5 xl:p-3 rounded-xl",
                               isInactive
                                 ? 'border-[var(--color-border)] bg-[var(--color-surface)]'
                                 : isProfitable 
@@ -1456,10 +1478,11 @@ export function DashboardContent({ month, isArchive = false }) {
                         </div>
 
                         {/* Last Recorded Day Input & Cost Recovery Efficiency */}
-                        <div className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl p-2 sm:p-2.5 md:p-3">
-                          <div className="flex items-center justify-between gap-1 mb-2">
+                        <div className={cn("bg-[var(--color-surface)] border border-[var(--color-border)]", isMobile ? "p-2 rounded-lg" : "p-2 sm:p-2.5 md:p-3 rounded-xl")}>
+                          <div className={cn("flex items-center justify-between gap-1", isMobile ? "mb-1" : "mb-2")}>
                             <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-[var(--color-text-secondary)] truncate">
-                              Last Day Input ({lastDayDateStr})
+                              <span className="md:hidden">Last Day Input ({lastDayDateShort})</span>
+                              <span className="hidden md:inline">Last Day Input ({lastDayDateFull})</span>
                             </span>
                             <span className="text-[9px] sm:text-[10px] md:text-[10.5px] font-bold text-[var(--color-text-muted)] shrink-0">
                               Cost Recovery: <span className={cn("font-extrabold", isInactive ? "text-[var(--color-text-muted)]" : (parseFloat(line.lastDayCostRecovery || 0) >= 100 ? "text-[var(--color-success-text)]" : "text-[var(--color-danger-text)]"))}>{line.lastDayCostRecovery || '0.0'}%</span>
@@ -1467,14 +1490,14 @@ export function DashboardContent({ month, isArchive = false }) {
                           </div>
 
                           <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
-                            <div className="bg-[var(--color-bg-card)] p-1.5 sm:p-2 rounded-lg border border-[var(--color-border)]/60 text-center min-w-0 flex flex-col justify-center">
+                            <div className={cn("bg-[var(--color-bg-card)] border border-[var(--color-border)]/60 text-center min-w-0 flex flex-col justify-center", isMobile ? "p-1 rounded-md" : "p-1.5 sm:p-2 rounded-lg")}>
                               <p className="text-[8px] sm:text-[9px] text-[var(--color-text-muted)] font-medium uppercase truncate">Day Output</p>
                               <p className="text-[11px] sm:text-xs md:text-sm font-bold text-[var(--color-text-main)] truncate">
                                 {(line.lastDayOutput || 0).toLocaleString()} <span className="text-[8.5px] sm:text-[9px] text-[var(--color-text-muted)]">PCS</span>
                               </p>
                             </div>
 
-                            <div className="bg-[var(--color-bg-card)] p-1.5 sm:p-2 rounded-lg border border-[var(--color-border)]/60 text-center min-w-0 flex flex-col justify-center">
+                            <div className={cn("bg-[var(--color-bg-card)] border border-[var(--color-border)]/60 text-center min-w-0 flex flex-col justify-center", isMobile ? "p-1 rounded-md" : "p-1.5 sm:p-2 rounded-lg")}>
                               <p className="text-[8px] sm:text-[9px] text-[var(--color-text-muted)] font-medium uppercase truncate">Day Income</p>
                               <p className="text-[11px] sm:text-xs md:text-sm font-bold text-[var(--color-primary)] truncate flex items-center justify-center">
                                 <span className="text-[8.5px] sm:text-[9.5px] font-semibold opacity-75 mr-0.5">BDT</span>
@@ -1482,17 +1505,17 @@ export function DashboardContent({ month, isArchive = false }) {
                               </p>
                             </div>
 
-                            <div className="bg-[var(--color-bg-card)] p-1.5 sm:p-2 rounded-lg border border-[var(--color-border)]/60 text-center min-w-0 flex flex-col justify-center">
+                            <div className={cn("bg-[var(--color-bg-card)] border border-[var(--color-border)]/60 text-center min-w-0 flex flex-col justify-center", isMobile ? "p-1 rounded-md" : "p-1.5 sm:p-2 rounded-lg")}>
                               <p className="text-[8px] sm:text-[9px] text-[var(--color-text-muted)] font-medium uppercase truncate">
                                 Day Net {isInactive ? 'Bal' : (line.lastDayProfit >= 0 ? 'Profit' : 'Loss')}
                               </p>
                               <p className={cn(
                                 "text-[11px] sm:text-xs md:text-sm font-bold truncate flex items-center justify-center",
                                 isInactive || ((line.lastDayOutput || 0) === 0 && (line.lastDayCost || 0) === 0)
-                                  ? "text-[var(--color-text-muted)]"
-                                  : line.lastDayProfit >= 0 
-                                    ? "text-[var(--color-success-text)]" 
-                                    : "text-[var(--color-danger-text)]"
+                                    ? "text-[var(--color-text-muted)]"
+                                    : line.lastDayProfit >= 0 
+                                      ? "text-[var(--color-success-text)]" 
+                                      : "text-[var(--color-danger-text)]"
                               )}>
                                 <span className="text-[8.5px] sm:text-[9.5px] font-semibold opacity-75 mr-0.5">BDT</span>
                                 <span>{(line.lastDayProfit || 0).toLocaleString()}</span>
@@ -1514,7 +1537,10 @@ export function DashboardContent({ month, isArchive = false }) {
                                     ? `/archive/2026-07/lines/${line.id}`
                                     : `/lines/${line.id}`
                           }
-                          className="w-full py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer select-none group mt-0.5 bg-[var(--color-primary)] hover:opacity-90 text-[var(--color-on-primary,white)] shadow-md"
+                          className={cn(
+                            "w-full px-4 font-bold uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer select-none group bg-[var(--color-primary)] hover:opacity-90 text-[var(--color-on-primary,white)] shadow-md",
+                            isMobile ? "py-2 rounded-lg text-xs mt-0" : "py-2.5 rounded-xl text-xs sm:text-sm mt-0.5"
+                          )}
                         >
                           <span>View Full Details</span>
                           <ArrowRight size={15} className="group-hover:translate-x-1 transition-transform" />
@@ -1535,46 +1561,97 @@ export function DashboardContent({ month, isArchive = false }) {
                       ))}
                     </div>
 
-                    {/* Mobile View: Smooth Touch Carousel + Scroll Indicator Dots */}
-                    <div className="md:hidden flex flex-col gap-3">
-                      <div 
-                        className="w-full overflow-hidden touch-pan-y select-none"
-                        onTouchStart={handleTouchStart}
-                        onTouchEnd={handleTouchEnd}
-                      >
-                        <div 
-                          className="flex transition-transform duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] will-change-transform"
-                          style={{ transform: `translateX(-${activeLineIndex * 100}%)` }}
-                        >
-                          {sortedActiveLines.map(line => (
-                            <div key={line.id} className="w-full flex-none shrink-0 px-0.5">
-                              {renderCardInner(line, true)}
-                            </div>
-                          ))}
-                        </div>
-                      </div>
+                    {/* Mobile View: Smooth Touch Carousel + Left/Right Navigation Arrows + Scroll Indicator Dots */}
+                    {(() => {
+                      const activeLineIds = sortedActiveLines.length > 0 ? sortedActiveLines.map(l => l.id) : linesOrder;
 
-                      {/* Small Scroll Indicator Dots */}
-                      <div className="flex items-center justify-center gap-1.5 pt-1">
-                        {linesOrder.map(lineId => {
-                          const isSelected = selectedMobileLine === lineId;
-                          return (
+                      const handlePrevLine = (e) => {
+                        e.stopPropagation();
+                        const currentIndex = activeLineIds.indexOf(selectedMobileLine);
+                        const prevIndex = (currentIndex - 1 + activeLineIds.length) % activeLineIds.length;
+                        setSelectedMobileLine(activeLineIds[prevIndex]);
+                      };
+
+                      const handleNextLine = (e) => {
+                        e.stopPropagation();
+                        const currentIndex = activeLineIds.indexOf(selectedMobileLine);
+                        const nextIndex = (currentIndex + 1) % activeLineIds.length;
+                        setSelectedMobileLine(activeLineIds[nextIndex]);
+                      };
+
+                      return (
+                        <div className="md:hidden flex flex-col gap-3">
+                          <div className="relative w-full">
+                            {/* Minimalist Left Navigation Arrow */}
                             <button
-                              key={lineId}
                               type="button"
-                              onClick={() => setSelectedMobileLine(lineId)}
-                              className={cn(
-                                "transition-all duration-300 rounded-full cursor-pointer p-0 border-0 outline-none",
-                                isSelected
-                                  ? "w-6 h-1.5 bg-[var(--color-primary)] shadow-[0_0_8px_var(--color-primary-glow)]"
-                                  : "w-1.5 h-1.5 bg-[var(--color-text-muted)]/35 hover:bg-[var(--color-text-muted)]"
-                              )}
-                              aria-label={`Slide to Line ${lineId}`}
-                            />
-                          );
-                        })}
-                      </div>
-                    </div>
+                              onClick={handlePrevLine}
+                              className="absolute -left-2 sm:-left-3.5 top-1/2 -translate-y-1/2 z-20 w-8 h-12 flex items-center justify-center bg-transparent border-0 outline-none cursor-pointer select-none active:scale-75 transition-transform text-[var(--color-primary)]"
+                              aria-label="Previous Line"
+                            >
+                              <ChevronLeft 
+                                size={26} 
+                                strokeWidth={2.4} 
+                                className="animate-arrow-nudge-left drop-shadow-[0_0_8px_var(--color-primary-glow)]" 
+                              />
+                            </button>
+
+                            {/* Carousel Touch Track */}
+                            <div 
+                              className="w-full overflow-hidden touch-pan-y select-none"
+                              onTouchStart={handleTouchStart}
+                              onTouchEnd={handleTouchEnd}
+                            >
+                              <div 
+                                className="flex transition-transform duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] will-change-transform"
+                                style={{ transform: `translateX(-${activeLineIndex * 100}%)` }}
+                              >
+                                {sortedActiveLines.map(line => (
+                                  <div key={line.id} className="w-full flex-none shrink-0 px-0.5">
+                                    {renderCardInner(line, true)}
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+
+                            {/* Minimalist Right Navigation Arrow */}
+                            <button
+                              type="button"
+                              onClick={handleNextLine}
+                              className="absolute -right-2 sm:-right-3.5 top-1/2 -translate-y-1/2 z-20 w-8 h-12 flex items-center justify-center bg-transparent border-0 outline-none cursor-pointer select-none active:scale-75 transition-transform text-[var(--color-primary)]"
+                              aria-label="Next Line"
+                            >
+                              <ChevronRight 
+                                size={26} 
+                                strokeWidth={2.4} 
+                                className="animate-arrow-nudge-right drop-shadow-[0_0_8px_var(--color-primary-glow)]" 
+                              />
+                            </button>
+                          </div>
+
+                          {/* Small Scroll Indicator Dots */}
+                          <div className="flex items-center justify-center gap-1.5 pt-1">
+                            {linesOrder.map(lineId => {
+                              const isSelected = selectedMobileLine === lineId;
+                              return (
+                                <button
+                                  key={lineId}
+                                  type="button"
+                                  onClick={() => setSelectedMobileLine(lineId)}
+                                  className={cn(
+                                    "transition-all duration-300 rounded-full cursor-pointer p-0 border-0 outline-none",
+                                    isSelected
+                                      ? "w-6 h-1.5 bg-[var(--color-primary)] shadow-[0_0_8px_var(--color-primary-glow)]"
+                                      : "w-1.5 h-1.5 bg-[var(--color-text-muted)]/35 hover:bg-[var(--color-text-muted)]"
+                                  )}
+                                  aria-label={`Slide to Line ${lineId}`}
+                                />
+                              );
+                            })}
+                          </div>
+                        </div>
+                      );
+                    })()}
                   </div>
                 );
               })()}
@@ -1582,32 +1659,10 @@ export function DashboardContent({ month, isArchive = false }) {
           );
         })()}
 
-      {/* AI Insights Panel (Live Dashboard Only) */}
+      {/* System Intelligence Panel (Live Dashboard Only) */}
       {!isArchive && (
-        <div className="mt-4">
-          <Card className="bg-[var(--color-bg-card)] border border-[var(--color-border)] shadow-sm overflow-hidden p-6 rounded-2xl">
-            <div className="flex items-start gap-4">
-              <div className="hidden md:flex bg-[var(--color-surface)] p-2.5 rounded-lg border border-[var(--color-border)] text-[var(--color-text-secondary)] shrink-0">
-                <Sparkles className="w-5 h-5" />
-              </div>
-              <div className="w-full">
-                <h3 className="text-[13px] font-bold text-[var(--color-text-main)] uppercase tracking-[0.16em] mb-4">
-                  System Intelligence
-                </h3>
-                <ul className="space-y-3 w-full divide-y divide-[var(--color-border)]/30">
-                  {insights.map((insight, i) => (
-                    <li key={i} className="flex items-start gap-2.5 pt-3 first:pt-0">
-                      <span className="text-[var(--color-primary)] font-black text-sm select-none shrink-0 leading-relaxed">•</span>
-                      <span 
-                        className="text-xs sm:text-[13.5px] font-medium text-[var(--color-text-secondary)] leading-relaxed flex-1 [&>strong]:text-[var(--color-text-main)] [&>strong]:font-bold"
-                        dangerouslySetInnerHTML={{ __html: insight }}
-                      />
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </Card>
+        <div className="mt-8 mb-6 relative z-10">
+          <SystemIntelligenceCards insights={insights} />
         </div>
       )}
 

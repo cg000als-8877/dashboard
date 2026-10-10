@@ -115,19 +115,14 @@ function LinesDateRange({ dateInfo, workingDays = null, className = "" }) {
   const { isRange, startDay, endDay, startMonthShort, endMonthShort, year } = dateInfo;
 
   return (
-    <span className={cn("inline-flex items-center justify-center flex-wrap whitespace-nowrap text-[13px] sm:text-[14px] md:text-[17px] font-medium tracking-wide text-[var(--color-text-muted)] leading-tight uppercase", className)}>
-      <span>FROM&nbsp;</span>
+    <span className={cn("inline-flex items-center justify-center flex-wrap whitespace-nowrap text-[13px] sm:text-[14px] md:text-[17px] font-bold tracking-wide text-[var(--color-primary)] leading-tight uppercase select-none", className)}>
       {isRange ? (
-        <>
-          <span className="font-extrabold text-[var(--color-primary)] tracking-wide">{startDay} {startMonthShort}</span>
-          <span>&nbsp;TO&nbsp;</span>
-          <span className="font-extrabold text-[var(--color-primary)] tracking-wide">{endDay} {endMonthShort}, {year}</span>
-        </>
+        <span>{startDay} {startMonthShort} - {endDay} {endMonthShort}, {year}</span>
       ) : (
-        <span className="font-extrabold text-[var(--color-primary)] tracking-wide">{startDay} {endMonthShort}, {year}</span>
+        <span>{startDay} {endMonthShort}, {year}</span>
       )}
       {workingDays !== null && workingDays !== undefined && (
-        <span className="font-bold text-[var(--color-text-secondary)] ml-1.5 tracking-wider">
+        <span className="font-bold ml-1.5 tracking-wider">
           ({workingDays} {workingDays === 1 ? 'DAY' : 'DAYS'})
         </span>
       )}

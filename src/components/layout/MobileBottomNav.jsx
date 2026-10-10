@@ -7,46 +7,40 @@ import {
   LayoutDashboard, 
   Factory, 
   History, 
+  BarChart3,
   MoreHorizontal,
   X
 } from 'lucide-react';
 import { cn } from './Sidebar';
 import { useTheme } from '@/components/ThemeProvider';
 
-function getHourlyConfig(visualTheme, isLight) {
-  // 1. ABSTRACT THEME: Black fill with thin white stroke & grey animating icon in dark mode
+function getCenterDashboardConfig(visualTheme, isLight) {
+  // 1. ABSTRACT THEME
   if (visualTheme === 'abstract') {
     if (isLight) {
       return {
         buttonClass: "border border-black/20 bg-[#18181B] text-white shadow-[0_4px_12px_rgba(0,0,0,0.15)]",
         activeRing: "ring-2 ring-black/40",
-        mainColor: "#FFFFFF",
-        strapColor: "#9CA3AF",
-        handColor: "#FFFFFF"
+        iconColor: "#FFFFFF"
       };
     }
     return {
       buttonClass: "border border-white/60 bg-black text-gray-400 shadow-[0_4px_16px_rgba(0,0,0,0.6)]",
       activeRing: "ring-1 ring-white/70 shadow-[0_0_18px_rgba(255,255,255,0.25)]",
-      mainColor: "#9CA3AF",
-      strapColor: "#6B7280",
-      handColor: "#9CA3AF"
+      iconColor: "#FFFFFF"
     };
   }
 
   // 2. ALL OTHER THEMES
-  // In light mode: themed primary button with crisp white icon
   if (isLight) {
     return {
       buttonClass: "border-2 border-[var(--color-bg-card)] bg-[var(--color-primary)] text-white shadow-[0_4px_12px_rgba(0,0,0,0.15)]",
       activeRing: "ring-2 ring-[var(--color-primary)] ring-offset-1 ring-offset-[var(--color-bg-card)] shadow-[0_0_22px_var(--color-primary-glow-hover)]",
-      mainColor: "#FFFFFF",
-      strapColor: "rgba(255,255,255,0.75)",
-      handColor: "#FFFFFF"
+      iconColor: "#FFFFFF"
     };
   }
 
-  // In dark/night mode: check primary color luminance for maximum visibility
+  // Dark/night mode
   const darkIconThemes = [
     'nordic-slate',
     'arcade-overdrive',
@@ -62,121 +56,33 @@ function getHourlyConfig(visualTheme, isLight) {
     return {
       buttonClass: "border-2 border-[var(--color-bg-card)] bg-[var(--color-primary)] shadow-[0_6px_18px_var(--color-primary-glow)]",
       activeRing: "ring-2 ring-[var(--color-primary)] ring-offset-1 ring-offset-[var(--color-bg-card)] shadow-[0_0_22px_var(--color-primary-glow-hover)]",
-      mainColor: "#0B0F19",
-      strapColor: "rgba(11,15,25,0.70)",
-      handColor: "#0B0F19"
+      iconColor: "#0B0F19"
     };
   }
 
-  // Saturated/deep primary themes (ember-tide, ocean-dark, gen-z) use white icon
   return {
     buttonClass: "border-2 border-[var(--color-bg-card)] bg-[var(--color-primary)] shadow-[0_6px_18px_var(--color-primary-glow)]",
     activeRing: "ring-2 ring-[var(--color-primary)] ring-offset-1 ring-offset-[var(--color-bg-card)] shadow-[0_0_22px_var(--color-primary-glow-hover)]",
-    mainColor: "#FFFFFF",
-    strapColor: "rgba(255,255,255,0.75)",
-    handColor: "#FFFFFF"
+    iconColor: "#FFFFFF"
   };
-}
-
-function AnimatedWatchIcon({ isHourly, isClicked, colors }) {
-  const { mainColor, strapColor, handColor } = colors;
-
-  return (
-    <svg 
-      width="24" 
-      height="24" 
-      viewBox="0 0 24 24" 
-      fill="none" 
-      stroke={mainColor} 
-      strokeWidth="2.2" 
-      strokeLinecap="round" 
-      strokeLinejoin="round"
-      className={cn(
-        "transition-transform duration-300",
-        isClicked ? "scale-115 rotate-12" : "group-hover:scale-110"
-      )}
-    >
-      {/* Top Watch Strap */}
-      <path 
-        d="m16.2 6.6-.8-3.4a2 2 0 0 0-2-1.5h-2.8a2 2 0 0 0-2 1.5l-.8 3.4" 
-        stroke={strapColor}
-        strokeWidth="1.8"
-        className="opacity-90"
-      />
-      
-      {/* Bottom Watch Strap */}
-      <path 
-        d="m7.8 17.4.8 3.4a2 2 0 0 0 2 1.5h2.8a2 2 0 0 0 2-1.5l.8-3.4" 
-        stroke={strapColor}
-        strokeWidth="1.8"
-        className="opacity-90"
-      />
-      
-      {/* Watch Dial Face (Enlarged) */}
-      <circle 
-        cx="12" 
-        cy="12" 
-        r="7.2" 
-        stroke={mainColor}
-        fill={isHourly ? mainColor : "none"} 
-        fillOpacity={isHourly ? 0.22 : 0}
-        strokeWidth="2.2"
-      />
-
-      {/* Hour Hand */}
-      <line 
-        x1="12" 
-        y1="12" 
-        x2="15" 
-        y2="9.5" 
-        stroke={handColor}
-        strokeWidth="2.2"
-        style={{ transformOrigin: '12px 12px' }}
-        className={cn(
-          isHourly ? "animate-[spin_10s_linear_infinite]" : ""
-        )}
-      />
-
-      {/* Minute Hand (Smooth continuous spin on Hourly / fast wind-up on click) */}
-      <line 
-        x1="12" 
-        y1="12" 
-        x2="12" 
-        y2="6.2" 
-        stroke={handColor}
-        strokeWidth="2"
-        style={{ transformOrigin: '12px 12px' }}
-        className={cn(
-          isClicked 
-            ? "animate-[spin_0.4s_linear_infinite]" 
-            : isHourly 
-              ? "animate-[spin_2s_linear_infinite]" 
-              : "group-hover:animate-[spin_1.5s_linear_infinite]"
-        )}
-      />
-
-      {/* Center Watch Pin */}
-      <circle cx="12" cy="12" r="1.3" fill={handColor} />
-    </svg>
-  );
 }
 
 export function MobileBottomNav({ isOthersOpen, onToggleOthers, onOthersClose }) {
   const pathname = usePathname();
-  const [clickedHourly, setClickedHourly] = useState(false);
+  const [clickedDashboard, setClickedDashboard] = useState(false);
   const { mode, visualTheme } = useTheme();
   const isLight = mode === 'light';
-  const hourlyConfig = getHourlyConfig(visualTheme, isLight);
+  const dashboardConfig = getCenterDashboardConfig(visualTheme, isLight);
 
-  const isDashboard = pathname === '/';
   const isLines = pathname === '/lines' || pathname.startsWith('/lines/');
-  const isHourly = pathname === '/hourly';
   const isArchive = pathname === '/archive' || pathname.startsWith('/archive/');
+  const isDashboard = pathname === '/';
+  const isAnalytics = pathname === '/analytics' || pathname.startsWith('/analytics/');
   const isOthers = isOthersOpen;
 
-  const handleHourlyClick = () => {
-    setClickedHourly(true);
-    setTimeout(() => setClickedHourly(false), 900);
+  const handleDashboardClick = () => {
+    setClickedDashboard(true);
+    setTimeout(() => setClickedDashboard(false), 600);
     onOthersClose?.();
   };
 
@@ -209,52 +115,36 @@ export function MobileBottomNav({ isOthersOpen, onToggleOthers, onOthersClose })
           />
         </svg>
 
-        {/* Floating Center Elevated Circle ("HOURLY") */}
+        {/* Floating Center Elevated Circle ("DASHBOARD" - Default Opening Page) */}
         <div className="absolute -top-[23px] left-1/2 -translate-x-1/2 z-30 flex flex-col items-center">
           <Link
-            href="/hourly"
-            onClick={handleHourlyClick}
+            href="/"
+            onClick={handleDashboardClick}
             className={cn(
               "relative w-10 h-10 rounded-full transition-all duration-300 active:scale-95 flex items-center justify-center cursor-pointer group",
-              hourlyConfig.buttonClass,
-              isHourly
-                ? cn("scale-105", hourlyConfig.activeRing)
+              dashboardConfig.buttonClass,
+              isDashboard
+                ? cn("scale-105", dashboardConfig.activeRing)
                 : "hover:scale-105"
             )}
-            aria-label="Hourly Output"
+            aria-label="Dashboard"
           >
-            <AnimatedWatchIcon isHourly={isHourly} isClicked={clickedHourly} colors={hourlyConfig} />
+            <LayoutDashboard 
+              size={20}
+              strokeWidth={isDashboard ? 2.5 : 2}
+              style={{ color: dashboardConfig.iconColor }}
+              className={cn(
+                "transition-transform duration-300",
+                clickedDashboard ? "scale-125 rotate-6" : "group-hover:scale-110"
+              )}
+            />
           </Link>
         </div>
 
         {/* 5 Navigation Columns */}
         <nav className="relative z-20 grid grid-cols-5 w-full h-full items-center px-1.5">
           
-          {/* 1. DASHBOARD */}
-          <Link
-            href="/"
-            onClick={() => onOthersClose?.()}
-            className="flex flex-col items-center justify-center h-full group active:scale-95 transition-transform cursor-pointer"
-          >
-            <LayoutDashboard 
-              size={18}
-              strokeWidth={isDashboard ? 2.5 : 1.8}
-              className={cn(
-                "mb-0.5 transition-colors",
-                isDashboard ? "text-[var(--color-primary)]" : "text-[var(--color-text-muted)] group-hover:text-[var(--color-text-main)]"
-              )} 
-            />
-            <span 
-              className={cn(
-                "text-[8.5px] uppercase tracking-wide leading-none transition-colors",
-                isDashboard ? "text-[var(--color-primary)] font-black" : "text-[var(--color-text-muted)] font-extrabold group-hover:text-[var(--color-text-main)]"
-              )}
-            >
-              DASHBOARD
-            </span>
-          </Link>
-
-          {/* 2. LINES */}
+          {/* 1. LINES (Takes Dashboard's former place) */}
           <Link
             href="/lines"
             onClick={() => onOthersClose?.()}
@@ -278,23 +168,7 @@ export function MobileBottomNav({ isOthersOpen, onToggleOthers, onOthersClose })
             </span>
           </Link>
 
-          {/* 3. HOURLY (Center Column Label below cutout) */}
-          <Link
-            href="/hourly"
-            onClick={handleHourlyClick}
-            className="flex flex-col items-center justify-end h-full pb-1.5 group active:scale-95 transition-transform cursor-pointer"
-          >
-            <span 
-              className={cn(
-                "text-[8.5px] uppercase tracking-wide leading-none transition-colors",
-                isHourly ? "text-[var(--color-primary)] font-black" : "text-[var(--color-text-secondary)] font-black group-hover:text-[var(--color-text-main)]"
-              )}
-            >
-              HOURLY
-            </span>
-          </Link>
-
-          {/* 4. ARCHIVE */}
+          {/* 2. ARCHIVE (Takes Lines' former place) */}
           <Link
             href="/archive"
             onClick={() => onOthersClose?.()}
@@ -315,6 +189,46 @@ export function MobileBottomNav({ isOthersOpen, onToggleOthers, onOthersClose })
               )}
             >
               ARCHIVE
+            </span>
+          </Link>
+
+          {/* 3. DASHBOARD (Center Column Label below cutout) */}
+          <Link
+            href="/"
+            onClick={handleDashboardClick}
+            className="flex flex-col items-center justify-end h-full pb-1.5 group active:scale-95 transition-transform cursor-pointer"
+          >
+            <span 
+              className={cn(
+                "text-[8.5px] uppercase tracking-wide leading-none transition-colors",
+                isDashboard ? "text-[var(--color-primary)] font-black" : "text-[var(--color-text-secondary)] font-black group-hover:text-[var(--color-text-main)]"
+              )}
+            >
+              DASHBOARD
+            </span>
+          </Link>
+
+          {/* 4. ANALYTICS (Takes Archive's former place) */}
+          <Link
+            href="/analytics"
+            onClick={() => onOthersClose?.()}
+            className="flex flex-col items-center justify-center h-full group active:scale-95 transition-transform cursor-pointer"
+          >
+            <BarChart3 
+              size={18}
+              strokeWidth={isAnalytics ? 2.5 : 1.8}
+              className={cn(
+                "mb-0.5 transition-colors",
+                isAnalytics ? "text-[var(--color-primary)]" : "text-[var(--color-text-muted)] group-hover:text-[var(--color-text-main)]"
+              )} 
+            />
+            <span 
+              className={cn(
+                "text-[8.5px] uppercase tracking-wide leading-none transition-colors",
+                isAnalytics ? "text-[var(--color-primary)] font-black" : "text-[var(--color-text-muted)] font-extrabold group-hover:text-[var(--color-text-main)]"
+              )}
+            >
+              ANALYTICS
             </span>
           </Link>
 

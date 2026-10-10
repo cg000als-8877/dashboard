@@ -292,97 +292,143 @@ export const BackgroundCanvas = memo(function BackgroundCanvas() {
         </div>
       )}
 
-      {/* 7. Moving Bokeh Orbital Spheres Layer */}
+      {/* 7. Moving Bokeh Large Fast-Floating Glowing Blobs Layer */}
       {showBokeh && (
-        <div className="absolute inset-0 overflow-hidden animate-in fade-in duration-700">
+        <div className="absolute inset-0 overflow-hidden animate-in fade-in duration-700 pointer-events-none">
           {/* Ambient backdrop aura */}
           <div
             className="absolute inset-0 pointer-events-none"
             style={{
-              background: `radial-gradient(ellipse 85% 75% at 50% 50%, var(--color-primary-glow) 0%, transparent 75%)`,
-              opacity: isDark ? 0.35 : 0.15,
+              background: `radial-gradient(ellipse 90% 80% at 50% 50%, var(--color-primary-glow) 0%, transparent 80%)`,
+              opacity: isDark ? 0.40 : 0.18,
             }}
           />
 
-          {/* Bokeh Container with orbiting nodes */}
-          <div className="absolute inset-0 pointer-events-none">
-            {/* Bokeh Node 1: Primary Brand Orbit */}
-            <span
-              className="absolute rounded-full pointer-events-none"
+          {/* Big Bokeh Blobs Container — Fast moving all over the screen */}
+          <div 
+            className="absolute inset-0 pointer-events-none overflow-hidden"
+            style={{
+              mixBlendMode: isDark ? 'screen' : 'multiply',
+            }}
+          >
+            {/* Blob 1: Top-Left Primary Brand Giant (Fast Drift) */}
+            <div
+              className="absolute rounded-full pointer-events-none animate-bokeh-fast-1"
               style={{
-                width: '9vmin',
-                height: '9vmin',
+                width: '58vmin',
+                height: '58vmin',
+                minWidth: '320px',
+                minHeight: '320px',
+                top: '-10%',
+                left: '-5%',
+                background: 'radial-gradient(circle, var(--color-primary) 0%, var(--color-primary-glow) 52%, transparent 72%)',
+                opacity: isDark ? 0.70 : 0.35,
+                filter: 'blur(55px)',
+                willChange: 'transform',
+              }}
+            />
+
+            {/* Blob 2: Top-Right Cyan/Sky Cyber Orb (Fast Drift) */}
+            <div
+              className="absolute rounded-full pointer-events-none animate-bokeh-fast-2"
+              style={{
+                width: '62vmin',
+                height: '62vmin',
+                minWidth: '340px',
+                minHeight: '340px',
+                top: '-8%',
+                right: '-8%',
+                background: 'radial-gradient(circle, color-mix(in srgb, var(--color-primary) 65%, #38BDF8) 0%, var(--color-primary-glow) 50%, transparent 72%)',
+                opacity: isDark ? 0.65 : 0.32,
+                filter: 'blur(60px)',
+                willChange: 'transform',
+              }}
+            />
+
+            {/* Blob 3: Center-Screen Radiant Violet Cruiser (Fast Drift) */}
+            <div
+              className="absolute rounded-full pointer-events-none animate-bokeh-fast-3"
+              style={{
+                width: '52vmin',
+                height: '52vmin',
+                minWidth: '300px',
+                minHeight: '300px',
                 top: '28%',
-                left: '67%',
-                color: 'var(--color-primary)',
-                boxShadow: '18vmin 0 2.72vmin currentColor',
-                transformOrigin: '11vw 7vh',
-                animation: 'bokeh-orbit 18s linear infinite',
-                animationDelay: '-1s',
-                opacity: isDark ? 0.50 : 0.25,
-                filter: 'blur(3px)',
+                left: '26%',
+                background: 'radial-gradient(circle, color-mix(in srgb, var(--color-primary) 60%, #818CF8) 0%, var(--color-primary-glow) 50%, transparent 70%)',
+                opacity: isDark ? 0.60 : 0.30,
+                filter: 'blur(50px)',
                 willChange: 'transform',
-                backfaceVisibility: 'hidden',
               }}
             />
 
-            {/* Bokeh Node 2: Warm Pastel Satellite */}
-            <span
-              className="absolute rounded-full pointer-events-none"
+            {/* Blob 4: Bottom-Left Rose/Coral Power Orb (Fast Drift) */}
+            <div
+              className="absolute rounded-full pointer-events-none animate-bokeh-fast-4"
               style={{
-                width: '9vmin',
-                height: '9vmin',
-                top: '75%',
-                left: '37%',
-                color: 'color-mix(in srgb, var(--color-primary) 65%, #FFACAC)',
-                boxShadow: '18vmin 0 2.28vmin currentColor',
-                transformOrigin: '-4vw 12vh',
-                animation: 'bokeh-orbit 22s linear infinite',
-                animationDelay: '-3s',
-                opacity: isDark ? 0.45 : 0.22,
-                filter: 'blur(4px)',
+                width: '64vmin',
+                height: '64vmin',
+                minWidth: '350px',
+                minHeight: '350px',
+                bottom: '-12%',
+                left: '-10%',
+                background: 'radial-gradient(circle, color-mix(in srgb, var(--color-primary) 58%, #F43F5E) 0%, var(--color-primary-glow) 46%, transparent 72%)',
+                opacity: isDark ? 0.68 : 0.34,
+                filter: 'blur(65px)',
                 willChange: 'transform',
-                backfaceVisibility: 'hidden',
               }}
             />
 
-            {/* Bokeh Node 3: Vivid Accent Orbit */}
-            <span
-              className="absolute rounded-full pointer-events-none"
+            {/* Blob 5: Bottom-Right Emerald Green Fusion (Fast Drift) */}
+            <div
+              className="absolute rounded-full pointer-events-none animate-bokeh-fast-5"
               style={{
-                width: '9vmin',
-                height: '9vmin',
-                top: '60%',
-                left: '17%',
-                color: 'color-mix(in srgb, var(--color-primary) 60%, #E45A84)',
-                boxShadow: '18vmin 0 2.71vmin currentColor',
-                transformOrigin: '13vw -15vh',
-                animation: 'bokeh-orbit 20s linear infinite',
-                animationDelay: '-2s',
-                opacity: isDark ? 0.48 : 0.24,
-                filter: 'blur(3px)',
+                width: '56vmin',
+                height: '56vmin',
+                minWidth: '320px',
+                minHeight: '320px',
+                bottom: '-8%',
+                right: '-6%',
+                background: 'radial-gradient(circle, color-mix(in srgb, var(--color-primary) 70%, #34D399) 0%, var(--color-primary-glow) 48%, transparent 70%)',
+                opacity: isDark ? 0.62 : 0.30,
+                filter: 'blur(55px)',
                 willChange: 'transform',
-                backfaceVisibility: 'hidden',
               }}
             />
 
-            {/* Bokeh Node 4: Gentle Secondary Ambient */}
-            <span
-              className="absolute rounded-full pointer-events-none hidden sm:block"
+            {/* Blob 6: Mid-Right Amber/Gold Warm Satellite (Fast Drift) */}
+            <div
+              className="absolute rounded-full pointer-events-none animate-bokeh-fast-6"
               style={{
-                width: '8vmin',
-                height: '8vmin',
-                top: '18%',
-                left: '25%',
-                color: 'color-mix(in srgb, var(--color-primary) 50%, #38BDF8)',
-                boxShadow: '16vmin 0 2.5vmin currentColor',
-                transformOrigin: '-7vw 14vh',
-                animation: 'bokeh-orbit 26s linear infinite',
-                animationDelay: '-6s',
-                opacity: isDark ? 0.38 : 0.18,
-                filter: 'blur(4px)',
+                width: '50vmin',
+                height: '50vmin',
+                minWidth: '280px',
+                minHeight: '280px',
+                top: '42%',
+                right: '-10%',
+                background: 'radial-gradient(circle, color-mix(in srgb, var(--color-primary) 75%, #FBBF24) 0%, var(--color-primary-glow) 46%, transparent 72%)',
+                opacity: isDark ? 0.58 : 0.28,
+                filter: 'blur(50px)',
                 willChange: 'transform',
-                backfaceVisibility: 'hidden',
+              }}
+            />
+
+            {/* Blob 7: High-Speed Central Spark (Fast Orbit Reverse) */}
+            <div
+              className="absolute rounded-full pointer-events-none animate-bokeh-fast-1"
+              style={{
+                width: '42vmin',
+                height: '42vmin',
+                minWidth: '240px',
+                minHeight: '240px',
+                top: '35%',
+                left: '38%',
+                background: 'radial-gradient(circle, #FFFFFF 0%, var(--color-primary) 35%, var(--color-primary-glow) 60%, transparent 72%)',
+                opacity: isDark ? 0.40 : 0.20,
+                filter: 'blur(45px)',
+                animationDirection: 'reverse',
+                animationDuration: '5.2s',
+                willChange: 'transform',
               }}
             />
           </div>

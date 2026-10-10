@@ -36,7 +36,7 @@ export function getScheduledDefaultTheme() {
 }
 
 export function getDefaultBgEffect() {
-  return 'aurora';
+  return 'bokeh';
 }
 
 const ThemeContext = createContext();
@@ -44,12 +44,20 @@ const ThemeContext = createContext();
 export function ThemeProvider({ children }) {
   const [visualTheme, setVisualThemeState] = useState('nordic-slate');
   const [mode, setModeState] = useState('dark');
-  const [bgEffect, setBgEffectState] = useState('aurora');
+  const [bgEffect, setBgEffectState] = useState('bokeh');
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
     
+    // Auto-activate Moving Bokeh background
+    const isBokehDefaultApplied = localStorage.getItem('app-bokeh-default-v2');
+    if (!isBokehDefaultApplied) {
+      localStorage.setItem('app-bokeh-default-v2', 'true');
+      localStorage.setItem('app-bg-effect', 'bokeh');
+      setBgEffectState('bokeh');
+    }
+
     // Force Nordic Slate and Dark (Night) mode as permanent default
     const isNordicDefaultApplied = localStorage.getItem('app-nordic-default-permanent-v1');
 
@@ -58,10 +66,10 @@ export function ThemeProvider({ children }) {
       localStorage.setItem('app-visual-theme', 'nordic-slate');
       localStorage.setItem('app-mode', 'dark');
       localStorage.setItem('theme', 'dark');
-      localStorage.setItem('app-bg-effect', 'aurora');
+      localStorage.setItem('app-bg-effect', 'bokeh');
       setVisualThemeState('nordic-slate');
       setModeState('dark');
-      setBgEffectState('aurora');
+      setBgEffectState('bokeh');
       return;
     }
 
@@ -85,7 +93,7 @@ export function ThemeProvider({ children }) {
     if (storedBgEffect && (BG_EFFECTS.some(b => b.id === storedBgEffect) || storedBgEffect === 'ember-tide-aurora')) {
       setBgEffectState(storedBgEffect === 'ember-tide-aurora' ? 'aurora' : storedBgEffect);
     } else {
-      setBgEffectState('aurora');
+      setBgEffectState('bokeh');
     }
   }, []);
 

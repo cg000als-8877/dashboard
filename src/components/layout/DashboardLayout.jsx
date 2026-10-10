@@ -74,8 +74,8 @@ export default function DashboardLayout({ children }) {
       <div className="flex flex-col flex-1 overflow-hidden relative w-full z-10">
         {/* Mobile Top Header (Hidden on Desktop) */}
         <header className="md:hidden fixed top-0 left-0 right-0 bg-[var(--color-bg-card)] z-50 flex flex-col border-b border-[var(--color-border)] shadow-sm">
-          {/* Marquee Ticker placed directly ABOVE Byzid Apparels TITLE on dashboard */}
-          {isDashboard && <MobileHourlyTicker />}
+          {/* Marquee Ticker hidden for now per user request */}
+          {/* {isDashboard && <MobileHourlyTicker />} */}
 
           <div className="flex items-center justify-between px-3.5 py-2.5 sm:py-3 relative">
             <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-surface)] to-transparent pointer-events-none"></div>
@@ -278,9 +278,9 @@ export default function DashboardLayout({ children }) {
               </p>
               <div className="space-y-0.5">
                 {[
+                  { name: 'Hourly', href: '/hourly', icon: Clock },
                   { name: 'Canteen', type: 'button', icon: Coffee },
                   { name: 'Simulator', href: '/simulator', icon: Ship },
-                  { name: 'Analytics', href: '/analytics', icon: BarChart3 },
                   { name: 'Compare', href: '/compare', icon: GitCompare },
                   { name: 'Line A', href: '/lines/A', icon: Factory },
                   { name: 'Line B', href: '/lines/B', icon: Factory },
@@ -385,10 +385,7 @@ export default function DashboardLayout({ children }) {
 
         {/* Main Content */}
         <main 
-          className={cn(
-            "flex-1 overflow-y-auto w-full px-3.5 sm:px-5 md:px-8 pb-[calc(99px+env(safe-area-inset-bottom))] md:pb-8 relative hide-scrollbar md:[scrollbar-width:auto]",
-            isDashboard ? "pt-[102px] md:pt-8" : "pt-[72px] md:pt-8"
-          )}
+          className="flex-1 overflow-y-auto w-full px-3.5 sm:px-5 md:px-8 pb-[calc(99px+env(safe-area-inset-bottom))] md:pb-8 pt-[72px] md:pt-8 relative hide-scrollbar md:[scrollbar-width:auto]"
         >
           <div className="w-full max-w-[1800px] mx-auto">
             {children}

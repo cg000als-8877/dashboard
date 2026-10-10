@@ -1674,44 +1674,88 @@ body {
 
 @keyframes emergency-strobe {
   0%, 100% {
-    opacity: 1;
-    box-shadow: 0 0 10px rgba(244, 63, 94, 0.25);
-    background-color: rgba(244, 63, 94, 0.15);
-    border-color: rgba(244, 63, 94, 0.45);
-    color: #FB7185;
+    transform: scale(1);
+    box-shadow: 0 0 10px rgba(255, 0, 51, 0.5), inset 0 0 8px rgba(255, 0, 51, 0.25);
+    background-color: rgba(255, 0, 51, 0.18);
+    border-color: rgba(255, 0, 51, 0.6);
+    color: #FF1744;
   }
-  50% {
-    opacity: 0.85;
-    box-shadow: 0 0 4px rgba(244, 63, 94, 0.1);
-    background-color: rgba(244, 63, 94, 0.08);
-    border-color: rgba(244, 63, 94, 0.25);
-    color: #F43F5E;
+  14% {
+    transform: scale(1.08);
+    box-shadow: 0 0 25px #FF0033, 0 0 40px rgba(255, 0, 51, 0.8), inset 0 0 12px rgba(255, 0, 51, 0.4);
+    background-color: rgba(255, 0, 51, 0.38);
+    border-color: #FF0033;
+    color: #FFFFFF;
+  }
+  28% {
+    transform: scale(1.02);
+    box-shadow: 0 0 12px rgba(255, 0, 51, 0.55);
+    background-color: rgba(255, 0, 51, 0.22);
+    border-color: rgba(255, 0, 51, 0.7);
+    color: #FF2E51;
+  }
+  42% {
+    transform: scale(1.07);
+    box-shadow: 0 0 24px #FF0033, 0 0 36px rgba(255, 0, 51, 0.75), inset 0 0 10px rgba(255, 0, 51, 0.35);
+    background-color: rgba(255, 0, 51, 0.35);
+    border-color: #FF0033;
+    color: #FFFFFF;
+  }
+  65% {
+    transform: scale(1);
+    box-shadow: 0 0 8px rgba(255, 0, 51, 0.45);
+    background-color: rgba(255, 0, 51, 0.16);
+    border-color: rgba(255, 0, 51, 0.5);
+    color: #FF1744;
   }
 }
 
 @keyframes emergency-strobe-light {
   0%, 100% {
-    opacity: 1;
-    box-shadow: 0 1px 4px rgba(225, 29, 72, 0.12);
+    transform: scale(1);
+    box-shadow: 0 0 8px rgba(255, 0, 51, 0.4);
     background-color: #FFE4E6;
-    border-color: #FDA4AF;
-    color: #BE123C;
+    border-color: #FF1744;
+    color: #D50000;
   }
-  50% {
-    opacity: 0.88;
-    box-shadow: 0 1px 2px rgba(225, 29, 72, 0.06);
-    background-color: #FFF1F2;
-    border-color: #FECDD3;
-    color: #E11D48;
+  14% {
+    transform: scale(1.08);
+    box-shadow: 0 0 22px rgba(255, 0, 51, 0.85), 0 0 34px rgba(255, 23, 68, 0.5);
+    background-color: #FFCDD2;
+    border-color: #FF0033;
+    color: #B71C1C;
+  }
+  28% {
+    transform: scale(1.02);
+    box-shadow: 0 0 10px rgba(255, 0, 51, 0.45);
+    background-color: #FFE4E6;
+    border-color: #FF1744;
+    color: #D50000;
+  }
+  42% {
+    transform: scale(1.07);
+    box-shadow: 0 0 20px rgba(255, 0, 51, 0.8);
+    background-color: #FFCDD2;
+    border-color: #FF0033;
+    color: #B71C1C;
+  }
+  65% {
+    transform: scale(1);
+    box-shadow: 0 0 6px rgba(255, 0, 51, 0.35);
+    background-color: #FFE4E6;
+    border-color: #FF1744;
+    color: #D50000;
   }
 }
 
 .animate-emergency-strobe {
-  animation: emergency-strobe 2.2s infinite ease-in-out;
+  animation: emergency-strobe 0.75s infinite cubic-bezier(0.25, 1, 0.5, 1);
+  will-change: transform, box-shadow;
 }
 
 .light-mode .animate-emergency-strobe {
-  animation: emergency-strobe-light 2.2s infinite ease-in-out;
+  animation: emergency-strobe-light 0.75s infinite cubic-bezier(0.25, 1, 0.5, 1);
+  will-change: transform, box-shadow;
 }
 
 @keyframes marquee {
@@ -1732,6 +1776,42 @@ body {
 .animate-marquee:hover,
 .animate-marquee:active {
   animation-play-state: paused;
+}
+
+@keyframes arrow-nudge-left {
+  0%, 100% {
+    transform: translateX(0);
+    opacity: 0.7;
+    filter: drop-shadow(0 0 4px var(--color-primary-glow));
+  }
+  50% {
+    transform: translateX(-4px);
+    opacity: 1;
+    filter: drop-shadow(0 0 10px var(--color-primary-glow));
+  }
+}
+
+@keyframes arrow-nudge-right {
+  0%, 100% {
+    transform: translateX(0);
+    opacity: 0.7;
+    filter: drop-shadow(0 0 4px var(--color-primary-glow));
+  }
+  50% {
+    transform: translateX(4px);
+    opacity: 1;
+    filter: drop-shadow(0 0 10px var(--color-primary-glow));
+  }
+}
+
+.animate-arrow-nudge-left {
+  animation: arrow-nudge-left 1.4s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+.animate-arrow-nudge-right {
+  animation: arrow-nudge-right 1.4s ease-in-out infinite;
+  will-change: transform, opacity;
 }
 
 /* ═══════════════════════════════════════════
@@ -1929,10 +2009,129 @@ body {
 }
 
 /* ─────────────────────────────────────────
-   MOVING BOKEH — Orbital floating light spheres
+   MOVING BOKEH — Fast, Large Floating Blobs All Over Screen
 ───────────────────────────────────────── */
 @keyframes bokeh-orbit {
   100% {
     transform: translate3d(0, 0, 1px) rotate(360deg);
   }
 }
+
+@keyframes bokeh-fast-drift-1 {
+  0%   { transform: translate3d(0, 0, 0) scale(1); }
+  25%  { transform: translate3d(32vw, 24vh, 0) scale(1.22); }
+  50%  { transform: translate3d(12vw, 52vh, 0) scale(0.88); }
+  75%  { transform: translate3d(-22vw, 28vh, 0) scale(1.15); }
+  100% { transform: translate3d(0, 0, 0) scale(1); }
+}
+
+@keyframes bokeh-fast-drift-2 {
+  0%   { transform: translate3d(0, 0, 0) scale(1); }
+  25%  { transform: translate3d(-38vw, -28vh, 0) scale(0.85); }
+  50%  { transform: translate3d(-14vw, -52vh, 0) scale(1.25); }
+  75%  { transform: translate3d(24vw, -22vh, 0) scale(0.95); }
+  100% { transform: translate3d(0, 0, 0) scale(1); }
+}
+
+@keyframes bokeh-fast-drift-3 {
+  0%   { transform: translate3d(0, 0, 0) scale(1.1); }
+  30%  { transform: translate3d(42vw, -32vh, 0) scale(0.9); }
+  60%  { transform: translate3d(-32vw, 18vh, 0) scale(1.26); }
+  85%  { transform: translate3d(18vw, 38vh, 0) scale(0.86); }
+  100% { transform: translate3d(0, 0, 0) scale(1.1); }
+}
+
+@keyframes bokeh-fast-drift-4 {
+  0%   { transform: translate3d(0, 0, 0) scale(0.92); }
+  33%  { transform: translate3d(-42vw, 36vh, 0) scale(1.2); }
+  66%  { transform: translate3d(28vw, -42vh, 0) scale(0.85); }
+  100% { transform: translate3d(0, 0, 0) scale(0.92); }
+}
+
+@keyframes bokeh-fast-drift-5 {
+  0%   { transform: translate3d(0, 0, 0) scale(1.05); }
+  22%  { transform: translate3d(28vw, -18vh, 0) scale(0.9); }
+  48%  { transform: translate3d(-24vw, -36vh, 0) scale(1.22); }
+  72%  { transform: translate3d(-38vw, 24vh, 0) scale(0.94); }
+  100% { transform: translate3d(0, 0, 0) scale(1.05); }
+}
+
+@keyframes bokeh-fast-drift-6 {
+  0%   { transform: translate3d(0, 0, 0) scale(0.95); }
+  28%  { transform: translate3d(-28vw, -32vh, 0) scale(1.18); }
+  55%  { transform: translate3d(36vw, -14vh, 0) scale(0.88); }
+  80%  { transform: translate3d(14vw, 32vh, 0) scale(1.14); }
+  100% { transform: translate3d(0, 0, 0) scale(0.95); }
+}
+
+.animate-bokeh-fast-1 {
+  animation: bokeh-fast-drift-1 6.5s ease-in-out infinite;
+  will-change: transform;
+}
+.animate-bokeh-fast-2 {
+  animation: bokeh-fast-drift-2 7.2s ease-in-out infinite;
+  will-change: transform;
+}
+.animate-bokeh-fast-3 {
+  animation: bokeh-fast-drift-3 5.8s ease-in-out infinite;
+  will-change: transform;
+}
+.animate-bokeh-fast-4 {
+  animation: bokeh-fast-drift-4 8s ease-in-out infinite;
+  will-change: transform;
+}
+.animate-bokeh-fast-5 {
+  animation: bokeh-fast-drift-5 6.2s ease-in-out infinite;
+  will-change: transform;
+}
+.animate-bokeh-fast-6 {
+  animation: bokeh-fast-drift-6 7.6s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   DASHBOARD MOBILE VIEW: STROKE-FREE DESIGN
+   Removes all borders and strokes from cards, badges, stat cards,
+   tabs, dividers, and containers on the Dashboard page in mobile view.
+   Desktop view (>= 768px) and all other pages remain completely untouched.
+───────────────────────────────────────────────────────────── */
+@media (max-width: 767px) {
+  .dashboard-mobile-stroke-free div,
+  .dashboard-mobile-stroke-free section,
+  .dashboard-mobile-stroke-free article,
+  .dashboard-mobile-stroke-free span:not(.animate-emergency-strobe),
+  .dashboard-mobile-stroke-free button,
+  .dashboard-mobile-stroke-free a,
+  .dashboard-mobile-stroke-free ul,
+  .dashboard-mobile-stroke-free li,
+  .dashboard-mobile-stroke-free table,
+  .dashboard-mobile-stroke-free tr,
+  .dashboard-mobile-stroke-free td,
+  .dashboard-mobile-stroke-free th,
+  .dashboard-mobile-stroke-free p,
+  .dashboard-mobile-stroke-free header,
+  .dashboard-mobile-stroke-free footer {
+    border-color: transparent !important;
+    border-width: 0 !important;
+    border-style: none !important;
+    outline: none !important;
+  }
+
+  .dashboard-mobile-stroke-free [class*="border"]:not(.animate-emergency-strobe) {
+    border-color: transparent !important;
+    border-width: 0 !important;
+    border-style: none !important;
+  }
+
+  .dashboard-mobile-stroke-free [class*="divide-"] > * {
+    border-color: transparent !important;
+    border-width: 0 !important;
+    border-style: none !important;
+  }
+
+  .dashboard-mobile-stroke-free div[class*="h-px"],
+  .dashboard-mobile-stroke-free hr {
+    display: none !important;
+  }
+}
+
