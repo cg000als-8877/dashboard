@@ -1,45 +1,7 @@
 "use client";
 
 import React, { useState, useMemo } from 'react';
-import { 
-  Sparkles, 
-  AlertOctagon, 
-  Flame, 
-  TrendingUp, 
-  TrendingDown, 
-  Target, 
-  Trophy, 
-  AlertTriangle, 
-  PieChart, 
-  DollarSign, 
-  Activity, 
-  Calendar, 
-  Zap, 
-  Cpu, 
-  Compass,
-  Layers
-} from 'lucide-react';
 import { cn } from '@/components/layout/Sidebar';
-
-// Icon map helper
-const ICON_COMPONENTS = {
-  AlertOctagon,
-  Flame,
-  TrendingUp,
-  TrendingDown,
-  Target,
-  Trophy,
-  AlertTriangle,
-  PieChart,
-  DollarSign,
-  Activity,
-  Calendar,
-  Zap,
-  Cpu,
-  Compass,
-  Layers,
-  Sparkles
-};
 
 // Available Intelligence Categories
 const CATEGORIES = [
@@ -265,28 +227,22 @@ export function SystemIntelligenceCards({ insights = [] }) {
         
         {/* Header Bar */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5 sm:mb-6">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-[var(--color-primary-glow)] flex items-center justify-center shrink-0 border-none">
-              <Sparkles className="w-5 h-5 text-[var(--color-primary)]" />
-            </div>
-            <div>
-              <h3 className="text-sm sm:text-base font-extrabold uppercase tracking-[0.16em] text-slate-200">
-                System Intelligence
-              </h3>
-              <p className="text-[11px] sm:text-xs text-slate-400 font-medium">
-                Autonomous diagnostic telemetry & tactical executive actions
-              </p>
-            </div>
+          <div>
+            <h3 className="text-sm sm:text-base font-extrabold uppercase tracking-[0.16em] text-slate-200">
+              System Intelligence
+            </h3>
+            <p className="text-[11px] sm:text-xs text-slate-400 font-medium">
+              Autonomous diagnostic telemetry & tactical executive actions
+            </p>
           </div>
 
-          <div className="flex items-center gap-1.5 self-start sm:self-auto px-2.5 py-1 rounded-full bg-[var(--color-surface)]/70 text-[10.5px] font-bold text-slate-300 border-none">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+          <div className="self-start sm:self-auto px-2.5 py-1 rounded-full bg-[var(--color-surface)]/70 text-[10.5px] font-bold text-slate-300 border-none">
             <span>{parsedItems.length} Live Insights</span>
           </div>
         </div>
 
-        {/* Category Tabs (No stroke, minimal modern pill buttons with horizontal scroll on mobile) */}
-        <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-1 mb-5 sm:mb-6 hide-scrollbar select-none">
+        {/* Category Tabs (No stroke, minimal small pill buttons stacking side by side with # sign on mobile) */}
+        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mb-5 sm:mb-6 select-none">
           {CATEGORIES.map(cat => {
             const isSelected = activeTab === cat.id;
             const count = categoryCounts[cat.id] || 0;
@@ -297,17 +253,25 @@ export function SystemIntelligenceCards({ insights = [] }) {
                 type="button"
                 onClick={() => setActiveTab(cat.id)}
                 className={cn(
-                  "px-3 sm:px-3.5 py-1.5 rounded-xl text-xs sm:text-[12.5px] font-bold transition-all duration-200 cursor-pointer shrink-0 border-none outline-none flex items-center gap-1.5",
+                  "flex items-center justify-between sm:justify-start gap-1.5 px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg sm:rounded-xl text-[10.5px] sm:text-[12.5px] font-bold transition-all duration-200 cursor-pointer border-none outline-none select-none flex-1 sm:flex-initial min-w-[calc(50%-6px)] sm:min-w-0",
                   isSelected
                     ? "bg-[var(--color-primary)] text-slate-900 shadow-md font-extrabold active:scale-95"
                     : "bg-[var(--color-surface)]/60 text-slate-400 hover:text-slate-200 hover:bg-[var(--color-surface)]"
                 )}
                 aria-selected={isSelected}
               >
-                <span>{cat.label}</span>
+                <div className="flex items-center gap-1 min-w-0">
+                  <span className={cn(
+                    "font-black text-[11px] sm:text-xs shrink-0",
+                    isSelected ? "text-slate-900/80" : "text-[var(--color-primary)] opacity-85"
+                  )}>
+                    #
+                  </span>
+                  <span className="truncate">{cat.label}</span>
+                </div>
                 <span className={cn(
-                  "text-[10px] px-1.5 py-0.2 rounded-md font-mono shrink-0",
-                  isSelected ? "bg-black/20 text-slate-900 font-bold" : "bg-black/20 text-slate-400"
+                  "text-[9px] sm:text-[10px] px-1.5 py-0.2 rounded font-mono shrink-0 ml-1.5",
+                  isSelected ? "bg-black/20 text-slate-900 font-bold" : "bg-black/25 text-slate-400"
                 )}>
                   {count}
                 </span>
@@ -316,21 +280,11 @@ export function SystemIntelligenceCards({ insights = [] }) {
           })}
         </div>
 
-        {/* Stat Cards Grid (Every insight rendered inside an individual stroke-free Stat Card) */}
+        {/* Stat Cards Grid (Every insight rendered inside an individual stroke-free Stat Card with NO icons) */}
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-3.5">
           {filteredItems.map(item => {
-            const Icon = ICON_COMPONENTS[item.iconName] || Sparkles;
-
             // Theme-adaptive badge styling
             const badgeClasses = {
-              danger: "bg-rose-500/15 text-rose-400",
-              success: "bg-emerald-500/15 text-emerald-400",
-              warning: "bg-amber-500/15 text-amber-400",
-              info: "bg-sky-500/15 text-sky-400",
-              primary: "bg-[var(--color-primary-glow)] text-[var(--color-primary)]"
-            }[item.badgeType] || "bg-[var(--color-surface)] text-slate-400";
-
-            const iconContainerClasses = {
               danger: "bg-rose-500/15 text-rose-400",
               success: "bg-emerald-500/15 text-emerald-400",
               warning: "bg-amber-500/15 text-amber-400",
@@ -343,17 +297,12 @@ export function SystemIntelligenceCards({ insights = [] }) {
                 key={item.id}
                 className="bg-[var(--color-surface)]/65 dark:bg-[var(--color-surface)]/40 hover:bg-[var(--color-surface)] rounded-2xl p-4 sm:p-4.5 flex flex-col justify-between transition-all duration-200 border-none outline-none shadow-none group"
               >
-                {/* Top Metatag Row */}
+                {/* Top Metatag Row (No icon) */}
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-2.5">
-                    <div className="flex items-center gap-2 min-w-0">
-                      <div className={cn("w-7 h-7 rounded-lg flex items-center justify-center shrink-0 border-none", iconContainerClasses)}>
-                        <Icon size={14} className="shrink-0" />
-                      </div>
-                      <span className="text-[10px] font-bold tracking-widest uppercase text-slate-400 truncate">
-                        {item.tag}
-                      </span>
-                    </div>
+                    <span className="text-[10px] font-bold tracking-widest uppercase text-slate-400 truncate">
+                      {item.tag}
+                    </span>
 
                     <span className={cn("px-2 py-0.5 rounded text-[8.5px] font-black uppercase tracking-wider shrink-0 border-none", badgeClasses)}>
                       {item.badgeLabel}

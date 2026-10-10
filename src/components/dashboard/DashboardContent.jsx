@@ -563,19 +563,19 @@ export function DashboardContent({ month, isArchive = false }) {
           {/* Month Tab Switcher for 6 KPI Stat Cards (Live Dashboard Only) */}
           {!isArchive && (
             <div className="flex justify-center items-center w-full mb-2 sm:mb-2.5 relative z-10">
-              <div className="inline-flex p-0.5 sm:p-1 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl gap-0.5 sm:gap-1 shadow-sm backdrop-blur-md">
+              <div className="inline-flex p-0.5 sm:p-1 bg-[var(--color-surface)] border-0 md:border md:border-[var(--color-border)] rounded-xl gap-0.5 md:gap-1 shadow-none md:shadow-sm backdrop-blur-md items-center">
                 <button
                   type="button"
                   onClick={() => setSelectedCardMonth('current')}
                   className={cn(
-                    "flex items-center gap-1.5 px-2.5 sm:px-4 py-1 sm:py-1.5 rounded-lg text-[10px] sm:text-xs uppercase tracking-wider transition-all duration-200 cursor-pointer select-none",
+                    "flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-4 py-1 sm:py-1.5 rounded-lg text-[9.5px] sm:text-xs uppercase tracking-wider transition-all duration-200 cursor-pointer select-none shrink-0 border-0 outline-none",
                     selectedCardMonth === 'current'
-                      ? "bg-[var(--color-bg-card)] text-[var(--color-text-main)] font-bold border border-[var(--color-border)] shadow-sm"
-                      : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)] font-medium"
+                      ? "bg-transparent md:bg-[var(--color-bg-card)] text-[var(--color-text-main)] font-black md:font-bold md:border md:border-[var(--color-border)] shadow-none md:shadow-sm"
+                      : "bg-transparent text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)] font-medium"
                   )}
                 >
                   <span>OCTOBER</span>
-                  <span className="text-[8.5px] sm:text-[10px] text-red-500 font-black tracking-wide">(LIVE)</span>
+                  <span className="text-[8px] sm:text-[10px] text-red-500 font-black tracking-wide">(LIVE)</span>
                   <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.8)] animate-pulse shrink-0" />
                 </button>
 
@@ -583,10 +583,10 @@ export function DashboardContent({ month, isArchive = false }) {
                   type="button"
                   onClick={() => setSelectedCardMonth('september')}
                   className={cn(
-                    "px-2.5 sm:px-4 py-1 sm:py-1.5 rounded-lg text-[10px] sm:text-xs uppercase tracking-wider transition-all duration-200 cursor-pointer select-none",
+                    "px-2 sm:px-4 py-1 sm:py-1.5 rounded-lg text-[9.5px] sm:text-xs uppercase tracking-wider transition-all duration-200 cursor-pointer select-none shrink-0 border-0 outline-none",
                     selectedCardMonth === 'september'
-                      ? "bg-[var(--color-bg-card)] text-[var(--color-text-main)] font-bold border border-[var(--color-border)] shadow-sm"
-                      : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)] font-medium"
+                      ? "bg-transparent md:bg-[var(--color-bg-card)] text-[var(--color-primary)] md:text-[var(--color-text-main)] font-black md:font-bold md:border md:border-[var(--color-border)] shadow-none md:shadow-sm"
+                      : "bg-transparent text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)] font-medium"
                   )}
                 >
                   SEPTEMBER
@@ -596,10 +596,10 @@ export function DashboardContent({ month, isArchive = false }) {
                   type="button"
                   onClick={() => setSelectedCardMonth('august')}
                   className={cn(
-                    "px-2.5 sm:px-4 py-1 sm:py-1.5 rounded-lg text-[10px] sm:text-xs uppercase tracking-wider transition-all duration-200 cursor-pointer select-none",
+                    "px-2 sm:px-4 py-1 sm:py-1.5 rounded-lg text-[9.5px] sm:text-xs uppercase tracking-wider transition-all duration-200 cursor-pointer select-none shrink-0 border-0 outline-none",
                     selectedCardMonth === 'august'
-                      ? "bg-[var(--color-bg-card)] text-[var(--color-text-main)] font-bold border border-[var(--color-border)] shadow-sm"
-                      : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)] font-medium"
+                      ? "bg-transparent md:bg-[var(--color-bg-card)] text-[var(--color-primary)] md:text-[var(--color-text-main)] font-black md:font-bold md:border md:border-[var(--color-border)] shadow-none md:shadow-sm"
+                      : "bg-transparent text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)] font-medium"
                   )}
                 >
                   AUGUST
@@ -609,10 +609,10 @@ export function DashboardContent({ month, isArchive = false }) {
                   type="button"
                   onClick={() => setSelectedCardMonth('july')}
                   className={cn(
-                    "px-2.5 sm:px-4 py-1 sm:py-1.5 rounded-lg text-[10px] sm:text-xs uppercase tracking-wider transition-all duration-200 cursor-pointer select-none",
+                    "px-2 sm:px-4 py-1 sm:py-1.5 rounded-lg text-[9.5px] sm:text-xs uppercase tracking-wider transition-all duration-200 cursor-pointer select-none shrink-0 border-0 outline-none",
                     selectedCardMonth === 'july'
-                      ? "bg-[var(--color-bg-card)] text-[var(--color-text-main)] font-bold border border-[var(--color-border)] shadow-sm"
-                      : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)] font-medium"
+                      ? "bg-transparent md:bg-[var(--color-bg-card)] text-[var(--color-primary)] md:text-[var(--color-text-main)] font-black md:font-bold md:border md:border-[var(--color-border)] shadow-none md:shadow-sm"
+                      : "bg-transparent text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)] font-medium"
                   )}
                 >
                   JULY
