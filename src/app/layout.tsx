@@ -8,6 +8,7 @@ import { ClientAutoRefresh } from "@/components/providers/ClientAutoRefresh";
 import { PwaManager } from "@/components/providers/PwaManager";
 import { PushNotificationManager } from "@/components/providers/PushNotificationManager";
 import { AppWelcomeSplash } from "@/components/ui/AppWelcomeSplash";
+import { BackgroundCanvas } from "@/components/ui/BackgroundCanvas";
 
 
 const inter = Inter({ 
@@ -44,7 +45,7 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" data-theme="ember-tide" data-mode="dark" data-bg-effect="ember-tide-aurora" suppressHydrationWarning>
+    <html lang="en" data-theme="nordic-slate" data-mode="dark" data-bg-effect="bokeh" suppressHydrationWarning>
       <head>
         <script
           dangerouslySetInnerHTML={{
@@ -65,8 +66,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   if (t) {
                     document.documentElement.setAttribute('data-theme', t);
                   }
-                  if (b) {
+                  if (b && b !== 'ember-tide-aurora') {
                     document.documentElement.setAttribute('data-bg-effect', b);
+                  } else {
+                    document.documentElement.setAttribute('data-bg-effect', 'bokeh');
                   }
                 } catch(e) {}
               })();
@@ -76,6 +79,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className={`${inter.className} ${spaceGrotesk.variable} ${jetbrainsMono.variable} bg-[var(--color-bg-main)] text-[var(--color-text-main)]`}>
         <ThemeProvider>
+          <BackgroundCanvas />
           <MonthProvider>
             <DensityProvider>
               <ClientAutoRefresh />

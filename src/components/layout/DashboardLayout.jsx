@@ -14,7 +14,6 @@ import { useMonth } from '@/components/providers/MonthProvider';
 import { useTheme } from '@/components/ThemeProvider';
 import { CanteenSecurityModal } from '@/components/ui/CanteenSecurityModal';
 import { MobileHourlyTicker } from '@/components/dashboard/MobileHourlyTicker';
-import { BackgroundCanvas } from '@/components/ui/BackgroundCanvas';
 import { MobileBottomNav } from '@/components/layout/MobileBottomNav';
 
 const navItems = [
@@ -62,10 +61,7 @@ export default function DashboardLayout({ children }) {
   }
 
   return (
-    <div className="flex h-screen overflow-hidden w-full bg-[var(--color-bg-main)] relative">
-      {/* Ambient Visual Background FX Layer */}
-      <BackgroundCanvas />
-
+    <div className="flex h-screen overflow-hidden w-full bg-transparent relative">
       {/* Desktop Attached Left Sidebar */}
       <div className="hidden md:flex flex-col flex-shrink-0 z-40 relative h-full">
         <Sidebar onClose={() => {}} />

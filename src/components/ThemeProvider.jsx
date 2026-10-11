@@ -21,9 +21,9 @@ export const APPEARANCE_MODES = [
 ];
 
 export const BG_EFFECTS = [
+  { id: 'bokeh', name: 'Moving Bokeh (Default)', tag: 'Bokeh', desc: 'Floating dynamic orbital light spheres' },
   { id: 'aurora', name: 'Ambient Aurora', tag: 'Orbs', desc: 'Organic glowing orbs matching active theme' },
   { id: 'spotlight', name: 'Interactive Spotlight', tag: 'Spotlight', desc: 'Mouse-following radiant halo & ambient pulse' },
-  { id: 'bokeh', name: 'Moving Bokeh', tag: 'Bokeh', desc: 'Floating dynamic orbital light spheres' },
   { id: 'grain', name: 'Velvet Frosted Grain', tag: 'Velvet', desc: 'Deep multi-stop gradient with fine grain texture' },
   { id: 'grid', name: 'Grid', tag: 'Grid', desc: 'Precision blueprint grid with radial aura' },
   { id: 'honeycomb', name: 'Honeycomb', tag: 'Hex', desc: 'Hexagonal geometric matrix with radial aura' },
@@ -50,10 +50,10 @@ export function ThemeProvider({ children }) {
   useEffect(() => {
     setMounted(true);
     
-    // Auto-activate Moving Bokeh background
-    const isBokehDefaultApplied = localStorage.getItem('app-bokeh-default-v2');
+    // Auto-activate Moving Bokeh background as permanent default for all
+    const isBokehDefaultApplied = localStorage.getItem('app-bokeh-default-v3');
     if (!isBokehDefaultApplied) {
-      localStorage.setItem('app-bokeh-default-v2', 'true');
+      localStorage.setItem('app-bokeh-default-v3', 'true');
       localStorage.setItem('app-bg-effect', 'bokeh');
       setBgEffectState('bokeh');
     }
@@ -91,7 +91,7 @@ export function ThemeProvider({ children }) {
     }
 
     if (storedBgEffect && (BG_EFFECTS.some(b => b.id === storedBgEffect) || storedBgEffect === 'ember-tide-aurora')) {
-      setBgEffectState(storedBgEffect === 'ember-tide-aurora' ? 'aurora' : storedBgEffect);
+      setBgEffectState(storedBgEffect === 'ember-tide-aurora' ? 'bokeh' : storedBgEffect);
     } else {
       setBgEffectState('bokeh');
     }
@@ -116,16 +116,6 @@ export function ThemeProvider({ children }) {
       setVisualThemeState(id);
       localStorage.setItem('app-visual-theme', id);
       sessionStorage.setItem('app-night-theme-overridden', 'true');
-      // Abstract theme activates Velvet Frosted Grain bg by default
-      if (id === 'abstract') {
-        setBgEffectState('grain');
-        localStorage.setItem('app-bg-effect', 'grain');
-      }
-      // Ember Tide attaches its signature ember aurora by default
-      if (id === 'ember-tide') {
-        setBgEffectState('aurora');
-        localStorage.setItem('app-bg-effect', 'aurora');
-      }
     }
   };
 

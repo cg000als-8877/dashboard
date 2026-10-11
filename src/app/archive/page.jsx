@@ -7,7 +7,7 @@ import { useKpiData } from '@/utils/useKpiData';
 
 function ArchiveMonthSkeletonCard() {
   return (
-    <div className="relative p-[1px] rounded-2xl overflow-hidden bg-[var(--color-bg-card)] border border-[var(--color-border)]/50 h-[110px] w-full shimmer">
+    <div className="relative p-[1px] rounded-2xl overflow-hidden bg-[var(--color-bg-card)] h-[110px] w-full shimmer">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-5 h-full w-full">
         <div className="flex-1 space-y-2">
           <div className="h-4 w-1/3 bg-[var(--color-text-muted)]/15 rounded-md"></div>
@@ -48,13 +48,18 @@ function ArchiveMonthCard({ month }) {
         <div className="flex-1 space-y-1">
           <div className="flex items-center gap-3">
             <h2 className="text-lg sm:text-xl font-semibold text-[var(--color-text-main)] font-display">{month.name}</h2>
+            {month.isRunning && (
+              <span className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-cyan-700 dark:text-cyan-400 bg-cyan-500/10 px-2.5 py-0.5 rounded-full">
+                <span className="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-pulse" /> Running
+              </span>
+            )}
             {!loading && stats && (
               isProfit ? (
-                <span className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20">
+                <span className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full">
                   <TrendingUp size={12} /> Profit
                 </span>
               ) : (
-                <span className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-rose-700 dark:text-rose-400 bg-rose-500/10 px-2.5 py-0.5 rounded-full border border-rose-500/20">
+                <span className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-rose-700 dark:text-rose-400 bg-rose-500/10 px-2.5 py-0.5 rounded-full">
                   <TrendingDown size={12} /> Loss
                 </span>
               )
@@ -132,11 +137,11 @@ export default function ArchiveDirectoryPage() {
             <ArchiveMonthSkeletonCard />
           </>
         ) : error ? (
-          <div className="text-center p-8 bg-[var(--color-bg-card)] rounded-2xl border border-[var(--color-border)] text-[var(--color-text-secondary)]">
+          <div className="text-center p-8 bg-[var(--color-bg-card)] rounded-2xl text-[var(--color-text-secondary)]">
             Error loading archives: {error}
           </div>
         ) : months.length === 0 ? (
-          <div className="text-center p-8 bg-[var(--color-bg-card)] rounded-2xl border border-[var(--color-border)] text-[var(--color-text-secondary)]">
+          <div className="text-center p-8 bg-[var(--color-bg-card)] rounded-2xl text-[var(--color-text-secondary)]">
             No archives available.
           </div>
         ) : (

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import fs from 'fs/promises';
 import path from 'path';
+import { getRunningMonth } from '@/lib/liveDataService';
 
 export const dynamic = 'force-dynamic';
 
@@ -35,26 +36,38 @@ export async function GET() {
       console.error("Local archive file fetch failed:", e);
     }
 
-    // If both scans failed or returned nothing, fall back to July 2026
+    // 3. Always include the current running month dynamically
+    const runningMonth = await getRunningMonth();
+    if (runningMonth) {
+      monthsSet.add(runningMonth);
+    }
+
+    // Fallback if everything fails
     if (monthsSet.size === 0) {
       monthsSet.add('2026-07');
     }
 
     const months = Array.from(monthsSet).map(monthId => {
       const [year, month] = monthId.split('-');
-      const date = new Date(parseInt(year), parseInt(month) - 1, 1);
+      const date = new Date(parseInt(year, 10), parseInt(month, 10) - 1, 1);
       const name = date.toLocaleString('en-US', { month: 'long', year: 'numeric' });
+      const isRunning = monthId === runningMonth;
       return {
         id: monthId,
         name: name,
-        description: `Archive data for ${name}.`
+        description: isRunning ? `Current running month (${name}).` : `Archive data for ${name}.`,
+        isRunning: isRunning
       };
     });
 
     // Sort descending (latest months first)
     months.sort((a, b) => b.id.localeCompare(a.id));
 
-    return NextResponse.json({ months });
+    return NextResponse.json({ months }, {
+      headers: {
+        'Cache-Control': 'no-store, max-age=0'
+      }
+    });
   } catch (err) {
     console.error('Error in archive API:', err);
     return NextResponse.json({ error: err.message }, { status: 500 });

@@ -295,12 +295,12 @@ export const BackgroundCanvas = memo(function BackgroundCanvas() {
       {/* 7. Moving Bokeh Large Fast-Floating Glowing Blobs Layer */}
       {showBokeh && (
         <div className="absolute inset-0 overflow-hidden animate-in fade-in duration-700 pointer-events-none">
-          {/* Ambient backdrop aura */}
+          {/* Ambient backdrop aura (Reduced 20% opacity) */}
           <div
             className="absolute inset-0 pointer-events-none"
             style={{
               background: `radial-gradient(ellipse 90% 80% at 50% 50%, var(--color-primary-glow) 0%, transparent 80%)`,
-              opacity: isDark ? 0.40 : 0.18,
+              opacity: isDark ? 0.32 : 0.14,
             }}
           />
 
@@ -322,7 +322,7 @@ export const BackgroundCanvas = memo(function BackgroundCanvas() {
                 top: '-10%',
                 left: '-5%',
                 background: 'radial-gradient(circle, var(--color-primary) 0%, var(--color-primary-glow) 52%, transparent 72%)',
-                opacity: isDark ? 0.70 : 0.35,
+                opacity: isDark ? 0.56 : 0.28,
                 filter: 'blur(55px)',
                 willChange: 'transform',
               }}
@@ -339,7 +339,7 @@ export const BackgroundCanvas = memo(function BackgroundCanvas() {
                 top: '-8%',
                 right: '-8%',
                 background: 'radial-gradient(circle, color-mix(in srgb, var(--color-primary) 65%, #38BDF8) 0%, var(--color-primary-glow) 50%, transparent 72%)',
-                opacity: isDark ? 0.65 : 0.32,
+                opacity: isDark ? 0.52 : 0.25,
                 filter: 'blur(60px)',
                 willChange: 'transform',
               }}
@@ -356,7 +356,7 @@ export const BackgroundCanvas = memo(function BackgroundCanvas() {
                 top: '28%',
                 left: '26%',
                 background: 'radial-gradient(circle, color-mix(in srgb, var(--color-primary) 60%, #818CF8) 0%, var(--color-primary-glow) 50%, transparent 70%)',
-                opacity: isDark ? 0.60 : 0.30,
+                opacity: isDark ? 0.48 : 0.24,
                 filter: 'blur(50px)',
                 willChange: 'transform',
               }}
@@ -373,7 +373,7 @@ export const BackgroundCanvas = memo(function BackgroundCanvas() {
                 bottom: '-12%',
                 left: '-10%',
                 background: 'radial-gradient(circle, color-mix(in srgb, var(--color-primary) 58%, #F43F5E) 0%, var(--color-primary-glow) 46%, transparent 72%)',
-                opacity: isDark ? 0.68 : 0.34,
+                opacity: isDark ? 0.54 : 0.27,
                 filter: 'blur(65px)',
                 willChange: 'transform',
               }}
@@ -390,7 +390,7 @@ export const BackgroundCanvas = memo(function BackgroundCanvas() {
                 bottom: '-8%',
                 right: '-6%',
                 background: 'radial-gradient(circle, color-mix(in srgb, var(--color-primary) 70%, #34D399) 0%, var(--color-primary-glow) 48%, transparent 70%)',
-                opacity: isDark ? 0.62 : 0.30,
+                opacity: isDark ? 0.49 : 0.24,
                 filter: 'blur(55px)',
                 willChange: 'transform',
               }}
@@ -407,7 +407,7 @@ export const BackgroundCanvas = memo(function BackgroundCanvas() {
                 top: '42%',
                 right: '-10%',
                 background: 'radial-gradient(circle, color-mix(in srgb, var(--color-primary) 75%, #FBBF24) 0%, var(--color-primary-glow) 46%, transparent 72%)',
-                opacity: isDark ? 0.58 : 0.28,
+                opacity: isDark ? 0.46 : 0.22,
                 filter: 'blur(50px)',
                 willChange: 'transform',
               }}
@@ -424,7 +424,7 @@ export const BackgroundCanvas = memo(function BackgroundCanvas() {
                 top: '35%',
                 left: '38%',
                 background: 'radial-gradient(circle, #FFFFFF 0%, var(--color-primary) 35%, var(--color-primary-glow) 60%, transparent 72%)',
-                opacity: isDark ? 0.40 : 0.20,
+                opacity: isDark ? 0.32 : 0.16,
                 filter: 'blur(45px)',
                 animationDirection: 'reverse',
                 animationDuration: '5.2s',

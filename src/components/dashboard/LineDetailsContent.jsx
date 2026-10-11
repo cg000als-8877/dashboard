@@ -143,58 +143,41 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false }) {
     >
       
       {!isEmbed && (
-        <header className="flex flex-col mb-6 md:mb-8 relative z-10">
-          {/* Top navigation row: Breadcrumbs + mobile controls */}
-          <div className="flex items-center justify-between gap-2 mb-3">
-            <div className="flex items-center gap-2">
+        <header className="flex flex-col items-center text-center mb-6 md:mb-8 relative z-10 w-full">
+          {/* Top navigation: Breadcrumbs and List/Cards View over the title (Center Aligned) */}
+          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3.5 mb-2.5 sm:mb-3.5">
+            <div className="flex items-center gap-1.5">
               <Link 
                 href={backUrl || '/lines'} 
-                className="md:hidden p-1.5 rounded-lg bg-[var(--color-surface)] hover:bg-[var(--color-surface-hover)] border-0 text-[var(--color-text-main)] transition-all"
+                className="p-1 sm:p-1.5 rounded-lg bg-[var(--color-surface)] hover:bg-[var(--color-surface-hover)] border-0 text-[var(--color-text-main)] transition-all hover:scale-105 active:scale-95 shrink-0"
                 aria-label="Back to lines"
               >
-                <ArrowLeft className="w-3.5 h-3.5" />
+                <ArrowLeft className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
               </Link>
-              <nav className="flex items-center gap-1.5 text-[10px] md:text-xs font-semibold uppercase tracking-normal text-[var(--color-text-muted)]">
+              <nav className="flex items-center gap-1 text-[9px] sm:text-[10px] md:text-[11px] font-medium tracking-normal text-[var(--color-text-muted)]">
                 <Link href="/" className="hover:text-[var(--color-primary)] transition-colors">Dashboard</Link>
-                <ChevronRight size={12} className="opacity-60" />
+                <ChevronRight size={10} className="opacity-50 shrink-0" />
                 <Link href={backUrl || '/lines'} className="hover:text-[var(--color-primary)] transition-colors">Lines</Link>
-                <ChevronRight size={12} className="opacity-60" />
-                <span className="text-[var(--color-primary)] font-bold">Line {safeId}</span>
-                <ChevronRight size={12} className="opacity-60" />
-                <span className="text-[var(--color-text-main)] font-bold">Telemetry</span>
+                <ChevronRight size={10} className="opacity-50 shrink-0" />
+                <span className="text-[var(--color-primary)] font-semibold">Line {safeId}</span>
+                <ChevronRight size={10} className="opacity-50 shrink-0" />
+                <span className="text-[var(--color-text-main)] font-semibold">Telemetry</span>
               </nav>
             </div>
 
-            {/* Density Switcher on Mobile */}
-            <div className="md:hidden flex items-center shrink-0">
+            {/* Density Switcher (List and Cards View) */}
+            <div className="flex items-center shrink-0">
               <DensitySwitcher value={density} onChange={setDensity} />
             </div>
           </div>
 
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div className="flex flex-col items-center text-center md:items-start md:text-left">
-              <div className="flex items-center gap-3 md:gap-4">
-                <Link 
-                  href={backUrl || '/lines'} 
-                  className="hidden md:flex p-2.5 rounded-xl bg-[var(--color-surface)] hover:bg-[var(--color-surface-hover)] border-0 text-[var(--color-text-main)] transition-all hover:scale-105 active:scale-95"
-                  aria-label="Back to lines"
-                >
-                  <ArrowLeft className="w-4 h-4" />
-                </Link>
-                <h1 className="text-[24px] sm:text-[30px] md:text-[38px] font-black tracking-normal leading-tight uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] via-[var(--color-text-secondary)] to-[var(--color-text-muted)]">
-                  Line {safeId} Telemetry
-                </h1>
-              </div>
-              <p className="text-xs sm:text-sm md:text-base text-[var(--color-text-muted)] font-normal tracking-normal mt-1 md:mt-2 max-w-2xl">
-                Granular hourly output metrics, operator efficiency logs, and line-specific performance telemetry.
-              </p>
-            </div>
-
-            {/* Density Switcher on Desktop */}
-            <div className="hidden md:flex items-center gap-2 self-start md:self-auto shrink-0">
-              <DensitySwitcher value={density} onChange={setDensity} />
-            </div>
-          </div>
+          {/* Line Telemetry Title & Subtitle */}
+          <h1 className="text-[24px] sm:text-[30px] md:text-[38px] font-black tracking-normal leading-tight uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] via-[var(--color-text-secondary)] to-[var(--color-text-muted)]">
+            Line {safeId} Telemetry
+          </h1>
+          <p className="text-xs sm:text-sm md:text-base text-[var(--color-text-muted)] font-normal tracking-normal mt-1 md:mt-2 max-w-2xl">
+            Granular hourly output metrics, operator efficiency logs, and line-specific performance telemetry.
+          </p>
         </header>
       )}
 
@@ -225,20 +208,20 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false }) {
         </div>
         
         {/* Outer container: transparent on mobile, card on desktop */}
-        <div className={`relative bg-transparent md:bg-[var(--color-bg-card)] md:${summaryPadding} md:rounded-3xl md:border md:border-[var(--color-border)] md:shadow-sm overflow-hidden`}>
+        <div className={`relative bg-transparent md:bg-[var(--color-bg-card)]/75 md:backdrop-blur-md md:${summaryPadding} md:rounded-3xl md:border md:border-[var(--color-border)] md:shadow-sm overflow-hidden`}>
           <div className={`grid grid-cols-2 md:grid-cols-6 ${summaryGap} relative z-10`}>
             
             {/* 1. Date Range (Desktop Only - Mobile is centered above) */}
-            <div className={`hidden md:block col-span-1 bg-[var(--color-surface)] ${summaryCellPadding} rounded-2xl border border-[var(--color-border)] shadow-inner transition-transform hover:-translate-y-0.5 duration-200`}>
+            <div className={`hidden md:block col-span-1 bg-[var(--color-surface)]/80 backdrop-blur-sm ${summaryCellPadding} rounded-2xl border border-[var(--color-border)] shadow-inner transition-transform hover:-translate-y-0.5 duration-200`}>
               <p className="text-[10px] text-[var(--color-text-muted)] font-medium uppercase tracking-widest mb-1">Date Range</p>
               <p className="text-base font-bold text-[var(--color-text-main)] leading-tight">{dateRange}</p>
             </div>
 
             {/* 2. Net Profit / Net Loss (Bento Hero Tile on Mobile: spans 2 columns, order-first on mobile, order-last on desktop) */}
-            <div className={`col-span-2 md:col-span-1 order-first md:order-last bg-[var(--color-bg-card)] md:bg-[var(--color-surface)] ${summaryCellPadding} rounded-xl md:rounded-2xl border shadow-sm md:shadow-inner transition-transform hover:-translate-y-0.5 duration-200 flex items-center justify-between md:block ${
+            <div className={`col-span-2 md:col-span-1 order-first md:order-last bg-[var(--color-bg-card)]/80 backdrop-blur-md md:bg-[var(--color-surface)]/80 ${summaryCellPadding} rounded-xl md:rounded-2xl border shadow-sm md:shadow-inner transition-transform hover:-translate-y-0.5 duration-200 flex items-center justify-between md:block ${
               parseFloat(totalNetProfitLoss) >= 0 
-                ? 'border-emerald-500/30 md:border-emerald-500/20 bg-gradient-to-r md:bg-gradient-to-b from-emerald-500/10 via-[var(--color-bg-card)] to-transparent' 
-                : 'border-rose-500/30 md:border-rose-500/20 bg-gradient-to-r md:bg-gradient-to-b from-rose-500/10 via-[var(--color-bg-card)] to-transparent'
+                ? 'border-emerald-500/30 md:border-emerald-500/20 bg-gradient-to-r md:bg-gradient-to-b from-emerald-500/10 via-[var(--color-bg-card)]/80 to-transparent' 
+                : 'border-rose-500/30 md:border-rose-500/20 bg-gradient-to-r md:bg-gradient-to-b from-rose-500/10 via-[var(--color-bg-card)]/80 to-transparent'
             }`}>
               <div>
                 <div className="flex items-center gap-1.5 mb-0.5 md:mb-1">
@@ -263,25 +246,25 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false }) {
             </div>
 
             {/* 3. Item (1 Column on Mobile, 1 Column on Desktop) */}
-            <div className={`col-span-1 bg-[var(--color-bg-card)] md:bg-[var(--color-surface)] ${summaryCellPadding} rounded-xl md:rounded-2xl border border-[var(--color-border)] shadow-sm md:shadow-inner transition-transform hover:-translate-y-0.5 duration-200`}>
+            <div className={`col-span-1 bg-[var(--color-bg-card)]/80 backdrop-blur-md md:bg-[var(--color-surface)]/80 ${summaryCellPadding} rounded-xl md:rounded-2xl border border-[var(--color-border)] shadow-sm md:shadow-inner transition-transform hover:-translate-y-0.5 duration-200`}>
               <p className="text-[9px] md:text-[10px] text-[var(--color-text-muted)] font-medium uppercase tracking-widest mb-0.5 md:mb-1">Item</p>
               <p className="text-xs md:text-base font-semibold md:font-bold text-[var(--color-primary)] leading-tight truncate">{itemName}</p>
             </div>
 
             {/* 4. Production */}
-            <div className={`col-span-1 bg-[var(--color-bg-card)] md:bg-[var(--color-surface)] ${summaryCellPadding} rounded-xl md:rounded-2xl border border-[var(--color-border)] shadow-sm md:shadow-inner transition-transform hover:-translate-y-0.5 duration-200`}>
+            <div className={`col-span-1 bg-[var(--color-bg-card)]/80 backdrop-blur-md md:bg-[var(--color-surface)]/80 ${summaryCellPadding} rounded-xl md:rounded-2xl border border-[var(--color-border)] shadow-sm md:shadow-inner transition-transform hover:-translate-y-0.5 duration-200`}>
               <p className="text-[9px] md:text-[10px] text-[var(--color-text-muted)] font-medium uppercase tracking-widest mb-0.5 md:mb-1">Production</p>
               <p className={`${summaryValSize} font-semibold md:font-bold text-[var(--color-text-main)] leading-tight`}>{Math.round(parseFloat(totalProduction)).toLocaleString()}</p>
             </div>
 
             {/* 5. Total Cost */}
-            <div className={`col-span-1 bg-[var(--color-bg-card)] md:bg-[var(--color-surface)] ${summaryCellPadding} rounded-xl md:rounded-2xl border border-[var(--color-border)] shadow-sm md:shadow-inner transition-transform hover:-translate-y-0.5 duration-200`}>
+            <div className={`col-span-1 bg-[var(--color-bg-card)]/80 backdrop-blur-md md:bg-[var(--color-surface)]/80 ${summaryCellPadding} rounded-xl md:rounded-2xl border border-[var(--color-border)] shadow-sm md:shadow-inner transition-transform hover:-translate-y-0.5 duration-200`}>
               <p className="text-[9px] md:text-[10px] text-[var(--color-text-muted)] font-medium uppercase tracking-widest mb-0.5 md:mb-1">Total Cost</p>
               <p className={`${summaryValSize} font-semibold md:font-bold text-[var(--color-text-main)] leading-tight`}>{Math.round(parseFloat(totalCost)).toLocaleString()}</p>
             </div>
 
             {/* 6. Total Income */}
-            <div className={`col-span-1 bg-[var(--color-bg-card)] md:bg-[var(--color-surface)] ${summaryCellPadding} rounded-xl md:rounded-2xl border border-[var(--color-border)] shadow-sm md:shadow-inner transition-transform hover:-translate-y-0.5 duration-200`}>
+            <div className={`col-span-1 bg-[var(--color-bg-card)]/80 backdrop-blur-md md:bg-[var(--color-surface)]/80 ${summaryCellPadding} rounded-xl md:rounded-2xl border border-[var(--color-border)] shadow-sm md:shadow-inner transition-transform hover:-translate-y-0.5 duration-200`}>
               <p className="text-[9px] md:text-[10px] text-[var(--color-text-muted)] font-medium uppercase tracking-widest mb-0.5 md:mb-1">Total Income</p>
               <p className={`${summaryValSize} font-semibold md:font-bold text-[var(--color-primary)] leading-tight`}>{Math.round(parseFloat(totalIncome)).toLocaleString()}</p>
             </div>
@@ -324,7 +307,7 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false }) {
           return (
             <div 
               key={rowIndex} 
-              className="bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-xl p-2.5 shadow-sm transition-all duration-200"
+              className="bg-[var(--color-bg-card)]/80 backdrop-blur-md border border-[var(--color-border)] rounded-xl p-2.5 shadow-sm transition-all duration-200"
             >
               {/* Card Header: Date, Item/Style & Net Profit Badge */}
               <div 
@@ -418,7 +401,7 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false }) {
         })}
 
         {/* Mobile Total Card (Distinct Aggregate Summary Footer) */}
-        <div className="mt-4 mb-1 relative overflow-hidden rounded-2xl p-3.5 bg-[var(--color-bg-card)] border-2 border-[var(--color-primary)]/40 shadow-lg select-none">
+        <div className="mt-4 mb-1 relative overflow-hidden rounded-2xl p-3.5 bg-[var(--color-bg-card)]/80 backdrop-blur-md border-2 border-[var(--color-primary)]/40 shadow-lg select-none">
           {/* Subtle Ambient Glow */}
           <div className="absolute -top-10 -right-10 w-28 h-28 bg-[var(--color-primary)]/10 rounded-full blur-xl pointer-events-none" />
 
@@ -439,7 +422,7 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false }) {
 
           {/* 3 Metric Stat Tiles */}
           <div className="grid grid-cols-3 gap-2 relative z-10">
-            <div className="bg-[var(--color-bg-card)] rounded-xl p-2 border border-[var(--color-border)]/80 shadow-xs text-center">
+            <div className="bg-[var(--color-bg-card)]/80 backdrop-blur-sm rounded-xl p-2 border border-[var(--color-border)]/80 shadow-xs text-center">
               <p className="text-[8px] uppercase tracking-wider text-[var(--color-text-muted)] font-bold mb-0.5">Total Output</p>
               <p className="text-[12px] font-black font-mono text-[var(--color-text-main)] leading-tight">
                 {Math.round(totalProduction).toLocaleString()}
@@ -447,14 +430,14 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false }) {
               </p>
             </div>
 
-            <div className="bg-[var(--color-bg-card)] rounded-xl p-2 border border-[var(--color-border)]/80 shadow-xs text-center">
+            <div className="bg-[var(--color-bg-card)]/80 backdrop-blur-sm rounded-xl p-2 border border-[var(--color-border)]/80 shadow-xs text-center">
               <p className="text-[8px] uppercase tracking-wider text-[var(--color-text-muted)] font-bold mb-0.5">Total Cost</p>
               <p className="text-[12px] font-black font-mono text-[var(--color-text-main)] leading-tight">
                 {Math.round(totalCost).toLocaleString()}
               </p>
             </div>
 
-            <div className="bg-[var(--color-bg-card)] rounded-xl p-2 border border-[var(--color-border)]/80 shadow-xs text-center">
+            <div className="bg-[var(--color-bg-card)]/80 backdrop-blur-sm rounded-xl p-2 border border-[var(--color-border)]/80 shadow-xs text-center">
               <p className="text-[8px] uppercase tracking-wider text-[var(--color-primary)] font-bold mb-0.5">Total Income</p>
               <p className="text-[12px] font-black font-mono text-[var(--color-primary)] leading-tight">
                 {Math.round(totalIncome).toLocaleString()}
@@ -485,10 +468,10 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false }) {
       {/* ========================================================================= */}
       {/* DESKTOP VIEW: Standard 12-Column Table (>= 768px)                         */}
       {/* ========================================================================= */}
-      <div className="hidden md:block w-full max-h-[75vh] overflow-auto bg-[var(--color-bg-card)] rounded-3xl shadow-sm border border-[var(--color-border)] hide-scrollbar relative">
+      <div className="hidden md:block w-full max-h-[75vh] overflow-auto bg-[var(--color-bg-card)]/80 backdrop-blur-md rounded-3xl shadow-sm border border-[var(--color-border)] hide-scrollbar relative">
         <table className="w-full text-left border-collapse table-auto relative">
           <thead className="sticky top-0 z-20">
-            <tr className="bg-[var(--color-bg-card)] shadow-sm border-b border-[var(--color-border)]">
+            <tr className="bg-[var(--color-bg-card)]/90 backdrop-blur-md shadow-sm border-b border-[var(--color-border)]">
               {['Date', 'Line', 'Style', 'Item', 'Workers', 'Per Head Cost', 'Total Cost', 'Prod Qty', 'Prod DZN', 'CM/DZN', 'Total Income', 'Net Profit'].map((headerText, colIndex) => {
                 const isNumericCol = colIndex > 3;
                 const isTightCol = colIndex <= 3;

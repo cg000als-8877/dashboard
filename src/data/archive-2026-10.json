@@ -1,0 +1,786 @@
+{
+  "lines": [
+    {
+      "id": "A",
+      "name": "LINE A",
+      "active": true
+    },
+    {
+      "id": "B",
+      "name": "LINE B",
+      "active": true
+    },
+    {
+      "id": "C",
+      "name": "LINE C",
+      "active": true
+    },
+    {
+      "id": "D",
+      "name": "LINE D",
+      "active": true
+    }
+  ],
+  "dailyProduction": [
+    {
+      "date": "2026-10-01",
+      "line_id": "A",
+      "style": 559707,
+      "item": "BOYS SHIRT",
+      "worker_count": 57,
+      "per_head_cost": 1730,
+      "total_cost": 98610,
+      "production_qty": 1000,
+      "production_dzn": 83.33333333,
+      "cm_per_dzn": 633,
+      "total_income": 52750,
+      "net_profit": -45860,
+      "status": "ACTIVE"
+    },
+    {
+      "date": "2026-10-02",
+      "line_id": "A",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-03",
+      "line_id": "A",
+      "style": 559707,
+      "item": "BOYS SHIRT",
+      "worker_count": 57,
+      "per_head_cost": 1000,
+      "total_cost": 57000,
+      "production_qty": 380,
+      "production_dzn": 31.66666667,
+      "cm_per_dzn": 633,
+      "total_income": 20045,
+      "net_profit": -36955,
+      "status": "ACTIVE"
+    },
+    {
+      "date": "2026-10-04",
+      "line_id": "A",
+      "style": 559707,
+      "item": "BOYS SHIRT",
+      "worker_count": 59,
+      "per_head_cost": 1730,
+      "total_cost": 102070,
+      "production_qty": 570,
+      "production_dzn": 47.5,
+      "cm_per_dzn": 633,
+      "total_income": 30067.5,
+      "net_profit": -72002.5,
+      "status": "ACTIVE"
+    },
+    {
+      "date": "2026-10-05",
+      "line_id": "A",
+      "style": 559707,
+      "item": "BOYS SHIRT",
+      "worker_count": 59,
+      "per_head_cost": 1730,
+      "total_cost": 102070,
+      "production_qty": 840,
+      "production_dzn": 70,
+      "cm_per_dzn": 633,
+      "total_income": 44310,
+      "net_profit": -57760,
+      "status": "ACTIVE"
+    },
+    {
+      "date": "2026-10-06",
+      "line_id": "A",
+      "style": 559707,
+      "item": "BOYS SHIRT",
+      "worker_count": 59,
+      "per_head_cost": 1730,
+      "total_cost": 102070,
+      "production_qty": 1000,
+      "production_dzn": 83.33333333,
+      "cm_per_dzn": 633,
+      "total_income": 52750,
+      "net_profit": -49320,
+      "status": "ACTIVE"
+    },
+    {
+      "date": "2026-10-07",
+      "line_id": "A",
+      "style": 559707,
+      "item": "BOYS SHIRT",
+      "worker_count": 59,
+      "per_head_cost": 1730,
+      "total_cost": 102070,
+      "production_qty": 1000,
+      "production_dzn": 83.33333333,
+      "cm_per_dzn": 633,
+      "total_income": 52750,
+      "net_profit": -49320,
+      "status": "ACTIVE"
+    },
+    {
+      "date": "2026-10-08",
+      "line_id": "A",
+      "style": 559707,
+      "item": "BOYS SHIRT",
+      "worker_count": 59,
+      "per_head_cost": 1730,
+      "total_cost": 102070,
+      "production_qty": 1200,
+      "production_dzn": 100,
+      "cm_per_dzn": 633,
+      "total_income": 63300,
+      "net_profit": -38770,
+      "status": "ACTIVE"
+    },
+    {
+      "date": "2026-10-09",
+      "line_id": "A",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-10",
+      "line_id": "A",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-11",
+      "line_id": "A",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-12",
+      "line_id": "A",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-13",
+      "line_id": "A",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-14",
+      "line_id": "A",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-15",
+      "line_id": "A",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-16",
+      "line_id": "A",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-17",
+      "line_id": "A",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-18",
+      "line_id": "A",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-19",
+      "line_id": "A",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-20",
+      "line_id": "A",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-21",
+      "line_id": "A",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-22",
+      "line_id": "A",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-23",
+      "line_id": "A",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-24",
+      "line_id": "A",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-25",
+      "line_id": "A",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-26",
+      "line_id": "A",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-27",
+      "line_id": "A",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-28",
+      "line_id": "A",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-29",
+      "line_id": "A",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-30",
+      "line_id": "A",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-31",
+      "line_id": "A",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-01",
+      "line_id": "B",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-02",
+      "line_id": "B",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-03",
+      "line_id": "B",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-04",
+      "line_id": "B",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-05",
+      "line_id": "B",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-06",
+      "line_id": "B",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-07",
+      "line_id": "B",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-08",
+      "line_id": "B",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-09",
+      "line_id": "B",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-10",
+      "line_id": "B",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-11",
+      "line_id": "B",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-12",
+      "line_id": "B",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-13",
+      "line_id": "B",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-14",
+      "line_id": "B",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-15",
+      "line_id": "B",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-16",
+      "line_id": "B",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-17",
+      "line_id": "B",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-18",
+      "line_id": "B",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-19",
+      "line_id": "B",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-20",
+      "line_id": "B",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-21",
+      "line_id": "B",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-22",
+      "line_id": "B",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-23",
+      "line_id": "B",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-24",
+      "line_id": "B",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-25",
+      "line_id": "B",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-26",
+      "line_id": "B",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-27",
+      "line_id": "B",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-28",
+      "line_id": "B",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-29",
+      "line_id": "B",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-30",
+      "line_id": "B",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-31",
+      "line_id": "B",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-01",
+      "line_id": "C",
+      "style": "",
+      "item": "BOXER",
+      "worker_count": 31,
+      "per_head_cost": 1730,
+      "total_cost": 53630,
+      "production_qty": 2650,
+      "production_dzn": 220.8333333,
+      "cm_per_dzn": 150,
+      "total_income": 33125,
+      "net_profit": -20505,
+      "status": "ACTIVE"
+    },
+    {
+      "date": "2026-10-02",
+      "line_id": "C",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-03",
+      "line_id": "C",
+      "style": "",
+      "item": "BOXER",
+      "worker_count": 31,
+      "per_head_cost": 1000,
+      "total_cost": 31000,
+      "production_qty": 1400,
+      "production_dzn": 116.6666667,
+      "cm_per_dzn": 150,
+      "total_income": 17500,
+      "net_profit": -13500,
+      "status": "ACTIVE"
+    },
+    {
+      "date": "2026-10-04",
+      "line_id": "C",
+      "style": "",
+      "item": "BOXER",
+      "worker_count": 31,
+      "per_head_cost": 1730,
+      "total_cost": 53630,
+      "production_qty": 2550,
+      "production_dzn": 212.5,
+      "cm_per_dzn": 150,
+      "total_income": 31875,
+      "net_profit": -21755,
+      "status": "ACTIVE"
+    },
+    {
+      "date": "2026-10-05",
+      "line_id": "C",
+      "style": "",
+      "item": "BOXER",
+      "worker_count": 31,
+      "per_head_cost": 1730,
+      "total_cost": 53630,
+      "production_qty": 2600,
+      "production_dzn": 216.6666667,
+      "cm_per_dzn": 150,
+      "total_income": 32500,
+      "net_profit": -21130,
+      "status": "ACTIVE"
+    },
+    {
+      "date": "2026-10-06",
+      "line_id": "C",
+      "style": "",
+      "item": "BOXER",
+      "worker_count": 31,
+      "per_head_cost": 1730,
+      "total_cost": 53630,
+      "production_qty": 2700,
+      "production_dzn": 225,
+      "cm_per_dzn": 150,
+      "total_income": 33750,
+      "net_profit": -19880,
+      "status": "ACTIVE"
+    },
+    {
+      "date": "2026-10-07",
+      "line_id": "C",
+      "style": "",
+      "item": "BOXER",
+      "worker_count": 31,
+      "per_head_cost": 1730,
+      "total_cost": 53630,
+      "production_qty": 3000,
+      "production_dzn": 250,
+      "cm_per_dzn": 150,
+      "total_income": 37500,
+      "net_profit": -16130,
+      "status": "ACTIVE"
+    },
+    {
+      "date": "2026-10-08",
+      "line_id": "C",
+      "style": "",
+      "item": "BOXER",
+      "worker_count": 31,
+      "per_head_cost": 1730,
+      "total_cost": 53630,
+      "production_qty": 3000,
+      "production_dzn": 250,
+      "cm_per_dzn": 150,
+      "total_income": 37500,
+      "net_profit": -16130,
+      "status": "ACTIVE"
+    },
+    {
+      "date": "2026-10-09",
+      "line_id": "C",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-10",
+      "line_id": "C",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-11",
+      "line_id": "C",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-12",
+      "line_id": "C",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-13",
+      "line_id": "C",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-14",
+      "line_id": "C",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-15",
+      "line_id": "C",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-16",
+      "line_id": "C",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-17",
+      "line_id": "C",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-18",
+      "line_id": "C",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-19",
+      "line_id": "C",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-20",
+      "line_id": "C",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-21",
+      "line_id": "C",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-22",
+      "line_id": "C",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-23",
+      "line_id": "C",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-24",
+      "line_id": "C",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-25",
+      "line_id": "C",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-26",
+      "line_id": "C",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-27",
+      "line_id": "C",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-28",
+      "line_id": "C",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-29",
+      "line_id": "C",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-30",
+      "line_id": "C",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-31",
+      "line_id": "C",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-01",
+      "line_id": "D",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-02",
+      "line_id": "D",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-03",
+      "line_id": "D",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-04",
+      "line_id": "D",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-05",
+      "line_id": "D",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-06",
+      "line_id": "D",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-07",
+      "line_id": "D",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-08",
+      "line_id": "D",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-09",
+      "line_id": "D",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-10",
+      "line_id": "D",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-11",
+      "line_id": "D",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-12",
+      "line_id": "D",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-13",
+      "line_id": "D",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-14",
+      "line_id": "D",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-15",
+      "line_id": "D",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-16",
+      "line_id": "D",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-17",
+      "line_id": "D",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-18",
+      "line_id": "D",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-19",
+      "line_id": "D",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-20",
+      "line_id": "D",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-21",
+      "line_id": "D",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-22",
+      "line_id": "D",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-23",
+      "line_id": "D",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-24",
+      "line_id": "D",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-25",
+      "line_id": "D",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-26",
+      "line_id": "D",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-27",
+      "line_id": "D",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-28",
+      "line_id": "D",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-29",
+      "line_id": "D",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-30",
+      "line_id": "D",
+      "status": "HOLIDAY"
+    },
+    {
+      "date": "2026-10-31",
+      "line_id": "D",
+      "status": "HOLIDAY"
+    }
+  ]
+}

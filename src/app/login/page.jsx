@@ -10,7 +10,7 @@ function IndustrialBackground() {
     <div className="absolute inset-0 overflow-hidden pointer-events-none select-none">
       {/* Deep baseline gradients */}
       <div 
-        className="absolute inset-0 bg-[#060911]"
+        className="absolute inset-0 bg-[#060911]/80"
         style={{
           backgroundImage: `
             radial-gradient(circle at 50% 20%, rgba(30, 41, 69, 0.45) 0%, transparent 55%),
