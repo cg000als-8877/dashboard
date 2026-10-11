@@ -3,8 +3,8 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
 export const VISUAL_THEMES = [
-  { id: 'nordic-slate', name: 'Nordic Slate', color: '#60A5FA' },
   { id: 'ember-tide', name: 'Ember Tide', color: '#F97316' },
+  { id: 'nordic-slate', name: 'Nordic Slate', color: '#60A5FA' },
   { id: 'abstract', name: 'Abstract', color: '#ECEEF2' },
   { id: 'arcade-overdrive', name: 'Arcade Overdrive (Gaming)', color: '#00F0FF' },
   { id: 'verdant', name: 'Verdant', color: '#80B918' },
@@ -16,8 +16,8 @@ export const VISUAL_THEMES = [
 ];
 
 export const APPEARANCE_MODES = [
-  { id: 'light', name: 'Light' },
-  { id: 'dark', name: 'Dark' }
+  { id: 'light', name: 'Light (Day)' },
+  { id: 'dark', name: 'Dark (Night)' }
 ];
 
 export const BG_EFFECTS = [
@@ -30,9 +30,9 @@ export const BG_EFFECTS = [
   { id: 'solid', name: 'Minimal Solid', tag: 'Clean', desc: 'Classic clean solid background' },
 ];
 
-// Nordic Slate is the full-time default theme
+// Ember Tide is the full-time default theme
 export function getScheduledDefaultTheme() {
-  return 'nordic-slate';
+  return 'ember-tide';
 }
 
 export function getDefaultBgEffect() {
@@ -42,8 +42,8 @@ export function getDefaultBgEffect() {
 const ThemeContext = createContext();
 
 export function ThemeProvider({ children }) {
-  const [visualTheme, setVisualThemeState] = useState('nordic-slate');
-  const [mode, setModeState] = useState('dark');
+  const [visualTheme, setVisualThemeState] = useState('ember-tide');
+  const [mode, setModeState] = useState('light');
   const [bgEffect, setBgEffectState] = useState('bokeh');
   const [mounted, setMounted] = useState(false);
 
@@ -58,17 +58,17 @@ export function ThemeProvider({ children }) {
       setBgEffectState('bokeh');
     }
 
-    // Force Nordic Slate and Dark (Night) mode as permanent default
-    const isNordicDefaultApplied = localStorage.getItem('app-nordic-default-permanent-v1');
+    // Force Ember Tide and Light (Day) mode as default unless explicitly changed
+    const isEmberDefaultApplied = localStorage.getItem('app-ember-default-v2');
 
-    if (!isNordicDefaultApplied) {
-      localStorage.setItem('app-nordic-default-permanent-v1', 'true');
-      localStorage.setItem('app-visual-theme', 'nordic-slate');
-      localStorage.setItem('app-mode', 'dark');
-      localStorage.setItem('theme', 'dark');
+    if (!isEmberDefaultApplied) {
+      localStorage.setItem('app-ember-default-v2', 'true');
+      localStorage.setItem('app-visual-theme', 'ember-tide');
+      localStorage.setItem('app-mode', 'light');
+      localStorage.setItem('theme', 'light');
       localStorage.setItem('app-bg-effect', 'bokeh');
-      setVisualThemeState('nordic-slate');
-      setModeState('dark');
+      setVisualThemeState('ember-tide');
+      setModeState('light');
       setBgEffectState('bokeh');
       return;
     }
@@ -81,13 +81,13 @@ export function ThemeProvider({ children }) {
     if (storedVisualTheme && VISUAL_THEMES.some(t => t.id === storedVisualTheme)) {
       setVisualThemeState(storedVisualTheme);
     } else {
-      setVisualThemeState('nordic-slate');
+      setVisualThemeState('ember-tide');
     }
 
     if (storedMode) {
       setModeState(storedMode);
     } else {
-      setModeState('dark');
+      setModeState('light');
     }
 
     if (storedBgEffect && (BG_EFFECTS.some(b => b.id === storedBgEffect) || storedBgEffect === 'ember-tide-aurora')) {

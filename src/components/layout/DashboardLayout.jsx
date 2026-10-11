@@ -383,7 +383,7 @@ export default function DashboardLayout({ children }) {
         <main 
           className={cn(
             "flex-1 overflow-y-auto w-full px-3.5 sm:px-5 md:px-8 pb-[calc(99px+env(safe-area-inset-bottom))] md:pb-8 pt-[72px] md:pt-8 relative hide-scrollbar md:[scrollbar-width:auto]",
-            !isDashboard && "non-dashboard-stroke-free"
+            isDashboard ? "dashboard-stroke-free" : "non-dashboard-stroke-free"
           )}
         >
           <div className="w-full max-w-[1800px] mx-auto">

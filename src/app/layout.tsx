@@ -45,16 +45,21 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" data-theme="nordic-slate" data-mode="dark" data-bg-effect="bokeh" suppressHydrationWarning>
+    <html lang="en" data-theme="ember-tide" data-mode="light" className="light-mode" data-bg-effect="bokeh" suppressHydrationWarning>
       <head>
         <script
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
                 try {
+                  var emberMigrated = localStorage.getItem('app-ember-default-v2');
                   var m = localStorage.getItem('app-mode');
                   var t = localStorage.getItem('app-visual-theme');
                   var b = localStorage.getItem('app-bg-effect');
+                  if (!emberMigrated) {
+                    m = 'light';
+                    t = 'ember-tide';
+                  }
                   if (m) {
                     document.documentElement.setAttribute('data-mode', m);
                     if (m === 'light') {
@@ -62,9 +67,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     } else {
                       document.documentElement.classList.remove('light-mode');
                     }
+                  } else {
+                    document.documentElement.setAttribute('data-mode', 'light');
+                    document.documentElement.classList.add('light-mode');
                   }
                   if (t) {
                     document.documentElement.setAttribute('data-theme', t);
+                  } else {
+                    document.documentElement.setAttribute('data-theme', 'ember-tide');
                   }
                   if (b && b !== 'ember-tide-aurora') {
                     document.documentElement.setAttribute('data-bg-effect', b);

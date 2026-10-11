@@ -16,7 +16,7 @@ export function DailyPerformanceChart({ data }) {
   const color = isLoss ? "var(--color-danger)" : "var(--color-primary)";
 
   return (
-    <Card className="h-[340px] flex flex-col relative z-20 p-5 border border-[var(--color-border)] bg-[var(--color-bg-card)] rounded-2xl shadow-sm">
+    <Card className="h-[340px] flex flex-col relative z-20 p-5 bg-[var(--color-bg-card)] rounded-2xl shadow-sm">
       <div className="flex justify-between items-center mb-6">
         <h3 className="text-[11px] font-bold text-[var(--color-text-secondary)] uppercase tracking-[0.2em]">
           {isLoss ? "Daily Net Loss" : "Daily Net Profit"}
@@ -52,7 +52,7 @@ export function DailyPerformanceChart({ data }) {
             />
             <Tooltip 
               cursor={{ stroke: 'var(--color-border)', strokeWidth: 1, strokeDasharray: '4 4' }}
-              contentStyle={{ backgroundColor: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: '8px', boxShadow: '0 4px 15px rgba(0,0,0,0.05)' }}
+              contentStyle={{ backgroundColor: 'var(--color-surface)', border: 'none', borderRadius: '8px', boxShadow: '0 4px 15px rgba(0,0,0,0.05)' }}
               itemStyle={{ color: 'var(--color-text-main)', fontSize: '12px', fontWeight: 'bold' }}
               labelStyle={{ color: 'var(--color-text-muted)', marginBottom: '6px', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 'bold' }}
               formatter={(value) => [`BDT ${value.toLocaleString()}`, isLoss ? "Net Loss" : "Net Profit"]}
@@ -82,7 +82,7 @@ export function IncomeVsCostChart({ data }) {
   }));
 
   return (
-    <Card className="h-[340px] flex flex-col relative z-20 p-5 border border-[var(--color-border)] bg-[var(--color-bg-card)] rounded-2xl shadow-sm">
+    <Card className="h-[340px] flex flex-col relative z-20 p-5 bg-[var(--color-bg-card)] rounded-2xl shadow-sm">
       <div className="flex justify-between items-center mb-6">
         <h3 className="text-[11px] font-bold text-[var(--color-text-secondary)] uppercase tracking-[0.2em]">
           Income vs Cost
@@ -122,7 +122,7 @@ export function IncomeVsCostChart({ data }) {
             />
             <Tooltip 
               cursor={{ stroke: 'var(--color-border)', strokeWidth: 1, strokeDasharray: '4 4' }}
-              contentStyle={{ backgroundColor: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: '8px', boxShadow: '0 4px 15px rgba(0,0,0,0.05)' }}
+              contentStyle={{ backgroundColor: 'var(--color-surface)', border: 'none', borderRadius: '8px', boxShadow: '0 4px 15px rgba(0,0,0,0.05)' }}
               itemStyle={{ fontSize: '12px', fontWeight: 'bold' }}
               labelStyle={{ color: 'var(--color-text-muted)', marginBottom: '6px', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 'bold' }}
               formatter={(value) => `BDT ${value.toLocaleString()}`}
@@ -150,7 +150,7 @@ export function MonthlyProfitBarChart({ data }) {
   }));
 
   return (
-    <Card className="h-[340px] flex flex-col p-5 border border-[var(--color-border)] bg-[var(--color-bg-card)] rounded-2xl shadow-sm">
+    <Card className="h-[340px] flex flex-col p-5 bg-[var(--color-bg-card)] rounded-2xl shadow-sm">
       <div className="flex justify-between items-center mb-6">
         <h3 className="text-[11px] font-bold text-[var(--color-text-secondary)] uppercase tracking-[0.2em]">Monthly Profit Trend</h3>
       </div>
@@ -178,7 +178,7 @@ export function MonthlyProfitBarChart({ data }) {
             />
             <Tooltip 
               cursor={{fill: 'var(--color-surface)', opacity: 0.5}}
-              contentStyle={{ backgroundColor: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: '8px', boxShadow: '0 4px 15px rgba(0,0,0,0.05)' }}
+              contentStyle={{ backgroundColor: 'var(--color-surface)', border: 'none', borderRadius: '8px', boxShadow: '0 4px 15px rgba(0,0,0,0.05)' }}
               itemStyle={{ color: 'var(--color-text-main)', fontSize: '12px', fontWeight: 'bold' }}
               labelStyle={{ color: 'var(--color-text-muted)', marginBottom: '6px', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 'bold' }}
               formatter={(value) => `BDT ${value.toLocaleString()}`}

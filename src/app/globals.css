@@ -2172,49 +2172,66 @@ body {
 }
 
 /* ─────────────────────────────────────────────────────────────
-   DASHBOARD MOBILE VIEW: STROKE-FREE DESIGN
+   DASHBOARD: COMPLETE STROKE-FREE DESIGN (PC & MOBILE VIEW)
    Removes all borders and strokes from cards, badges, stat cards,
-   tabs, dividers, and containers on the Dashboard page in mobile view.
-   Desktop view (>= 768px) and all other pages remain completely untouched.
+   tabs, dividers, and containers on the Dashboard page in both
+   PC (desktop) view and mobile view.
 ───────────────────────────────────────────────────────────── */
-@media (max-width: 767px) {
-  .dashboard-mobile-stroke-free div,
-  .dashboard-mobile-stroke-free section,
-  .dashboard-mobile-stroke-free article,
-  .dashboard-mobile-stroke-free span:not(.animate-emergency-strobe),
-  .dashboard-mobile-stroke-free button,
-  .dashboard-mobile-stroke-free a,
-  .dashboard-mobile-stroke-free ul,
-  .dashboard-mobile-stroke-free li,
-  .dashboard-mobile-stroke-free table,
-  .dashboard-mobile-stroke-free tr,
-  .dashboard-mobile-stroke-free td,
-  .dashboard-mobile-stroke-free th,
-  .dashboard-mobile-stroke-free p,
-  .dashboard-mobile-stroke-free header,
-  .dashboard-mobile-stroke-free footer {
-    border-color: transparent !important;
-    border-width: 0 !important;
-    border-style: none !important;
-    outline: none !important;
-  }
+.dashboard-stroke-free div:not([data-preserve-stroke]),
+.dashboard-stroke-free section:not([data-preserve-stroke]),
+.dashboard-stroke-free article:not([data-preserve-stroke]),
+.dashboard-stroke-free span:not(.animate-emergency-strobe):not([data-preserve-stroke]),
+.dashboard-stroke-free button:not([data-preserve-stroke]),
+.dashboard-stroke-free a:not([data-preserve-stroke]),
+.dashboard-stroke-free ul,
+.dashboard-stroke-free li,
+.dashboard-stroke-free table,
+.dashboard-stroke-free tr,
+.dashboard-stroke-free td,
+.dashboard-stroke-free th,
+.dashboard-stroke-free p:not([data-preserve-stroke]),
+.dashboard-stroke-free header:not([data-preserve-stroke]),
+.dashboard-stroke-free footer:not([data-preserve-stroke]),
+.dashboard-mobile-stroke-free div:not([data-preserve-stroke]),
+.dashboard-mobile-stroke-free section:not([data-preserve-stroke]),
+.dashboard-mobile-stroke-free article:not([data-preserve-stroke]),
+.dashboard-mobile-stroke-free span:not(.animate-emergency-strobe):not([data-preserve-stroke]),
+.dashboard-mobile-stroke-free button:not([data-preserve-stroke]),
+.dashboard-mobile-stroke-free a:not([data-preserve-stroke]),
+.dashboard-mobile-stroke-free ul,
+.dashboard-mobile-stroke-free li,
+.dashboard-mobile-stroke-free table,
+.dashboard-mobile-stroke-free tr,
+.dashboard-mobile-stroke-free td,
+.dashboard-mobile-stroke-free th,
+.dashboard-mobile-stroke-free p:not([data-preserve-stroke]),
+.dashboard-mobile-stroke-free header:not([data-preserve-stroke]),
+.dashboard-mobile-stroke-free footer:not([data-preserve-stroke]) {
+  border-color: transparent !important;
+  border-width: 0 !important;
+  border-style: none !important;
+  outline: none !important;
+}
 
-  .dashboard-mobile-stroke-free [class*="border"]:not(.animate-emergency-strobe) {
-    border-color: transparent !important;
-    border-width: 0 !important;
-    border-style: none !important;
-  }
+.dashboard-stroke-free [class*="border"]:not(.animate-emergency-strobe):not([data-preserve-stroke]),
+.dashboard-mobile-stroke-free [class*="border"]:not(.animate-emergency-strobe):not([data-preserve-stroke]) {
+  border-color: transparent !important;
+  border-width: 0 !important;
+  border-style: none !important;
+}
 
-  .dashboard-mobile-stroke-free [class*="divide-"] > * {
-    border-color: transparent !important;
-    border-width: 0 !important;
-    border-style: none !important;
-  }
+.dashboard-stroke-free [class*="divide-"] > *,
+.dashboard-mobile-stroke-free [class*="divide-"] > * {
+  border-color: transparent !important;
+  border-width: 0 !important;
+  border-style: none !important;
+}
 
-  .dashboard-mobile-stroke-free div[class*="h-px"],
-  .dashboard-mobile-stroke-free hr {
-    display: none !important;
-  }
+.dashboard-stroke-free div[class*="h-px"]:not([data-preserve-line]),
+.dashboard-stroke-free hr,
+.dashboard-mobile-stroke-free div[class*="h-px"]:not([data-preserve-line]),
+.dashboard-mobile-stroke-free hr {
+  display: none !important;
 }
 
 /* ─────────────────────────────────────────────────────────────
