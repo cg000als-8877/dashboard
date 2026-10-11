@@ -14,17 +14,16 @@ const CATEGORIES = [
 
 /**
  * Parses raw insight HTML string into a structured intelligence card object.
- * Enforces off-white (text-slate-200) and light greys (text-slate-400) with zero pure white fonts.
+ * Preserves high-contrast theme typography across both Light (Day) and Dark (Night) modes.
  */
 function parseInsightItem(rawHtml, index) {
   const match = rawHtml.match(/^<strong>([^:]+):<\/strong>\s*(.*)$/i);
   const rawTitle = match ? match[1].trim() : 'INTELLIGENCE INSIGHT';
   const rawBody = match ? match[2].trim() : rawHtml;
 
-  // Replace any pure white or text-main font occurrences with warm off-white (text-slate-200)
+  // Clean body HTML ensuring any raw pure-white classes adapt to theme text colors
   const cleanBodyHtml = rawBody
-    .replace(/text-\[var\(--color-text-main\)\]/g, 'text-slate-200 font-semibold')
-    .replace(/text-white/g, 'text-slate-200');
+    .replace(/text-white/g, 'text-[var(--color-text-main)]');
 
   let category = 'finance';
   let tag = 'FINANCE';
@@ -42,7 +41,7 @@ function parseInsightItem(rawHtml, index) {
     iconName = 'AlertOctagon';
     badgeType = 'danger';
     badgeLabel = 'CRITICAL';
-    metricColor = 'text-rose-400';
+    metricColor = 'text-rose-600 dark:text-rose-400';
     const m = rawBody.match(/BDT\s*([0-9,]+)/i);
     if (m) highlightMetric = `-BDT ${m[1]}`;
   } else if (upper.includes('SURPLUS')) {
@@ -51,7 +50,7 @@ function parseInsightItem(rawHtml, index) {
     iconName = 'TrendingUp';
     badgeType = 'success';
     badgeLabel = 'SURPLUS';
-    metricColor = 'text-emerald-400';
+    metricColor = 'text-emerald-600 dark:text-emerald-400';
     const m = rawBody.match(/\+BDT\s*([0-9,]+)/i);
     if (m) highlightMetric = `+BDT ${m[1]}`;
   } else if (upper.includes('CASH BURN')) {
@@ -60,7 +59,7 @@ function parseInsightItem(rawHtml, index) {
     iconName = 'Flame';
     badgeType = 'danger';
     badgeLabel = 'RUN RATE';
-    metricColor = 'text-rose-400';
+    metricColor = 'text-rose-600 dark:text-rose-400';
     const m = rawBody.match(/-BDT\s*([0-9,]+)\s*\/\s*day/i);
     if (m) highlightMetric = `-BDT ${m[1]} / day`;
   } else if (upper.includes('PROFIT RUN-RATE')) {
@@ -69,7 +68,7 @@ function parseInsightItem(rawHtml, index) {
     iconName = 'TrendingUp';
     badgeType = 'success';
     badgeLabel = 'YIELD RATE';
-    metricColor = 'text-emerald-400';
+    metricColor = 'text-emerald-600 dark:text-emerald-400';
     const m = rawBody.match(/\+BDT\s*([0-9,]+)\s*\/\s*day/i);
     if (m) highlightMetric = `+BDT ${m[1]} / day`;
   } else if (upper.includes('COST RECOVERY GAP') || upper.includes('RECOVERY')) {
@@ -78,7 +77,7 @@ function parseInsightItem(rawHtml, index) {
     iconName = 'Target';
     badgeType = 'warning';
     badgeLabel = 'BENCHMARK';
-    metricColor = 'text-amber-400';
+    metricColor = 'text-amber-600 dark:text-amber-400';
     const m = rawBody.match(/([0-9.]+)%/);
     if (m) highlightMetric = `${m[1]}% Overall`;
   } else if (upper.includes('VOLUME LEADERSHIP')) {
@@ -96,7 +95,7 @@ function parseInsightItem(rawHtml, index) {
     iconName = 'AlertTriangle';
     badgeType = 'danger';
     badgeLabel = 'HIGH DEFICIT';
-    metricColor = 'text-rose-400';
+    metricColor = 'text-rose-600 dark:text-rose-400';
     const lineMatch = rawBody.match(/LINE\s*([A-D])/i);
     const amtMatch = rawBody.match(/-BDT\s*([0-9,]+)/i);
     if (lineMatch && amtMatch) highlightMetric = `Line ${lineMatch[1]} (-BDT ${amtMatch[1]})`;
@@ -107,7 +106,7 @@ function parseInsightItem(rawHtml, index) {
     iconName = 'PieChart';
     badgeType = 'warning';
     badgeLabel = 'OVERHEAD';
-    metricColor = 'text-amber-400';
+    metricColor = 'text-amber-600 dark:text-amber-400';
     const m = rawBody.match(/BDT\s*([0-9,]+)/i);
     if (m) highlightMetric = `BDT ${m[1]}`;
   } else if (upper.includes('CM REVENUE SPREAD') || upper.includes('PRICING')) {
@@ -116,7 +115,7 @@ function parseInsightItem(rawHtml, index) {
     iconName = 'DollarSign';
     badgeType = 'success';
     badgeLabel = 'HIGH YIELD';
-    metricColor = 'text-emerald-400';
+    metricColor = 'text-emerald-600 dark:text-emerald-400';
     const m = rawBody.match(/BDT\s*([0-9,]+)\/Dzn/i);
     if (m) highlightMetric = `BDT ${m[1]} / Dzn`;
   } else if (upper.includes('LINE EFFICIENCY SPREAD')) {
@@ -125,7 +124,7 @@ function parseInsightItem(rawHtml, index) {
     iconName = 'Activity';
     badgeType = 'info';
     badgeLabel = 'FLOOR SPREAD';
-    metricColor = 'text-sky-400';
+    metricColor = 'text-sky-600 dark:text-sky-400';
     highlightMetric = 'Spread Variance';
   } else if (upper.includes('LATEST DAY PRODUCTION')) {
     category = 'production';
@@ -142,7 +141,7 @@ function parseInsightItem(rawHtml, index) {
     iconName = 'Zap';
     badgeType = 'success';
     badgeLabel = 'BREAKEVEN';
-    metricColor = 'text-emerald-400';
+    metricColor = 'text-emerald-600 dark:text-emerald-400';
     const m = rawBody.match(/\+([0-9,]+)\s*PCS\/day/i);
     if (m) highlightMetric = `+${m[1]} PCS / day`;
   } else if (upper.includes('ACTIVE LINE CAPACITY') || upper.includes('CAPACITY')) {
@@ -151,7 +150,7 @@ function parseInsightItem(rawHtml, index) {
     iconName = 'Cpu';
     badgeType = 'info';
     badgeLabel = 'CAPACITY';
-    metricColor = 'text-sky-400';
+    metricColor = 'text-sky-600 dark:text-sky-400';
     const m = rawBody.match(/([0-9]+)\s*of\s*([0-9]+)\s*lines/i);
     if (m) highlightMetric = `${m[1]} / ${m[2]} Lines Active`;
   } else if (upper.includes('STRATEGIC DIRECTIVE') || upper.includes('DIRECTIVE')) {
@@ -228,15 +227,15 @@ export function SystemIntelligenceCards({ insights = [] }) {
         {/* Header Bar */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5 sm:mb-6">
           <div>
-            <h3 className="text-sm sm:text-base font-extrabold uppercase tracking-[0.16em] text-slate-200">
+            <h3 className="text-sm sm:text-base font-extrabold uppercase tracking-[0.16em] text-[var(--color-text-main)]">
               System Intelligence
             </h3>
-            <p className="text-[11px] sm:text-xs text-slate-400 font-medium">
+            <p className="text-[11px] sm:text-xs text-[var(--color-text-muted)] font-medium">
               Autonomous diagnostic telemetry & tactical executive actions
             </p>
           </div>
 
-          <div className="self-start sm:self-auto px-2.5 py-1 rounded-full bg-[var(--color-surface)]/70 text-[10.5px] font-bold text-slate-300 border-none">
+          <div className="self-start sm:self-auto px-2.5 py-1 rounded-full bg-[var(--color-surface)] text-[10.5px] font-bold text-[var(--color-text-secondary)] border-none">
             <span>{parsedItems.length} Live Insights</span>
           </div>
         </div>
@@ -256,14 +255,14 @@ export function SystemIntelligenceCards({ insights = [] }) {
                   "flex items-center justify-between sm:justify-start gap-1.5 px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg sm:rounded-xl text-[10.5px] sm:text-[12.5px] font-bold transition-all duration-200 cursor-pointer border-none outline-none select-none flex-1 sm:flex-initial min-w-[calc(50%-6px)] sm:min-w-0",
                   isSelected
                     ? "bg-[var(--color-primary)] text-slate-900 shadow-md font-extrabold active:scale-95"
-                    : "bg-[var(--color-surface)]/60 text-slate-400 hover:text-slate-200 hover:bg-[var(--color-surface)]"
+                    : "bg-[var(--color-surface)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)]"
                 )}
                 aria-selected={isSelected}
               >
                 <div className="flex items-center gap-1 min-w-0">
                   <span className={cn(
                     "font-black text-[11px] sm:text-xs shrink-0",
-                    isSelected ? "text-slate-900/80" : "text-[var(--color-primary)] opacity-85"
+                    isSelected ? "text-slate-900/80" : "text-[var(--color-primary)]"
                   )}>
                     #
                   </span>
@@ -271,7 +270,7 @@ export function SystemIntelligenceCards({ insights = [] }) {
                 </div>
                 <span className={cn(
                   "text-[9px] sm:text-[10px] px-1.5 py-0.2 rounded font-mono shrink-0 ml-1.5",
-                  isSelected ? "bg-black/20 text-slate-900 font-bold" : "bg-black/25 text-slate-400"
+                  isSelected ? "bg-black/20 text-slate-900 font-bold" : "bg-black/10 dark:bg-black/25 text-[var(--color-text-secondary)] font-semibold"
                 )}>
                   {count}
                 </span>
@@ -285,22 +284,22 @@ export function SystemIntelligenceCards({ insights = [] }) {
           {filteredItems.map(item => {
             // Theme-adaptive badge styling
             const badgeClasses = {
-              danger: "bg-rose-500/15 text-rose-400",
-              success: "bg-emerald-500/15 text-emerald-400",
-              warning: "bg-amber-500/15 text-amber-400",
-              info: "bg-sky-500/15 text-sky-400",
+              danger: "bg-rose-500/15 text-rose-600 dark:text-rose-400",
+              success: "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400",
+              warning: "bg-amber-500/15 text-amber-700 dark:text-amber-400",
+              info: "bg-sky-500/15 text-sky-600 dark:text-sky-400",
               primary: "bg-[var(--color-primary-glow)] text-[var(--color-primary)]"
-            }[item.badgeType] || "bg-[var(--color-surface)] text-slate-400";
+            }[item.badgeType] || "bg-[var(--color-surface)] text-[var(--color-text-secondary)]";
 
             return (
               <div
                 key={item.id}
-                className="bg-[var(--color-surface)]/65 dark:bg-[var(--color-surface)]/40 hover:bg-[var(--color-surface)] rounded-2xl p-4 sm:p-4.5 flex flex-col justify-between transition-all duration-200 border-none outline-none shadow-none group"
+                className="bg-[var(--color-surface)]/80 dark:bg-[var(--color-surface)]/40 hover:bg-[var(--color-surface)] rounded-2xl p-4 sm:p-4.5 flex flex-col justify-between transition-all duration-200 border-none outline-none shadow-none group"
               >
                 {/* Top Metatag Row (No icon) */}
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-2.5">
-                    <span className="text-[10px] font-bold tracking-widest uppercase text-slate-400 truncate">
+                    <span className="text-[10px] font-bold tracking-widest uppercase text-[var(--color-text-muted)] truncate">
                       {item.tag}
                     </span>
 
@@ -311,7 +310,7 @@ export function SystemIntelligenceCards({ insights = [] }) {
 
                   {/* Title & Highlight Number */}
                   <div className="mb-2">
-                    <h4 className="text-[13px] sm:text-[14px] font-bold text-slate-200 tracking-tight leading-snug">
+                    <h4 className="text-[13px] sm:text-[14px] font-extrabold text-[var(--color-text-main)] tracking-tight leading-snug">
                       {item.displayTitle}
                     </h4>
                     {item.highlightMetric && (
@@ -322,9 +321,9 @@ export function SystemIntelligenceCards({ insights = [] }) {
                   </div>
                 </div>
 
-                {/* Body Explanation with off-white and light greys (No pure white) */}
+                {/* Body Explanation with high-contrast text */}
                 <div 
-                  className="text-xs sm:text-[12px] text-slate-300 dark:text-slate-400 font-medium leading-relaxed mt-1 flex-1 [&>span]:font-semibold [&>strong]:text-slate-200 [&>strong]:font-bold border-none"
+                  className="text-xs sm:text-[12px] text-[var(--color-text-secondary)] font-medium leading-relaxed mt-1 flex-1 [&>span]:font-bold [&>strong]:text-[var(--color-text-main)] [&>strong]:font-bold border-none"
                   dangerouslySetInnerHTML={{ __html: item.bodyHtml }}
                 />
               </div>
