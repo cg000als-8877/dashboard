@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { format, parseISO, subMonths } from 'date-fns';
 import { useKpiData } from '@/utils/useKpiData';
 import { MetricCard, Card } from '@/components/ui/Card';
-import { DailyPerformanceChart, IncomeVsCostChart } from '@/components/dashboard/DashboardCharts';
 import { TitanicAnimation } from '@/components/ui/TitanicAnimation';
 import { Sparkles, ArrowRight, Download, FileText, Ship, Siren, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
@@ -1668,18 +1667,7 @@ export function DashboardContent({ month, isArchive = false }) {
         </div>
       )}
 
-        {/* Charts */}
-        <div className="mt-14 relative z-10">
-          <div className="flex items-center justify-center mb-6">
-            <h2 className="text-[20px] sm:text-[23px] md:text-[27px] font-bold tracking-[0.12em] uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] via-[var(--color-text-secondary)] to-[var(--color-text-muted)] text-center">
-              Performance Telemetry
-            </h2>
-          </div>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <DailyPerformanceChart data={dailyTrends} />
-          <IncomeVsCostChart data={dailyTrends} />
-        </div>
-      </div>
+
       
 
 

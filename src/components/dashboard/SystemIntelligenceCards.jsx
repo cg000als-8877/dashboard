@@ -235,7 +235,7 @@ export function SystemIntelligenceCards({ insights = [] }) {
             </p>
           </div>
 
-          <div className="self-start sm:self-auto px-2.5 py-1 rounded-full bg-[var(--color-surface)] text-[10.5px] font-bold text-[var(--color-text-secondary)] border-none">
+          <div className="self-start sm:self-auto px-2.5 py-1 rounded-full bg-[var(--color-surface)] text-[10.5px] font-extrabold text-[var(--color-text-main)] border-none">
             <span>{parsedItems.length} Live Insights</span>
           </div>
         </div>
@@ -254,15 +254,15 @@ export function SystemIntelligenceCards({ insights = [] }) {
                 className={cn(
                   "flex items-center justify-between sm:justify-start gap-1.5 px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg sm:rounded-xl text-[10.5px] sm:text-[12.5px] font-bold transition-all duration-200 cursor-pointer border-none outline-none select-none flex-1 sm:flex-initial min-w-[calc(50%-6px)] sm:min-w-0",
                   isSelected
-                    ? "bg-[var(--color-primary)] text-slate-900 shadow-md font-extrabold active:scale-95"
-                    : "bg-[var(--color-surface)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)]"
+                    ? "bg-[var(--color-primary)] text-[var(--color-on-primary)] shadow-md font-extrabold active:scale-95"
+                    : "bg-[var(--color-surface)] text-[var(--color-text-main)] hover:text-[var(--color-primary)] hover:bg-[var(--color-surface-hover)]"
                 )}
                 aria-selected={isSelected}
               >
                 <div className="flex items-center gap-1 min-w-0">
                   <span className={cn(
                     "font-black text-[11px] sm:text-xs shrink-0",
-                    isSelected ? "text-slate-900/80" : "text-[var(--color-primary)]"
+                    isSelected ? "text-[var(--color-on-primary)]/85" : "text-[var(--color-primary)] font-black"
                   )}>
                     #
                   </span>
@@ -270,7 +270,9 @@ export function SystemIntelligenceCards({ insights = [] }) {
                 </div>
                 <span className={cn(
                   "text-[9px] sm:text-[10px] px-1.5 py-0.2 rounded font-mono shrink-0 ml-1.5",
-                  isSelected ? "bg-black/20 text-slate-900 font-bold" : "bg-black/10 dark:bg-black/25 text-[var(--color-text-secondary)] font-semibold"
+                  isSelected 
+                    ? "bg-[var(--color-on-primary)]/20 text-[var(--color-on-primary)] font-bold" 
+                    : "bg-black/10 dark:bg-white/10 text-[var(--color-text-main)] font-bold"
                 )}>
                   {count}
                 </span>
