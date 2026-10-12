@@ -44,8 +44,22 @@ export function PwaManager({ children }) {
 
     const isAppleDevice = checkIOS();
 
-    // 3. Register Service Worker & Listen for Updates
-    if ('serviceWorker' in navigator && process.env.NODE_ENV !== 'development') {
+    // Check if running inside native Capacitor environment
+    const isNativeCapacitor = typeof window !== 'undefined' && (
+      window.Capacitor?.isNativePlatform?.() || 
+      window.location.protocol === 'capacitor:' ||
+      window.location.protocol === 'ionic:'
+    );
+
+    // If running in native Capacitor, unregister any legacy service workers to prevent Android WebView ERR_FAILED on reload
+    if (isNativeCapacitor && 'serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then((registrations) => {
+        registrations.forEach((r) => r.unregister());
+      });
+    }
+
+    // 3. Register Service Worker & Listen for Updates (PWA / Web browser only)
+    if (!isNativeCapacitor && 'serviceWorker' in navigator && process.env.NODE_ENV !== 'development') {
       navigator.serviceWorker
         .register('/sw.js')
         .then((registration) => {
@@ -171,7 +185,7 @@ export function PwaManager({ children }) {
       
       // 4. Force reload from server
       setTimeout(() => {
-        window.location.reload(true);
+        window.location.reload();
       }, 300);
     } catch (e) {
       console.error('Update purge error:', e);

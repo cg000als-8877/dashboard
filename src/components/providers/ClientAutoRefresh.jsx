@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 
-// Auto-refresh after 5 minutes of inactivity
+// Auto-refresh telemetry after 5 minutes of inactivity
 const IDLE_TIMEOUT_MS = 5 * 60 * 1000; 
 
 export function ClientAutoRefresh() {
+  const router = useRouter();
   const lastActiveTime = useRef(Date.now());
   const idleInterval = useRef(null);
 
@@ -29,10 +31,16 @@ export function ClientAutoRefresh() {
   }, []);
 
   useEffect(() => {
-    // Function to handle hard refresh (disabled on login page)
+    // Safe refresh: updates data without blowing away the client-side session or crashing offline
     const handleRefresh = () => {
       if (typeof window !== 'undefined' && window.location.pathname.startsWith('/login')) return;
-      window.location.reload();
+      if (typeof navigator !== 'undefined' && !navigator.onLine) return; // Do not reload while offline
+      
+      try {
+        router.refresh();
+      } catch (e) {
+        // Fallback only if router fails
+      }
     };
 
     // Update the last active timestamp whenever the user does something
@@ -44,6 +52,7 @@ export function ClientAutoRefresh() {
     const checkIdleTime = () => {
       const now = Date.now();
       if (now - lastActiveTime.current >= IDLE_TIMEOUT_MS) {
+        lastActiveTime.current = now;
         handleRefresh();
       }
     };
@@ -59,12 +68,16 @@ export function ClientAutoRefresh() {
     // Check idle time every 10 seconds
     idleInterval.current = setInterval(checkIdleTime, 10000);
 
-    // Also check visibility change (tab switching)
+    // Also check visibility change (tab switching / app resume)
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
-        checkIdleTime(); // If they come back after 5 mins, instantly refresh
+        const now = Date.now();
+        if (now - lastActiveTime.current >= IDLE_TIMEOUT_MS) {
+          lastActiveTime.current = now;
+          handleRefresh();
+        }
       } else {
-        resetIdleTimer(); // Reset the timer when they leave so it doesn't count active time
+        resetIdleTimer();
       }
     };
     

@@ -49,8 +49,14 @@ export default function DashboardLayout({ children }) {
 
   let datePart = 'Loading...';
   if (dailyTrends && dailyTrends.length > 0) {
-    const endDate = dailyTrends[dailyTrends.length - 1].date;
-    datePart = format(parseISO(endDate), 'do MMMM, yyyy');
+    try {
+      const endDate = dailyTrends[dailyTrends.length - 1]?.date;
+      if (endDate) {
+        datePart = format(parseISO(endDate), 'do MMMM, yyyy');
+      }
+    } catch (e) {
+      datePart = 'October 2026';
+    }
   }
 
   const isDashboard = pathname === '/';

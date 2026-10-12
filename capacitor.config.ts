@@ -7,7 +7,11 @@ const config: CapacitorConfig = {
   server: {
     url: 'https://bapldata.vercel.app',
     cleartext: true,
-    androidScheme: 'https'
+    androidScheme: 'https',
+    allowNavigation: [
+      'bapldata.vercel.app',
+      '*.vercel.app'
+    ]
   },
   android: {
     allowMixedContent: true,
