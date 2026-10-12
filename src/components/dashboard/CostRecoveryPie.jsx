@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useId } from 'react';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { cn } from '@/components/layout/Sidebar';
 
@@ -12,6 +12,10 @@ export function CostRecoveryPie({
   subtitle,
   className = "" 
 }) {
+  const rawId = useId();
+  const uniqueId = rawId.replace(/[^a-zA-Z0-9-_]/g, '');
+  const shimmerGradId = `pie-shimmer-grad-${uniqueId}`;
+
   const [fillLevel, setFillLevel] = useState(0);
   const clamped = Math.min(Math.max(Number(percentage) || 0, 0), 100);
 
@@ -120,9 +124,43 @@ export function CostRecoveryPie({
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
+          <style>{`
+            @keyframes pie-stroke-glow-pulse {
+              0%, 100% {
+                opacity: 0.90;
+                stroke-width: 12px;
+              }
+              50% {
+                opacity: 1;
+                stroke-width: 12.8px;
+              }
+            }
+            @keyframes pie-shimmer-sweep {
+              0% {
+                opacity: 0.1;
+              }
+              50% {
+                opacity: 0.55;
+              }
+              100% {
+                opacity: 0.1;
+              }
+            }
+            @keyframes pie-beacon-pulse {
+              0%, 100% {
+                transform: scale(0.9);
+                opacity: 0.65;
+              }
+              50% {
+                transform: scale(1.35);
+                opacity: 0.2;
+              }
+            }
+          `}</style>
+
           <defs>
-            {/* Shimmer gradient that sweeps smoothly along the progress stroke */}
-            <linearGradient id="pie-shimmer-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+            {/* Shimmer gradient that sweeps smoothly along the progress stroke with unique instance ID */}
+            <linearGradient id={shimmerGradId} x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0">
                 <animate attributeName="offset" values="-0.3; 1.3" dur="2.6s" repeatCount="indefinite" />
               </stop>
@@ -133,14 +171,6 @@ export function CostRecoveryPie({
                 <animate attributeName="offset" values="0.1; 1.7" dur="2.6s" repeatCount="indefinite" />
               </stop>
             </linearGradient>
-
-            {/* Ambient dynamic glow filter */}
-            <filter id="pie-glow-filter" x="-20%" y="-20%" width="140%" height="140%">
-              <feDropShadow dx="0" dy="0" stdDeviation="3.5" floodColor={toneStatus.strokeColor} floodOpacity="0.45">
-                <animate attributeName="stdDeviation" values="2; 5; 2" dur="2.4s" repeatCount="indefinite" />
-                <animate attributeName="floodOpacity" values="0.25; 0.6; 0.25" dur="2.4s" repeatCount="indefinite" />
-              </feDropShadow>
-            </filter>
           </defs>
 
           {/* Background Track Circle */}
@@ -154,7 +184,7 @@ export function CostRecoveryPie({
             className="opacity-40"
           />
 
-          {/* Active Progress Pie Stroke (with continuous breathing animation) */}
+          {/* Active Progress Pie Stroke (Reliable CSS drop-shadow + continuous dual animations) */}
           <circle
             cx="80"
             cy="80"
@@ -164,8 +194,12 @@ export function CostRecoveryPie({
             strokeDasharray={circumference}
             strokeDashoffset={strokeDashoffset}
             strokeLinecap="round"
-            filter="url(#pie-glow-filter)"
             className="transition-all duration-1000 ease-out"
+            style={{
+              filter: `drop-shadow(0 0 6px ${isCovered ? 'rgba(16, 185, 129, 0.55)' : 'var(--color-primary-glow, rgba(0, 240, 255, 0.5))'})`,
+              animation: 'pie-stroke-glow-pulse 2.4s ease-in-out infinite',
+              transformOrigin: '80px 80px',
+            }}
           >
             <animate
               attributeName="stroke-width"
@@ -187,12 +221,15 @@ export function CostRecoveryPie({
               cx="80"
               cy="80"
               r={radius}
-              stroke="url(#pie-shimmer-grad)"
+              stroke={`url(#${shimmerGradId})`}
               strokeWidth="12"
               strokeDasharray={circumference}
               strokeDashoffset={strokeDashoffset}
               strokeLinecap="round"
               className="pointer-events-none transition-all duration-1000 ease-out"
+              style={{
+                animation: 'pie-shimmer-sweep 2.6s ease-in-out infinite',
+              }}
             />
           )}
 
@@ -205,6 +242,10 @@ export function CostRecoveryPie({
                 cy={tipY}
                 r="7"
                 fill={toneStatus.strokeColor}
+                style={{
+                  animation: 'pie-beacon-pulse 1.8s ease-in-out infinite',
+                  transformOrigin: `${tipX}px ${tipY}px`,
+                }}
               >
                 <animate attributeName="r" values="5; 10; 5" dur="1.8s" repeatCount="indefinite" />
                 <animate attributeName="opacity" values="0.65; 0; 0.65" dur="1.8s" repeatCount="indefinite" />
