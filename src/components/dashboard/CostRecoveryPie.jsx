@@ -27,6 +27,11 @@ export function CostRecoveryPie({
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (fillLevel / 100) * circumference;
 
+  // Calculate tip coordinates for live pulsating beacon (inside -rotate-90 SVG)
+  const angleRad = ((fillLevel / 100) * 360 * Math.PI) / 180;
+  const tipX = 80 + radius * Math.cos(angleRad);
+  const tipY = 80 + radius * Math.sin(angleRad);
+
   const pct = Number(percentage) || 0;
   const isCovered = isProfitable || pct >= 100;
 
@@ -111,10 +116,33 @@ export function CostRecoveryPie({
       )}>
         <svg
           viewBox="0 0 160 160"
-          className="w-full h-full transform -rotate-90"
+          className="w-full h-full transform -rotate-90 overflow-visible"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
+          <defs>
+            {/* Shimmer gradient that sweeps smoothly along the progress stroke */}
+            <linearGradient id="pie-shimmer-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0">
+                <animate attributeName="offset" values="-0.3; 1.3" dur="2.6s" repeatCount="indefinite" />
+              </stop>
+              <stop offset="20%" stopColor="#FFFFFF" stopOpacity="0.45">
+                <animate attributeName="offset" values="-0.1; 1.5" dur="2.6s" repeatCount="indefinite" />
+              </stop>
+              <stop offset="40%" stopColor="#FFFFFF" stopOpacity="0">
+                <animate attributeName="offset" values="0.1; 1.7" dur="2.6s" repeatCount="indefinite" />
+              </stop>
+            </linearGradient>
+
+            {/* Ambient dynamic glow filter */}
+            <filter id="pie-glow-filter" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="0" stdDeviation="3.5" floodColor={toneStatus.strokeColor} floodOpacity="0.45">
+                <animate attributeName="stdDeviation" values="2; 5; 2" dur="2.4s" repeatCount="indefinite" />
+                <animate attributeName="floodOpacity" values="0.25; 0.6; 0.25" dur="2.4s" repeatCount="indefinite" />
+              </feDropShadow>
+            </filter>
+          </defs>
+
           {/* Background Track Circle */}
           <circle
             cx="80"
@@ -126,7 +154,7 @@ export function CostRecoveryPie({
             className="opacity-40"
           />
 
-          {/* Active Progress Pie Stroke */}
+          {/* Active Progress Pie Stroke (with continuous breathing animation) */}
           <circle
             cx="80"
             cy="80"
@@ -136,8 +164,62 @@ export function CostRecoveryPie({
             strokeDasharray={circumference}
             strokeDashoffset={strokeDashoffset}
             strokeLinecap="round"
+            filter="url(#pie-glow-filter)"
             className="transition-all duration-1000 ease-out"
-          />
+          >
+            <animate
+              attributeName="stroke-width"
+              values="12; 12.8; 12"
+              dur="2.4s"
+              repeatCount="indefinite"
+            />
+            <animate
+              attributeName="opacity"
+              values="0.92; 1; 0.92"
+              dur="2.4s"
+              repeatCount="indefinite"
+            />
+          </circle>
+
+          {/* Overlay Traveling Shimmer Wave along the stroke */}
+          {fillLevel > 0 && (
+            <circle
+              cx="80"
+              cy="80"
+              r={radius}
+              stroke="url(#pie-shimmer-grad)"
+              strokeWidth="12"
+              strokeDasharray={circumference}
+              strokeDashoffset={strokeDashoffset}
+              strokeLinecap="round"
+              className="pointer-events-none transition-all duration-1000 ease-out"
+            />
+          )}
+
+          {/* Live Pulsing Beacon at Leading Tip */}
+          {fillLevel > 2 && (
+            <g className="pointer-events-none">
+              {/* Outer expanding pulse halo */}
+              <circle
+                cx={tipX}
+                cy={tipY}
+                r="7"
+                fill={toneStatus.strokeColor}
+              >
+                <animate attributeName="r" values="5; 10; 5" dur="1.8s" repeatCount="indefinite" />
+                <animate attributeName="opacity" values="0.65; 0; 0.65" dur="1.8s" repeatCount="indefinite" />
+              </circle>
+              {/* Core bright white indicator */}
+              <circle
+                cx={tipX}
+                cy={tipY}
+                r="3.2"
+                fill="#FFFFFF"
+              >
+                <animate attributeName="opacity" values="0.85; 1; 0.85" dur="1.8s" repeatCount="indefinite" />
+              </circle>
+            </g>
+          )}
         </svg>
 
         {/* Central Floating Percentage Display */}
