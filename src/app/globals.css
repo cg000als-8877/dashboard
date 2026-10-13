@@ -2234,6 +2234,24 @@ body {
   display: none !important;
 }
 
+/* PC / Desktop View: Absolute stroke-free guarantee for all cards, badges, and elements across all themes */
+@media (min-width: 768px) {
+  .dashboard-stroke-free div,
+  .dashboard-stroke-free section,
+  .dashboard-stroke-free article,
+  .dashboard-stroke-free span,
+  .dashboard-stroke-free button,
+  .dashboard-stroke-free a,
+  .dashboard-stroke-free [class*="border"],
+  .dashboard-stroke-free .animate-emergency-strobe,
+  .dashboard-stroke-free [data-preserve-stroke] {
+    border-color: transparent !important;
+    border-width: 0 !important;
+    border-style: none !important;
+    outline: none !important;
+  }
+}
+
 /* ─────────────────────────────────────────────────────────────
    NON-DASHBOARD PAGES: COMPLETE STROKE-FREE DESIGN
    Removes all borders and strokes from cards, stat cards,

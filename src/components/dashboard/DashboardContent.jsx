@@ -195,13 +195,287 @@ function AnimatedTrendCurve({ isProfit = false, className = "" }) {
 
 
 
+function getOrdinal(n) {
+  const s = ['th', 'st', 'nd', 'rd'];
+  const v = n % 100;
+  return s[(v - 20) % 10] || s[v] || s[0];
+}
+
+function getPacedMonthData(dailyTrends, lines, rawEngine, targetDays) {
+  if (!dailyTrends || dailyTrends.length === 0 || !targetDays || targetDays <= 0) {
+    return null;
+  }
+
+  // Take the first targetDays entries from the month's daily trends (chronologically sorted)
+  const slicedTrends = dailyTrends.slice(0, targetDays);
+  if (slicedTrends.length === 0) return null;
+
+  let totalCost = 0;
+  let totalIncome = 0;
+  let totalProfit = 0;
+  let totalProduction = 0;
+  let workingDays = 0;
+  const activeDatesSet = new Set();
+
+  slicedTrends.forEach(d => {
+    totalCost += d.cost || 0;
+    totalIncome += d.income || 0;
+    totalProfit += d.profit || 0;
+    totalProduction += d.production || 0;
+    if ((d.production && d.production > 0) || (d.cost && d.cost > 0)) {
+      workingDays += 1;
+    }
+    if (d.date) {
+      activeDatesSet.add(d.date);
+    }
+  });
+
+  const activeDaysCount = workingDays > 0 ? workingDays : slicedTrends.length;
+  const averageDailyProfit = activeDaysCount > 0 ? (totalProfit / activeDaysCount) : 0;
+  const netProfit = totalIncome - totalCost;
+
+  const startDate = slicedTrends[0]?.date;
+  const endDate = slicedTrends[slicedTrends.length - 1]?.date;
+
+  // Build paced line stats for the Production Lines card and Line Summary
+  let pacedLines = lines || [];
+  if (rawEngine?.kpiData?.dailyProduction && Array.isArray(rawEngine.kpiData.dailyProduction)) {
+    const rawDaily = rawEngine.kpiData.dailyProduction.filter(d => activeDatesSet.has(d.date) && d.status === 'ACTIVE');
+    const linesMeta = rawEngine.kpiData.lines || lines || [];
+    
+    pacedLines = linesMeta.map(l => {
+      const lineEntries = rawDaily.filter(d => d.line_id?.toUpperCase() === l.id?.toUpperCase());
+      let lineIncome = 0;
+      let lineCost = 0;
+      let lineProd = 0;
+      let workerSum = 0;
+      let activeDays = 0;
+      let lastDayEntry = null;
+      const itemsSet = new Set();
+
+      lineEntries.forEach(d => {
+        lineIncome += d.total_income || 0;
+        lineCost += d.total_cost || 0;
+        lineProd += d.production_qty || 0;
+        workerSum += d.worker_count || 0;
+        if (d.production_qty > 0 || d.total_cost > 0) activeDays++;
+        if (d.item && typeof d.item === 'string' && d.item.trim()) {
+          const splitItems = d.item.split(/[,/&]+/).map(s => s.trim()).filter(Boolean);
+          if (splitItems.length > 0) {
+            splitItems.forEach(it => itemsSet.add(it));
+          } else {
+            itemsSet.add(d.item.trim());
+          }
+        }
+        if (!lastDayEntry || (d.date && d.date >= lastDayEntry.date)) {
+          lastDayEntry = d;
+        }
+      });
+
+      const uniqueItems = Array.from(itemsSet);
+      const avgWorkers = activeDays > 0 ? Math.round(workerSum / activeDays) : 0;
+      const lineNetProfit = lineIncome - lineCost;
+      const monthCostRecovery = lineCost > 0 ? ((lineIncome / lineCost) * 100).toFixed(1) : '0.0';
+      const lastDayOutput = lastDayEntry ? Math.round(lastDayEntry.production_qty || 0) : 0;
+      const lastDayIncome = lastDayEntry ? Math.round(lastDayEntry.total_income || 0) : 0;
+      const lastDayCost = lastDayEntry ? Math.round(lastDayEntry.total_cost || 0) : 0;
+      const lastDayProfit = lastDayEntry ? Math.round(lastDayEntry.net_profit !== undefined ? lastDayEntry.net_profit : (lastDayIncome - lastDayCost)) : 0;
+      const lastDayCostRecovery = lastDayCost > 0 ? ((lastDayIncome / lastDayCost) * 100).toFixed(1) : '0.0';
+
+      return {
+        ...l,
+        totalIncome: Math.round(lineIncome),
+        totalCost: Math.round(lineCost),
+        netProfit: Math.round(lineNetProfit),
+        totalProduction: Math.round(lineProd),
+        averageWorkers: avgWorkers,
+        activeDaysCount: activeDays,
+        item: uniqueItems.join(', ') || DEFAULT_LINE_ITEMS[l.id] || 'Polo Shirt',
+        items: uniqueItems,
+        lastDay: lastDayEntry,
+        lastDayDate: lastDayEntry?.date || endDate,
+        monthCostRecovery,
+        lastDayOutput,
+        lastDayIncome,
+        lastDayCost,
+        lastDayProfit,
+        lastDayCostRecovery
+      };
+    });
+  }
+
+  const actLines = pacedLines.filter(l => l.totalProduction > 0 || l.totalCost > 0 || (l.activeDaysCount && l.activeDaysCount > 0));
+
+  return {
+    stats: {
+      totalCost: Math.round(totalCost),
+      totalIncome: Math.round(totalIncome),
+      netProfit: Math.round(netProfit),
+      totalProduction: Math.round(totalProduction),
+      workingDays: activeDaysCount,
+      activeLinesCount: actLines.length > 0 ? actLines.length : 4,
+      totalLinesCount: pacedLines.length || 4,
+      averageDailyProfit: Math.round(averageDailyProfit)
+    },
+    lines: pacedLines,
+    startDate,
+    endDate,
+    dateInfo: formatDateRangeInfo(startDate, endDate)
+  };
+}
+
+function computeMetricComparison(currStats, compStats, compLabel) {
+  if (!currStats || !compStats) {
+    return {
+      costComp: null,
+      incomeComp: null,
+      netComp: null,
+      avgDailyComp: null
+    };
+  }
+
+  // 1. Cost Comparison
+  let costComp = null;
+  if (compStats.totalCost > 0) {
+    const costDiff = currStats.totalCost - compStats.totalCost;
+    const isHigherCost = costDiff > 0;
+    const pct = Math.round((Math.abs(costDiff) / compStats.totalCost) * 100);
+
+    if (pct === 0 || Math.abs(costDiff) < 5000) {
+      costComp = {
+        highlight: `Flat (0%)`,
+        label: `matching ${compLabel}`,
+        trend: 'neutral',
+        isPositive: true
+      };
+    } else {
+      costComp = {
+        highlight: isHigherCost ? `+${pct}% more Cost` : `-${pct}% less Cost`,
+        label: `compared to ${compLabel}`,
+        trend: isHigherCost ? 'down' : 'up',
+        isPositive: !isHigherCost
+      };
+    }
+  }
+
+  // 2. Income Comparison
+  let incomeComp = null;
+  if (compStats.totalIncome > 0) {
+    const incDiff = currStats.totalIncome - compStats.totalIncome;
+    const isHigherInc = incDiff > 0;
+    const pct = Math.round((Math.abs(incDiff) / compStats.totalIncome) * 100);
+
+    if (pct === 0 || Math.abs(incDiff) < 5000) {
+      incomeComp = {
+        highlight: `Flat (0%)`,
+        label: `matching ${compLabel}`,
+        trend: 'neutral',
+        isPositive: true
+      };
+    } else {
+      incomeComp = {
+        highlight: isHigherInc ? `+${pct}% more Revenue` : `-${pct}% less Revenue`,
+        label: `compared to ${compLabel}`,
+        trend: isHigherInc ? 'up' : 'down',
+        isPositive: isHigherInc
+      };
+    }
+  }
+
+  // 3. Net Deficit / Profit Comparison
+  let netComp = null;
+  if (compStats.netProfit !== undefined && compStats.netProfit !== null) {
+    const currNet = currStats.netProfit;
+    const prevNet = compStats.netProfit;
+    const netDiff = currNet - prevNet;
+    const isLessLoss = currNet > prevNet;
+    const pct = Math.round((Math.abs(netDiff) / Math.abs(prevNet || 1)) * 100);
+
+    if (currNet < 0 && prevNet < 0) {
+      if (pct === 0 || Math.abs(netDiff) < 5000) {
+        netComp = {
+          highlight: `Same Deficit`,
+          label: `matching ${compLabel}`,
+          trend: 'neutral',
+          isPositive: true
+        };
+      } else {
+        netComp = {
+          highlight: isLessLoss ? `-${pct}% less Loss` : `+${pct}% more Loss`,
+          label: `compared to ${compLabel}`,
+          trend: isLessLoss ? 'up' : 'down',
+          isPositive: isLessLoss
+        };
+      }
+    } else if (currNet >= 0 && prevNet < 0) {
+      netComp = {
+        highlight: `Profitable`,
+        label: `improved vs. ${compLabel}`,
+        trend: 'up',
+        isPositive: true
+      };
+    } else if (currNet < 0 && prevNet >= 0) {
+      netComp = {
+        highlight: `In Deficit`,
+        label: `down vs. ${compLabel}`,
+        trend: 'down',
+        isPositive: false
+      };
+    } else {
+      netComp = {
+        highlight: currNet >= prevNet ? `+${pct}% more Profit` : `-${pct}% less Profit`,
+        label: `compared to ${compLabel}`,
+        trend: currNet >= prevNet ? 'up' : 'down',
+        isPositive: currNet >= prevNet
+      };
+    }
+  }
+
+  // 4. Average Daily Run-Rate Comparison
+  let avgDailyComp = null;
+  if (compStats.averageDailyProfit !== undefined && compStats.averageDailyProfit !== null) {
+    const currAvg = currStats.averageDailyProfit;
+    const prevAvg = compStats.averageDailyProfit;
+    const avgDiff = currAvg - prevAvg;
+    const diffK = Math.abs(Math.round(avgDiff / 1000));
+    const isBetter = currAvg > prevAvg;
+
+    if (diffK === 0) {
+      avgDailyComp = {
+        highlight: `Same Daily Rate`,
+        label: `matching ${compLabel} run-rate`,
+        trend: 'neutral',
+        isPositive: true
+      };
+    } else {
+      if (currAvg < 0 && prevAvg < 0) {
+        avgDailyComp = {
+          highlight: isBetter ? `-${diffK}k less Loss / Day` : `+${diffK}k more Loss / Day`,
+          label: `compared to ${compLabel}`,
+          trend: isBetter ? 'up' : 'down',
+          isPositive: isBetter
+        };
+      } else {
+        avgDailyComp = {
+          highlight: isBetter ? `+${diffK}k more Profit / Day` : `-${diffK}k less Profit / Day`,
+          label: `compared to ${compLabel}`,
+          trend: isBetter ? 'up' : 'down',
+          isPositive: isBetter
+        };
+      }
+    }
+  }
+
+  return { costComp, incomeComp, netComp, avgDailyComp };
+}
+
 export function DashboardContent({ month, isArchive = false }) {
   const { stats, dailyTrends, insights, lines, loading, error } = useKpiData(month);
 
   // For Live Dashboard: Load September ('2026-09'), August ('2026-08'), and July ('2026-07') archives for tabs & comparisons
-  const { stats: septemberStats, dailyTrends: septemberDailyTrends, lines: septemberLines } = useKpiData('2026-09');
-  const { stats: augustStats, dailyTrends: augustDailyTrends, lines: augustLines } = useKpiData('2026-08');
-  const { stats: julyStats, dailyTrends: julyDailyTrends, lines: julyLines } = useKpiData('2026-07');
+  const { stats: septemberStats, dailyTrends: septemberDailyTrends, lines: septemberLines, rawEngine: septemberEngine } = useKpiData('2026-09');
+  const { stats: augustStats, dailyTrends: augustDailyTrends, lines: augustLines, rawEngine: augustEngine } = useKpiData('2026-08');
+  const { stats: julyStats, dailyTrends: julyDailyTrends, lines: julyLines, rawEngine: julyEngine } = useKpiData('2026-07');
   const [selectedCardMonth, setSelectedCardMonth] = useState('current'); // 'current' | 'september' | 'august' | 'july'
   const [selectedMobileLine, setSelectedMobileLine] = useState('A');
   const [interactiveDay, setInteractiveDay] = useState(null);
@@ -312,187 +586,37 @@ export function DashboardContent({ month, isArchive = false }) {
   const displayDay = interactiveDay !== null ? interactiveDay : currentCalendarDay;
   const currentDayData = dailyTrends && dailyTrends.length >= displayDay ? dailyTrends[displayDay - 1] : null;
 
-  // ── LIKE-FOR-LIKE COMPARISON WITH SEPTEMBER (Exact Same Elapsed Working Days in September) ──
-  let septemberComparisonStats = septemberStats;
-  if (septemberDailyTrends && septemberDailyTrends.length > 0 && stats?.workingDays > 0) {
-    const elapsedSeptemberDays = septemberDailyTrends.slice(0, stats.workingDays);
-    let prevCost = 0;
-    let prevIncome = 0;
-    let prevProfit = 0;
-    let prevProduction = 0;
-    let prevWorkingDays = 0;
-
-    elapsedSeptemberDays.forEach(d => {
-      prevCost += d.cost || 0;
-      prevIncome += d.income || 0;
-      prevProfit += d.profit || 0;
-      prevProduction += d.production || 0;
-      if ((d.production && d.production > 0) || (d.cost && d.cost > 0)) {
-        prevWorkingDays += 1;
-      }
-    });
-
-    const activeDaysCount = prevWorkingDays > 0 ? prevWorkingDays : elapsedSeptemberDays.length;
-    const avgDailyProfit = activeDaysCount > 0 ? (prevProfit / activeDaysCount) : 0;
-
-    septemberComparisonStats = {
-      totalCost: prevCost,
-      totalIncome: prevIncome,
-      netProfit: prevProfit,
-      totalProduction: prevProduction,
-      workingDays: activeDaysCount,
-      averageDailyProfit: avgDailyProfit
-    };
-  }
-
-  const prevComparisonStats = septemberComparisonStats || augustStats;
+  // ── LIKE-FOR-LIKE / PACE-MATCHED SLICES FOR PAST MONTHS ──
+  const currentWorkingDays = stats?.workingDays > 0 ? stats.workingDays : (dailyTrends?.length || 10);
+  const septemberPaced = getPacedMonthData(septemberDailyTrends, septemberLines, septemberEngine, currentWorkingDays);
+  const augustPaced = getPacedMonthData(augustDailyTrends, augustLines, augustEngine, currentWorkingDays);
+  const julyPaced = getPacedMonthData(julyDailyTrends, julyLines, julyEngine, currentWorkingDays);
 
   if (!stats) return <DashboardSkeleton />;
 
-  // Contextual KPI delta computations (Dynamically matches the active date range of the month)
-  let prevPeriodLabel = isArchive ? "Previous Period" : "September";
+  // Contextual labels
+  let livePeriodLabel = "September";
   if (!isArchive) {
-    if (dateComponents?.startDay && dateComponents?.endDay) {
-      prevPeriodLabel = dateComponents.startDay === dateComponents.endDay
-        ? `September (${dateComponents.startDay})`
-        : `September (${dateComponents.startDay}–${dateComponents.endDay})`;
+    if (septemberPaced?.dateInfo?.startDay && septemberPaced?.dateInfo?.endDay) {
+      const sD = parseInt(septemberPaced.dateInfo.startDay, 10);
+      const eD = parseInt(septemberPaced.dateInfo.endDay, 10);
+      livePeriodLabel = `September (${sD}${getOrdinal(sD)}–${eD}${getOrdinal(eD)})`;
+    } else if (dateComponents?.startDay && dateComponents?.endDay) {
+      livePeriodLabel = `September (${dateComponents.startDay}–${dateComponents.endDay})`;
     }
   }
 
-  let costComparison = null;
-  if (stats && prevComparisonStats?.totalCost > 0) {
-    const currCost = stats.totalCost;
-    const prevCost = prevComparisonStats.totalCost;
-    const costDiff = currCost - prevCost;
-    const isHigherCost = costDiff > 0;
-    const pct = Math.round((Math.abs(costDiff) / prevCost) * 100);
-    
-    if (pct === 0 || Math.abs(costDiff) < 5000) {
-      costComparison = {
-        highlight: `Flat (0%)`,
-        label: `matching ${prevPeriodLabel}`,
-        trend: 'neutral',
-        isPositive: true
-      };
-    } else {
-      costComparison = {
-        highlight: isHigherCost ? `+${pct}% more Cost` : `-${pct}% less Cost`,
-        label: `compared to ${prevPeriodLabel}`,
-        trend: isHigherCost ? 'down' : 'up',
-        isPositive: !isHigherCost
-      };
-    }
-  }
+  const livePaceLabel = dateComponents?.startDay && dateComponents?.endDay
+    ? `October (${dateComponents.startDay}–${dateComponents.endDay})`
+    : `October (Current Pace)`;
 
-  let incomeComparison = null;
-  if (stats && prevComparisonStats?.totalIncome > 0) {
-    const currInc = stats.totalIncome;
-    const prevInc = prevComparisonStats.totalIncome;
-    const incDiff = currInc - prevInc;
-    const isHigherInc = incDiff > 0;
-    const pct = Math.round((Math.abs(incDiff) / prevInc) * 100);
-
-    if (pct === 0 || Math.abs(incDiff) < 5000) {
-      incomeComparison = {
-        highlight: `Flat (0%)`,
-        label: `matching ${prevPeriodLabel}`,
-        trend: 'neutral',
-        isPositive: true
-      };
-    } else {
-      incomeComparison = {
-        highlight: isHigherInc ? `+${pct}% more Revenue` : `-${pct}% less Revenue`,
-        label: `compared to ${prevPeriodLabel}`,
-        trend: isHigherInc ? 'up' : 'down',
-        isPositive: isHigherInc
-      };
-    }
-  }
-
-  let netComparison = null;
-  if (stats && prevComparisonStats?.netProfit !== undefined && prevComparisonStats?.netProfit !== null) {
-    const currNet = stats.netProfit;
-    const prevNet = prevComparisonStats.netProfit;
-    const netDiff = currNet - prevNet;
-    const isLessLoss = currNet > prevNet;
-    const pct = Math.round((Math.abs(netDiff) / Math.abs(prevNet || 1)) * 100);
-
-    if (currNet < 0 && prevNet < 0) {
-      if (pct === 0 || Math.abs(netDiff) < 5000) {
-        netComparison = {
-          highlight: `Same Deficit`,
-          label: `matching ${prevPeriodLabel}`,
-          trend: 'neutral',
-          isPositive: true
-        };
-      } else {
-        netComparison = {
-          highlight: isLessLoss ? `-${pct}% less Loss` : `+${pct}% more Loss`,
-          label: `compared to ${prevPeriodLabel}`,
-          trend: isLessLoss ? 'up' : 'down',
-          isPositive: isLessLoss
-        };
-      }
-    } else if (currNet >= 0) {
-      netComparison = {
-        highlight: `Profitable`,
-        label: `improved compared to ${prevPeriodLabel}`,
-        trend: 'up',
-        isPositive: true
-      };
-    } else {
-      netComparison = {
-        highlight: `In Loss`,
-        label: `down compared to ${prevPeriodLabel}`,
-        trend: 'down',
-        isPositive: false
-      };
-    }
-  }
-
-  let daysComparison = null;
-  if (stats?.workingDays > 0) {
-    daysComparison = {
-      highlight: `${stats.workingDays} of ${stats.workingDays} Days`,
-      label: `matching ${prevPeriodLabel} pace`,
-      trend: 'neutral',
-      isPositive: true
-    };
-  }
+  // Bidirectional comparisons
+  const liveComparison = computeMetricComparison(stats, septemberPaced?.stats || septemberStats, livePeriodLabel);
+  const septemberComparison = computeMetricComparison(septemberPaced?.stats || septemberStats, stats, livePaceLabel);
+  const augustComparison = computeMetricComparison(augustPaced?.stats || augustStats, stats, livePaceLabel);
+  const julyComparison = computeMetricComparison(julyPaced?.stats || julyStats, stats, livePaceLabel);
 
   const totalLines = stats?.totalLinesCount || lines?.length || 4;
-  const currentActiveLines = stats?.activeLinesCount !== undefined ? stats.activeLinesCount : 4;
-  const linesComparison = {
-    highlight: currentActiveLines === totalLines ? `All ${totalLines} Lines` : `${currentActiveLines} of ${totalLines} Lines`,
-    label: `active & producing`,
-    trend: 'neutral',
-    isPositive: true
-  };
-
-  let avgDailyComparison = null;
-  if (stats && prevComparisonStats?.averageDailyProfit !== undefined && prevComparisonStats?.averageDailyProfit !== null) {
-    const currAvg = stats.averageDailyProfit;
-    const prevAvg = prevComparisonStats.averageDailyProfit;
-    const avgDiff = currAvg - prevAvg;
-    const diffK = Math.abs(Math.round(avgDiff / 1000));
-    const isBetter = currAvg > prevAvg;
-
-    if (diffK === 0) {
-      avgDailyComparison = {
-        highlight: `Same Daily Rate`,
-        label: `matching ${prevPeriodLabel} run-rate`,
-        trend: 'neutral',
-        isPositive: true
-      };
-    } else {
-      avgDailyComparison = {
-        highlight: isBetter ? `-${diffK}k less Loss per Day` : `+${diffK}k more Loss per Day`,
-        label: `compared to ${prevPeriodLabel}`,
-        trend: isBetter ? 'up' : 'down',
-        isPositive: isBetter
-      };
-    }
-  }
 
   return (
     <>
@@ -556,7 +680,7 @@ export function DashboardContent({ month, isArchive = false }) {
         </div>
 
         {/* KPI Overview Section (Unboxed on mobile to expand cards, card on desktop) */}
-        <div className="relative rounded-none md:rounded-3xl border-0 bg-transparent md:bg-[var(--color-bg-card)] backdrop-blur-none p-0 md:p-6 shadow-none md:shadow-xl overflow-visible md:overflow-hidden mb-6 -mx-2 sm:mx-0">
+        <div className="relative rounded-none md:rounded-3xl border-0 bg-transparent md:bg-[var(--color-bg-card)] backdrop-blur-none p-0 md:p-6 shadow-none md:shadow-none overflow-visible md:overflow-hidden mb-6 -mx-2 sm:mx-0">
           <div className="hidden md:block absolute top-0 left-1/2 -translate-x-1/2 w-96 h-28 bg-[var(--color-primary)]/5 rounded-full blur-3xl pointer-events-none" />
 
           {/* Month Tab Switcher for 6 KPI Stat Cards (Live Dashboard Only) */}
@@ -620,132 +744,75 @@ export function DashboardContent({ month, isArchive = false }) {
             </div>
           )}
 
-          {/* Dynamic Date Context (Inside Card under Month Tabs) */}
+          {/* Dynamic Date Context & 6 KPI Metric Cards Grid (Pace-Matched) */}
           {(() => {
-            let activeDateInfo = null;
+            let activeDateInfo = formatDateRangeInfo(startDate, endDate);
+            let displayStats = stats;
+            let activeActiveLines = lines || [];
+            let activeComp = liveComparison;
+
             if (!isArchive) {
-              if (selectedCardMonth === 'september') {
-                activeDateInfo = formatDateRangeInfo(null, null, 'september', '2026');
-              } else if (selectedCardMonth === 'august') {
-                activeDateInfo = formatDateRangeInfo(null, null, 'august', '2026');
-              } else if (selectedCardMonth === 'july') {
-                activeDateInfo = formatDateRangeInfo(null, null, 'july', '2026');
-              } else {
-                activeDateInfo = formatDateRangeInfo(startDate, endDate);
+              if (selectedCardMonth === 'september' && (septemberPaced || septemberStats)) {
+                displayStats = septemberPaced?.stats || septemberStats;
+                activeDateInfo = septemberPaced?.dateInfo || formatDateRangeInfo(null, null, 'september', '2026');
+                activeActiveLines = septemberPaced?.lines || septemberLines || lines || [];
+                activeComp = septemberComparison;
+              } else if (selectedCardMonth === 'august' && (augustPaced || augustStats)) {
+                displayStats = augustPaced?.stats || augustStats;
+                activeDateInfo = augustPaced?.dateInfo || formatDateRangeInfo(null, null, 'august', '2026');
+                activeActiveLines = augustPaced?.lines || augustLines || lines || [];
+                activeComp = augustComparison;
+              } else if (selectedCardMonth === 'july' && (julyPaced || julyStats)) {
+                displayStats = julyPaced?.stats || julyStats;
+                activeDateInfo = julyPaced?.dateInfo || formatDateRangeInfo(null, null, 'july', '2026');
+                activeActiveLines = julyPaced?.lines || julyLines || lines || [];
+                activeComp = julyComparison;
               }
-            } else {
-              activeDateInfo = formatDateRangeInfo(startDate, endDate, dateComponents?.month, dateComponents?.year);
             }
 
-            const isSeptember = !isArchive && selectedCardMonth === 'september' && !!septemberStats;
-            const isAugust = !isArchive && selectedCardMonth === 'august' && !!augustStats;
-            const isJuly = !isArchive && selectedCardMonth === 'july' && !!julyStats;
-            const currentStatsForDate = isSeptember ? septemberStats : (isAugust ? augustStats : (isJuly ? julyStats : stats));
+            const costComp = isArchive ? null : activeComp.costComp;
+            const incomeComp = isArchive ? null : activeComp.incomeComp;
+            const netComp = isArchive ? null : activeComp.netComp;
+            const avgDailyComp = isArchive ? null : activeComp.avgDailyComp;
 
-            return (
-              <div className="flex justify-center items-center w-full mt-0.5 mb-2.5 sm:mb-3.5 relative z-10">
-                <DashboardDateRange dateInfo={activeDateInfo} workingDays={currentStatsForDate?.workingDays} />
-              </div>
-            );
-          })()}
-
-          {/* 6 KPI Metric Cards Grid */}
-          {(() => {
-            const isSeptember = !isArchive && selectedCardMonth === 'september' && !!septemberStats;
-            const isAugust = !isArchive && selectedCardMonth === 'august' && !!augustStats;
-            const isJuly = !isArchive && selectedCardMonth === 'july' && !!julyStats;
-            const displayStats = isSeptember ? septemberStats : (isAugust ? augustStats : (isJuly ? julyStats : stats));
-
-            const costComp = isArchive ? null : (
-              isSeptember
-                ? { highlight: "September Total", label: "full month actual spending", trend: "neutral", isPositive: true }
-                : (isAugust 
-                    ? { highlight: "August Total", label: "full month actual spending", trend: "neutral", isPositive: true }
-                    : (isJuly 
-                        ? { highlight: "July Total", label: "full month actual spending", trend: "neutral", isPositive: true }
-                        : costComparison
-                      )
-                  )
-            );
-
-            const incomeComp = isArchive ? null : (
-              isSeptember
-                ? { highlight: "September Total", label: "full month earned revenue", trend: "neutral", isPositive: true }
-                : (isAugust 
-                    ? { highlight: "August Total", label: "full month earned revenue", trend: "neutral", isPositive: true }
-                    : (isJuly 
-                        ? { highlight: "July Total", label: "full month earned revenue", trend: "neutral", isPositive: true }
-                        : incomeComparison
-                      )
-                  )
-            );
-
-            const netComp = isArchive ? null : (
-              isSeptember
-                ? { highlight: "September Balance", label: displayStats.netProfit >= 0 ? "net monthly profit" : "net monthly loss", trend: "neutral", isPositive: displayStats.netProfit >= 0 }
-                : (isAugust 
-                    ? { highlight: "August Balance", label: displayStats.netProfit >= 0 ? "net monthly profit" : "net monthly loss", trend: "neutral", isPositive: displayStats.netProfit >= 0 }
-                    : (isJuly 
-                        ? { highlight: "July Balance", label: displayStats.netProfit >= 0 ? "net monthly profit" : "net monthly loss", trend: "neutral", isPositive: displayStats.netProfit >= 0 }
-                        : netComparison
-                      )
-                  )
-            );
-
-            const avgDailyComp = isArchive ? null : (
-              isSeptember
-                ? { highlight: "September Pace", label: "overall daily average rate", trend: "neutral", isPositive: displayStats.averageDailyProfit >= 0 }
-                : (isAugust 
-                    ? { highlight: "August Pace", label: "overall daily average rate", trend: "neutral", isPositive: displayStats.averageDailyProfit >= 0 }
-                    : (isJuly 
-                        ? { highlight: "July Pace", label: "overall daily average rate", trend: "neutral", isPositive: displayStats.averageDailyProfit >= 0 }
-                        : avgDailyComparison
-                      )
-                  )
-            );
-
-            const actLinesCount = displayStats.activeLinesCount !== undefined ? displayStats.activeLinesCount : 4;
-            const totLinesCount = displayStats.totalLinesCount || totalLines || 4;
+            const actLinesCount = displayStats?.activeLinesCount !== undefined ? displayStats.activeLinesCount : 4;
+            const totLinesCount = displayStats?.totalLinesCount || totalLines || 4;
             const isAllLines = actLinesCount === totLinesCount;
 
-            const linesComp = isArchive ? null : (() => {
-              return {
-                highlight: isAllLines ? `All ${totLinesCount} Lines` : `${actLinesCount} of ${totLinesCount} Lines`,
-                label: isSeptember || isAugust || isJuly ? "active manufacturing operations" : "active & producing",
-                trend: "neutral",
-                isPositive: true
-              };
-            })();
+            const linesComp = isArchive ? null : {
+              highlight: isAllLines ? `All ${totLinesCount} Lines` : `${actLinesCount} of ${totLinesCount} Lines`,
+              label: "active manufacturing operations",
+              trend: "neutral",
+              isPositive: true
+            };
 
-            const daysComp = isArchive ? null : (
-              isSeptember
-                ? { highlight: `${displayStats.workingDays} Days`, label: "total active factory days in September", trend: "neutral", isPositive: true }
-                : (isAugust 
-                    ? { highlight: `${displayStats.workingDays} Days`, label: "total active factory days in August", trend: "neutral", isPositive: true }
-                    : (isJuly 
-                        ? { highlight: `${displayStats.workingDays} Days`, label: "total active factory days in July", trend: "neutral", isPositive: true }
-                        : daysComparison
-                      )
-                  )
-            );
+            const isPastMonth = !isArchive && selectedCardMonth !== 'current';
+            const daysComp = isArchive ? null : {
+              highlight: `${displayStats?.workingDays || 0} Days`,
+              label: isPastMonth ? `matching October pace (${displayStats?.workingDays} active days)` : `matching ${livePeriodLabel} pace`,
+              trend: "neutral",
+              isPositive: true
+            };
 
-            const isNetProfit = displayStats.netProfit >= 0;
-            const isAvgDailyProfit = displayStats.averageDailyProfit >= 0;
-            const currentActiveLines = isArchive 
-              ? (lines || []) 
-              : (selectedCardMonth === 'september' ? (septemberLines || lines || []) : (selectedCardMonth === 'august' ? (augustLines || lines || []) : (selectedCardMonth === 'july' ? (julyLines || lines || []) : (lines || []))));
+            const isNetProfit = (displayStats?.netProfit || 0) >= 0;
+            const isAvgDailyProfit = (displayStats?.averageDailyProfit || 0) >= 0;
+            const currentActiveLines = activeActiveLines;
             const activeLinesToRender = ['A', 'B', 'C', 'D'].filter((lineId) => {
               const lineData = currentActiveLines?.find(l => l.id?.toUpperCase() === lineId);
               if (!lineData) return false;
               return (lineData.totalProduction > 0 || lineData.totalCost > 0 || (lineData.activeDaysCount && lineData.activeDaysCount > 0));
             });
             const renderedActiveLines = activeLinesToRender.length > 0 ? activeLinesToRender : ['A', 'B', 'C'];
-            const recoveryPercent = displayStats.totalCost > 0 
-              ? ((displayStats.totalIncome / displayStats.totalCost) * 100) 
+            const recoveryPercent = (displayStats?.totalCost || 0) > 0 
+              ? (((displayStats?.totalIncome || 0) / displayStats.totalCost) * 100) 
               : 0;
 
             return (
               <>
+                {/* Dynamic Date Context (Inside Card under Month Tabs) */}
+                <div className="flex justify-center items-center w-full mt-0.5 mb-2.5 sm:mb-3.5 relative z-10">
+                  <DashboardDateRange dateInfo={activeDateInfo} workingDays={displayStats?.workingDays} />
+                </div>
                 {/* ── MOBILE VIEW ONLY: Wireframe-matched Redesign Layout ── */}
                 <div className="md:hidden flex flex-col gap-2.5 relative z-10 px-0.5">
                   
@@ -1009,7 +1076,7 @@ export function DashboardContent({ month, isArchive = false }) {
                     <Card 
                       hover 
                       data-color={isNetProfit ? 'success' : 'danger'}
-                      className="p-4 sm:p-5 xl:p-6 rounded-2xl transition-all flex flex-col justify-between shadow-sm overflow-hidden"
+                      className="p-4 sm:p-5 xl:p-6 rounded-2xl transition-all flex flex-col justify-between shadow-sm md:shadow-[0_10px_25px_-4px_var(--shadow-color,rgba(0,0,0,0.12)),0_4px_10px_-2px_var(--shadow-color,rgba(0,0,0,0.06))] border-0 md:border-0 overflow-hidden"
                       style={{
                         backgroundColor: 'var(--color-bg-card)',
                         backgroundImage: isNetProfit 
@@ -1093,7 +1160,7 @@ export function DashboardContent({ month, isArchive = false }) {
                       <Card
                         hover
                         data-color="primary"
-                        className="p-3.5 sm:p-4 xl:p-5 rounded-2xl flex flex-col justify-between shadow-sm transition-all"
+                        className="p-3.5 sm:p-4 xl:p-5 rounded-2xl flex flex-col justify-between shadow-sm md:shadow-[0_10px_25px_-4px_var(--shadow-color,rgba(0,0,0,0.12)),0_4px_10px_-2px_var(--shadow-color,rgba(0,0,0,0.06))] border-0 md:border-0 transition-all"
                         style={{ backgroundColor: 'var(--color-bg-card)' }}
                       >
                         <div>
@@ -1118,7 +1185,7 @@ export function DashboardContent({ month, isArchive = false }) {
                       {/* Total Cost Card */}
                       <Card
                         hover
-                        className="p-3.5 sm:p-4 xl:p-5 rounded-2xl flex flex-col justify-between shadow-sm transition-all"
+                        className="p-3.5 sm:p-4 xl:p-5 rounded-2xl flex flex-col justify-between shadow-sm md:shadow-[0_10px_25px_-4px_var(--shadow-color,rgba(0,0,0,0.12)),0_4px_10px_-2px_var(--shadow-color,rgba(0,0,0,0.06))] border-0 md:border-0 transition-all"
                         style={{ backgroundColor: 'var(--color-bg-card)' }}
                       >
                         <div>
@@ -1148,7 +1215,7 @@ export function DashboardContent({ month, isArchive = false }) {
                     <Card
                       hover
                       data-color={displayStats.totalIncome >= displayStats.totalCost ? "success" : "primary"}
-                      className="p-4 sm:p-5 xl:p-6 rounded-2xl flex flex-col justify-between items-center shadow-sm relative overflow-hidden transition-all h-full"
+                      className="p-4 sm:p-5 xl:p-6 rounded-2xl flex flex-col justify-between items-center shadow-sm md:shadow-[0_10px_25px_-4px_var(--shadow-color,rgba(0,0,0,0.12)),0_4px_10px_-2px_var(--shadow-color,rgba(0,0,0,0.06))] border-0 md:border-0 relative overflow-hidden transition-all h-full"
                       style={{ backgroundColor: 'var(--color-bg-card)' }}
                     >
                       <CostRecoveryPie
@@ -1163,7 +1230,7 @@ export function DashboardContent({ month, isArchive = false }) {
                   <div className="md:col-span-6 lg:col-span-4 xl:col-span-4 flex flex-col">
                     <Card
                       hover
-                      className="p-4 sm:p-5 xl:p-6 rounded-2xl shadow-sm flex flex-col justify-between transition-all h-full"
+                      className="p-4 sm:p-5 xl:p-6 rounded-2xl shadow-sm md:shadow-[0_10px_25px_-4px_var(--shadow-color,rgba(0,0,0,0.12)),0_4px_10px_-2px_var(--shadow-color,rgba(0,0,0,0.06))] border-0 md:border-0 flex flex-col justify-between transition-all h-full"
                       style={{ backgroundColor: 'var(--color-bg-card)' }}
                     >
                       {/* Header Row: Title & Active Lines Counter */}
@@ -1291,7 +1358,13 @@ export function DashboardContent({ month, isArchive = false }) {
         {(() => {
           const activeLines = isArchive
             ? (lines || [])
-            : (selectedCardMonth === 'september' ? (septemberLines || lines || []) : (selectedCardMonth === 'august' ? (augustLines || lines || []) : (selectedCardMonth === 'july' ? (julyLines || lines || []) : (lines || []))));
+            : (selectedCardMonth === 'september' 
+                ? (septemberPaced?.lines || septemberLines || lines || []) 
+                : (selectedCardMonth === 'august' 
+                    ? (augustPaced?.lines || augustLines || lines || []) 
+                    : (selectedCardMonth === 'july' 
+                        ? (julyPaced?.lines || julyLines || lines || []) 
+                        : (lines || []))));
 
           const activeMonthName = isArchive
             ? (dateComponents?.month || 'Archive')
@@ -1302,20 +1375,26 @@ export function DashboardContent({ month, isArchive = false }) {
               return formatDateRangeInfo(startDate, endDate, dateComponents?.month, dateComponents?.year);
             }
             if (selectedCardMonth === 'september') {
-              return formatDateRangeInfo(null, null, 'september', '2026');
+              return septemberPaced?.dateInfo || formatDateRangeInfo(null, null, 'september', '2026');
             }
             if (selectedCardMonth === 'august') {
-              return formatDateRangeInfo(null, null, 'august', '2026');
+              return augustPaced?.dateInfo || formatDateRangeInfo(null, null, 'august', '2026');
             }
             if (selectedCardMonth === 'july') {
-              return formatDateRangeInfo(null, null, 'july', '2026');
+              return julyPaced?.dateInfo || formatDateRangeInfo(null, null, 'july', '2026');
             }
             return formatDateRangeInfo(startDate, endDate);
           })();
 
           const currentStatsForDate = isArchive
             ? stats
-            : (selectedCardMonth === 'september' ? septemberStats : (selectedCardMonth === 'august' ? augustStats : (selectedCardMonth === 'july' ? julyStats : stats)));
+            : (selectedCardMonth === 'september' 
+                ? (septemberPaced?.stats || septemberStats) 
+                : (selectedCardMonth === 'august' 
+                    ? (augustPaced?.stats || augustStats) 
+                    : (selectedCardMonth === 'july' 
+                        ? (julyPaced?.stats || julyStats) 
+                        : stats)));
 
           return (
             <div className="mt-12 mb-10 relative z-10">
@@ -1375,7 +1454,7 @@ export function DashboardContent({ month, isArchive = false }) {
                                 Optimal
                               </span>
                             ) : (
-                              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[2px] text-[8.5px] md:text-[9.5px] font-black uppercase tracking-widest border transition-all animate-emergency-strobe cursor-default">
+                              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[2px] text-[8.5px] md:text-[9.5px] font-black uppercase tracking-widest border md:border-0 transition-all animate-emergency-strobe cursor-default">
                                 <AmbulanceBeacon />
                                 <span>Critical</span>
                               </span>
