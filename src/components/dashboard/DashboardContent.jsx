@@ -320,7 +320,8 @@ function getPacedMonthData(dailyTrends, lines, rawEngine, targetDays) {
     lines: pacedLines,
     startDate,
     endDate,
-    dateInfo: formatDateRangeInfo(startDate, endDate)
+    dateInfo: formatDateRangeInfo(startDate, endDate),
+    slicedTrends
   };
 }
 
@@ -584,7 +585,9 @@ export function DashboardContent({ month, isArchive = false }) {
 
   const maxDays = dailyTrends?.length || 1;
   const displayDay = interactiveDay !== null ? interactiveDay : currentCalendarDay;
-  const currentDayData = dailyTrends && dailyTrends.length >= displayDay ? dailyTrends[displayDay - 1] : null;
+  const currentDayData = interactiveDay !== null
+    ? (dailyTrends?.find(d => parseInt(d.date?.split('-')[2], 10) === interactiveDay) || dailyTrends?.[interactiveDay - 1] || null)
+    : (dailyTrends && dailyTrends.length > 0 ? dailyTrends[dailyTrends.length - 1] : null);
 
   // ── LIKE-FOR-LIKE / PACE-MATCHED SLICES FOR PAST MONTHS ──
   const currentWorkingDays = stats?.workingDays > 0 ? stats.workingDays : (dailyTrends?.length || 10);
@@ -750,6 +753,7 @@ export function DashboardContent({ month, isArchive = false }) {
             let displayStats = stats;
             let activeActiveLines = lines || [];
             let activeComp = liveComparison;
+            let activeDailyTrends = dailyTrends;
 
             if (!isArchive) {
               if (selectedCardMonth === 'september' && (septemberPaced || septemberStats)) {
@@ -757,16 +761,19 @@ export function DashboardContent({ month, isArchive = false }) {
                 activeDateInfo = septemberPaced?.dateInfo || formatDateRangeInfo(null, null, 'september', '2026');
                 activeActiveLines = septemberPaced?.lines || septemberLines || lines || [];
                 activeComp = septemberComparison;
+                activeDailyTrends = septemberPaced?.slicedTrends || septemberDailyTrends;
               } else if (selectedCardMonth === 'august' && (augustPaced || augustStats)) {
                 displayStats = augustPaced?.stats || augustStats;
                 activeDateInfo = augustPaced?.dateInfo || formatDateRangeInfo(null, null, 'august', '2026');
                 activeActiveLines = augustPaced?.lines || augustLines || lines || [];
                 activeComp = augustComparison;
+                activeDailyTrends = augustPaced?.slicedTrends || augustDailyTrends;
               } else if (selectedCardMonth === 'july' && (julyPaced || julyStats)) {
                 displayStats = julyPaced?.stats || julyStats;
                 activeDateInfo = julyPaced?.dateInfo || formatDateRangeInfo(null, null, 'july', '2026');
                 activeActiveLines = julyPaced?.lines || julyLines || lines || [];
                 activeComp = julyComparison;
+                activeDailyTrends = julyPaced?.slicedTrends || julyDailyTrends;
               }
             }
 
@@ -787,6 +794,16 @@ export function DashboardContent({ month, isArchive = false }) {
             };
 
             const isPastMonth = !isArchive && selectedCardMonth !== 'current';
+            const activeDayTrend = interactiveDay !== null
+              ? (activeDailyTrends?.find(d => parseInt(d.date?.split('-')[2], 10) === interactiveDay) || activeDailyTrends?.[interactiveDay - 1] || null)
+              : (activeDailyTrends && activeDailyTrends.length > 0 ? activeDailyTrends[activeDailyTrends.length - 1] : null);
+
+            const activeDayProfit = activeDayTrend?.profit ?? 0;
+            const isTodayProfit = activeDayProfit >= 0;
+            const todayLabel = (isPastMonth || isArchive)
+              ? (isTodayProfit ? "Day's Profit" : "Day's Loss")
+              : (isTodayProfit ? "Today's Profit" : "Today's Loss");
+
             const daysComp = isArchive ? null : {
               highlight: `${displayStats?.workingDays || 0} Days`,
               label: isPastMonth ? `matching October pace (${displayStats?.workingDays} active days)` : `matching ${livePeriodLabel} pace`,

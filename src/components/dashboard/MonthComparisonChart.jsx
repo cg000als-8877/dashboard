@@ -61,6 +61,7 @@ function formatMetricVal(val, metricId) {
 
 export function MonthComparisonChart() {
   const [mounted, setMounted] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const [availableMonths, setAvailableMonths] = useState(DEFAULT_MONTHS);
   const [month1, setMonth1] = useState('live');
   const [month2, setMonth2] = useState('2026-09');
@@ -69,6 +70,9 @@ export function MonthComparisonChart() {
 
   useEffect(() => {
     setMounted(true);
+    const checkMobile = () => setIsMobile(window.innerWidth < 640);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
     fetch('/api/archive')
       .then(res => res.json())
       .then(data => {
@@ -88,6 +92,8 @@ export function MonthComparisonChart() {
         }
       })
       .catch(() => {});
+
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
   // Fetch data for the 4 core factory months (they share app memory cache)
@@ -242,29 +248,29 @@ export function MonthComparisonChart() {
   const color2 = "#F59E0B";
 
   return (
-    <Card className="flex flex-col relative z-20 p-4 md:p-6 bg-[var(--color-bg-card)] rounded-2xl shadow-sm md:shadow-[0_10px_25px_-4px_var(--shadow-color,rgba(0,0,0,0.12))] border-0 transition-all">
+    <Card className="flex flex-col relative z-20 p-3 sm:p-5 md:p-6 bg-[var(--color-bg-card)] rounded-2xl shadow-sm md:shadow-[0_10px_25px_-4px_var(--shadow-color,rgba(0,0,0,0.12))] border-0 transition-all">
       {/* Top Controls Header */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-5">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 sm:gap-4 mb-3 sm:mb-4">
         <div>
-          <h2 className="text-sm md:text-base font-black tracking-normal uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] to-[var(--color-text-secondary)] leading-tight">
+          <h2 className="text-xs sm:text-sm md:text-base font-bold tracking-normal uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] to-[var(--color-text-secondary)] leading-tight">
             MONTH-TO-MONTH COMPARISON
           </h2>
-          <p className="text-[11px] md:text-xs text-[var(--color-text-muted)] font-medium mt-0.5">
+          <p className="text-[10px] sm:text-xs text-[var(--color-text-muted)] font-normal mt-0.5">
             Compare financial velocity, operational cost, and output volume across any two months
           </p>
         </div>
 
-        {/* Dropdown Selectors */}
-        <div className="flex items-center flex-wrap gap-2">
+        {/* Dropdown Selectors: Mobile Stacked Full-Width with Floating Modern VS Badge | Desktop Inline Row */}
+        <div className="relative w-full lg:w-auto flex flex-col lg:flex-row lg:items-center gap-2.5 lg:gap-2">
           {/* Base Month Selector */}
-          <div className="flex items-center gap-1.5 bg-[var(--color-surface)] px-2.5 py-1.5 rounded-xl">
-            <span className="text-[9.5px] uppercase font-bold text-[var(--color-text-muted)] tracking-wider select-none">
+          <div className="w-full lg:w-auto flex items-center gap-2 bg-[var(--color-surface)] px-3 sm:px-3.5 py-2 sm:py-2.5 rounded-xl border-0 shadow-xs">
+            <span className="text-[9px] sm:text-[9.5px] uppercase font-bold text-[var(--color-text-muted)] tracking-wider shrink-0 select-none">
               Base:
             </span>
             <select
               value={month1}
               onChange={(e) => setMonth1(e.target.value)}
-              className="bg-transparent text-[var(--color-text-main)] font-bold text-xs uppercase tracking-wider border-0 outline-none cursor-pointer focus:ring-0 select-none pr-1"
+              className="bg-transparent text-[var(--color-text-main)] font-bold text-xs uppercase tracking-wider border-0 outline-none cursor-pointer focus:ring-0 select-none w-full min-w-0 pr-1"
             >
               {availableMonths.map(m => (
                 <option key={m.id} value={m.id} className="bg-[var(--color-bg-card)] text-[var(--color-text-main)]">
@@ -274,19 +280,24 @@ export function MonthComparisonChart() {
             </select>
           </div>
 
-          <span className="text-[11px] font-black uppercase text-[var(--color-text-muted)] px-1 select-none">
-            VS
-          </span>
+          {/* Floating Modern VS Badge on Mobile, Clean Separator on Desktop */}
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 lg:static lg:translate-x-0 lg:translate-y-0 pointer-events-none select-none">
+            <div className="flex items-center justify-center w-[26px] h-[26px] sm:w-7 sm:h-7 lg:w-auto lg:h-auto rounded-full bg-[var(--color-bg-card)] lg:bg-transparent border border-[var(--color-border)]/60 lg:border-0 shadow-[0_2px_8px_rgba(0,0,0,0.14)] lg:shadow-none">
+              <span className="text-[8.5px] sm:text-[9px] lg:text-[11px] font-black uppercase tracking-wider text-[var(--color-text-secondary)] lg:text-[var(--color-text-muted)] lg:px-1">
+                VS
+              </span>
+            </div>
+          </div>
 
           {/* Comparison Month Selector */}
-          <div className="flex items-center gap-1.5 bg-[var(--color-surface)] px-2.5 py-1.5 rounded-xl">
-            <span className="text-[9.5px] uppercase font-bold text-[var(--color-text-muted)] tracking-wider select-none">
+          <div className="w-full lg:w-auto flex items-center gap-2 bg-[var(--color-surface)] px-3 sm:px-3.5 py-2 sm:py-2.5 rounded-xl border-0 shadow-xs">
+            <span className="text-[9px] sm:text-[9.5px] uppercase font-bold text-[var(--color-text-muted)] tracking-wider shrink-0 select-none">
               Compare:
             </span>
             <select
               value={month2}
               onChange={(e) => setMonth2(e.target.value)}
-              className="bg-transparent text-[var(--color-text-main)] font-bold text-xs uppercase tracking-wider border-0 outline-none cursor-pointer focus:ring-0 select-none pr-1"
+              className="bg-transparent text-[var(--color-text-main)] font-bold text-xs uppercase tracking-wider border-0 outline-none cursor-pointer focus:ring-0 select-none w-full min-w-0 pr-1"
             >
               {availableMonths.map(m => (
                 <option key={m.id} value={m.id} className="bg-[var(--color-bg-card)] text-[var(--color-text-main)]">
@@ -299,19 +310,19 @@ export function MonthComparisonChart() {
       </div>
 
       {/* Metric Selector Pills & View Modes Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 mb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3 sm:mb-4">
         {/* Metric Switcher Pills */}
-        <div className="flex items-center flex-wrap gap-1 bg-[var(--color-surface)] p-1 rounded-xl">
+        <div className="grid grid-cols-4 gap-0.5 sm:gap-1 bg-[var(--color-surface)] p-1 rounded-xl w-full sm:w-auto">
           {METRICS.map(m => (
             <button
               key={m.id}
               type="button"
               onClick={() => setActiveMetric(m.id)}
               className={cn(
-                "px-2.5 py-1 rounded-lg text-[10px] md:text-xs font-bold uppercase tracking-wider transition-all border-0 cursor-pointer select-none",
+                "px-1.5 sm:px-3 py-1.5 rounded-lg text-[9px] sm:text-xs font-bold uppercase tracking-wider transition-all border-0 cursor-pointer select-none text-center truncate",
                 activeMetric === m.id
                   ? "bg-[var(--color-primary)] text-[var(--color-on-primary,white)] shadow-xs"
-                  : "bg-transparent text-[var(--color-text-muted)] hover:text-[var(--color-text-main)]"
+                  : "bg-transparent text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)]"
               )}
             >
               {m.label}
@@ -320,17 +331,17 @@ export function MonthComparisonChart() {
         </div>
 
         {/* View Mode Pills */}
-        <div className="flex items-center gap-1 bg-[var(--color-surface)] p-1 rounded-xl self-start sm:self-auto">
+        <div className="grid grid-cols-3 gap-0.5 sm:gap-1 bg-[var(--color-surface)] p-1 rounded-xl w-full sm:w-auto">
           {VIEW_MODES.map(v => (
             <button
               key={v.id}
               type="button"
               onClick={() => setViewMode(v.id)}
               className={cn(
-                "px-2 py-1 rounded-lg text-[9.5px] md:text-[11px] font-bold uppercase tracking-wider transition-all border-0 cursor-pointer select-none",
+                "px-1 sm:px-2.5 py-1.5 rounded-lg text-[8.5px] sm:text-[10.5px] font-bold uppercase tracking-wider transition-all border-0 cursor-pointer select-none text-center truncate",
                 viewMode === v.id
-                  ? "bg-[var(--color-bg-card)] text-[var(--color-text-main)] shadow-xs"
-                  : "bg-transparent text-[var(--color-text-muted)] hover:text-[var(--color-text-main)]"
+                  ? "bg-white text-gray-900 md:bg-[var(--color-bg-card)] md:text-[var(--color-text-main)] shadow-xs"
+                  : "bg-transparent text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)]"
               )}
             >
               {v.label}
@@ -340,67 +351,79 @@ export function MonthComparisonChart() {
       </div>
 
       {/* KPI Comparison Summary Badges (No strokes, no icons) */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 mb-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-1.5 sm:gap-2 mb-3 sm:mb-4">
         {/* Badge 1: Base Month Total */}
-        <div className="bg-[var(--color-surface)] p-2.5 sm:p-3 rounded-xl flex flex-col justify-between border-0 shadow-xs">
-          <span className="text-[9.5px] uppercase font-bold text-[var(--color-text-muted)] tracking-wider truncate">
+        <div className="bg-[var(--color-surface)] p-2 sm:p-3 rounded-xl flex flex-col justify-between border-0 shadow-xs">
+          <span className="text-[8.5px] sm:text-[9.5px] uppercase font-bold text-[var(--color-text-muted)] tracking-wider truncate">
             {m1Meta.short} Total
           </span>
-          <p className="text-xs sm:text-sm md:text-base font-black text-[var(--color-primary)] tracking-tight mt-1 truncate">
+          <p className="text-xs sm:text-sm md:text-base font-black text-[var(--color-primary)] tracking-tight mt-0.5 truncate">
             {formatMetricVal(m1Total, activeMetric)}
           </p>
-          <span className="text-[8.5px] font-medium text-[var(--color-text-muted)] uppercase tracking-wider mt-0.5">
+          <span className="text-[8px] sm:text-[8.5px] font-medium text-[var(--color-text-muted)] uppercase tracking-wider mt-0.5 truncate">
             {m1Payload?.stats?.workingDays || 0} active days
           </span>
         </div>
 
         {/* Badge 2: Comparison Month Total */}
-        <div className="bg-[var(--color-surface)] p-2.5 sm:p-3 rounded-xl flex flex-col justify-between border-0 shadow-xs">
-          <span className="text-[9.5px] uppercase font-bold text-[var(--color-text-muted)] tracking-wider truncate">
+        <div className="bg-[var(--color-surface)] p-2 sm:p-3 rounded-xl flex flex-col justify-between border-0 shadow-xs">
+          <span className="text-[8.5px] sm:text-[9.5px] uppercase font-bold text-[var(--color-text-muted)] tracking-wider truncate">
             {m2Meta.short} Total
           </span>
-          <p className="text-xs sm:text-sm md:text-base font-black text-[#F59E0B] tracking-tight mt-1 truncate">
+          <p className="text-xs sm:text-sm md:text-base font-black text-[#F59E0B] tracking-tight mt-0.5 truncate">
             {formatMetricVal(m2Total, activeMetric)}
           </p>
-          <span className="text-[8.5px] font-medium text-[var(--color-text-muted)] uppercase tracking-wider mt-0.5">
+          <span className="text-[8px] sm:text-[8.5px] font-medium text-[var(--color-text-muted)] uppercase tracking-wider mt-0.5 truncate">
             {m2Payload?.stats?.workingDays || 0} active days
           </span>
         </div>
 
         {/* Badge 3: Variance / Delta */}
-        <div className="bg-[var(--color-surface)] p-2.5 sm:p-3 rounded-xl flex flex-col justify-between border-0 shadow-xs">
-          <span className="text-[9.5px] uppercase font-bold text-[var(--color-text-muted)] tracking-wider truncate">
+        <div className="bg-[var(--color-surface)] p-2 sm:p-3 rounded-xl flex flex-col justify-between border-0 shadow-xs">
+          <span className="text-[8.5px] sm:text-[9.5px] uppercase font-bold text-[var(--color-text-muted)] tracking-wider truncate">
             Variance Gap
           </span>
           <p className={cn(
-            "text-xs sm:text-sm md:text-base font-black tracking-tight mt-1 truncate",
+            "text-xs sm:text-sm md:text-base font-black tracking-tight mt-0.5 truncate",
             activeMetric === 'cost'
               ? (varianceDiff < 0 ? "text-[var(--color-success-text)]" : "text-[var(--color-danger-text)]")
               : (varianceDiff >= 0 ? "text-[var(--color-success-text)]" : "text-[var(--color-danger-text)]")
           )}>
             {variancePct > 0 ? `+${variancePct}%` : `${variancePct}%`}
           </p>
-          <span className="text-[8.5px] font-medium text-[var(--color-text-muted)] uppercase tracking-wider mt-0.5 truncate">
+          <span className="text-[8px] sm:text-[8.5px] font-medium text-[var(--color-text-muted)] uppercase tracking-wider mt-0.5 truncate">
             {formatMetricVal(varianceDiff, activeMetric)} diff
           </span>
         </div>
 
         {/* Badge 4: Like-for-Like Working Days Pace */}
-        <div className="bg-[var(--color-surface)] p-2.5 sm:p-3 rounded-xl flex flex-col justify-between border-0 shadow-xs">
-          <span className="text-[9.5px] uppercase font-bold text-[var(--color-text-muted)] tracking-wider truncate">
+        <div className="bg-[var(--color-surface)] p-2 sm:p-3 rounded-xl flex flex-col justify-between border-0 shadow-xs">
+          <span className="text-[8.5px] sm:text-[9.5px] uppercase font-bold text-[var(--color-text-muted)] tracking-wider truncate">
             Like-For-Like Pace
           </span>
-          <p className="text-xs sm:text-sm md:text-base font-black text-[var(--color-text-main)] tracking-tight mt-1 truncate">
+          <p className="text-xs sm:text-sm md:text-base font-black text-[var(--color-text-main)] tracking-tight mt-0.5 truncate">
             {formatMetricVal(m1PacedTotal, activeMetric)}
           </p>
-          <span className="text-[8.5px] font-medium text-[var(--color-text-muted)] uppercase tracking-wider mt-0.5 truncate">
+          <span className="text-[8px] sm:text-[8.5px] font-medium text-[var(--color-text-muted)] uppercase tracking-wider mt-0.5 truncate">
             vs {formatMetricVal(m2PacedTotal, activeMetric)} matched
           </span>
         </div>
       </div>
 
+      {/* Custom DOM Legend placed cleanly above graph (prevents card overlap) */}
+      <div className="flex items-center justify-end gap-3 sm:gap-4 mb-2 px-1 text-[9px] sm:text-xs font-bold uppercase tracking-wider select-none">
+        <div className="flex items-center gap-1.5">
+          <span className="w-2 h-2 rounded-full shrink-0 shadow-xs" style={{ backgroundColor: color1 }} />
+          <span className="text-[var(--color-text-main)] truncate max-w-[130px] sm:max-w-none">{m1Meta.name}</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <span className="w-2 h-2 rounded-full shrink-0 shadow-xs" style={{ backgroundColor: color2 }} />
+          <span className="text-[var(--color-text-main)] truncate max-w-[130px] sm:max-w-none">{m2Meta.name}</span>
+        </div>
+      </div>
+
       {/* Main Graph Container */}
-      <div className="w-full h-[320px] sm:h-[350px] min-h-[260px] relative z-10">
+      <div className="w-full h-[270px] sm:h-[340px] min-h-[210px] min-w-0 relative z-10 outline-none select-none focus:outline-none focus:ring-0 [&_*]:outline-none [&_*]:focus:outline-none [&_*]:focus:ring-0 [-webkit-tap-highlight-color:transparent]">
         {!mounted ? (
           <div className="w-full h-full flex items-center justify-center bg-[var(--color-surface)] rounded-xl border-0 animate-pulse">
             <span className="text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-widest">
@@ -409,22 +432,22 @@ export function MonthComparisonChart() {
           </div>
         ) : viewMode === 'totals' ? (
           /* Totals Overview Bar Chart */
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={totalsData} margin={{ top: 15, right: 10, left: -20, bottom: 0 }}>
+          <ResponsiveContainer width="100%" height="100%" debounce={50} style={{ outline: 'none' }}>
+            <BarChart accessibilityLayer={false} style={{ outline: 'none' }} data={totalsData} margin={{ top: 10, right: 8, left: -24, bottom: 0 }}>
               <CartesianGrid strokeDasharray="4 4" stroke="var(--color-border)" vertical={false} opacity={0.5} />
               <XAxis 
                 dataKey="category" 
                 stroke="var(--color-border)" 
                 tickLine={false} 
                 axisLine={false} 
-                tick={{ fontSize: 10, fill: 'var(--color-text-muted)', fontWeight: 600 }}
-                dy={10}
+                tick={{ fontSize: 9, fill: 'var(--color-text-muted)', fontWeight: 600 }}
+                dy={6}
               />
               <YAxis 
                 stroke="var(--color-border)" 
                 tickLine={false} 
                 axisLine={false} 
-                tick={{ fontSize: 10, fill: 'var(--color-text-muted)', fontWeight: 500 }}
+                tick={{ fontSize: 9, fill: 'var(--color-text-muted)', fontWeight: 500 }}
                 tickFormatter={(val) => {
                   if (Math.abs(val) >= 1000000) return `${Math.round(val / 1000000)}M`;
                   if (Math.abs(val) >= 1000) return `${Math.round(val / 1000)}k`;
@@ -438,35 +461,30 @@ export function MonthComparisonChart() {
                   border: 'none', 
                   borderRadius: '12px', 
                   boxShadow: '0 8px 30px rgba(0,0,0,0.25)',
-                  padding: '10px 14px'
+                  padding: '8px 12px'
                 }}
-                itemStyle={{ fontSize: '11.5px', fontWeight: 'bold' }}
-                labelStyle={{ color: 'var(--color-text-muted)', marginBottom: '6px', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 'bold' }}
+                itemStyle={{ fontSize: '11px', fontWeight: 'bold' }}
+                labelStyle={{ color: 'var(--color-text-muted)', marginBottom: '4px', fontSize: '9.5px', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 'bold' }}
                 formatter={(val, name) => [
                   name.includes(m1Meta.short) ? formatMetricVal(val, 'profit') : formatMetricVal(val, 'profit'),
                   name
                 ]}
               />
-              <Legend 
-                verticalAlign="top" 
-                align="right" 
-                wrapperStyle={{ top: -35, right: 0, fontSize: '11px', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '0.05em' }}
-              />
-              <Bar dataKey="val1" name={m1Meta.name} fill={color1} radius={[4, 4, 0, 0]} />
-              <Bar dataKey="val2" name={m2Meta.name} fill={color2} radius={[4, 4, 0, 0]} />
+              <Bar dataKey="val1" name={m1Meta.name} fill={color1} radius={[4, 4, 0, 0]} isAnimationActive={!isMobile} />
+              <Bar dataKey="val2" name={m2Meta.name} fill={color2} radius={[4, 4, 0, 0]} isAnimationActive={!isMobile} />
             </BarChart>
           </ResponsiveContainer>
         ) : (
           /* Daily Progression or Cumulative Pace Area Chart */
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={chartData} margin={{ top: 15, right: 10, left: -20, bottom: 0 }}>
+          <ResponsiveContainer width="100%" height="100%" debounce={50} style={{ outline: 'none' }}>
+            <AreaChart accessibilityLayer={false} style={{ outline: 'none' }} data={chartData} margin={{ top: 10, right: 8, left: -24, bottom: 0 }}>
               <defs>
                 <linearGradient id="cmpGradM1" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor={color1} stopOpacity={0.3} />
+                  <stop offset="5%" stopColor={color1} stopOpacity={0.2} />
                   <stop offset="95%" stopColor={color1} stopOpacity={0.0} />
                 </linearGradient>
                 <linearGradient id="cmpGradM2" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor={color2} stopOpacity={0.25} />
+                  <stop offset="5%" stopColor={color2} stopOpacity={0.18} />
                   <stop offset="95%" stopColor={color2} stopOpacity={0.0} />
                 </linearGradient>
               </defs>
@@ -476,15 +494,16 @@ export function MonthComparisonChart() {
                 stroke="var(--color-border)" 
                 tickLine={false} 
                 axisLine={false} 
-                tick={{ fontSize: 10, fill: 'var(--color-text-muted)', fontWeight: 500 }}
+                interval={isMobile ? 2 : 1}
+                tick={{ fontSize: 9, fill: 'var(--color-text-muted)', fontWeight: 500 }}
                 tickFormatter={(d) => `D${d}`}
-                dy={10}
+                dy={6}
               />
               <YAxis 
                 stroke="var(--color-border)" 
                 tickLine={false} 
                 axisLine={false} 
-                tick={{ fontSize: 10, fill: 'var(--color-text-muted)', fontWeight: 500 }}
+                tick={{ fontSize: 9, fill: 'var(--color-text-muted)', fontWeight: 500 }}
                 tickFormatter={(val) => {
                   if (Math.abs(val) >= 1000000) return `${Math.round(val / 1000000)}M`;
                   if (Math.abs(val) >= 1000) return `${Math.round(val / 1000)}k`;
@@ -498,42 +517,39 @@ export function MonthComparisonChart() {
                   border: 'none', 
                   borderRadius: '12px', 
                   boxShadow: '0 8px 30px rgba(0,0,0,0.25)',
-                  padding: '10px 14px'
+                  padding: '8px 12px'
                 }}
-                itemStyle={{ fontSize: '11.5px', fontWeight: 'bold' }}
-                labelStyle={{ color: 'var(--color-text-muted)', marginBottom: '6px', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 'bold' }}
+                itemStyle={{ fontSize: '11px', fontWeight: 'bold' }}
+                labelStyle={{ color: 'var(--color-text-muted)', marginBottom: '4px', fontSize: '9.5px', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 'bold' }}
                 formatter={(val, name) => [
                   formatMetricVal(val, activeMetric),
                   name
                 ]}
                 labelFormatter={(label) => `Calendar Day ${label}`}
               />
-              <Legend 
-                verticalAlign="top" 
-                align="right" 
-                wrapperStyle={{ top: -35, right: 0, fontSize: '11px', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '0.05em' }}
-              />
               <Area 
                 type="monotone" 
                 dataKey={viewMode === 'cumulative' ? 'val1Cum' : 'val1Daily'} 
                 name={m1Meta.name} 
                 stroke={color1} 
-                strokeWidth={2.5} 
+                strokeWidth={isMobile ? 1.5 : 2} 
                 fillOpacity={1} 
                 fill="url(#cmpGradM1)" 
                 connectNulls={false}
-                activeDot={{ r: 4.5, strokeWidth: 0, fill: color1 }} 
+                isAnimationActive={!isMobile}
+                activeDot={{ r: 3.5, strokeWidth: 0, fill: color1 }} 
               />
               <Area 
                 type="monotone" 
                 dataKey={viewMode === 'cumulative' ? 'val2Cum' : 'val2Daily'} 
                 name={m2Meta.name} 
                 stroke={color2} 
-                strokeWidth={2.5} 
+                strokeWidth={isMobile ? 1.5 : 2} 
                 fillOpacity={1} 
                 fill="url(#cmpGradM2)" 
                 connectNulls={false}
-                activeDot={{ r: 4.5, strokeWidth: 0, fill: color2 }} 
+                isAnimationActive={!isMobile}
+                activeDot={{ r: 3.5, strokeWidth: 0, fill: color2 }} 
               />
             </AreaChart>
           </ResponsiveContainer>

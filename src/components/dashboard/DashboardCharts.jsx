@@ -22,9 +22,9 @@ export function DailyPerformanceChart({ data }) {
           {isLoss ? "Daily Net Loss" : "Daily Net Profit"}
         </h3>
       </div>
-      <div className="flex-1 w-full h-full min-h-[200px]">
-        <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={formattedData} margin={{ top: 5, right: 0, left: -25, bottom: 0 }}>
+      <div className="flex-1 w-full h-full min-h-[200px] outline-none select-none focus:outline-none focus:ring-0 [&_*]:outline-none [&_*]:focus:outline-none">
+        <ResponsiveContainer width="100%" height="100%" style={{ outline: 'none' }}>
+          <AreaChart accessibilityLayer={false} style={{ outline: 'none' }} data={formattedData} margin={{ top: 5, right: 0, left: -25, bottom: 0 }}>
             <defs>
               <linearGradient id="colorProfit" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor={color} stopOpacity={0.25}/>
@@ -88,9 +88,9 @@ export function IncomeVsCostChart({ data }) {
           Income vs Cost
         </h3>
       </div>
-      <div className="flex-1 w-full h-full min-h-[200px]">
-        <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={formattedData} margin={{ top: 5, right: 0, left: -25, bottom: 0 }}>
+      <div className="flex-1 w-full h-full min-h-[200px] outline-none select-none focus:outline-none focus:ring-0 [&_*]:outline-none [&_*]:focus:outline-none">
+        <ResponsiveContainer width="100%" height="100%" style={{ outline: 'none' }}>
+          <AreaChart accessibilityLayer={false} style={{ outline: 'none' }} data={formattedData} margin={{ top: 5, right: 0, left: -25, bottom: 0 }}>
             <defs>
               <linearGradient id="colorIncome" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor="var(--color-primary)" stopOpacity={0.25}/>
@@ -154,9 +154,9 @@ export function MonthlyProfitBarChart({ data }) {
       <div className="flex justify-between items-center mb-6">
         <h3 className="text-[11px] font-bold text-[var(--color-text-secondary)] uppercase tracking-[0.2em]">Monthly Profit Trend</h3>
       </div>
-      <div className="flex-1 w-full h-full min-h-[200px]">
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={formattedData} margin={{ top: 5, right: 0, left: -25, bottom: 0 }}>
+      <div className="flex-1 w-full h-full min-h-[200px] outline-none select-none focus:outline-none focus:ring-0 [&_*]:outline-none [&_*]:focus:outline-none">
+        <ResponsiveContainer width="100%" height="100%" style={{ outline: 'none' }}>
+          <BarChart accessibilityLayer={false} style={{ outline: 'none' }} data={formattedData} margin={{ top: 5, right: 0, left: -25, bottom: 0 }}>
             <CartesianGrid strokeDasharray="4 4" stroke="var(--color-border)" vertical={false} opacity={0.6} />
             <XAxis 
               dataKey="day" 
