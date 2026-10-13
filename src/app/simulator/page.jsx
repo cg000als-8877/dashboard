@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useKpiData } from '@/utils/useKpiData';
 import { MetricCard, Card } from '@/components/ui/Card';
 import { TitanicAnimation } from '@/components/ui/TitanicAnimation';
@@ -9,10 +9,23 @@ import { SimulatorSkeleton } from '@/components/ui/Skeletons';
 import { cn } from '@/components/layout/Sidebar';
 
 export default function SimulatorPage() {
-  const { stats, loading, error } = useKpiData();
-  const [simMode, setSimMode] = useState('profit'); // 'profit', 'neutral', 'loss'
-  const [simDay, setSimDay] = useState(1); // 1 to 31
+  const { stats, dailyTrends, loading, error } = useKpiData();
+  const [simMode, setSimMode] = useState('loss'); // default to 'loss' mode
+  const [simDay, setSimDay] = useState(13); // default to 13 (Oct 13th)
   const [isExplanationExpanded, setIsExplanationExpanded] = useState(true); // default open
+
+  // Keep simulator on the exact current day from website data (e.g. Oct 13th)
+  useEffect(() => {
+    if (dailyTrends && dailyTrends.length > 0) {
+      const lastEntry = dailyTrends[dailyTrends.length - 1];
+      if (lastEntry?.date) {
+        const day = parseInt(lastEntry.date.split('-')[2], 10);
+        if (!isNaN(day) && day >= 1 && day <= 31) {
+          setSimDay(day);
+        }
+      }
+    }
+  }, [dailyTrends]);
 
   if (loading) {
     return <SimulatorSkeleton />;
@@ -79,7 +92,7 @@ export default function SimulatorPage() {
       <Card className="bg-[rgba(79,140,255,0.05)] border-[var(--color-primary)]/40 shadow-[0_0_30px_rgba(79,140,255,0.08)]">
         <div className="flex flex-col md:flex-row gap-2 md:gap-8 items-start">
           
-          <div className="flex-1">
+          <div className="flex-1 w-full">
             <div className="hidden md:flex items-center gap-3 mb-4">
               <div className="bg-[var(--color-primary)] p-2 rounded-lg text-[var(--color-on-primary)]">
                 <Settings size={20} />
@@ -90,26 +103,29 @@ export default function SimulatorPage() {
               Manually override the ship's state. Watch how the physics engine reacts to different scenarios, from full steam ahead to catastrophic failure.
             </p>
 
-            <div className="flex flex-row gap-2 md:gap-4 mb-2 md:mb-8 w-full justify-between items-center">
+            <div className="w-full grid grid-cols-3 gap-[2px] md:gap-4 mb-3 md:mb-8 items-stretch">
               <button 
+                type="button"
                 onClick={() => setSimMode('profit')}
-                className={`flex-1 flex flex-col sm:flex-row justify-center items-center gap-1 sm:gap-2 py-2.5 px-1 sm:px-4 rounded-xl font-bold text-[9px] sm:text-xs md:text-base whitespace-nowrap transition-all duration-300 active:scale-95 cursor-pointer ${simMode === 'profit' ? 'bg-[var(--color-success)] text-[var(--color-on-success)] [box-shadow:0_0_20px_var(--color-success-glow)]' : 'bg-[var(--color-bg-main)] text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)]'}`}
+                className={`w-full flex flex-col sm:flex-row justify-center items-center gap-1 sm:gap-2 py-2.5 px-1 sm:px-4 rounded-xl font-bold text-[10px] sm:text-xs md:text-base whitespace-nowrap transition-all duration-300 active:scale-95 cursor-pointer select-none ${simMode === 'profit' ? 'bg-[var(--color-success)] text-[var(--color-on-success)] [box-shadow:0_0_20px_var(--color-success-glow)]' : 'bg-[var(--color-bg-main)] text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)]'}`}
               >
                 <Play className="w-3.5 h-3.5 md:w-4 md:h-4 shrink-0" />
                 <span className="truncate">Profit Mode</span>
               </button>
               
               <button 
+                type="button"
                 onClick={() => setSimMode('neutral')}
-                className={`flex-1 flex flex-col sm:flex-row justify-center items-center gap-1 sm:gap-2 py-2.5 px-1 sm:px-4 rounded-xl font-bold text-[9px] sm:text-xs md:text-base whitespace-nowrap transition-all duration-300 active:scale-95 cursor-pointer ${simMode === 'neutral' ? 'bg-[var(--color-warning)] text-[var(--color-on-warning)] [box-shadow:0_0_20px_var(--color-warning-glow)]' : 'bg-[var(--color-bg-main)] text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)]'}`}
+                className={`w-full flex flex-col sm:flex-row justify-center items-center gap-1 sm:gap-2 py-2.5 px-1 sm:px-4 rounded-xl font-bold text-[10px] sm:text-xs md:text-base whitespace-nowrap transition-all duration-300 active:scale-95 cursor-pointer select-none ${simMode === 'neutral' ? 'bg-[var(--color-warning)] text-[var(--color-on-warning)] [box-shadow:0_0_20px_var(--color-warning-glow)]' : 'bg-[var(--color-bg-main)] text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)]'}`}
               >
                 <Anchor className="w-3.5 h-3.5 md:w-4 md:h-4 shrink-0" />
                 <span className="truncate">Neutral Mode</span>
               </button>
               
               <button 
-                onClick={() => { setSimMode('loss'); setSimDay(1); }}
-                className={`flex-1 flex flex-col sm:flex-row justify-center items-center gap-1 sm:gap-2 py-2.5 px-1 sm:px-4 rounded-xl font-bold text-[9px] sm:text-xs md:text-base whitespace-nowrap transition-all duration-300 active:scale-95 cursor-pointer ${simMode === 'loss' ? 'bg-[var(--color-danger)] text-[var(--color-on-danger)] [box-shadow:0_0_20px_var(--color-danger-glow)]' : 'bg-[var(--color-bg-main)] text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)]'}`}
+                type="button"
+                onClick={() => setSimMode('loss')}
+                className={`w-full flex flex-col sm:flex-row justify-center items-center gap-1 sm:gap-2 py-2.5 px-1 sm:px-4 rounded-xl font-bold text-[10px] sm:text-xs md:text-base whitespace-nowrap transition-all duration-300 active:scale-95 cursor-pointer select-none ${simMode === 'loss' ? 'bg-[var(--color-danger)] text-[var(--color-on-danger)] [box-shadow:0_0_20px_var(--color-danger-glow)]' : 'bg-[var(--color-bg-main)] text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)]'}`}
               >
                 <AlertTriangle className="w-3.5 h-3.5 md:w-4 md:h-4 shrink-0" />
                 <span className="truncate">Loss Mode</span>

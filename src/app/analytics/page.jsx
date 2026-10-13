@@ -3,7 +3,6 @@
 import { useKpiData } from '@/utils/useKpiData';
 import { DailyPerformanceChart, IncomeVsCostChart, MonthlyProfitBarChart } from '@/components/dashboard/DashboardCharts';
 import { MonthComparisonChart } from '@/components/dashboard/MonthComparisonChart';
-import { Card } from '@/components/ui/Card';
 import { AnalyticsSkeleton } from '@/components/ui/Skeletons';
 
 export default function Analytics() {
@@ -40,17 +39,6 @@ export default function Analytics() {
 
       {/* Month-to-Month Comparative Analytics Graph */}
       <MonthComparisonChart />
-      
-      {/* Production Metrics Breakdown */}
-      <Card className="relative overflow-hidden border-0 shadow-sm">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500 opacity-[0.03] rounded-full blur-3xl pointer-events-none"></div>
-        <h3 className="text-xs md:text-sm font-bold text-[var(--color-text-secondary)] uppercase tracking-widest mb-3">
-          Production Metrics Breakdown
-        </h3>
-        <p className="text-sm font-light text-[var(--color-text-muted)] leading-relaxed max-w-3xl">
-          Detailed telemetry, CM Distribution, and active worker distributions will be visualized in this module utilizing advanced 3D or pie-chart rendering engines.
-        </p>
-      </Card>
     </div>
   );
 }

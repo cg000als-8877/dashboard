@@ -49,7 +49,7 @@ function ArchiveMonthCard({ month }) {
           <div className="flex items-center gap-3">
             <h2 className="text-lg sm:text-xl font-semibold text-[var(--color-text-main)] font-display">{month.name}</h2>
             {month.isRunning && (
-              <span className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-cyan-700 dark:text-cyan-400 bg-cyan-500/10 px-2.5 py-0.5 rounded-full">
+              <span className="hidden sm:flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-cyan-700 dark:text-cyan-400 bg-cyan-500/10 px-2.5 py-0.5 rounded-full">
                 <span className="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-pulse" /> Running
               </span>
             )}
@@ -76,7 +76,16 @@ function ArchiveMonthCard({ month }) {
               ? 'bg-rose-600 text-[var(--color-on-danger)] shadow-[0_0_15px_rgba(244,63,94,0.35)] group-hover:shadow-[0_0_25px_rgba(244,63,94,0.5)] group-hover:bg-rose-500'
               : 'bg-emerald-600 text-[var(--color-on-success)] shadow-[0_0_15px_rgba(16,185,129,0.35)] group-hover:shadow-[0_0_25px_rgba(16,185,129,0.5)] group-hover:bg-emerald-500'}
           `}>
-            <span>SEE DETAILS</span>
+            <span>
+              {month.isRunning ? (
+                <>
+                  <span className="sm:hidden">LIVE | </span>
+                  <span>SEE DETAILS</span>
+                </>
+              ) : (
+                'SEE DETAILS'
+              )}
+            </span>
             <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
           </div>
         </div>

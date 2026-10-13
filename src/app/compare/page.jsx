@@ -4,13 +4,14 @@ import React, { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/Card';
 import { useKpiData } from '@/utils/useKpiData';
 import { createKpiEngine } from '@/utils/kpiEngine';
-import { GitCompare, Clock, Calendar as CalendarIcon, TrendingUp, Sparkles, AlertTriangle, HelpCircle, LayoutDashboard, Calendar } from 'lucide-react';
 import {
   LineChart, Line, BarChart, Bar, RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
 } from 'recharts';
 
-const cn = (...classes) => classes.filter(Boolean).join(" ");
+function cn(...classes) {
+  return classes.filter(Boolean).join(" ");
+}
 
 const LINE_META = {
   'A': { color: '#10B981', name: 'LINE A' },
@@ -24,20 +25,20 @@ function ShimmerBlock({ className = "" }) {
   return <div className={`shimmer rounded-md ${className}`} />;
 }
 
-// Custom Page Skeleton
+// Custom Page Skeleton (Stroke-free)
 function CompareSkeleton() {
   return (
     <div className="space-y-6 animate-pulse">
-      <div className="space-y-2">
-        <ShimmerBlock className="h-8 w-48 bg-[var(--color-text-muted)]/30" />
-        <ShimmerBlock className="h-4 w-64 bg-[var(--color-text-muted)]/15" />
+      <div className="space-y-1.5 flex flex-col items-center sm:items-start text-center sm:text-left">
+        <ShimmerBlock className="h-6 w-48 bg-[var(--color-text-muted)]/30 rounded-lg" />
+        <ShimmerBlock className="h-3.5 w-64 bg-[var(--color-text-muted)]/15 rounded-lg" />
       </div>
-      <div className="flex gap-2 border-b border-[var(--color-border)] pb-1.5">
+      <div className="flex justify-center sm:justify-start gap-1.5 pb-1">
         {[1, 2, 3].map(t => (
-          <ShimmerBlock key={t} className="h-9 w-28 bg-[var(--color-text-muted)]/15 rounded-lg" />
+          <ShimmerBlock key={t} className="h-8 w-24 bg-[var(--color-text-muted)]/15 rounded-xl border-0" />
         ))}
       </div>
-      <div className="bg-[var(--color-bg-card)] border border-[var(--color-border)]/60 rounded-2xl p-6 h-[400px] shimmer" />
+      <div className="bg-[var(--color-bg-card)] border-0 rounded-2xl p-6 h-[400px] shimmer" />
     </div>
   );
 }
@@ -65,7 +66,7 @@ export default function ComparePage() {
   const [loadingMonths, setLoadingMonths] = useState(false);
 
   // Fetch base live data (pre-calculated values)
-  const { stats, lines, dailyTrends, loading: baseLoading } = useKpiData('live');
+  const { lines, loading: baseLoading } = useKpiData('live');
 
   // Client mounting check to prevent Recharts hydration issues
   useEffect(() => {
@@ -178,7 +179,6 @@ export default function ComparePage() {
 
   // 1. Line vs Line: Hourly output overlay & Radar Comparison
   const getLineComparisonData = () => {
-    // We overlay the latest hourly report (Date 1) for the two chosen lines
     const hData = date1Data;
     if (!hData || !hData.lines || hData.lines.length === 0) return [];
 
@@ -202,47 +202,45 @@ export default function ComparePage() {
 
     if (!l1 || !l2) return [];
 
-    // Metrics scaled from 0 to 100 for visual comparison
+    const maxProd = Math.max(l1.totalProduction, l2.totalProduction, 1);
+    const maxProfit = Math.max(Math.abs(l1.netProfit), Math.abs(l2.netProfit), 1);
+    const maxCm = Math.max(l1.averageCm || 0, l2.averageCm || 0, 1);
+    const maxRecovery = Math.max(parseFloat(l1.monthCostRecovery || 0), parseFloat(l2.monthCostRecovery || 0), 100);
+
     return [
       {
-        metric: 'Target Achievement %',
-        line1: Math.min(100, Math.round((l1.totalProduction / (l1.totalProduction * 0.95 + 1000)) * 100)), // estimated relative scale
-        line2: Math.min(100, Math.round((l2.totalProduction / (l2.totalProduction * 0.95 + 1000)) * 100))
+        metric: 'Volume Yield',
+        line1: Math.round((l1.totalProduction / maxProd) * 100),
+        line2: Math.round((l2.totalProduction / maxProd) * 100)
       },
       {
-        metric: 'Consistency %',
-        line1: Math.min(100, Math.round(l1.daysActive > 0 ? (l1.daysActive / 20) * 100 : 0)),
-        line2: Math.min(100, Math.round(l2.daysActive > 0 ? (l2.daysActive / 20) * 100 : 0))
+        metric: 'Financial Return',
+        line1: Math.round((Math.max(0, l1.netProfit + maxProfit) / (2 * maxProfit)) * 100),
+        line2: Math.round((Math.max(0, l2.netProfit + maxProfit) / (2 * maxProfit)) * 100)
       },
       {
-        metric: 'Manpower Efficiency',
-        line1: Math.min(100, Math.round(l1.averageWorkers > 0 ? (l1.totalProduction / (l1.averageWorkers * 12)) : 0)),
-        line2: Math.min(100, Math.round(l2.averageWorkers > 0 ? (l2.totalProduction / (l2.averageWorkers * 12)) : 0))
+        metric: 'CM Pricing',
+        line1: Math.round(((l1.averageCm || 0) / maxCm) * 100),
+        line2: Math.round(((l2.averageCm || 0) / maxCm) * 100)
       },
       {
-        metric: 'Output CM Value',
-        line1: Math.min(100, Math.round((l1.averageCm / 1500) * 100)),
-        line2: Math.min(100, Math.round((l2.averageCm / 1500) * 100))
-      },
-      {
-        metric: 'Operational Velocity',
-        line1: Math.min(100, Math.round((l1.totalProduction / 50000) * 100)),
-        line2: Math.min(100, Math.round((l2.totalProduction / 50000) * 100))
+        metric: 'Cost Recovery',
+        line1: Math.min(100, Math.round((parseFloat(l1.monthCostRecovery || 0) / maxRecovery) * 100)),
+        line2: Math.min(100, Math.round((parseFloat(l2.monthCostRecovery || 0) / maxRecovery) * 100))
       }
     ];
   };
 
-  // 2. Date vs Date: Intraday Match & Shift Contrast
+  // 2. Date vs Date: Hourly overlay comparison
   const getDateComparisonData = () => {
-    if (!date1Data || !date2Data) return [];
+    if (!date1Data || !date2Data || !date1Data.lines || !date2Data.lines) return [];
 
-    const labels = date1Data.timeLabels || [];
+    const labels = date1Data.timeLabels || date2Data.timeLabels || [];
+
     return labels.map((label, idx) => {
-      // Sum all active lines for date 1
       let d1Sum = 0;
       date1Data.lines.forEach(l => { d1Sum += (l.actual[idx] || 0); });
 
-      // Sum all active lines for date 2
       let d2Sum = 0;
       date2Data.lines.forEach(l => { d2Sum += (l.actual[idx] || 0); });
 
@@ -273,8 +271,8 @@ export default function ComparePage() {
     });
 
     return [
-      { shift: 'Day Shift (1st-6th Hr)', date1: d1Day, date2: d2Day },
-      { shift: 'Night Shift (7th-11th Hr)', date1: d1Night, date2: d2Night }
+      { shift: 'Day Shift (1-6h)', date1: d1Day, date2: d2Day },
+      { shift: 'Night Shift (7-11h)', date1: d1Night, date2: d2Night }
     ];
   };
 
@@ -287,14 +285,14 @@ export default function ComparePage() {
 
     return [
       {
-        metric: 'Total Production',
-        month1: Math.round(m1Stats.totalProduction / 1000), // in K
+        metric: 'Total Output',
+        month1: Math.round(m1Stats.totalProduction / 1000),
         month2: Math.round(m2Stats.totalProduction / 1000),
-        unit: 'K Pieces'
+        unit: 'k pcs'
       },
       {
         metric: 'Total Cost',
-        month1: Math.round(m1Stats.totalCost / 100000), // in Lac BDT
+        month1: Math.round(m1Stats.totalCost / 100000),
         month2: Math.round(m2Stats.totalCost / 100000),
         unit: 'Lac BDT'
       },
@@ -314,117 +312,146 @@ export default function ComparePage() {
   };
 
   return (
-    <div className="space-y-6 md:pt-0">
+    <div className="space-y-5 md:space-y-6 md:pt-0 animate-[fade-up_0.4s_ease-out_both]">
       
-      {/* Page Header */}
-      <header className="flex flex-col items-center text-center md:items-start md:text-left mb-6 md:mb-8 relative z-10">
-        <h1 className="text-[24px] sm:text-[30px] md:text-[38px] font-black tracking-normal leading-tight uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] via-[var(--color-text-secondary)] to-[var(--color-text-muted)]">
+      {/* Page Header (Matching Dashboard typography) */}
+      <header className="flex flex-col items-center text-center md:items-start md:text-left mb-4 sm:mb-6 relative z-10">
+        <h1 className="text-[20px] sm:text-[23px] md:text-[27px] font-bold tracking-normal uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] via-[var(--color-text-secondary)] to-[var(--color-text-muted)] leading-tight">
           Comparison Center
         </h1>
-        <p className="text-xs sm:text-sm md:text-base text-[var(--color-text-muted)] font-normal tracking-normal mt-1 md:mt-2 max-w-2xl">
+        <p className="text-[10.5px] sm:text-[11.5px] md:text-xs text-[var(--color-text-muted)] font-medium tracking-normal mt-0.5 max-w-2xl">
           Side-by-side performance evaluation, line variance metrics, and timeline comparative analysis.
         </p>
       </header>
 
-      {/* Selector Tabs */}
-      <div className="flex gap-1.5 border-b border-[var(--color-border)]/50 pb-px">
-        {[
-          { id: 'line', label: 'Line vs Line', icon: GitCompare },
-          { id: 'date', label: 'Date vs Date', icon: Clock },
-          { id: 'month', label: 'Month vs Month', icon: Calendar }
-        ].map((tab) => {
-          const isSelected = activeTab === tab.id;
-          const Icon = tab.icon;
-          return (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={cn(
-                "flex items-center gap-1.5 px-4 py-2.5 text-xs md:text-sm font-bold border-b-2 transition-all cursor-pointer relative",
-                isSelected
-                  ? "border-[var(--color-primary)] text-[var(--color-primary)] bg-[var(--color-primary)]/5"
-                  : "border-transparent text-[var(--color-text-muted)] hover:text-[var(--color-text-main)]"
-              )}
-            >
-              <Icon size={16} />
-              <span>{tab.label}</span>
-            </button>
-          );
-        })}
+      {/* Selector Tabs (Stroke-free, Icon-free, Dashboard-matched font size) */}
+      <div className="flex justify-center sm:justify-start items-center w-full mb-3 sm:mb-4">
+        <div className="inline-flex p-0.5 sm:p-1 bg-[var(--color-surface)] border-0 rounded-xl gap-0.5 sm:gap-1 shadow-none sm:shadow-xs items-center">
+          {[
+            { id: 'line', label: 'Line vs Line' },
+            { id: 'date', label: 'Date vs Date' },
+            { id: 'month', label: 'Month vs Month' }
+          ].map((tab) => {
+            const isSelected = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => setActiveTab(tab.id)}
+                className={cn(
+                  "px-2.5 sm:px-4 py-1 sm:py-1.5 rounded-lg text-[9.5px] sm:text-xs uppercase tracking-wider font-bold transition-all cursor-pointer border-0 select-none",
+                  isSelected
+                    ? "bg-[var(--color-bg-card)] text-[var(--color-text-main)] shadow-xs"
+                    : "bg-transparent text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)]"
+                )}
+              >
+                {tab.label}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
-      {/* COMPARATOR PANELS */}
-
-      {/* 1. LINE VS LINE COMPARATOR */}
+      {/* ── 1. LINE VS LINE COMPARATOR ── */}
       {activeTab === 'line' && (
-        <div className="space-y-6 animate-[fade-in_0.3s_ease-out_both]">
-          {/* Controls Card */}
-          <Card className="p-4 bg-[var(--color-bg-card)] border-[var(--color-border)]/60">
-            <div className="flex flex-col sm:flex-row items-center gap-4 justify-between">
-              <div className="flex items-center gap-2">
-                <GitCompare className="text-[var(--color-primary)] h-5 w-5 shrink-0" />
-                <h3 className="text-sm font-bold uppercase tracking-wider text-[var(--color-text-main)]">Select Production Lines</h3>
+        <div className="space-y-4 sm:space-y-6">
+          {/* Controls Card (Stroke-free, Icon-free) */}
+          <Card className="p-3.5 sm:p-4 bg-[var(--color-bg-card)] border-0 rounded-2xl shadow-sm md:shadow-[0_10px_25px_-4px_var(--shadow-color,rgba(0,0,0,0.12))]">
+            <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 justify-between">
+              <div>
+                <h3 className="text-[11px] sm:text-xs font-bold uppercase tracking-widest text-[var(--color-text-secondary)] leading-none">
+                  Select Production Lines
+                </h3>
               </div>
-              <div className="flex items-center gap-3 w-full sm:w-auto">
+              <div className="flex items-center gap-2.5 w-full sm:w-auto">
                 <div className="flex-1 sm:flex-initial">
-                  <label className="block text-[9px] uppercase tracking-wider text-[var(--color-text-muted)] font-extrabold mb-1">Line 1</label>
+                  <label className="block text-[8.5px] sm:text-[9.5px] uppercase tracking-wider text-[var(--color-text-muted)] font-bold mb-1">
+                    Line 1
+                  </label>
                   <select
                     value={line1}
                     onChange={(e) => setLine1(e.target.value)}
-                    className="w-full sm:w-32 bg-[var(--color-surface)] border border-[var(--color-border)] text-[var(--color-text-main)] text-xs rounded-xl p-2.5 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/40 font-semibold"
+                    className="w-full sm:w-32 bg-[var(--color-surface)] border-0 text-[var(--color-text-main)] text-[11px] sm:text-xs rounded-xl p-2 sm:p-2.5 font-bold focus:outline-none cursor-pointer hover:bg-[var(--color-surface-hover)] transition-colors shadow-xs"
                   >
-                    {Object.keys(LINE_META).map(id => <option key={id} value={id} disabled={id === line2}>LINE {id}</option>)}
+                    {Object.keys(LINE_META).map(id => <option key={id} value={id} disabled={id === line2} className="bg-[var(--color-bg-card)]">LINE {id}</option>)}
                   </select>
                 </div>
-                <span className="text-[var(--color-text-muted)] mt-4 font-mono font-bold">VS</span>
+
+                <span className="text-[var(--color-text-muted)] mt-4 text-[10px] sm:text-xs font-black uppercase px-1 select-none">
+                  VS
+                </span>
+
                 <div className="flex-1 sm:flex-initial">
-                  <label className="block text-[9px] uppercase tracking-wider text-[var(--color-text-muted)] font-extrabold mb-1">Line 2</label>
+                  <label className="block text-[8.5px] sm:text-[9.5px] uppercase tracking-wider text-[var(--color-text-muted)] font-bold mb-1">
+                    Line 2
+                  </label>
                   <select
                     value={line2}
                     onChange={(e) => setLine2(e.target.value)}
-                    className="w-full sm:w-32 bg-[var(--color-surface)] border border-[var(--color-border)] text-[var(--color-text-main)] text-xs rounded-xl p-2.5 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/40 font-semibold"
+                    className="w-full sm:w-32 bg-[var(--color-surface)] border-0 text-[var(--color-text-main)] text-[11px] sm:text-xs rounded-xl p-2 sm:p-2.5 font-bold focus:outline-none cursor-pointer hover:bg-[var(--color-surface-hover)] transition-colors shadow-xs"
                   >
-                    {Object.keys(LINE_META).map(id => <option key={id} value={id} disabled={id === line1}>LINE {id}</option>)}
+                    {Object.keys(LINE_META).map(id => <option key={id} value={id} disabled={id === line1} className="bg-[var(--color-bg-card)]">LINE {id}</option>)}
                   </select>
                 </div>
               </div>
             </div>
           </Card>
 
-          {/* Side-by-Side Dual Telemetry Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Side-by-Side Dual Telemetry Grid (Stroke-free, Dashboard-matched mobile sizes) */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 sm:gap-4 md:gap-6">
             {/* Line 1 Card */}
             {(() => {
               const meta1 = LINE_META[line1];
               const stats1 = lines?.find(l => l.id === line1);
               if (!stats1) return null;
               return (
-                <Card 
-                  className="p-5 border-t-4 bg-[var(--color-bg-card)]"
-                  style={{ borderTopColor: meta1.color, boxShadow: `0 4px 30px rgba(0, 0, 0, 0.15), inset 0 0 12px ${meta1.color}15` }}
-                >
-                  <div className="flex justify-between items-center mb-4 border-b border-[var(--color-border)]/40 pb-2">
-                    <h4 className="text-base font-bold font-display tracking-wide" style={{ color: meta1.color }}>{meta1.name}</h4>
-                    <span className="text-[10px] uppercase font-bold tracking-widest text-[var(--color-text-muted)]">Aggregated Data</span>
+                <Card className="p-3.5 sm:p-4 md:p-5 bg-[var(--color-bg-card)] border-0 rounded-2xl shadow-sm md:shadow-[0_10px_25px_-4px_var(--shadow-color,rgba(0,0,0,0.12))]">
+                  <div className="flex justify-between items-center mb-3">
+                    <h4 className="text-xs sm:text-sm md:text-base font-black tracking-wide" style={{ color: meta1.color }}>
+                      {meta1.name}
+                    </h4>
+                    <span className="px-2 py-0.5 rounded text-[8.5px] sm:text-[9px] font-bold uppercase tracking-widest bg-[var(--color-surface)] text-[var(--color-text-muted)] border-0">
+                      Aggregated Data
+                    </span>
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-1">
-                      <span className="text-[10px] uppercase font-bold text-[var(--color-text-muted)]">Total Output</span>
-                      <p className="text-xl font-bold text-[var(--color-text-main)]">{stats1.totalProduction.toLocaleString()} pcs</p>
-                    </div>
-                    <div className="space-y-1">
-                      <span className="text-[10px] uppercase font-bold text-[var(--color-text-muted)]">Net Profit</span>
-                      <p className={cn("text-xl font-bold", stats1.netProfit >= 0 ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400")}>
-                        BDT {stats1.netProfit.toLocaleString()}
+                  <div className="grid grid-cols-2 gap-2 sm:gap-2.5">
+                    <div className="bg-[var(--color-surface)] p-2 sm:p-2.5 rounded-xl border-0 shadow-xs flex flex-col justify-between min-w-0">
+                      <span className="text-[8.5px] sm:text-[9.5px] uppercase font-bold text-[var(--color-text-muted)] tracking-wider mb-0.5 truncate">
+                        Total Output
+                      </span>
+                      <p className="text-xs sm:text-sm md:text-base font-black text-[var(--color-text-main)] truncate">
+                        {stats1.totalProduction.toLocaleString()} <span className="text-[8.5px] sm:text-[9.5px] font-semibold text-[var(--color-text-muted)]">pcs</span>
                       </p>
                     </div>
-                    <div className="space-y-1">
-                      <span className="text-[10px] uppercase font-bold text-[var(--color-text-muted)]">Avg Manpower</span>
-                      <p className="text-xl font-bold text-[var(--color-text-main)]">{stats1.averageWorkers} operators</p>
+
+                    <div className="bg-[var(--color-surface)] p-2 sm:p-2.5 rounded-xl border-0 shadow-xs flex flex-col justify-between min-w-0">
+                      <span className="text-[8.5px] sm:text-[9.5px] uppercase font-bold text-[var(--color-text-muted)] tracking-wider mb-0.5 truncate">
+                        Net Profit
+                      </span>
+                      <p className={cn(
+                        "text-xs sm:text-sm md:text-base font-black truncate",
+                        stats1.netProfit >= 0 ? "text-[var(--color-success-text)]" : "text-[var(--color-danger-text)]"
+                      )}>
+                        {stats1.netProfit >= 0 ? `+BDT ${stats1.netProfit.toLocaleString()}` : `BDT ${stats1.netProfit.toLocaleString()}`}
+                      </p>
                     </div>
-                    <div className="space-y-1">
-                      <span className="text-[10px] uppercase font-bold text-[var(--color-text-muted)]">Avg Cost CM</span>
-                      <p className="text-xl font-bold text-[var(--color-text-main)]">BDT {stats1.averageCm.toLocaleString()}</p>
+
+                    <div className="bg-[var(--color-surface)] p-2 sm:p-2.5 rounded-xl border-0 shadow-xs flex flex-col justify-between min-w-0">
+                      <span className="text-[8.5px] sm:text-[9.5px] uppercase font-bold text-[var(--color-text-muted)] tracking-wider mb-0.5 truncate">
+                        Avg Manpower
+                      </span>
+                      <p className="text-xs sm:text-sm md:text-base font-black text-[var(--color-text-main)] truncate">
+                        {stats1.averageWorkers} <span className="text-[8.5px] sm:text-[9.5px] font-semibold text-[var(--color-text-muted)]">operators</span>
+                      </p>
+                    </div>
+
+                    <div className="bg-[var(--color-surface)] p-2 sm:p-2.5 rounded-xl border-0 shadow-xs flex flex-col justify-between min-w-0">
+                      <span className="text-[8.5px] sm:text-[9.5px] uppercase font-bold text-[var(--color-text-muted)] tracking-wider mb-0.5 truncate">
+                        Avg Cost CM
+                      </span>
+                      <p className="text-xs sm:text-sm md:text-base font-black text-[var(--color-text-main)] truncate">
+                        BDT {stats1.averageCm.toLocaleString()}
+                      </p>
                     </div>
                   </div>
                 </Card>
@@ -437,32 +464,53 @@ export default function ComparePage() {
               const stats2 = lines?.find(l => l.id === line2);
               if (!stats2) return null;
               return (
-                <Card 
-                  className="p-5 border-t-4 bg-[var(--color-bg-card)]"
-                  style={{ borderTopColor: meta2.color, boxShadow: `0 4px 30px rgba(0, 0, 0, 0.15), inset 0 0 12px ${meta2.color}15` }}
-                >
-                  <div className="flex justify-between items-center mb-4 border-b border-[var(--color-border)]/40 pb-2">
-                    <h4 className="text-base font-bold font-display tracking-wide" style={{ color: meta2.color }}>{meta2.name}</h4>
-                    <span className="text-[10px] uppercase font-bold tracking-widest text-[var(--color-text-muted)]">Aggregated Data</span>
+                <Card className="p-3.5 sm:p-4 md:p-5 bg-[var(--color-bg-card)] border-0 rounded-2xl shadow-sm md:shadow-[0_10px_25px_-4px_var(--shadow-color,rgba(0,0,0,0.12))]">
+                  <div className="flex justify-between items-center mb-3">
+                    <h4 className="text-xs sm:text-sm md:text-base font-black tracking-wide" style={{ color: meta2.color }}>
+                      {meta2.name}
+                    </h4>
+                    <span className="px-2 py-0.5 rounded text-[8.5px] sm:text-[9px] font-bold uppercase tracking-widest bg-[var(--color-surface)] text-[var(--color-text-muted)] border-0">
+                      Aggregated Data
+                    </span>
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-1">
-                      <span className="text-[10px] uppercase font-bold text-[var(--color-text-muted)]">Total Output</span>
-                      <p className="text-xl font-bold text-[var(--color-text-main)]">{stats2.totalProduction.toLocaleString()} pcs</p>
-                    </div>
-                    <div className="space-y-1">
-                      <span className="text-[10px] uppercase font-bold text-[var(--color-text-muted)]">Net Profit</span>
-                      <p className={cn("text-xl font-bold", stats2.netProfit >= 0 ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400")}>
-                        BDT {stats2.netProfit.toLocaleString()}
+                  <div className="grid grid-cols-2 gap-2 sm:gap-2.5">
+                    <div className="bg-[var(--color-surface)] p-2 sm:p-2.5 rounded-xl border-0 shadow-xs flex flex-col justify-between min-w-0">
+                      <span className="text-[8.5px] sm:text-[9.5px] uppercase font-bold text-[var(--color-text-muted)] tracking-wider mb-0.5 truncate">
+                        Total Output
+                      </span>
+                      <p className="text-xs sm:text-sm md:text-base font-black text-[var(--color-text-main)] truncate">
+                        {stats2.totalProduction.toLocaleString()} <span className="text-[8.5px] sm:text-[9.5px] font-semibold text-[var(--color-text-muted)]">pcs</span>
                       </p>
                     </div>
-                    <div className="space-y-1">
-                      <span className="text-[10px] uppercase font-bold text-[var(--color-text-muted)]">Avg Manpower</span>
-                      <p className="text-xl font-bold text-[var(--color-text-main)]">{stats2.averageWorkers} operators</p>
+
+                    <div className="bg-[var(--color-surface)] p-2 sm:p-2.5 rounded-xl border-0 shadow-xs flex flex-col justify-between min-w-0">
+                      <span className="text-[8.5px] sm:text-[9.5px] uppercase font-bold text-[var(--color-text-muted)] tracking-wider mb-0.5 truncate">
+                        Net Profit
+                      </span>
+                      <p className={cn(
+                        "text-xs sm:text-sm md:text-base font-black truncate",
+                        stats2.netProfit >= 0 ? "text-[var(--color-success-text)]" : "text-[var(--color-danger-text)]"
+                      )}>
+                        {stats2.netProfit >= 0 ? `+BDT ${stats2.netProfit.toLocaleString()}` : `BDT ${stats2.netProfit.toLocaleString()}`}
+                      </p>
                     </div>
-                    <div className="space-y-1">
-                      <span className="text-[10px] uppercase font-bold text-[var(--color-text-muted)]">Avg Cost CM</span>
-                      <p className="text-xl font-bold text-[var(--color-text-main)]">BDT {stats2.averageCm.toLocaleString()}</p>
+
+                    <div className="bg-[var(--color-surface)] p-2 sm:p-2.5 rounded-xl border-0 shadow-xs flex flex-col justify-between min-w-0">
+                      <span className="text-[8.5px] sm:text-[9.5px] uppercase font-bold text-[var(--color-text-muted)] tracking-wider mb-0.5 truncate">
+                        Avg Manpower
+                      </span>
+                      <p className="text-xs sm:text-sm md:text-base font-black text-[var(--color-text-main)] truncate">
+                        {stats2.averageWorkers} <span className="text-[8.5px] sm:text-[9.5px] font-semibold text-[var(--color-text-muted)]">operators</span>
+                      </p>
+                    </div>
+
+                    <div className="bg-[var(--color-surface)] p-2 sm:p-2.5 rounded-xl border-0 shadow-xs flex flex-col justify-between min-w-0">
+                      <span className="text-[8.5px] sm:text-[9.5px] uppercase font-bold text-[var(--color-text-muted)] tracking-wider mb-0.5 truncate">
+                        Avg Cost CM
+                      </span>
+                      <p className="text-xs sm:text-sm md:text-base font-black text-[var(--color-text-main)] truncate">
+                        BDT {stats2.averageCm.toLocaleString()}
+                      </p>
                     </div>
                   </div>
                 </Card>
@@ -470,27 +518,29 @@ export default function ComparePage() {
             })()}
           </div>
 
-          {/* Charts Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Charts Grid (Stroke-free) */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-3.5 sm:gap-4 md:gap-6">
             {/* Overlap Hourly Chart */}
-            <Card className="lg:col-span-2 p-5 bg-[var(--color-bg-card)]">
-              <h4 className="text-sm font-bold uppercase tracking-wider text-[var(--color-text-main)] mb-4 font-display">Overlap Hourly Outputs</h4>
-              <div className="h-[300px]">
+            <Card className="lg:col-span-2 p-3.5 sm:p-4 md:p-5 bg-[var(--color-bg-card)] border-0 rounded-2xl shadow-sm md:shadow-[0_10px_25px_-4px_var(--shadow-color,rgba(0,0,0,0.12))]">
+              <h4 className="text-[11px] sm:text-xs font-bold uppercase tracking-widest text-[var(--color-text-secondary)] mb-3">
+                Overlap Hourly Outputs
+              </h4>
+              <div className="h-[260px] sm:h-[300px]">
                 {loadingDates ? (
                   <div className="h-full flex items-center justify-center text-xs text-[var(--color-text-muted)] shimmer rounded-xl" />
                 ) : (
                   <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={getLineComparisonData()} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                       <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" opacity={0.3} />
-                      <XAxis dataKey="hour" stroke="var(--color-text-muted)" fontSize={10} />
-                      <YAxis stroke="var(--color-text-muted)" fontSize={10} />
+                      <XAxis dataKey="hour" stroke="var(--color-text-muted)" fontSize={9.5} />
+                      <YAxis stroke="var(--color-text-muted)" fontSize={9.5} />
                       <Tooltip 
-                        contentStyle={{ backgroundColor: 'var(--color-bg-card)', border: '1px solid var(--color-border)', borderRadius: '12px' }}
+                        contentStyle={{ backgroundColor: 'var(--color-bg-card)', border: 'none', borderRadius: '12px', boxShadow: '0 8px 30px rgba(0,0,0,0.2)' }}
                         labelStyle={{ color: 'var(--color-text-main)', fontWeight: 'bold' }}
                       />
-                      <Legend verticalAlign="top" height={36} />
-                      <Line type="monotone" name={`LINE ${line1} (Solid)`} dataKey="line1Actual" stroke={LINE_META[line1].color} strokeWidth={3} dot={{ r: 4 }} activeDot={{ r: 6 }} />
-                      <Line type="monotone" name={`LINE ${line2} (Dashed)`} dataKey="line2Actual" stroke={LINE_META[line2].color} strokeWidth={3} strokeDasharray="5 5" dot={{ r: 4 }} activeDot={{ r: 6 }} />
+                      <Legend verticalAlign="top" height={36} wrapperStyle={{ fontSize: '11px', fontWeight: 'bold', textTransform: 'uppercase' }} />
+                      <Line type="monotone" name={`LINE ${line1} (Solid)`} dataKey="line1Actual" stroke={LINE_META[line1].color} strokeWidth={2.5} dot={{ r: 3.5 }} activeDot={{ r: 5 }} />
+                      <Line type="monotone" name={`LINE ${line2} (Dashed)`} dataKey="line2Actual" stroke={LINE_META[line2].color} strokeWidth={2.5} strokeDasharray="5 5" dot={{ r: 3.5 }} activeDot={{ r: 5 }} />
                     </LineChart>
                   </ResponsiveContainer>
                 )}
@@ -498,9 +548,11 @@ export default function ComparePage() {
             </Card>
 
             {/* KPI Efficiency Radar */}
-            <Card className="lg:col-span-1 p-5 bg-[var(--color-bg-card)]">
-              <h4 className="text-sm font-bold uppercase tracking-wider text-[var(--color-text-main)] mb-4 font-display">KPI Efficiency index</h4>
-              <div className="h-[300px]">
+            <Card className="lg:col-span-1 p-3.5 sm:p-4 md:p-5 bg-[var(--color-bg-card)] border-0 rounded-2xl shadow-sm md:shadow-[0_10px_25px_-4px_var(--shadow-color,rgba(0,0,0,0.12))]">
+              <h4 className="text-[11px] sm:text-xs font-bold uppercase tracking-widest text-[var(--color-text-secondary)] mb-3">
+                KPI Efficiency Index
+              </h4>
+              <div className="h-[260px] sm:h-[300px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <RadarChart outerRadius="70%" data={getLineRadarData()}>
                     <PolarGrid stroke="var(--color-border)" opacity={0.4} />
@@ -509,9 +561,9 @@ export default function ComparePage() {
                     <Radar name={`LINE ${line1}`} dataKey="line1" stroke={LINE_META[line1].color} fill={LINE_META[line1].color} fillOpacity={0.15} />
                     <Radar name={`LINE ${line2}`} dataKey="line2" stroke={LINE_META[line2].color} fill={LINE_META[line2].color} fillOpacity={0.15} />
                     <Tooltip 
-                      contentStyle={{ backgroundColor: 'var(--color-bg-card)', border: '1px solid var(--color-border)', borderRadius: '12px' }}
+                      contentStyle={{ backgroundColor: 'var(--color-bg-card)', border: 'none', borderRadius: '12px', boxShadow: '0 8px 30px rgba(0,0,0,0.2)' }}
                     />
-                    <Legend />
+                    <Legend wrapperStyle={{ fontSize: '11px', fontWeight: 'bold', textTransform: 'uppercase' }} />
                   </RadarChart>
                 </ResponsiveContainer>
               </div>
@@ -520,61 +572,72 @@ export default function ComparePage() {
         </div>
       )}
 
-      {/* 2. DATE VS DATE COMPARATOR */}
+      {/* ── 2. DATE VS DATE COMPARATOR ── */}
       {activeTab === 'date' && (
-        <div className="space-y-6 animate-[fade-in_0.3s_ease-out_both]">
-          {/* Controls Card */}
-          <Card className="p-4 bg-[var(--color-bg-card)] border-[var(--color-border)]/60">
-            <div className="flex flex-col sm:flex-row items-center gap-4 justify-between">
-              <div className="flex items-center gap-2">
-                <CalendarIcon className="text-[var(--color-primary)] h-5 w-5 shrink-0" />
-                <h3 className="text-sm font-bold uppercase tracking-wider text-[var(--color-text-main)]">Select Production Dates</h3>
+        <div className="space-y-4 sm:space-y-6">
+          {/* Controls Card (Stroke-free, Icon-free) */}
+          <Card className="p-3.5 sm:p-4 bg-[var(--color-bg-card)] border-0 rounded-2xl shadow-sm md:shadow-[0_10px_25px_-4px_var(--shadow-color,rgba(0,0,0,0.12))]">
+            <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 justify-between">
+              <div>
+                <h3 className="text-[11px] sm:text-xs font-bold uppercase tracking-widest text-[var(--color-text-secondary)] leading-none">
+                  Select Production Dates
+                </h3>
               </div>
-              <div className="flex items-center gap-3 w-full sm:w-auto">
+              <div className="flex items-center gap-2.5 w-full sm:w-auto">
                 <div className="flex-1 sm:flex-initial">
-                  <label className="block text-[9px] uppercase tracking-wider text-[var(--color-text-muted)] font-extrabold mb-1">Date 1</label>
+                  <label className="block text-[8.5px] sm:text-[9.5px] uppercase tracking-wider text-[var(--color-text-muted)] font-bold mb-1">
+                    Date 1
+                  </label>
                   <select
                     value={date1}
                     onChange={(e) => setDate1(e.target.value)}
-                    className="w-full bg-[var(--color-surface)] border border-[var(--color-border)] text-[var(--color-text-main)] text-xs rounded-xl p-2.5 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/40 font-semibold"
+                    className="w-full bg-[var(--color-surface)] border-0 text-[var(--color-text-main)] text-[11px] sm:text-xs rounded-xl p-2 sm:p-2.5 font-bold focus:outline-none cursor-pointer hover:bg-[var(--color-surface-hover)] transition-colors shadow-xs"
                   >
-                    {availableDates.map(d => <option key={d} value={d}>{d}</option>)}
+                    {availableDates.map(d => <option key={d} value={d} className="bg-[var(--color-bg-card)]">{d}</option>)}
                   </select>
                 </div>
-                <span className="text-[var(--color-text-muted)] mt-4 font-mono font-bold">VS</span>
+
+                <span className="text-[var(--color-text-muted)] mt-4 text-[10px] sm:text-xs font-black uppercase px-1 select-none">
+                  VS
+                </span>
+
                 <div className="flex-1 sm:flex-initial">
-                  <label className="block text-[9px] uppercase tracking-wider text-[var(--color-text-muted)] font-extrabold mb-1">Date 2</label>
+                  <label className="block text-[8.5px] sm:text-[9.5px] uppercase tracking-wider text-[var(--color-text-muted)] font-bold mb-1">
+                    Date 2
+                  </label>
                   <select
                     value={date2}
                     onChange={(e) => setDate2(e.target.value)}
-                    className="w-full bg-[var(--color-surface)] border border-[var(--color-border)] text-[var(--color-text-main)] text-xs rounded-xl p-2.5 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/40 font-semibold"
+                    className="w-full bg-[var(--color-surface)] border-0 text-[var(--color-text-main)] text-[11px] sm:text-xs rounded-xl p-2 sm:p-2.5 font-bold focus:outline-none cursor-pointer hover:bg-[var(--color-surface-hover)] transition-colors shadow-xs"
                   >
-                    {availableDates.map(d => <option key={d} value={d}>{d}</option>)}
+                    {availableDates.map(d => <option key={d} value={d} className="bg-[var(--color-bg-card)]">{d}</option>)}
                   </select>
                 </div>
               </div>
             </div>
           </Card>
 
-          {/* Intraday speed matching chart */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <Card className="lg:col-span-2 p-5 bg-[var(--color-bg-card)]">
-              <h4 className="text-sm font-bold uppercase tracking-wider text-[var(--color-text-main)] mb-4 font-display">Intraday Speed Matching (Total Factory Output)</h4>
-              <div className="h-[300px]">
+          {/* Intraday speed matching chart (Stroke-free) */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-3.5 sm:gap-4 md:gap-6">
+            <Card className="lg:col-span-2 p-3.5 sm:p-4 md:p-5 bg-[var(--color-bg-card)] border-0 rounded-2xl shadow-sm md:shadow-[0_10px_25px_-4px_var(--shadow-color,rgba(0,0,0,0.12))]">
+              <h4 className="text-[11px] sm:text-xs font-bold uppercase tracking-widest text-[var(--color-text-secondary)] mb-3">
+                Intraday Speed Matching (Total Factory Output)
+              </h4>
+              <div className="h-[260px] sm:h-[300px]">
                 {loadingDates ? (
                   <div className="h-full flex items-center justify-center text-xs text-[var(--color-text-muted)] shimmer rounded-xl" />
                 ) : (
                   <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={getDateComparisonData()} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                       <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" opacity={0.3} />
-                      <XAxis dataKey="hour" stroke="var(--color-text-muted)" fontSize={10} />
-                      <YAxis stroke="var(--color-text-muted)" fontSize={10} />
+                      <XAxis dataKey="hour" stroke="var(--color-text-muted)" fontSize={9.5} />
+                      <YAxis stroke="var(--color-text-muted)" fontSize={9.5} />
                       <Tooltip 
-                        contentStyle={{ backgroundColor: 'var(--color-bg-card)', border: '1px solid var(--color-border)', borderRadius: '12px' }}
+                        contentStyle={{ backgroundColor: 'var(--color-bg-card)', border: 'none', borderRadius: '12px', boxShadow: '0 8px 30px rgba(0,0,0,0.2)' }}
                       />
-                      <Legend verticalAlign="top" height={36} />
-                      <Line type="monotone" name={date1} dataKey="date1Actual" stroke="var(--color-primary)" strokeWidth={3} dot={{ r: 4 }} />
-                      <Line type="monotone" name={date2} dataKey="date2Actual" stroke="var(--color-warning)" strokeWidth={3} strokeDasharray="4 4" dot={{ r: 4 }} />
+                      <Legend verticalAlign="top" height={36} wrapperStyle={{ fontSize: '11px', fontWeight: 'bold', textTransform: 'uppercase' }} />
+                      <Line type="monotone" name={date1} dataKey="date1Actual" stroke="var(--color-primary)" strokeWidth={2.5} dot={{ r: 3.5 }} />
+                      <Line type="monotone" name={date2} dataKey="date2Actual" stroke="var(--color-warning)" strokeWidth={2.5} strokeDasharray="4 4" dot={{ r: 3.5 }} />
                     </LineChart>
                   </ResponsiveContainer>
                 )}
@@ -582,21 +645,23 @@ export default function ComparePage() {
             </Card>
 
             {/* Shift efficiency bar chart */}
-            <Card className="lg:col-span-1 p-5 bg-[var(--color-bg-card)]">
-              <h4 className="text-sm font-bold uppercase tracking-wider text-[var(--color-text-main)] mb-4 font-display">Shift Efficiency Contrast</h4>
-              <div className="h-[300px]">
+            <Card className="lg:col-span-1 p-3.5 sm:p-4 md:p-5 bg-[var(--color-bg-card)] border-0 rounded-2xl shadow-sm md:shadow-[0_10px_25px_-4px_var(--shadow-color,rgba(0,0,0,0.12))]">
+              <h4 className="text-[11px] sm:text-xs font-bold uppercase tracking-widest text-[var(--color-text-secondary)] mb-3">
+                Shift Efficiency Contrast
+              </h4>
+              <div className="h-[260px] sm:h-[300px]">
                 {loadingDates ? (
                   <div className="h-full flex items-center justify-center text-xs text-[var(--color-text-muted)] shimmer rounded-xl" />
                 ) : (
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={getShiftContrastData()}>
                       <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" opacity={0.3} />
-                      <XAxis dataKey="shift" stroke="var(--color-text-muted)" fontSize={10} />
-                      <YAxis stroke="var(--color-text-muted)" fontSize={10} />
+                      <XAxis dataKey="shift" stroke="var(--color-text-muted)" fontSize={9.5} />
+                      <YAxis stroke="var(--color-text-muted)" fontSize={9.5} />
                       <Tooltip 
-                        contentStyle={{ backgroundColor: 'var(--color-bg-card)', border: '1px solid var(--color-border)', borderRadius: '12px' }}
+                        contentStyle={{ backgroundColor: 'var(--color-bg-card)', border: 'none', borderRadius: '12px', boxShadow: '0 8px 30px rgba(0,0,0,0.2)' }}
                       />
-                      <Legend />
+                      <Legend wrapperStyle={{ fontSize: '11px', fontWeight: 'bold', textTransform: 'uppercase' }} />
                       <Bar dataKey="date1" name={date1} fill="var(--color-primary)" radius={[4, 4, 0, 0]} />
                       <Bar dataKey="date2" name={date2} fill="var(--color-warning)" radius={[4, 4, 0, 0]} />
                     </BarChart>
@@ -608,73 +673,104 @@ export default function ComparePage() {
         </div>
       )}
 
-      {/* 3. MONTH VS MONTH COMPARATOR */}
+      {/* ── 3. MONTH VS MONTH COMPARATOR ── */}
       {activeTab === 'month' && (
-        <div className="space-y-6 animate-[fade-in_0.3s_ease-out_both]">
-          {/* Controls Card */}
-          <Card className="p-4 bg-[var(--color-bg-card)] border-[var(--color-border)]/60">
-            <div className="flex flex-col sm:flex-row items-center gap-4 justify-between">
-              <div className="flex items-center gap-2">
-                <Calendar className="text-[var(--color-primary)] h-5 w-5 shrink-0" />
-                <h3 className="text-sm font-bold uppercase tracking-wider text-[var(--color-text-main)]">Select Archive Months</h3>
+        <div className="space-y-4 sm:space-y-6">
+          {/* Controls Card (Stroke-free, Icon-free) */}
+          <Card className="p-3.5 sm:p-4 bg-[var(--color-bg-card)] border-0 rounded-2xl shadow-sm md:shadow-[0_10px_25px_-4px_var(--shadow-color,rgba(0,0,0,0.12))]">
+            <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 justify-between">
+              <div>
+                <h3 className="text-[11px] sm:text-xs font-bold uppercase tracking-widest text-[var(--color-text-secondary)] leading-none">
+                  Select Archive Months
+                </h3>
               </div>
-              <div className="flex items-center gap-3 w-full sm:w-auto">
+              <div className="flex items-center gap-2.5 w-full sm:w-auto">
                 <div className="flex-1 sm:flex-initial">
-                  <label className="block text-[9px] uppercase tracking-wider text-[var(--color-text-muted)] font-extrabold mb-1">Month 1</label>
+                  <label className="block text-[8.5px] sm:text-[9.5px] uppercase tracking-wider text-[var(--color-text-muted)] font-bold mb-1">
+                    Month 1
+                  </label>
                   <select
                     value={month1}
                     onChange={(e) => setMonth1(e.target.value)}
-                    className="w-full bg-[var(--color-surface)] border border-[var(--color-border)] text-[var(--color-text-main)] text-xs rounded-xl p-2.5 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/40 font-semibold"
+                    className="w-full bg-[var(--color-surface)] border-0 text-[var(--color-text-main)] text-[11px] sm:text-xs rounded-xl p-2 sm:p-2.5 font-bold focus:outline-none cursor-pointer hover:bg-[var(--color-surface-hover)] transition-colors shadow-xs"
                   >
-                    <option value="live">October 2026 (Live)</option>
-                    {availableMonths.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}
+                    <option value="live" className="bg-[var(--color-bg-card)]">October 2026 (Live)</option>
+                    {availableMonths.map(m => <option key={m.id} value={m.id} className="bg-[var(--color-bg-card)]">{m.name}</option>)}
                   </select>
                 </div>
-                <span className="text-[var(--color-text-muted)] mt-4 font-mono font-bold">VS</span>
+
+                <span className="text-[var(--color-text-muted)] mt-4 text-[10px] sm:text-xs font-black uppercase px-1 select-none">
+                  VS
+                </span>
+
                 <div className="flex-1 sm:flex-initial">
-                  <label className="block text-[9px] uppercase tracking-wider text-[var(--color-text-muted)] font-extrabold mb-1">Month 2</label>
+                  <label className="block text-[8.5px] sm:text-[9.5px] uppercase tracking-wider text-[var(--color-text-muted)] font-bold mb-1">
+                    Month 2
+                  </label>
                   <select
                     value={month2}
                     onChange={(e) => setMonth2(e.target.value)}
-                    className="w-full bg-[var(--color-surface)] border border-[var(--color-border)] text-[var(--color-text-main)] text-xs rounded-xl p-2.5 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/40 font-semibold"
+                    className="w-full bg-[var(--color-surface)] border-0 text-[var(--color-text-main)] text-[11px] sm:text-xs rounded-xl p-2 sm:p-2.5 font-bold focus:outline-none cursor-pointer hover:bg-[var(--color-surface-hover)] transition-colors shadow-xs"
                   >
-                    <option value="live">October 2026 (Live)</option>
-                    {availableMonths.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}
+                    <option value="live" className="bg-[var(--color-bg-card)]">October 2026 (Live)</option>
+                    {availableMonths.map(m => <option key={m.id} value={m.id} className="bg-[var(--color-bg-card)]">{m.name}</option>)}
                   </select>
                 </div>
               </div>
             </div>
           </Card>
 
-          {/* Historical snapshot grids */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Historical snapshot grids (Stroke-free, Dashboard-matched mobile sizes) */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 sm:gap-4 md:gap-6">
             {/* Month 1 Stats */}
             {month1Data && (
-              <Card className="p-5 bg-[var(--color-bg-card)] border border-[var(--color-border)]/60">
-                <div className="flex justify-between items-center mb-4 border-b border-[var(--color-border)]/40 pb-2">
-                  <h4 className="text-base font-bold font-display text-[var(--color-primary)]">
+              <Card className="p-3.5 sm:p-4 md:p-5 bg-[var(--color-bg-card)] border-0 rounded-2xl shadow-sm md:shadow-[0_10px_25px_-4px_var(--shadow-color,rgba(0,0,0,0.12))]">
+                <div className="flex justify-between items-center mb-3">
+                  <h4 className="text-xs sm:text-sm md:text-base font-black text-[var(--color-primary)]">
                     {month1 === 'live' ? 'October 2026' : availableMonths.find(m => m.id === month1)?.name}
                   </h4>
-                  <span className="text-[10px] uppercase font-bold tracking-widest text-[var(--color-text-muted)]">Snapshot Totals</span>
+                  <span className="px-2 py-0.5 rounded text-[8.5px] sm:text-[9px] font-bold uppercase tracking-widest bg-[var(--color-surface)] text-[var(--color-text-muted)] border-0">
+                    Snapshot Totals
+                  </span>
                 </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-1">
-                    <span className="text-[10px] uppercase font-bold text-[var(--color-text-muted)]">Production</span>
-                    <p className="text-xl font-bold text-[var(--color-text-main)]">{month1Data.stats.totalProduction.toLocaleString()} pcs</p>
-                  </div>
-                  <div className="space-y-1">
-                    <span className="text-[10px] uppercase font-bold text-[var(--color-text-muted)]">Net Profit</span>
-                    <p className={cn("text-xl font-bold", month1Data.stats.netProfit >= 0 ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400")}>
-                      BDT {month1Data.stats.netProfit.toLocaleString()}
+                <div className="grid grid-cols-2 gap-2 sm:gap-2.5">
+                  <div className="bg-[var(--color-surface)] p-2 sm:p-2.5 rounded-xl border-0 shadow-xs flex flex-col justify-between min-w-0">
+                    <span className="text-[8.5px] sm:text-[9.5px] uppercase font-bold text-[var(--color-text-muted)] tracking-wider mb-0.5 truncate">
+                      Production
+                    </span>
+                    <p className="text-xs sm:text-sm md:text-base font-black text-[var(--color-text-main)] truncate">
+                      {month1Data.stats.totalProduction.toLocaleString()} <span className="text-[8.5px] sm:text-[9.5px] font-semibold text-[var(--color-text-muted)]">pcs</span>
                     </p>
                   </div>
-                  <div className="space-y-1">
-                    <span className="text-[10px] uppercase font-bold text-[var(--color-text-muted)]">Revenue</span>
-                    <p className="text-xl font-bold text-[var(--color-text-main)]">BDT {month1Data.stats.totalIncome.toLocaleString()}</p>
+
+                  <div className="bg-[var(--color-surface)] p-2 sm:p-2.5 rounded-xl border-0 shadow-xs flex flex-col justify-between min-w-0">
+                    <span className="text-[8.5px] sm:text-[9.5px] uppercase font-bold text-[var(--color-text-muted)] tracking-wider mb-0.5 truncate">
+                      Net Profit
+                    </span>
+                    <p className={cn(
+                      "text-xs sm:text-sm md:text-base font-black truncate",
+                      month1Data.stats.netProfit >= 0 ? "text-[var(--color-success-text)]" : "text-[var(--color-danger-text)]"
+                    )}>
+                      {month1Data.stats.netProfit >= 0 ? `+BDT ${month1Data.stats.netProfit.toLocaleString()}` : `BDT ${month1Data.stats.netProfit.toLocaleString()}`}
+                    </p>
                   </div>
-                  <div className="space-y-1">
-                    <span className="text-[10px] uppercase font-bold text-[var(--color-text-muted)]">Operation Cost</span>
-                    <p className="text-xl font-bold text-[var(--color-text-main)]">BDT {month1Data.stats.totalCost.toLocaleString()}</p>
+
+                  <div className="bg-[var(--color-surface)] p-2 sm:p-2.5 rounded-xl border-0 shadow-xs flex flex-col justify-between min-w-0">
+                    <span className="text-[8.5px] sm:text-[9.5px] uppercase font-bold text-[var(--color-text-muted)] tracking-wider mb-0.5 truncate">
+                      Revenue
+                    </span>
+                    <p className="text-xs sm:text-sm md:text-base font-black text-[var(--color-text-main)] truncate">
+                      BDT {month1Data.stats.totalIncome.toLocaleString()}
+                    </p>
+                  </div>
+
+                  <div className="bg-[var(--color-surface)] p-2 sm:p-2.5 rounded-xl border-0 shadow-xs flex flex-col justify-between min-w-0">
+                    <span className="text-[8.5px] sm:text-[9.5px] uppercase font-bold text-[var(--color-text-muted)] tracking-wider mb-0.5 truncate">
+                      Operation Cost
+                    </span>
+                    <p className="text-xs sm:text-sm md:text-base font-black text-[var(--color-text-main)] truncate">
+                      BDT {month1Data.stats.totalCost.toLocaleString()}
+                    </p>
                   </div>
                 </div>
               </Card>
@@ -682,54 +778,79 @@ export default function ComparePage() {
 
             {/* Month 2 Stats */}
             {month2Data && (
-              <Card className="p-5 bg-[var(--color-bg-card)] border border-[var(--color-border)]/60">
-                <div className="flex justify-between items-center mb-4 border-b border-[var(--color-border)]/40 pb-2">
-                  <h4 className="text-base font-bold font-display text-warning-400 text-[var(--color-warning)]">
+              <Card className="p-3.5 sm:p-4 md:p-5 bg-[var(--color-bg-card)] border-0 rounded-2xl shadow-sm md:shadow-[0_10px_25px_-4px_var(--shadow-color,rgba(0,0,0,0.12))]">
+                <div className="flex justify-between items-center mb-3">
+                  <h4 className="text-xs sm:text-sm md:text-base font-black text-[var(--color-warning)]">
                     {month2 === 'live' ? 'October 2026' : availableMonths.find(m => m.id === month2)?.name}
                   </h4>
-                  <span className="text-[10px] uppercase font-bold tracking-widest text-[var(--color-text-muted)]">Snapshot Totals</span>
+                  <span className="px-2 py-0.5 rounded text-[8.5px] sm:text-[9px] font-bold uppercase tracking-widest bg-[var(--color-surface)] text-[var(--color-text-muted)] border-0">
+                    Snapshot Totals
+                  </span>
                 </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-1">
-                    <span className="text-[10px] uppercase font-bold text-[var(--color-text-muted)]">Production</span>
-                    <p className="text-xl font-bold text-[var(--color-text-main)]">{month2Data.stats.totalProduction.toLocaleString()} pcs</p>
-                  </div>
-                  <div className="space-y-1">
-                    <span className="text-[10px] uppercase font-bold text-[var(--color-text-muted)]">Net Profit</span>
-                    <p className={cn("text-xl font-bold", month2Data.stats.netProfit >= 0 ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400")}>
-                      BDT {month2Data.stats.netProfit.toLocaleString()}
+                <div className="grid grid-cols-2 gap-2 sm:gap-2.5">
+                  <div className="bg-[var(--color-surface)] p-2 sm:p-2.5 rounded-xl border-0 shadow-xs flex flex-col justify-between min-w-0">
+                    <span className="text-[8.5px] sm:text-[9.5px] uppercase font-bold text-[var(--color-text-muted)] tracking-wider mb-0.5 truncate">
+                      Production
+                    </span>
+                    <p className="text-xs sm:text-sm md:text-base font-black text-[var(--color-text-main)] truncate">
+                      {month2Data.stats.totalProduction.toLocaleString()} <span className="text-[8.5px] sm:text-[9.5px] font-semibold text-[var(--color-text-muted)]">pcs</span>
                     </p>
                   </div>
-                  <div className="space-y-1">
-                    <span className="text-[10px] uppercase font-bold text-[var(--color-text-muted)]">Revenue</span>
-                    <p className="text-xl font-bold text-[var(--color-text-main)]">BDT {month2Data.stats.totalIncome.toLocaleString()}</p>
+
+                  <div className="bg-[var(--color-surface)] p-2 sm:p-2.5 rounded-xl border-0 shadow-xs flex flex-col justify-between min-w-0">
+                    <span className="text-[8.5px] sm:text-[9.5px] uppercase font-bold text-[var(--color-text-muted)] tracking-wider mb-0.5 truncate">
+                      Net Profit
+                    </span>
+                    <p className={cn(
+                      "text-xs sm:text-sm md:text-base font-black truncate",
+                      month2Data.stats.netProfit >= 0 ? "text-[var(--color-success-text)]" : "text-[var(--color-danger-text)]"
+                    )}>
+                      {month2Data.stats.netProfit >= 0 ? `+BDT ${month2Data.stats.netProfit.toLocaleString()}` : `BDT ${month2Data.stats.netProfit.toLocaleString()}`}
+                    </p>
                   </div>
-                  <div className="space-y-1">
-                    <span className="text-[10px] uppercase font-bold text-[var(--color-text-muted)]">Operation Cost</span>
-                    <p className="text-xl font-bold text-[var(--color-text-main)]">BDT {month2Data.stats.totalCost.toLocaleString()}</p>
+
+                  <div className="bg-[var(--color-surface)] p-2 sm:p-2.5 rounded-xl border-0 shadow-xs flex flex-col justify-between min-w-0">
+                    <span className="text-[8.5px] sm:text-[9.5px] uppercase font-bold text-[var(--color-text-muted)] tracking-wider mb-0.5 truncate">
+                      Revenue
+                    </span>
+                    <p className="text-xs sm:text-sm md:text-base font-black text-[var(--color-text-main)] truncate">
+                      BDT {month2Data.stats.totalIncome.toLocaleString()}
+                    </p>
+                  </div>
+
+                  <div className="bg-[var(--color-surface)] p-2 sm:p-2.5 rounded-xl border-0 shadow-xs flex flex-col justify-between min-w-0">
+                    <span className="text-[8.5px] sm:text-[9.5px] uppercase font-bold text-[var(--color-text-muted)] tracking-wider mb-0.5 truncate">
+                      Operation Cost
+                    </span>
+                    <p className="text-xs sm:text-sm md:text-base font-black text-[var(--color-text-main)] truncate">
+                      BDT {month2Data.stats.totalCost.toLocaleString()}
+                    </p>
                   </div>
                 </div>
               </Card>
             )}
           </div>
 
-          {/* Monthly overlay trends */}
-          <Card className="p-5 bg-[var(--color-bg-card)]">
-            <h4 className="text-sm font-bold uppercase tracking-wider text-[var(--color-text-main)] mb-4 font-display">Macro Performance Overlays (Normalized comparison)</h4>
-            <div className="h-[300px]">
+          {/* Monthly overlay trends (Stroke-free) */}
+          <Card className="p-3.5 sm:p-4 md:p-5 bg-[var(--color-bg-card)] border-0 rounded-2xl shadow-sm md:shadow-[0_10px_25px_-4px_var(--shadow-color,rgba(0,0,0,0.12))]">
+            <h4 className="text-[11px] sm:text-xs font-bold uppercase tracking-widest text-[var(--color-text-secondary)] mb-3">
+              Macro Performance Overlays (Normalized comparison)
+            </h4>
+            <div className="h-[260px] sm:h-[300px]">
               {loadingMonths ? (
                 <div className="h-full flex items-center justify-center text-xs text-[var(--color-text-muted)] shimmer rounded-xl" />
               ) : (
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={getMonthComparisonData()} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" opacity={0.3} />
-                    <XAxis dataKey="metric" stroke="var(--color-text-muted)" fontSize={10} />
-                    <YAxis stroke="var(--color-text-muted)" fontSize={10} />
+                    <XAxis dataKey="metric" stroke="var(--color-text-muted)" fontSize={9.5} />
+                    <YAxis stroke="var(--color-text-muted)" fontSize={9.5} />
                     <Tooltip 
-                      contentStyle={{ backgroundColor: 'var(--color-bg-card)', border: '1px solid var(--color-border)', borderRadius: '12px' }}
+                      contentStyle={{ backgroundColor: 'var(--color-bg-card)', border: 'none', borderRadius: '12px', boxShadow: '0 8px 30px rgba(0,0,0,0.2)' }}
                       formatter={(value, name, props) => [`${value} ${props.payload.unit}`, name === 'month1' ? (month1 === 'live' ? 'October 2026' : (availableMonths.find(m => m.id === month1)?.name || 'Month 1')) : (month2 === 'live' ? 'October 2026' : (availableMonths.find(m => m.id === month2)?.name || 'Month 2'))]}
                     />
                     <Legend 
+                      wrapperStyle={{ fontSize: '11px', fontWeight: 'bold', textTransform: 'uppercase' }}
                       formatter={(value) => value === 'month1' ? (month1 === 'live' ? 'October 2026' : (availableMonths.find(m => m.id === month1)?.name || 'Month 1')) : (month2 === 'live' ? 'October 2026' : (availableMonths.find(m => m.id === month2)?.name || 'Month 2'))}
                     />
                     <Bar dataKey="month1" fill="var(--color-primary)" radius={[4, 4, 0, 0]} />

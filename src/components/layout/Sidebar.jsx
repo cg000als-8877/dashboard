@@ -21,13 +21,17 @@ import {
   Globe,
   ExternalLink,
   Sparkles,
-  LogOut
+  LogOut,
+  ZoomIn,
+  Minus,
+  Plus
 } from 'lucide-react';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { useKpiData } from '@/utils/useKpiData';
 import { format, parseISO } from 'date-fns';
 import { useTheme } from '@/components/ThemeProvider';
+import { useZoom } from '@/components/providers/ZoomProvider';
 
 export function cn(...inputs) {
   return twMerge(clsx(inputs));
@@ -67,6 +71,7 @@ export default function Sidebar({ onClose }) {
     VISUAL_THEMES, 
     APPEARANCE_MODES 
   } = useTheme();
+  const { zoom, zoomIn, zoomOut, resetZoom } = useZoom();
   
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isLinesExpanded, setIsLinesExpanded] = useState(true);
@@ -304,6 +309,55 @@ export default function Sidebar({ onClose }) {
               </Link>
             );
           })}
+
+          {/* Desktop Screen Zoom Controller (Under Byzid Profile) */}
+          {!isCollapsed ? (
+            <div className="mx-1 my-1 px-3 py-2 rounded-xl bg-[var(--color-surface)]/60 flex items-center justify-between text-xs">
+              <div className="flex items-center gap-2">
+                <ZoomIn size={15} className="text-[var(--color-primary)] shrink-0" />
+                <span className="text-[11px] font-bold text-[var(--color-text-secondary)]">Zoom</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <button
+                  type="button"
+                  onClick={zoomOut}
+                  disabled={zoom <= 70}
+                  title="Zoom Out (-5%)"
+                  className="w-5 h-5 rounded flex items-center justify-center bg-[var(--color-bg-card)] hover:bg-[var(--color-primary)] hover:text-white text-[var(--color-text-main)] font-black text-xs transition-all active:scale-90 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer select-none"
+                >
+                  <Minus size={11} strokeWidth={2.5} />
+                </button>
+                <button
+                  type="button"
+                  onClick={resetZoom}
+                  title="Click to reset to 100%"
+                  className="px-1 text-[10px] font-mono font-bold text-[var(--color-text-main)] hover:text-[var(--color-primary)] cursor-pointer select-none"
+                >
+                  {zoom}%
+                </button>
+                <button
+                  type="button"
+                  onClick={zoomIn}
+                  disabled={zoom >= 130}
+                  title="Zoom In (+5%)"
+                  className="w-5 h-5 rounded flex items-center justify-center bg-[var(--color-bg-card)] hover:bg-[var(--color-primary)] hover:text-white text-[var(--color-text-main)] font-black text-xs transition-all active:scale-90 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer select-none"
+                >
+                  <Plus size={11} strokeWidth={2.5} />
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="flex items-center justify-center py-1">
+              <button
+                type="button"
+                onClick={resetZoom}
+                title={`Screen Zoom: ${zoom}% (click to reset)`}
+                className="flex items-center justify-center p-2 rounded-xl hover:bg-[var(--color-surface-hover)] text-[var(--color-text-muted)] hover:text-[var(--color-primary)] transition-all cursor-pointer select-none"
+              >
+                <ZoomIn size={16} />
+              </button>
+            </div>
+          )}
         </nav>
 
         {/* Footer Area with Theme Section directly above System Status */}

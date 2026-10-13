@@ -693,7 +693,7 @@ export function DashboardContent({ month, isArchive = false }) {
                   className={cn(
                     "flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-4 py-1 sm:py-1.5 rounded-lg text-[9.5px] sm:text-xs uppercase tracking-wider transition-all duration-200 cursor-pointer select-none shrink-0 border-0 outline-none",
                     selectedCardMonth === 'current'
-                      ? "bg-transparent md:bg-[var(--color-bg-card)] text-[var(--color-text-main)] font-black md:font-bold shadow-none md:shadow-sm"
+                      ? "bg-white text-gray-900 md:bg-[var(--color-bg-card)] md:text-[var(--color-text-main)] font-black md:font-bold shadow-xs md:shadow-sm"
                       : "bg-transparent text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)] font-medium"
                   )}
                 >
@@ -708,7 +708,7 @@ export function DashboardContent({ month, isArchive = false }) {
                   className={cn(
                     "px-2 sm:px-4 py-1 sm:py-1.5 rounded-lg text-[9.5px] sm:text-xs uppercase tracking-wider transition-all duration-200 cursor-pointer select-none shrink-0 border-0 outline-none",
                     selectedCardMonth === 'september'
-                      ? "bg-transparent md:bg-[var(--color-bg-card)] text-[var(--color-primary)] md:text-[var(--color-text-main)] font-black md:font-bold shadow-none md:shadow-sm"
+                      ? "bg-white text-gray-900 md:bg-[var(--color-bg-card)] md:text-[var(--color-text-main)] font-black md:font-bold shadow-xs md:shadow-sm"
                       : "bg-transparent text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)] font-medium"
                   )}
                 >
@@ -721,7 +721,7 @@ export function DashboardContent({ month, isArchive = false }) {
                   className={cn(
                     "px-2 sm:px-4 py-1 sm:py-1.5 rounded-lg text-[9.5px] sm:text-xs uppercase tracking-wider transition-all duration-200 cursor-pointer select-none shrink-0 border-0 outline-none",
                     selectedCardMonth === 'august'
-                      ? "bg-transparent md:bg-[var(--color-bg-card)] text-[var(--color-primary)] md:text-[var(--color-text-main)] font-black md:font-bold shadow-none md:shadow-sm"
+                      ? "bg-white text-gray-900 md:bg-[var(--color-bg-card)] md:text-[var(--color-text-main)] font-black md:font-bold shadow-xs md:shadow-sm"
                       : "bg-transparent text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)] font-medium"
                   )}
                 >
@@ -734,7 +734,7 @@ export function DashboardContent({ month, isArchive = false }) {
                   className={cn(
                     "px-2 sm:px-4 py-1 sm:py-1.5 rounded-lg text-[9.5px] sm:text-xs uppercase tracking-wider transition-all duration-200 cursor-pointer select-none shrink-0 border-0 outline-none",
                     selectedCardMonth === 'july'
-                      ? "bg-transparent md:bg-[var(--color-bg-card)] text-[var(--color-primary)] md:text-[var(--color-text-main)] font-black md:font-bold shadow-none md:shadow-sm"
+                      ? "bg-white text-gray-900 md:bg-[var(--color-bg-card)] md:text-[var(--color-text-main)] font-black md:font-bold shadow-xs md:shadow-sm"
                       : "bg-transparent text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)] font-medium"
                   )}
                 >
