@@ -9,9 +9,10 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { useKpiData } from '@/utils/useKpiData';
 import { format, parseISO } from 'date-fns';
-import { Clock, LayoutDashboard, Factory, BarChart3, Ship, History, Palette, Sun, Moon, GitCompare, Coffee, Globe, ExternalLink, Check, Sparkles, LogOut } from 'lucide-react';
+import { Clock, LayoutDashboard, Factory, BarChart3, Ship, History, Palette, Sun, Moon, GitCompare, Coffee, Globe, ExternalLink, Check, Sparkles, LogOut, ZoomIn, Minus, Plus } from 'lucide-react';
 import { useMonth } from '@/components/providers/MonthProvider';
 import { useTheme } from '@/components/ThemeProvider';
+import { useZoom } from '@/components/providers/ZoomProvider';
 import { CanteenSecurityModal } from '@/components/ui/CanteenSecurityModal';
 import { MobileHourlyTicker } from '@/components/dashboard/MobileHourlyTicker';
 import { MobileBottomNav } from '@/components/layout/MobileBottomNav';
@@ -42,6 +43,7 @@ export default function DashboardLayout({ children }) {
     VISUAL_THEMES, 
     APPEARANCE_MODES 
   } = useTheme();
+  const { zoom, zoomIn, zoomOut, resetZoom } = useZoom();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isBurgerOpen, setIsBurgerOpen] = useState(false);
   const [showCanteenModal, setShowCanteenModal] = useState(false);
@@ -274,7 +276,7 @@ export default function DashboardLayout({ children }) {
         {isBurgerOpen && (
           <>
             <div className="fixed inset-0 z-[90] bg-black/40 backdrop-blur-[2px]" onClick={() => setIsBurgerOpen(false)}></div>
-            <div className="fixed bottom-[74px] right-3 sm:right-4 w-48 bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-2xl shadow-2xl flex flex-col p-2 animate-[fade-up_0.2s_ease-out_both] z-[100] origin-bottom-right">
+            <div className="fixed bottom-[74px] right-3 sm:right-4 w-52 bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-2xl shadow-2xl flex flex-col p-2 animate-[fade-up_0.2s_ease-out_both] z-[100] origin-bottom-right">
               <p className="text-[9px] font-extrabold uppercase tracking-widest text-[var(--color-text-muted)] mb-2 px-2.5 pt-1.5">
                 Quick Navigation
               </p>
@@ -354,8 +356,63 @@ export default function DashboardLayout({ children }) {
                 })}
               </div>
 
+              {/* Screen Zoom In / Out Controller: Under Byzid Profile */}
+              <div className="pt-1.5 mt-1 border-t border-[var(--color-border)]/50 px-0.5">
+                <div className="flex items-center justify-between px-2.5 py-1.5 rounded-xl bg-[var(--color-surface)]/70 text-xs">
+                  <div className="flex items-center gap-1.5 min-w-0">
+                    <ZoomIn size={13} className="text-[var(--color-primary)] shrink-0" />
+                    <span className="text-[11px] font-bold text-[var(--color-text-secondary)] whitespace-nowrap">
+                      Screen Zoom
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-1 shrink-0">
+                    {/* Zoom Out Button */}
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        zoomOut();
+                      }}
+                      disabled={zoom <= 70}
+                      title="Zoom Out (-5%)"
+                      className="w-5 h-5 rounded-md flex items-center justify-center bg-[var(--color-bg-card)] hover:bg-[var(--color-primary)] hover:text-white text-[var(--color-text-main)] font-black text-xs transition-all active:scale-90 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer shadow-xs select-none"
+                    >
+                      <Minus size={11} strokeWidth={2.5} />
+                    </button>
+
+                    {/* Current Zoom Percentage Badge (Click to reset to 100%) */}
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        resetZoom();
+                      }}
+                      title="Click to reset to 100%"
+                      className="px-1.5 py-0.5 rounded text-[10.5px] font-mono font-bold text-[var(--color-text-main)] hover:text-[var(--color-primary)] transition-colors cursor-pointer select-none"
+                    >
+                      {zoom}%
+                    </button>
+
+                    {/* Zoom In Button */}
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        zoomIn();
+                      }}
+                      disabled={zoom >= 130}
+                      title="Zoom In (+5%)"
+                      className="w-5 h-5 rounded-md flex items-center justify-center bg-[var(--color-bg-card)] hover:bg-[var(--color-primary)] hover:text-white text-[var(--color-text-main)] font-black text-xs transition-all active:scale-90 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer shadow-xs select-none"
+                    >
+                      <Plus size={11} strokeWidth={2.5} />
+                    </button>
+                  </div>
+                </div>
+              </div>
+
               {/* Mobile Logout Action */}
-              <div className="pt-1.5 mt-1.5 border-t border-[var(--color-border)]/60">
+              <div className="pt-1.5 mt-1 border-t border-[var(--color-border)]/60">
                 <button
                   onClick={async () => {
                     setIsBurgerOpen(false);

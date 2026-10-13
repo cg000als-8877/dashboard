@@ -4,6 +4,7 @@ import DashboardLayout from "@/components/layout/DashboardLayout";
 import { MonthProvider } from "@/components/providers/MonthProvider";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { DensityProvider } from "@/components/providers/DensityProvider";
+import { ZoomProvider } from "@/components/providers/ZoomProvider";
 import { ClientAutoRefresh } from "@/components/providers/ClientAutoRefresh";
 import { PwaManager } from "@/components/providers/PwaManager";
 import { PushNotificationManager } from "@/components/providers/PushNotificationManager";
@@ -81,6 +82,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   } else {
                     document.documentElement.setAttribute('data-bg-effect', 'bokeh');
                   }
+                  var z = localStorage.getItem('app_screen_zoom');
+                  if (z) {
+                    document.documentElement.style.zoom = z + '%';
+                    document.documentElement.style.setProperty('--app-screen-zoom', z + '%');
+                  }
                 } catch(e) {}
               })();
             `,
@@ -92,14 +98,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <BackgroundCanvas />
           <MonthProvider>
             <DensityProvider>
-              <ClientAutoRefresh />
-              <PushNotificationManager />
-              <PwaManager>
-                <AppWelcomeSplash />
-                <DashboardLayout>
-                  {children}
-                </DashboardLayout>
-              </PwaManager>
+              <ZoomProvider>
+                <ClientAutoRefresh />
+                <PushNotificationManager />
+                <PwaManager>
+                  <AppWelcomeSplash />
+                  <DashboardLayout>
+                    {children}
+                  </DashboardLayout>
+                </PwaManager>
+              </ZoomProvider>
             </DensityProvider>
           </MonthProvider>
         </ThemeProvider>
