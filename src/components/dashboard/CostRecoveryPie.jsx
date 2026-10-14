@@ -159,6 +159,17 @@ export function CostRecoveryPie({
           `}</style>
 
           <defs>
+            {/* SVG Gaussian Blur Filters for Mobile View (Soft feathered edges) */}
+            <filter id={`${uniqueId}-pie-blur-wide`} x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="3.2" />
+            </filter>
+            <filter id={`${uniqueId}-pie-blur-medium`} x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="1.8" />
+            </filter>
+            <filter id={`${uniqueId}-pie-blur-core`} x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="0.9" />
+            </filter>
+
             {/* Shimmer gradient that sweeps smoothly along the progress stroke with unique instance ID */}
             <linearGradient id={shimmerGradId} x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0">
@@ -184,54 +195,133 @@ export function CostRecoveryPie({
             className="opacity-40"
           />
 
-          {/* Active Progress Pie Stroke (Reliable CSS drop-shadow + continuous dual animations) */}
-          <circle
-            cx="80"
-            cy="80"
-            r={radius}
-            stroke={toneStatus.strokeColor}
-            strokeWidth="12"
-            strokeDasharray={circumference}
-            strokeDashoffset={strokeDashoffset}
-            strokeLinecap="round"
-            className="transition-all duration-1000 ease-out"
-            style={{
-              filter: `drop-shadow(0 0 6px ${isCovered ? 'rgba(16, 185, 129, 0.55)' : 'var(--color-primary-glow, rgba(0, 240, 255, 0.5))'})`,
-              animation: 'pie-stroke-glow-pulse 2.4s ease-in-out infinite',
-              transformOrigin: '80px 80px',
-            }}
-          >
-            <animate
-              attributeName="stroke-width"
-              values="12; 12.8; 12"
-              dur="2.4s"
-              repeatCount="indefinite"
-            />
-            <animate
-              attributeName="opacity"
-              values="0.92; 1; 0.92"
-              dur="2.4s"
-              repeatCount="indefinite"
-            />
-          </circle>
-
-          {/* Overlay Traveling Shimmer Wave along the stroke */}
-          {fillLevel > 0 && (
+          {/* ── MOBILE VIEW: Soft Blurry "Edges Don't Show Up" Progress Arc ── */}
+          <g className="md:hidden">
+            {/* Outer Aura: Wide Soft Diffusion */}
             <circle
               cx="80"
               cy="80"
               r={radius}
-              stroke={`url(#${shimmerGradId})`}
+              stroke={toneStatus.strokeColor}
+              strokeWidth="14"
+              strokeDasharray={circumference}
+              strokeDashoffset={strokeDashoffset}
+              strokeLinecap="round"
+              className="transition-all duration-1000 ease-out pointer-events-none"
+              filter={`url(#${uniqueId}-pie-blur-wide)`}
+              style={{
+                opacity: 0.35,
+                transformOrigin: '80px 80px',
+              }}
+            />
+
+            {/* Mid Aura: Feathered Glow */}
+            <circle
+              cx="80"
+              cy="80"
+              r={radius}
+              stroke={toneStatus.strokeColor}
+              strokeWidth="13"
+              strokeDasharray={circumference}
+              strokeDashoffset={strokeDashoffset}
+              strokeLinecap="round"
+              className="transition-all duration-1000 ease-out pointer-events-none"
+              filter={`url(#${uniqueId}-pie-blur-medium)`}
+              style={{
+                opacity: 0.6,
+                transformOrigin: '80px 80px',
+              }}
+            />
+
+            {/* Core Arc: Softened with No Sharp Boundary */}
+            <circle
+              cx="80"
+              cy="80"
+              r={radius}
+              stroke={toneStatus.strokeColor}
               strokeWidth="12"
               strokeDasharray={circumference}
               strokeDashoffset={strokeDashoffset}
               strokeLinecap="round"
-              className="pointer-events-none transition-all duration-1000 ease-out"
+              className="transition-all duration-1000 ease-out"
+              filter={`url(#${uniqueId}-pie-blur-core)`}
               style={{
-                animation: 'pie-shimmer-sweep 2.6s ease-in-out infinite',
+                opacity: 0.98,
+                transformOrigin: '80px 80px',
               }}
             />
-          )}
+
+            {/* Soft Shimmer along the blurred stroke on mobile */}
+            {fillLevel > 0 && (
+              <circle
+                cx="80"
+                cy="80"
+                r={radius}
+                stroke={`url(#${shimmerGradId})`}
+                strokeWidth="12"
+                strokeDasharray={circumference}
+                strokeDashoffset={strokeDashoffset}
+                strokeLinecap="round"
+                className="pointer-events-none transition-all duration-1000 ease-out"
+                filter={`url(#${uniqueId}-pie-blur-core)`}
+                style={{
+                  animation: 'pie-shimmer-sweep 2.6s ease-in-out infinite',
+                }}
+              />
+            )}
+          </g>
+
+          {/* ── DESKTOP VIEW: Standard Crisp Progress Arc ── */}
+          <g className="hidden md:block">
+            {/* Active Progress Pie Stroke (Reliable CSS drop-shadow + continuous dual animations) */}
+            <circle
+              cx="80"
+              cy="80"
+              r={radius}
+              stroke={toneStatus.strokeColor}
+              strokeWidth="12"
+              strokeDasharray={circumference}
+              strokeDashoffset={strokeDashoffset}
+              strokeLinecap="round"
+              className="transition-all duration-1000 ease-out"
+              style={{
+                filter: `drop-shadow(0 0 6px ${isCovered ? 'rgba(16, 185, 129, 0.55)' : 'var(--color-primary-glow, rgba(0, 240, 255, 0.5))'})`,
+                animation: 'pie-stroke-glow-pulse 2.4s ease-in-out infinite',
+                transformOrigin: '80px 80px',
+              }}
+            >
+              <animate
+                attributeName="stroke-width"
+                values="12; 12.8; 12"
+                dur="2.4s"
+                repeatCount="indefinite"
+              />
+              <animate
+                attributeName="opacity"
+                values="0.92; 1; 0.92"
+                dur="2.4s"
+                repeatCount="indefinite"
+              />
+            </circle>
+
+            {/* Overlay Traveling Shimmer Wave along the stroke (Desktop) */}
+            {fillLevel > 0 && (
+              <circle
+                cx="80"
+                cy="80"
+                r={radius}
+                stroke={`url(#${shimmerGradId})`}
+                strokeWidth="12"
+                strokeDasharray={circumference}
+                strokeDashoffset={strokeDashoffset}
+                strokeLinecap="round"
+                className="pointer-events-none transition-all duration-1000 ease-out"
+                style={{
+                  animation: 'pie-shimmer-sweep 2.6s ease-in-out infinite',
+                }}
+              />
+            )}
+          </g>
 
           {/* Live Pulsing Beacon at Leading Tip */}
           {fillLevel > 2 && (

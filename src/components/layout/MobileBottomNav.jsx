@@ -19,14 +19,14 @@ function getCenterDashboardConfig(visualTheme, isLight) {
   if (visualTheme === 'abstract') {
     if (isLight) {
       return {
-        buttonClass: "border border-black/20 bg-[#18181B] text-white shadow-[0_4px_12px_rgba(0,0,0,0.15)]",
-        activeRing: "ring-2 ring-black/40",
+        buttonClass: "border-none bg-[#18181B] text-white shadow-[0_0_12px_rgba(0,0,0,0.2)]",
+        activeGlow: "shadow-[0_0_16px_rgba(0,0,0,0.35)]",
         iconColor: "#FFFFFF"
       };
     }
     return {
-      buttonClass: "border border-white/60 bg-black text-gray-400 shadow-[0_4px_16px_rgba(0,0,0,0.6)]",
-      activeRing: "ring-1 ring-white/70 shadow-[0_0_18px_rgba(255,255,255,0.25)]",
+      buttonClass: "border-none bg-black text-gray-400 shadow-[0_0_12px_rgba(255,255,255,0.2)]",
+      activeGlow: "shadow-[0_0_18px_rgba(255,255,255,0.35)]",
       iconColor: "#FFFFFF"
     };
   }
@@ -34,8 +34,8 @@ function getCenterDashboardConfig(visualTheme, isLight) {
   // 2. ALL OTHER THEMES
   if (isLight) {
     return {
-      buttonClass: "border-2 border-[var(--color-bg-card)] bg-[var(--color-primary)] text-white shadow-[0_4px_12px_rgba(0,0,0,0.15)]",
-      activeRing: "ring-2 ring-[var(--color-primary)] ring-offset-1 ring-offset-[var(--color-bg-card)] shadow-[0_0_22px_var(--color-primary-glow-hover)]",
+      buttonClass: "border-none bg-[var(--color-primary)] text-white shadow-[0_0_14px_var(--color-primary-glow)]",
+      activeGlow: "shadow-[0_0_20px_var(--color-primary-glow-hover)]",
       iconColor: "#FFFFFF"
     };
   }
@@ -54,15 +54,15 @@ function getCenterDashboardConfig(visualTheme, isLight) {
 
   if (useDarkIcon) {
     return {
-      buttonClass: "border-2 border-[var(--color-bg-card)] bg-[var(--color-primary)] shadow-[0_6px_18px_var(--color-primary-glow)]",
-      activeRing: "ring-2 ring-[var(--color-primary)] ring-offset-1 ring-offset-[var(--color-bg-card)] shadow-[0_0_22px_var(--color-primary-glow-hover)]",
+      buttonClass: "border-none bg-[var(--color-primary)] shadow-[0_0_14px_var(--color-primary-glow)]",
+      activeGlow: "shadow-[0_0_22px_var(--color-primary-glow-hover)]",
       iconColor: "#0B0F19"
     };
   }
 
   return {
-    buttonClass: "border-2 border-[var(--color-bg-card)] bg-[var(--color-primary)] shadow-[0_6px_18px_var(--color-primary-glow)]",
-    activeRing: "ring-2 ring-[var(--color-primary)] ring-offset-1 ring-offset-[var(--color-bg-card)] shadow-[0_0_22px_var(--color-primary-glow-hover)]",
+    buttonClass: "border-none bg-[var(--color-primary)] shadow-[0_0_14px_var(--color-primary-glow)]",
+    activeGlow: "shadow-[0_0_22px_var(--color-primary-glow-hover)]",
     iconColor: "#FFFFFF"
   };
 }
@@ -116,7 +116,7 @@ export function MobileBottomNav({ isOthersOpen, onToggleOthers, onOthersClose })
         />
       </div>
 
-      <div className="md:hidden fixed bottom-3 inset-x-0 mx-auto w-[94%] max-w-[390px] z-50 pointer-events-auto select-none font-sans animate-[fade-up_0.3s_ease-out]">
+      <div className="md:hidden fixed bottom-3 inset-x-0 mx-auto w-[calc(100%-12px)] max-w-[520px] z-50 pointer-events-auto select-none font-sans animate-[fade-up_0.3s_ease-out]">
       <div className="relative w-full h-[56px] flex items-center justify-center">
         
         {/* Ambient Depth Shadows */}
@@ -130,30 +130,49 @@ export function MobileBottomNav({ isOthersOpen, onToggleOthers, onOthersClose })
           viewBox="0 0 500 70"
           preserveAspectRatio="none"
           className={cn(
-            "absolute inset-0 w-full h-full",
+            "absolute inset-0 w-full h-full overflow-visible",
             isLight 
-              ? "drop-shadow-[0_8px_20px_rgba(0,0,0,0.12)] filter drop-shadow-[0_2px_6px_rgba(0,0,0,0.06)]" 
-              : "drop-shadow-[0_8px_24px_rgba(0,0,0,0.35)] filter drop-shadow-[0_2px_8px_rgba(0,0,0,0.2)]"
+              ? "drop-shadow-[0_8px_24px_rgba(0,0,0,0.08)]" 
+              : "drop-shadow-[0_8px_28px_rgba(0,0,0,0.3)]"
           )}
         >
+          {/* Feathered/Blurry Outer Edge Underlay */}
           <path
             d="M 35 0 L 204 0 C 218 0, 224 32, 250 32 C 276 32, 282 0, 296 0 L 465 0 A 35 35 0 0 1 500 35 A 35 35 0 0 1 465 70 L 35 70 A 35 35 0 0 1 0 35 A 35 35 0 0 1 35 0 Z"
             fill="var(--color-bg-card)"
-            stroke="var(--color-border)"
-            strokeWidth="1.5"
+            stroke="var(--color-bg-card)"
+            strokeWidth="4"
+            style={{ filter: 'blur(3.5px)', opacity: isLight ? 0.8 : 0.65 }}
+          />
+
+          {/* Main Solid Path (No Stroke) */}
+          <path
+            d="M 35 0 L 204 0 C 218 0, 224 32, 250 32 C 276 32, 282 0, 296 0 L 465 0 A 35 35 0 0 1 500 35 A 35 35 0 0 1 465 70 L 35 70 A 35 35 0 0 1 0 35 A 35 35 0 0 1 35 0 Z"
+            fill="var(--color-bg-card)"
+            stroke="none"
           />
         </svg>
 
         {/* Floating Center Elevated Circle ("DASHBOARD" - Default Opening Page) */}
         <div className="absolute -top-[23px] left-1/2 -translate-x-1/2 z-30 flex flex-col items-center">
+          {/* Soft Blurry Feathered Edge Halo under circle */}
+          <div 
+            aria-hidden="true" 
+            className="absolute -inset-1 rounded-full pointer-events-none blur-xs transition-all duration-300"
+            style={{ 
+              backgroundColor: 'var(--color-primary)',
+              opacity: isDashboard ? 0.6 : 0.35
+            }} 
+          />
+
           <Link
             href="/"
             onClick={handleDashboardClick}
             className={cn(
-              "relative w-10 h-10 rounded-full transition-all duration-300 active:scale-95 flex items-center justify-center cursor-pointer group",
+              "relative w-10 h-10 rounded-full transition-all duration-300 active:scale-95 flex items-center justify-center cursor-pointer group border-none outline-none",
               dashboardConfig.buttonClass,
               isDashboard
-                ? cn("scale-105", dashboardConfig.activeRing)
+                ? cn("scale-105", dashboardConfig.activeGlow)
                 : "hover:scale-105"
             )}
             aria-label="Dashboard"
