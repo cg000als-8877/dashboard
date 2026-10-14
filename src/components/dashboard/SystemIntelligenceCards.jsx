@@ -225,8 +225,8 @@ export function SystemIntelligenceCards({ insights = [] }) {
       <div className="bg-[var(--color-bg-card)] rounded-3xl p-4 sm:p-6 md:p-7 shadow-sm transition-all duration-300 border-none outline-none">
         
         {/* Header Bar */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5 sm:mb-6">
-          <div>
+        <div className="flex flex-col sm:flex-row items-center sm:items-center justify-between gap-3 mb-5 sm:mb-6 text-center sm:text-left">
+          <div className="flex flex-col items-center sm:items-start text-center sm:text-left">
             <h3 className="text-sm sm:text-base font-extrabold uppercase tracking-[0.16em] text-[var(--color-text-main)]">
               System Intelligence
             </h3>
@@ -235,7 +235,7 @@ export function SystemIntelligenceCards({ insights = [] }) {
             </p>
           </div>
 
-          <div className="self-start sm:self-auto px-2.5 py-1 rounded-full bg-[var(--color-surface)] text-[10.5px] font-extrabold text-[var(--color-text-main)] border-none">
+          <div className="self-center sm:self-auto px-2.5 py-1 rounded-full bg-[var(--color-surface)] text-[10.5px] font-extrabold text-[var(--color-text-main)] border-none">
             <span>{parsedItems.length} Live Insights</span>
           </div>
         </div>
