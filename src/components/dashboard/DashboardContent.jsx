@@ -834,7 +834,7 @@ export function DashboardContent({ month, isArchive = false }) {
                   <DashboardDateRange dateInfo={activeDateInfo} workingDays={displayStats?.workingDays} />
                 </div>
                 {/* ── MOBILE VIEW ONLY: Wireframe-matched Redesign Layout ── */}
-                <div className="md:hidden flex flex-col gap-2.5 relative z-10 px-0.5">
+                <div className="md:hidden flex flex-col gap-1.5 relative z-10 px-0.5">
                   
                   {/* 1. TOP COMBINED CARD: NET LOSS (TOP) + AVERAGE DAILY LOSS (BOTTOM) */}
                   <Card 
@@ -961,9 +961,9 @@ export function DashboardContent({ month, isArchive = false }) {
                   )}
 
                   {/* 2. MIDDLE 2-COLUMN SECTION: Stacked Total Income/Cost (Left) + Cost Recovery Jar (Right) */}
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-2 gap-1.5">
                     {/* Left Column: 2 Stacked Financial Cards */}
-                    <div className="flex flex-col gap-2 justify-between">
+                    <div className="flex flex-col gap-1.5 justify-between">
                       {/* 2a. Total Income Card */}
                       <Card
                         hover
