@@ -130,7 +130,7 @@ function DashboardDateRange({ dateInfo, workingDays = null, className = "" }) {
   );
 }
 
-function AnimatedTrendCurve({ isProfit = false, className = "" }) {
+function AnimatedTrendCurve({ isProfit = false, className = "", strokeWidth = 4.5 }) {
   const reactId = React.useId().replace(/[^a-zA-Z0-9]/g, '');
   const gradId = `trendGrad_${reactId}`;
 
@@ -161,7 +161,7 @@ function AnimatedTrendCurve({ isProfit = false, className = "" }) {
               : "M 6 8 C 12 24, 16 44, 22 44 C 28 44, 30 28, 36 28 C 42 28, 44 58, 50 58 C 58 58, 62 32, 68 32 C 72 32, 74 48, 77 48 C 79 48, 80 42, 83 42 C 86 42, 88 64, 92 64 C 95 64, 97 52, 100 52 C 104 52, 106 70, 110 76"
           }
           stroke={`url(#${gradId})`}
-          strokeWidth="4.5"
+          strokeWidth={strokeWidth}
           strokeLinecap="round"
           strokeLinejoin="round"
           style={{
@@ -320,8 +320,7 @@ function getPacedMonthData(dailyTrends, lines, rawEngine, targetDays) {
     lines: pacedLines,
     startDate,
     endDate,
-    dateInfo: formatDateRangeInfo(startDate, endDate),
-    slicedTrends
+    dateInfo: formatDateRangeInfo(startDate, endDate)
   };
 }
 
@@ -585,9 +584,7 @@ export function DashboardContent({ month, isArchive = false }) {
 
   const maxDays = dailyTrends?.length || 1;
   const displayDay = interactiveDay !== null ? interactiveDay : currentCalendarDay;
-  const currentDayData = interactiveDay !== null
-    ? (dailyTrends?.find(d => parseInt(d.date?.split('-')[2], 10) === interactiveDay) || dailyTrends?.[interactiveDay - 1] || null)
-    : (dailyTrends && dailyTrends.length > 0 ? dailyTrends[dailyTrends.length - 1] : null);
+  const currentDayData = dailyTrends && dailyTrends.length >= displayDay ? dailyTrends[displayDay - 1] : null;
 
   // ── LIKE-FOR-LIKE / PACE-MATCHED SLICES FOR PAST MONTHS ──
   const currentWorkingDays = stats?.workingDays > 0 ? stats.workingDays : (dailyTrends?.length || 10);
@@ -753,7 +750,6 @@ export function DashboardContent({ month, isArchive = false }) {
             let displayStats = stats;
             let activeActiveLines = lines || [];
             let activeComp = liveComparison;
-            let activeDailyTrends = dailyTrends;
 
             if (!isArchive) {
               if (selectedCardMonth === 'september' && (septemberPaced || septemberStats)) {
@@ -761,19 +757,16 @@ export function DashboardContent({ month, isArchive = false }) {
                 activeDateInfo = septemberPaced?.dateInfo || formatDateRangeInfo(null, null, 'september', '2026');
                 activeActiveLines = septemberPaced?.lines || septemberLines || lines || [];
                 activeComp = septemberComparison;
-                activeDailyTrends = septemberPaced?.slicedTrends || septemberDailyTrends;
               } else if (selectedCardMonth === 'august' && (augustPaced || augustStats)) {
                 displayStats = augustPaced?.stats || augustStats;
                 activeDateInfo = augustPaced?.dateInfo || formatDateRangeInfo(null, null, 'august', '2026');
                 activeActiveLines = augustPaced?.lines || augustLines || lines || [];
                 activeComp = augustComparison;
-                activeDailyTrends = augustPaced?.slicedTrends || augustDailyTrends;
               } else if (selectedCardMonth === 'july' && (julyPaced || julyStats)) {
                 displayStats = julyPaced?.stats || julyStats;
                 activeDateInfo = julyPaced?.dateInfo || formatDateRangeInfo(null, null, 'july', '2026');
                 activeActiveLines = julyPaced?.lines || julyLines || lines || [];
                 activeComp = julyComparison;
-                activeDailyTrends = julyPaced?.slicedTrends || julyDailyTrends;
               }
             }
 
@@ -794,16 +787,6 @@ export function DashboardContent({ month, isArchive = false }) {
             };
 
             const isPastMonth = !isArchive && selectedCardMonth !== 'current';
-            const activeDayTrend = interactiveDay !== null
-              ? (activeDailyTrends?.find(d => parseInt(d.date?.split('-')[2], 10) === interactiveDay) || activeDailyTrends?.[interactiveDay - 1] || null)
-              : (activeDailyTrends && activeDailyTrends.length > 0 ? activeDailyTrends[activeDailyTrends.length - 1] : null);
-
-            const activeDayProfit = activeDayTrend?.profit ?? 0;
-            const isTodayProfit = activeDayProfit >= 0;
-            const todayLabel = (isPastMonth || isArchive)
-              ? (isTodayProfit ? "Day's Profit" : "Day's Loss")
-              : (isTodayProfit ? "Today's Profit" : "Today's Loss");
-
             const daysComp = isArchive ? null : {
               highlight: `${displayStats?.workingDays || 0} Days`,
               label: isPastMonth ? `matching October pace (${displayStats?.workingDays} active days)` : `matching ${livePeriodLabel} pace`,
@@ -823,6 +806,26 @@ export function DashboardContent({ month, isArchive = false }) {
             const recoveryPercent = (displayStats?.totalCost || 0) > 0 
               ? (((displayStats?.totalIncome || 0) / displayStats.totalCost) * 100) 
               : 0;
+
+            let activeDailyTrends = dailyTrends;
+            if (!isArchive) {
+              if (selectedCardMonth === 'september' && septemberDailyTrends) {
+                activeDailyTrends = septemberDailyTrends.slice(0, currentWorkingDays);
+              } else if (selectedCardMonth === 'august' && augustDailyTrends) {
+                activeDailyTrends = augustDailyTrends.slice(0, currentWorkingDays);
+              } else if (selectedCardMonth === 'july' && julyDailyTrends) {
+                activeDailyTrends = julyDailyTrends.slice(0, currentWorkingDays);
+              }
+            }
+
+            const lastDayEntry = (activeDailyTrends && activeDailyTrends.length > 0)
+              ? activeDailyTrends[activeDailyTrends.length - 1]
+              : null;
+            const lastDayProfit = lastDayEntry?.profit !== undefined ? lastDayEntry.profit : 0;
+            const isLastDayProfit = lastDayProfit >= 0;
+            const lastDayDateFormatted = lastDayEntry?.date 
+              ? `${format(parseISO(lastDayEntry.date), 'MMM').toUpperCase()} ${format(parseISO(lastDayEntry.date), 'do')}` 
+              : '';
 
             return (
               <>
@@ -916,6 +919,46 @@ export function DashboardContent({ month, isArchive = false }) {
                       </div>
                     </div>
                   </Card>
+
+                  {/* 1b. MOBILE ONLY: LAST RECORDED DAY PROFIT/LOSS CARD */}
+                  {lastDayEntry && (
+                    <Card
+                      hover
+                      data-color={isLastDayProfit ? 'success' : 'danger'}
+                      className="p-3 sm:p-3.5 rounded-2xl transition-all shadow-sm overflow-hidden border-0"
+                      style={{
+                        backgroundColor: 'var(--color-bg-card)',
+                      }}
+                    >
+                      <div className="flex items-center justify-between w-full gap-2">
+                        {/* Left: Last day loss (OCT 13th) */}
+                        <div className="flex items-center gap-1.5 min-w-0">
+                          <span className="text-xs sm:text-[13px] font-bold text-[var(--color-text-secondary)] whitespace-nowrap">
+                            {isLastDayProfit ? 'Last day profit' : 'Last day loss'}{' '}
+                            <span className="text-[var(--color-text-main)] font-extrabold">({lastDayDateFormatted})</span>
+                          </span>
+                        </div>
+
+                        {/* Right: Actual Loss/Profit with BDT prefix + Small Animated Trend Curve */}
+                        <div className="flex items-center gap-1.5 shrink-0">
+                          <p className={cn(
+                            "font-black tracking-tight text-[15px] sm:text-[16px] leading-none [filter:var(--shadow-text)] whitespace-nowrap",
+                            isLastDayProfit ? "text-[var(--color-success)]" : "text-[var(--color-danger)]"
+                          )}>
+                            <AnimatedNumber 
+                              value={Math.abs(Math.round(lastDayProfit))} 
+                              prefix={isLastDayProfit ? "+BDT " : "BDT -"} 
+                            />
+                          </p>
+                          <AnimatedTrendCurve 
+                            isProfit={isLastDayProfit} 
+                            className="w-7 sm:w-8 h-4.5 sm:h-5 ml-0.5" 
+                            strokeWidth={6.5}
+                          />
+                        </div>
+                      </div>
+                    </Card>
+                  )}
 
                   {/* 2. MIDDLE 2-COLUMN SECTION: Stacked Total Income/Cost (Left) + Cost Recovery Jar (Right) */}
                   <div className="grid grid-cols-2 gap-2">

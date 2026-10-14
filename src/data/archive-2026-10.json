@@ -185,7 +185,17 @@
     {
       "date": "2026-10-13",
       "line_id": "A",
-      "status": "HOLIDAY"
+      "style": 559707,
+      "item": "BOYS SHIRT",
+      "worker_count": 59,
+      "per_head_cost": 1730,
+      "total_cost": 102070,
+      "production_qty": 1650,
+      "production_dzn": 137.5,
+      "cm_per_dzn": 633,
+      "total_income": 87037.5,
+      "net_profit": -15032.5,
+      "status": "ACTIVE"
     },
     {
       "date": "2026-10-14",
@@ -595,7 +605,17 @@
     {
       "date": "2026-10-13",
       "line_id": "C",
-      "status": "HOLIDAY"
+      "style": "",
+      "item": "BOXER",
+      "worker_count": 31,
+      "per_head_cost": 1384,
+      "total_cost": 42904,
+      "production_qty": 1800,
+      "production_dzn": 150,
+      "cm_per_dzn": 150,
+      "total_income": 22500,
+      "net_profit": -20404,
+      "status": "ACTIVE"
     },
     {
       "date": "2026-10-14",
