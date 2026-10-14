@@ -87,7 +87,36 @@ export function MobileBottomNav({ isOthersOpen, onToggleOthers, onOthersClose })
   };
 
   return (
-    <div className="md:hidden fixed bottom-3 inset-x-0 mx-auto w-[94%] max-w-[390px] z-50 pointer-events-auto select-none font-sans animate-[fade-up_0.3s_ease-out]">
+    <>
+      {/* ── Progressive Blur Bed Under Mobile Floating Nav ───────────────────────── */}
+      <div 
+        aria-hidden="true"
+        className="md:hidden fixed bottom-0 inset-x-0 h-36 pointer-events-none select-none z-30 overflow-hidden"
+      >
+        {/* Hardware-Accelerated Frosted Backdrop Blur with Gradual Fade Mask */}
+        <div 
+          className="absolute inset-0"
+          style={{
+            backdropFilter: 'blur(28px) saturate(140%)',
+            WebkitBackdropFilter: 'blur(28px) saturate(140%)',
+            maskImage: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 45%, rgba(0,0,0,0.85) 65%, rgba(0,0,0,0.35) 85%, transparent 100%)',
+            WebkitMaskImage: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 45%, rgba(0,0,0,0.85) 65%, rgba(0,0,0,0.35) 85%, transparent 100%)',
+          }}
+        />
+
+        {/* Dense Ambient Theme Tone Gradient Fade upwards */}
+        <div 
+          className="absolute inset-0"
+          style={{
+            background: 'linear-gradient(to top, var(--color-bg-main) 0%, var(--color-bg-main) 30%, transparent 100%)',
+            opacity: isLight ? 0.90 : 0.82,
+            maskImage: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 40%, rgba(0,0,0,0.6) 70%, transparent 100%)',
+            WebkitMaskImage: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 40%, rgba(0,0,0,0.6) 70%, transparent 100%)',
+          }}
+        />
+      </div>
+
+      <div className="md:hidden fixed bottom-3 inset-x-0 mx-auto w-[94%] max-w-[390px] z-50 pointer-events-auto select-none font-sans animate-[fade-up_0.3s_ease-out]">
       <div className="relative w-full h-[56px] flex items-center justify-center">
         
         {/* Ambient Depth Shadows */}
@@ -265,7 +294,8 @@ export function MobileBottomNav({ isOthersOpen, onToggleOthers, onOthersClose })
 
       </div>
     </div>
-  );
+  </>
+);
 }
 
 export default MobileBottomNav;
