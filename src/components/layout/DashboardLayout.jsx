@@ -76,7 +76,7 @@ export default function DashboardLayout({ children }) {
 
       <div className="flex flex-col flex-1 overflow-hidden relative w-full z-10">
         {/* Mobile Top Header (Hidden on Desktop) */}
-        <header className="md:hidden fixed top-0 left-0 right-0 bg-[var(--color-bg-card)] z-50 flex flex-col border-b border-[var(--color-border)] shadow-sm">
+        <header className="md:hidden fixed top-0 left-0 right-0 bg-[var(--color-bg-card)]/90 backdrop-blur-md z-50 flex flex-col border-none shadow-none">
           {/* Marquee Ticker hidden for now per user request */}
           {/* {isDashboard && <MobileHourlyTicker />} */}
 
@@ -268,6 +268,19 @@ export default function DashboardLayout({ children }) {
               </>
             )}
           </div>
+
+          {/* Soft Progressive Blur Edge Under Header (No hard border) */}
+          <div 
+            aria-hidden="true"
+            className="absolute -bottom-3.5 inset-x-0 h-3.5 pointer-events-none select-none overflow-hidden"
+            style={{
+              backdropFilter: 'blur(16px)',
+              WebkitBackdropFilter: 'blur(16px)',
+              background: 'linear-gradient(to bottom, var(--color-bg-card) 0%, transparent 100%)',
+              maskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, transparent 100%)',
+              WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, transparent 100%)',
+            }}
+          />
         </header>
 
 

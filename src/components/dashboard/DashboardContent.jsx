@@ -623,11 +623,18 @@ export function DashboardContent({ month, isArchive = false }) {
       <div className="space-y-6 animate-[fade-up_0.4s_ease-out_both] no-print">
         {/* Mobile Attached Visual Condition Trigger (Attached directly to top nav bar) */}
         {!isArchive && (
-          <div className="md:hidden -mx-3.5 sm:-mx-5 -mt-3.5 sm:-mt-5 mb-2">
+          <div className="md:hidden -mx-3.5 sm:-mx-5 -mt-3.5 sm:-mt-5 mb-2 relative overflow-hidden">
             <button
               type="button"
               onClick={() => setShowAnimation(!showAnimation)}
-              className="w-full py-1.5 px-3 bg-[var(--color-bg-card)]/90 backdrop-blur-md flex items-center justify-center gap-1.5 transition-colors active:bg-[var(--color-surface-hover)] cursor-pointer group select-none shadow-xs"
+              className="w-full pt-1.5 pb-2.5 px-3 flex items-center justify-center gap-1.5 transition-colors active:bg-[var(--color-surface-hover)]/30 cursor-pointer group select-none border-none shadow-none"
+              style={{
+                backdropFilter: 'blur(20px)',
+                WebkitBackdropFilter: 'blur(20px)',
+                background: 'linear-gradient(to bottom, var(--color-bg-card) 0%, var(--color-bg-card) 35%, transparent 100%)',
+                maskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 55%, transparent 100%)',
+                WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 55%, transparent 100%)',
+              }}
               aria-expanded={showAnimation}
             >
               <span className="text-[8.5px] italic text-[var(--color-text-muted)] group-hover:text-[var(--color-primary)] transition-colors leading-none">
@@ -636,7 +643,7 @@ export function DashboardContent({ month, isArchive = false }) {
               <ChevronDown 
                 size={11} 
                 className={cn(
-                  "transition-transform duration-300",
+                  "transition-transform duration-300 text-[var(--color-text-muted)]",
                   showAnimation 
                     ? "rotate-180 text-[var(--color-primary)]" 
                     : "animate-fast-arrow-blink"
