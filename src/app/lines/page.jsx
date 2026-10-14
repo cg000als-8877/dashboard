@@ -275,13 +275,13 @@ export default function ProductionLinesPage() {
       {/* Month Switcher Tabs & Density Switcher (List/Cards top on mobile, Month tabs under it) */}
       <div className="flex flex-col items-center justify-center w-full">
         <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-2.5 mt-3 sm:mt-4 mb-2 relative z-10 w-full">
-          {/* 1. View Mode Switcher (List / Cards) - Top on Mobile */}
-          <div className="order-1 sm:order-2 shrink-0">
+          {/* 1. View Mode Switcher (List / Cards) - Hidden on Mobile */}
+          <div className="hidden sm:block shrink-0">
             <DensitySwitcher value={density} onChange={setDensity} />
           </div>
 
-          {/* 2. Month Tabs Switcher - Underneath on Mobile */}
-          <div className="order-2 sm:order-1 flex justify-center items-center max-w-full overflow-x-auto hide-scrollbar px-0.5">
+          {/* 2. Month Tabs Switcher */}
+          <div className="flex justify-center items-center max-w-full overflow-x-auto hide-scrollbar px-0.5">
             <div className="inline-flex p-0.5 sm:p-1 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl gap-0.5 sm:gap-1 shadow-sm backdrop-blur-md shrink-0">
               <button
                 type="button"
@@ -436,10 +436,13 @@ export default function ProductionLinesPage() {
         </div>
       )}
 
-      {/* ── 3. COMPACT LIST VIEW (When Density === 'compact') ───────────────────── */}
-      {density === 'compact' ? (
-        <div className="flex flex-col gap-3">
-          {currentLines.sort((a,b) => a.id.localeCompare(b.id)).map((line) => {
+      {/* ── 3. PRODUCTION LINES (Mobile: Always List View | Desktop: List or Cards) ── */}
+      {(() => {
+        const sortedCurrentLines = [...currentLines].sort((a,b) => a.id.localeCompare(b.id));
+
+        const renderCompactListView = () => (
+          <div className="flex flex-col gap-3">
+            {sortedCurrentLines.map((line) => {
             const isInactive = (line.totalProduction || 0) === 0 && (line.totalCost || 0) === 0;
             const isProfitable = !isInactive && (line.netProfit || 0) >= 0;
             const detailsUrl = isAugust ? `/archive/2026-08/lines/${line.id}` : (isJuly ? `/archive/2026-07/lines/${line.id}` : `/lines/${line.id}`);
@@ -601,14 +604,10 @@ export default function ProductionLinesPage() {
               </Card>
             );
           })}
-        </div>
-      ) : (
-        (() => {
-          const linesOrder = ['A', 'B', 'C', 'D'];
-          const sortedCurrentLines = [...currentLines].sort((a,b) => a.id.localeCompare(b.id));
-          const activeLineIndex = Math.max(0, linesOrder.indexOf(selectedMobileLine));
+          </div>
+        );
 
-          const renderLineCardItem = (line, isMobile = false) => {
+        const renderLineCardItem = (line, isMobile = false) => {
             // Accurate active vs inactive vs profitability checks
             const isInactive = (line.totalProduction || 0) === 0 && (line.totalCost || 0) === 0;
             const isProfitable = !isInactive && (line.netProfit || 0) >= 0;
@@ -913,63 +912,32 @@ export default function ProductionLinesPage() {
                     </div>
                   </Card>
                 );
-              };
+        };
 
-                return (
-                  <div>
-                    {/* Desktop View (2-Column Grid) */}
-                    <div className="hidden md:grid md:grid-cols-2 gap-5 sm:gap-6">
-                      {sortedCurrentLines.map(line => (
-                        <div key={line.id} className="w-full h-full">
-                          {renderLineCardItem(line, false)}
-                        </div>
-                      ))}
+        return (
+          <>
+            {/* Mobile View: Always and permanently the compact List View */}
+            <div className="md:hidden">
+              {renderCompactListView()}
+            </div>
+
+            {/* Desktop View: List View or Cards View based on desktop switcher */}
+            <div className="hidden md:block">
+              {density === 'compact' ? (
+                renderCompactListView()
+              ) : (
+                <div className="grid grid-cols-2 gap-5 sm:gap-6">
+                  {sortedCurrentLines.map(line => (
+                    <div key={line.id} className="w-full h-full">
+                      {renderLineCardItem(line, false)}
                     </div>
-
-                    {/* Mobile View: Smooth Touch Carousel + Scroll Indicator Dots */}
-                    <div className="md:hidden flex flex-col gap-3">
-                      <div 
-                        className="w-full overflow-hidden touch-pan-y select-none"
-                        onTouchStart={handleTouchStart}
-                        onTouchEnd={handleTouchEnd}
-                      >
-                        <div 
-                          className="flex transition-transform duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] will-change-transform"
-                          style={{ transform: `translateX(-${activeLineIndex * 100}%)` }}
-                        >
-                          {sortedCurrentLines.map(line => (
-                            <div key={line.id} className="w-full flex-none shrink-0 px-0.5">
-                              {renderLineCardItem(line, true)}
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Small Scroll Indicator Dots */}
-                      <div className="flex items-center justify-center gap-1.5 pt-1">
-                        {linesOrder.map(lineId => {
-                          const isSelected = selectedMobileLine === lineId;
-                          return (
-                            <button
-                              key={lineId}
-                              type="button"
-                              onClick={() => setSelectedMobileLine(lineId)}
-                              className={cn(
-                                "transition-all duration-300 rounded-full cursor-pointer p-0 border-0 outline-none",
-                                isSelected
-                                  ? "w-6 h-1.5 bg-[var(--color-primary)] shadow-[0_0_8px_var(--color-primary-glow)]"
-                                  : "w-1.5 h-1.5 bg-[var(--color-text-muted)]/35 hover:bg-[var(--color-text-muted)]"
-                              )}
-                              aria-label={`Slide to Line ${lineId}`}
-                            />
-                          );
-                        })}
-                      </div>
-                    </div>
-                  </div>
-                );
-              })()
-            )}
+                  ))}
+                </div>
+              )}
+            </div>
+          </>
+        );
+      })()}
 
     </div>
   );

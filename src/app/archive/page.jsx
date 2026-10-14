@@ -34,16 +34,16 @@ function ArchiveMonthCard({ month }) {
         : 'Data unavailable.';
 
   return (
-    <div className="relative p-[1px] rounded-2xl overflow-hidden group transition-transform hover:-translate-y-0.5 duration-300">
-      {/* Animated Border Background */}
+    <div className="relative p-0 sm:p-[1px] rounded-2xl overflow-hidden group transition-transform sm:hover:-translate-y-0.5 duration-300">
+      {/* Animated Border Background (Hidden on Mobile) */}
       <div 
-        className="absolute w-[400%] h-[400%] -left-[150%] -top-[150%] animate-[spin_4s_linear_infinite] opacity-40 group-hover:opacity-100 transition-opacity duration-500"
+        className="hidden sm:block absolute w-[400%] h-[400%] -left-[150%] -top-[150%] animate-[spin_4s_linear_infinite] opacity-40 group-hover:opacity-100 transition-opacity duration-500"
         style={{ background: `conic-gradient(from 0deg, transparent 75%, ${isProfit ? 'rgba(16,185,129,0.8)' : 'rgba(239,68,68,0.8)'} 100%)` }} 
       />
       
       <Link 
         href={`/archive/${month.id}`}
-        className="relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-[var(--color-bg-card)] p-5 rounded-[15px] shadow-md hover:bg-[var(--color-bg-card-hover)] transition-colors h-full w-full"
+        className="relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-[var(--color-bg-card)] p-5 rounded-2xl sm:rounded-[15px] shadow-sm sm:shadow-md hover:bg-[var(--color-bg-card-hover)] transition-colors h-full w-full"
       >
         <div className="flex-1 space-y-1">
           <div className="flex items-center gap-3">
