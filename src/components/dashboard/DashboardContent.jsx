@@ -1130,7 +1130,7 @@ export function DashboardContent({ month, isArchive = false }) {
                 <div className="hidden md:grid md:grid-cols-12 gap-3.5 lg:gap-4 xl:gap-5 relative z-10 px-0 items-stretch">
                   
                   {/* COLUMN 1 (LEFT): Net Loss Card (Top) + Stacked Income & Cost Cards (Bottom) */}
-                  <div className="md:col-span-12 lg:col-span-5 xl:col-span-5 flex flex-col gap-3.5 xl:gap-4 justify-between">
+                  <div className="md:col-span-12 lg:col-span-5 xl:col-span-5 flex flex-col gap-3 xl:gap-3.5 justify-between">
                     
                     {/* Top Combined Card: Net Loss & Average Daily Loss */}
                     <Card 
@@ -1213,6 +1213,46 @@ export function DashboardContent({ month, isArchive = false }) {
                         </div>
                       </div>
                     </Card>
+
+                    {/* Last Day Loss Card (Desktop) */}
+                    {lastDayEntry && (
+                      <Card
+                        hover
+                        data-color={isLastDayProfit ? 'success' : 'danger'}
+                        className="p-3 px-4 xl:px-5 rounded-2xl transition-all shadow-sm md:shadow-[0_10px_25px_-4px_var(--shadow-color,rgba(0,0,0,0.12)),0_4px_10px_-2px_var(--shadow-color,rgba(0,0,0,0.06))] border-0 overflow-hidden"
+                        style={{
+                          backgroundColor: 'var(--color-bg-card)',
+                        }}
+                      >
+                        <div className="flex items-center justify-between w-full gap-2">
+                          {/* Left: Last day loss (OCT 13th) */}
+                          <div className="flex items-center gap-1.5 min-w-0">
+                            <span className="text-xs xl:text-sm font-bold text-[var(--color-text-secondary)] whitespace-nowrap">
+                              {isLastDayProfit ? 'Last day profit' : 'Last day loss'}{' '}
+                              <span className="text-[var(--color-text-main)] font-extrabold">({lastDayDateFormatted})</span>
+                            </span>
+                          </div>
+
+                          {/* Right: Actual Loss/Profit with BDT prefix + Small Animated Trend Curve */}
+                          <div className="flex items-center gap-2 shrink-0">
+                            <p className={cn(
+                              "font-black tracking-tight text-base xl:text-lg leading-none [filter:var(--shadow-text)] whitespace-nowrap",
+                              isLastDayProfit ? "text-[var(--color-success)]" : "text-[var(--color-danger)]"
+                            )}>
+                              <AnimatedNumber 
+                                value={Math.abs(Math.round(lastDayProfit))} 
+                                prefix={isLastDayProfit ? "+BDT " : "BDT -"} 
+                              />
+                            </p>
+                            <AnimatedTrendCurve 
+                              isProfit={isLastDayProfit} 
+                              className="w-7 sm:w-8 h-4.5 sm:h-5 ml-0.5" 
+                              strokeWidth={6.5}
+                            />
+                          </div>
+                        </div>
+                      </Card>
+                    )}
 
                     {/* Bottom Row: 2 Separate Cards (Total Income & Total Cost) */}
                     <div className="grid grid-cols-2 gap-3 xl:gap-4 flex-1">
