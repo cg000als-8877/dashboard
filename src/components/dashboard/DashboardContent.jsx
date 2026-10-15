@@ -13,6 +13,7 @@ import { cn } from '@/components/layout/Sidebar';
 import { CostRecoveryJar } from '@/components/dashboard/CostRecoveryJar';
 import { CostRecoveryPie } from '@/components/dashboard/CostRecoveryPie';
 import { SystemIntelligenceCards } from '@/components/dashboard/SystemIntelligenceCards';
+import { Trend3DBarArrow } from '@/components/dashboard/Trend3DBarArrow';
 
 const DEFAULT_LINE_ITEMS = {
   A: 'Sherpa Jacket, Boys Shirt',
@@ -957,10 +958,9 @@ export function DashboardContent({ month, isArchive = false }) {
                               prefix={isLastDayProfit ? "+BDT " : "BDT -"} 
                             />
                           </p>
-                          <AnimatedTrendCurve 
+                          <Trend3DBarArrow 
                             isProfit={isLastDayProfit} 
-                            className="w-7 sm:w-8 h-4.5 sm:h-5 ml-0.5" 
-                            strokeWidth={6.5}
+                            className="w-9 sm:w-10 h-7 sm:h-8 ml-0.5" 
                           />
                         </div>
                       </div>
@@ -1251,10 +1251,9 @@ export function DashboardContent({ month, isArchive = false }) {
                                 prefix={isLastDayProfit ? "+BDT " : "BDT -"} 
                               />
                             </p>
-                            <AnimatedTrendCurve 
+                            <Trend3DBarArrow 
                               isProfit={isLastDayProfit} 
-                              className="w-7 sm:w-8 h-4.5 sm:h-5 ml-0.5" 
-                              strokeWidth={6.5}
+                              className="w-10 xl:w-11 h-7.5 xl:h-8.5 ml-1" 
                             />
                           </div>
                         </div>
