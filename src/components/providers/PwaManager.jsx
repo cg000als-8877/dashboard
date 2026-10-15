@@ -126,15 +126,15 @@ export function PwaManager({ children }) {
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
 
-    // 5. For iOS users visiting on mobile browser, offer guided install prompt
-    if (isMobile && isAppleDevice && !isApp) {
+    // 5. For mobile browser users, offer Web App install prompt
+    if (isMobile && !isApp) {
       const lastDismissed = localStorage.getItem('bapl_install_dismissed');
       const now = Date.now();
       const THREE_DAYS_MS = 3 * 24 * 60 * 60 * 1000;
 
       if (!lastDismissed || now - parseInt(lastDismissed, 10) > THREE_DAYS_MS) {
         setTimeout(() => {
-          setShowInstallModal(true);
+          setShowInstallModal((prev) => prev ? prev : true);
         }, 2500);
       }
     }
@@ -232,10 +232,11 @@ export function PwaManager({ children }) {
         onDismiss={handleDismissUpdate}
       />
 
-      {/* Android & iOS Install App Modal */}
+      {/* Android & iOS Install Web App Modal */}
       <InstallAppModal
         isOpen={showInstallModal && !showUpdateModal}
         isIOS={isIOS}
+        canInstallDirectly={!!deferredPrompt}
         onInstall={handleInstallClick}
         onDismiss={handleDismissInstall}
       />

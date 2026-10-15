@@ -22,7 +22,7 @@ export function AppUpdateModal({ isOpen, onUpdate, onDismiss }) {
   return (
     <div className="fixed inset-0 z-[9990] flex items-center justify-center p-4 bg-black/70 backdrop-blur-md animate-[fade-in_0.25s_ease-out]">
       <div 
-        className="bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-3xl p-6 sm:p-7 max-w-sm sm:max-w-md w-full shadow-2xl relative overflow-hidden animate-[scale-up_0.3s_cubic-bezier(0.16,1,0.3,1)]"
+        className="bg-[var(--color-bg-card)] rounded-3xl p-6 sm:p-7 max-w-sm sm:max-w-md w-full shadow-2xl relative overflow-hidden animate-[scale-up_0.3s_cubic-bezier(0.16,1,0.3,1)] select-none"
         style={{
           boxShadow: '0 20px 50px rgba(0,0,0,0.5), 0 0 30px var(--color-primary-glow, rgba(79,140,255,0.15))'
         }}
@@ -32,10 +32,10 @@ export function AppUpdateModal({ isOpen, onUpdate, onDismiss }) {
 
         {/* Icon & Badge */}
         <div className="flex items-center justify-between mb-4 relative z-10">
-          <div className="w-12 h-12 rounded-2xl bg-[var(--color-primary)]/15 border border-[var(--color-primary)]/30 flex items-center justify-center text-[var(--color-primary)] shadow-inner">
+          <div className="w-12 h-12 rounded-2xl bg-[var(--color-primary)]/15 flex items-center justify-center text-[var(--color-primary)] shadow-inner">
             <Sparkles className="w-6 h-6 animate-pulse" />
           </div>
-          <span className="px-2.5 py-1 rounded-full text-[9px] font-extrabold uppercase tracking-widest bg-[var(--color-primary)]/20 text-[var(--color-primary)] border border-[var(--color-primary)]/30">
+          <span className="px-2.5 py-1 rounded-full text-[9px] font-extrabold uppercase tracking-widest bg-[var(--color-primary)]/20 text-[var(--color-primary)]">
             Live Update Ready
           </span>
         </div>
