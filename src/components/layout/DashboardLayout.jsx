@@ -8,6 +8,7 @@ import { cn } from './Sidebar';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { useKpiData } from '@/utils/useKpiData';
+import { format, parseISO } from 'date-fns';
 import { Clock, LayoutDashboard, Factory, BarChart3, Ship, History, Palette, Sun, Moon, GitCompare, Coffee, Globe, ExternalLink, Check, Sparkles, LogOut, Minus, Plus } from 'lucide-react';
 import { useMonth } from '@/components/providers/MonthProvider';
 import { useTheme } from '@/components/ThemeProvider';
@@ -48,15 +49,15 @@ export default function DashboardLayout({ children }) {
   const [showCanteenModal, setShowCanteenModal] = useState(false);
   const [mobileThemeTab, setMobileThemeTab] = useState('palette'); // 'palette' | 'background'
 
-  let datePart = 'Loading...';
+  let datePart = 'October 14th, 2026';
   if (dailyTrends && dailyTrends.length > 0) {
     try {
       const endDate = dailyTrends[dailyTrends.length - 1]?.date;
       if (endDate) {
-        datePart = format(parseISO(endDate), 'do MMMM, yyyy');
+        datePart = format(parseISO(endDate), 'MMMM do, yyyy');
       }
     } catch (e) {
-      datePart = 'October 2026';
+      datePart = 'October 14th, 2026';
     }
   }
 

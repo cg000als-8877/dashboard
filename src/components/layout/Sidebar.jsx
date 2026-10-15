@@ -80,10 +80,16 @@ export default function Sidebar({ onClose }) {
     }
   }, [pathname]);
 
-  let updateDate = "";
+  let updateDate = "October 14th, 2026";
   if (dailyTrends && dailyTrends.length > 0) {
-    const endDate = dailyTrends[dailyTrends.length - 1].date;
-    updateDate = format(parseISO(endDate), 'do MMMM, yyyy');
+    try {
+      const endDate = dailyTrends[dailyTrends.length - 1]?.date;
+      if (endDate) {
+        updateDate = format(parseISO(endDate), 'MMMM do, yyyy');
+      }
+    } catch (e) {
+      updateDate = 'October 14th, 2026';
+    }
   }
 
   const currentThemeObj = VISUAL_THEMES.find(t => t.id === visualTheme) || VISUAL_THEMES[0];
@@ -500,8 +506,8 @@ export default function Sidebar({ onClose }) {
           {!isCollapsed && (
             <>
               <div className="mx-1 px-0.5 flex items-center gap-1 text-[8.5px] italic text-[var(--color-text-muted)] tracking-wider">
-                <span>Last Update:</span>
-                <span className="text-[var(--color-primary)] font-semibold not-italic">{updateDate || 'Loading...'}</span>
+                <span>Last Updated :</span>
+                <span className="text-[var(--color-primary)] font-semibold not-italic">{updateDate || 'October 14th, 2026'}</span>
               </div>
               <div className="px-2 py-1.5 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)] flex items-center justify-between group hover:border-[var(--color-primary)]/40 transition-colors cursor-default relative overflow-hidden">
                 <div className="flex items-center gap-1.5 relative z-10">
