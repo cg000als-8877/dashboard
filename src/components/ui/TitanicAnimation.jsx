@@ -360,30 +360,40 @@ export function TitanicAnimation({
 
   return (
     <div className="w-full flex flex-col relative">
-      {/* Floating Status Condition Badge */}
-      <div className="absolute top-2.5 left-3 sm:top-3.5 sm:left-4 z-20 flex items-center gap-2 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full bg-[var(--color-bg-card)]/85 backdrop-blur-md border border-[var(--color-border)] shadow-lg select-none transition-all">
-        <span className={`w-2 h-2 rounded-full ${
-          isSurplus ? 'bg-[var(--color-success)] animate-pulse [box-shadow:0_0_8px_var(--color-success)]' :
-          isProfit ? 'bg-[var(--color-success)]' :
-          isNeutral ? 'bg-[var(--color-warning)]' :
-          r >= 85 ? 'bg-[var(--color-warning)]' :
-          r >= 70 ? 'bg-[var(--color-primary)]' :
-          r >= 25 ? 'bg-[var(--color-danger)]' :
-          'bg-red-600 animate-pulse [box-shadow:0_0_10px_rgba(239,68,68,0.8)]'
-        }`} />
-        <span className="text-[9.5px] sm:text-[11px] font-bold uppercase tracking-wider text-[var(--color-text-main)]">
-          {isSurplus ? 'Surplus • Full Steam Ahead' :
-           isProfit ? 'Profitable • Sailing Strong' :
-           isNeutral ? 'Break-Even • Floating Neutral' :
-           r >= 85 ? 'Approaching Break-Even' :
-           r >= 70 ? 'Moderate Deficit • Water Breach' :
-           r >= 50 ? 'Heavy Flood • Funnels Toppling' :
-           r >= 25 ? 'Severe Deficit • Midsection Crack' :
-           r >= 10 ? 'Catastrophic Split • Stern Vertical' :
-           'Entirely Sunk • Ocean Floor Abyss'}
+      {/* Floating Status Condition Badge - Zero Strokes, No Dots */}
+      <div className="absolute top-2.5 left-3 sm:top-3.5 sm:left-4 z-20 flex items-center gap-2 px-3 sm:px-3.5 py-1.5 rounded-full bg-[var(--color-bg-card)]/90 backdrop-blur-xl shadow-2xl select-none transition-all max-w-[calc(100%-24px)] overflow-hidden">
+        <span className={`text-[9px] sm:text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full shrink-0 whitespace-nowrap ${
+          isSurplus ? 'bg-[var(--color-success)]/15 text-[var(--color-success-text)]' :
+          isProfit ? 'bg-[var(--color-success)]/15 text-[var(--color-success-text)]' :
+          isNeutral ? 'bg-[var(--color-warning)]/15 text-[var(--color-warning)]' :
+          r >= 85 ? 'bg-[var(--color-warning)]/15 text-[var(--color-warning)]' :
+          r >= 70 ? 'bg-[var(--color-primary)]/15 text-[var(--color-primary)]' :
+          r >= 25 ? 'bg-[var(--color-danger)]/15 text-[var(--color-danger-text)]' :
+          'bg-red-500/20 text-red-400 font-extrabold'
+        }`}>
+          {isSurplus ? 'Surplus' :
+           isProfit ? 'Profitable' :
+           isNeutral ? 'Break-Even' :
+           r >= 85 ? 'Closing In' :
+           r >= 70 ? 'Water Breach' :
+           r >= 50 ? 'Heavy Flood' :
+           r >= 25 ? 'Stress Crack' :
+           r >= 10 ? 'Catastrophic Split' :
+           'Entirely Sunk'}
         </span>
-        <span className="text-[9px] sm:text-[10px] text-[var(--color-text-muted)] font-mono font-medium">
-          • {Math.round(effectiveRecovery)}% recovery
+        <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-[var(--color-text-main)]">
+          {isSurplus ? 'Full Steam Ahead' :
+           isProfit ? 'Sailing Strong' :
+           isNeutral ? 'Floating Neutral' :
+           r >= 85 ? 'Approaching Break-Even' :
+           r >= 70 ? 'Bow Dipping' :
+           r >= 50 ? 'Funnels Toppling' :
+           r >= 25 ? 'Midsection Fracture' :
+           r >= 10 ? 'Stern Vertical' :
+           'Ocean Seabed Abyss'}
+        </span>
+        <span className="text-[9.5px] sm:text-[10px] text-[var(--color-text-muted)] font-mono font-semibold">
+          {Math.round(effectiveRecovery)}%
         </span>
       </div>
 

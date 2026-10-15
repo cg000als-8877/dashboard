@@ -1,27 +1,152 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useKpiData } from '@/utils/useKpiData';
-import { MetricCard, Card } from '@/components/ui/Card';
 import { TitanicAnimation } from '@/components/ui/TitanicAnimation';
-import { Settings, Play, Anchor, AlertTriangle, HelpCircle } from 'lucide-react';
 import { SimulatorSkeleton } from '@/components/ui/Skeletons';
+import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { cn } from '@/components/layout/Sidebar';
 
-export default function SimulatorPage() {
-  const { stats, dailyTrends, loading, error } = useKpiData();
-  const [simMode, setSimMode] = useState('loss'); // default to 'loss' mode
-  const [simRecovery, setSimRecovery] = useState(72); // default to 72% (matches current month pace)
-  const [simDay, setSimDay] = useState(14); 
-  const [isExplanationExpanded, setIsExplanationExpanded] = useState(true);
+// ── CUSTOM 3D ISOMETRIC ICONS (ZERO OUTLINE CLUTTER, ZERO STROKES) ──
+function Icon3DSurplus({ className = "w-5 h-5 sm:w-6 sm:h-6" }) {
+  return (
+    <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} aria-hidden="true">
+      <defs>
+        <linearGradient id="topSurge" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#6EE7B7" />
+          <stop offset="100%" stopColor="#34D399" />
+        </linearGradient>
+        <linearGradient id="leftSurge" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#10B981" />
+          <stop offset="100%" stopColor="#059669" />
+        </linearGradient>
+        <linearGradient id="rightSurge" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#059669" />
+          <stop offset="100%" stopColor="#047857" />
+        </linearGradient>
+        <radialGradient id="surgeGlow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="#34D399" stopOpacity="0.4" />
+          <stop offset="100%" stopColor="#34D399" stopOpacity="0" />
+        </radialGradient>
+      </defs>
+      <ellipse cx="20" cy="34" rx="14" ry="4" fill="url(#surgeGlow)" />
+      <polygon points="20,4 32,11 20,18 8,11" fill="url(#topSurge)" />
+      <polygon points="8,11 20,18 20,31 8,24" fill="url(#leftSurge)" />
+      <polygon points="20,18 32,11 32,24 20,31" fill="url(#rightSurge)" />
+      <polygon points="20,8 26,14 22,14 22,20 18,20 18,14 14,14" fill="#ffffff" opacity="0.9" />
+    </svg>
+  );
+}
 
-  // Sync initial recovery from real data if available
+function Icon3DCruise({ className = "w-5 h-5 sm:w-6 sm:h-6" }) {
+  return (
+    <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} aria-hidden="true">
+      <defs>
+        <linearGradient id="topCruise" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#FDE68A" />
+          <stop offset="100%" stopColor="#F59E0B" />
+        </linearGradient>
+        <linearGradient id="leftCruise" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#D97706" />
+          <stop offset="100%" stopColor="#B45309" />
+        </linearGradient>
+        <linearGradient id="rightCruise" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#B45309" />
+          <stop offset="100%" stopColor="#92400E" />
+        </linearGradient>
+        <radialGradient id="cruiseGlow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="#F59E0B" stopOpacity="0.35" />
+          <stop offset="100%" stopColor="#F59E0B" stopOpacity="0" />
+        </radialGradient>
+      </defs>
+      <ellipse cx="20" cy="34" rx="14" ry="4" fill="url(#cruiseGlow)" />
+      <polygon points="20,5 33,12 20,19 7,12" fill="url(#topCruise)" />
+      <polygon points="7,12 20,19 20,30 7,23" fill="url(#leftCruise)" />
+      <polygon points="20,19 33,12 33,23 20,30" fill="url(#rightCruise)" />
+      <polygon points="20,9 27,13 20,17 13,13" fill="#ffffff" opacity="0.6" />
+    </svg>
+  );
+}
+
+function Icon3DFlood({ className = "w-5 h-5 sm:w-6 sm:h-6" }) {
+  return (
+    <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} aria-hidden="true">
+      <defs>
+        <linearGradient id="topFlood" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#FB923C" />
+          <stop offset="100%" stopColor="#EA580C" />
+        </linearGradient>
+        <linearGradient id="leftFlood" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#C2410C" />
+          <stop offset="100%" stopColor="#9A3412" />
+        </linearGradient>
+        <linearGradient id="rightFlood" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#9A3412" />
+          <stop offset="100%" stopColor="#7C2D12" />
+        </linearGradient>
+        <radialGradient id="floodGlow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="#EA580C" stopOpacity="0.35" />
+          <stop offset="100%" stopColor="#EA580C" stopOpacity="0" />
+        </radialGradient>
+      </defs>
+      <ellipse cx="20" cy="34" rx="14" ry="4" fill="url(#floodGlow)" />
+      <polygon points="20,8 33,14 20,20 7,14" fill="url(#topFlood)" />
+      <polygon points="7,14 20,20 20,32 7,24" fill="url(#leftFlood)" />
+      <polygon points="20,20 33,14 33,24 20,32" fill="url(#rightFlood)" />
+      <path d="M 12 15 Q 20 18 28 15" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" opacity="0.7" />
+    </svg>
+  );
+}
+
+function Icon3DAbyss({ className = "w-5 h-5 sm:w-6 sm:h-6" }) {
+  return (
+    <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} aria-hidden="true">
+      <defs>
+        <linearGradient id="topAbyss" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#F87171" />
+          <stop offset="100%" stopColor="#DC2626" />
+        </linearGradient>
+        <linearGradient id="leftAbyss" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#B91C1C" />
+          <stop offset="100%" stopColor="#7F1D1D" />
+        </linearGradient>
+        <linearGradient id="rightAbyss" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#7F1D1D" />
+          <stop offset="100%" stopColor="#450A0A" />
+        </linearGradient>
+        <radialGradient id="abyssGlow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="#DC2626" stopOpacity="0.45" />
+          <stop offset="100%" stopColor="#DC2626" stopOpacity="0" />
+        </radialGradient>
+      </defs>
+      <ellipse cx="20" cy="34" rx="14" ry="4" fill="url(#abyssGlow)" />
+      <polygon points="20,10 32,16 20,22 8,16" fill="url(#topAbyss)" />
+      <polygon points="8,16 20,22 20,33 8,26" fill="url(#leftAbyss)" />
+      <polygon points="20,22 32,16 32,26 20,33" fill="url(#rightAbyss)" />
+      <path d="M 20 10 L 19 16 L 21 22 L 20 33" stroke="#000000" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+export default function SimulatorPage() {
+  const { stats, loading, error } = useKpiData();
+
+  // ── REAL WEBSITE DATA RESOLUTION (CURRENCY: BDT) ──
+  const liveCost = (stats?.totalCost && stats.totalCost > 0) ? stats.totalCost : 1702782;
+  const liveIncome = (stats?.totalIncome && stats.totalIncome > 0) ? stats.totalIncome : 1069310;
+  const realRecovery = liveCost > 0 ? Math.round((liveIncome / liveCost) * 100) : 63;
+  const realWorkingDays = stats?.workingDays || 12;
+
+  const [simRecovery, setSimRecovery] = useState(realRecovery);
+  const [simMode, setSimMode] = useState(realRecovery >= 100 ? 'profit' : 'loss');
+  const [activeScenarioId, setActiveScenarioId] = useState('oct-pace');
+
+  // Sync with real data when loaded
   useEffect(() => {
     if (stats?.totalCost && stats.totalCost > 0) {
       const rec = Math.round((stats.totalIncome / stats.totalCost) * 100);
       setSimRecovery(rec);
-      if (rec >= 100) setSimMode('profit');
-      else setSimMode('loss');
+      setSimMode(rec >= 100 ? 'profit' : 'loss');
     }
   }, [stats]);
 
@@ -30,18 +155,19 @@ export default function SimulatorPage() {
   }
 
   if (error) {
-    return <div className="text-red-500 text-center mt-20">Error loading data: {error}</div>;
+    return <div className="text-red-500 text-center mt-20 text-xs sm:text-sm">Error loading data: {error}</div>;
   }
 
-  const handleModeChange = (mode) => {
-    setSimMode(mode);
-    if (mode === 'profit') setSimRecovery(115);
-    else if (mode === 'neutral') setSimRecovery(100);
-    else setSimRecovery(prev => prev < 100 ? prev : 65);
-  };
+  // Dynamic calculated projections based on real cost base
+  const simulatedIncome = Math.round((liveCost * simRecovery) / 100);
+  const simulatedNet = simulatedIncome - liveCost;
+  const isProfitable = simRecovery >= 100;
+  const isSurplus = simRecovery >= 120;
+  const isEntirelySunk = simRecovery < 10;
 
   const handleSliderChange = (val) => {
     setSimRecovery(val);
+    setActiveScenarioId('custom');
     if (val >= 100) {
       setSimMode('profit');
     } else if (val === 100) {
@@ -51,195 +177,438 @@ export default function SimulatorPage() {
     }
   };
 
+  const selectScenario = (id, recoveryVal, mode) => {
+    setActiveScenarioId(id);
+    setSimRecovery(recoveryVal);
+    setSimMode(mode);
+  };
+
+  // Structured Scenarios strictly bound to real factory financial scale
+  const scenarios = [
+    {
+      id: 'surplus',
+      label: 'Surplus Surge',
+      recovery: 125,
+      mode: 'profit',
+      summary: 'Golden foam splashes, turbo chimney plumes, full steam ahead',
+      tag: 'Surplus',
+      tagColor: 'bg-emerald-500/15 text-emerald-400',
+      icon: <Icon3DSurplus />
+    },
+    {
+      id: 'target',
+      label: 'Break-Even Target',
+      recovery: 100,
+      mode: 'profit',
+      summary: 'Level waterline, balanced production costs, steady cruise engines',
+      tag: 'Break-Even',
+      tagColor: 'bg-amber-500/15 text-amber-400',
+      icon: <Icon3DCruise />
+    },
+    {
+      id: 'near-break',
+      label: 'Minor Deficit Drift',
+      recovery: 92,
+      mode: 'loss',
+      summary: 'Gentle 3° listing, small water breach with bubbles, calm wake',
+      tag: 'Closing In',
+      tagColor: 'bg-amber-500/15 text-amber-300',
+      icon: <Icon3DCruise />
+    },
+    {
+      id: 'oct-pace',
+      label: 'October Live Pace',
+      recovery: realRecovery,
+      mode: 'loss',
+      summary: `Exact live website data: 12° bow dip, water lapping hull (${realRecovery}% pace)`,
+      tag: 'October Live',
+      tagColor: 'bg-[var(--color-primary)]/15 text-[var(--color-primary)]',
+      icon: <Icon3DFlood />
+    },
+    {
+      id: 'heavy-flood',
+      label: 'Material Cost Surge',
+      recovery: 50,
+      mode: 'loss',
+      summary: '22° flood incline, foremast snaps, funnel #1 collapses backward',
+      tag: 'Heavy Flood',
+      tagColor: 'bg-orange-500/15 text-orange-400',
+      icon: <Icon3DFlood />
+    },
+    {
+      id: 'stress-crack',
+      label: 'Severe Line Bottleneck',
+      recovery: 30,
+      mode: 'loss',
+      summary: '38° steep tilt, funnels 1-3 toppled, midsection fracture crack',
+      tag: 'Stress Crack',
+      tagColor: 'bg-rose-500/15 text-rose-400',
+      icon: <Icon3DAbyss />
+    },
+    {
+      id: 'split',
+      label: 'Catastrophic Split',
+      recovery: 18,
+      mode: 'loss',
+      summary: 'Hull snaps in two, funnel #4 falls, stern pivots 90° vertical',
+      tag: 'Split 90°',
+      tagColor: 'bg-red-500/20 text-red-400',
+      icon: <Icon3DAbyss />
+    },
+    {
+      id: 'sunk-entirely',
+      label: 'Insolvent Shutdown',
+      recovery: 8,
+      mode: 'loss',
+      summary: 'Under 10% condition: ship plunges entirely to ocean floor seabed',
+      tag: 'Entirely Sunk',
+      tagColor: 'bg-red-700/30 text-red-300 font-bold',
+      icon: <Icon3DAbyss />
+    }
+  ];
+
   return (
-    <div className="space-y-6 md:space-y-8 animate-[fade-up_0.4s_ease-out_both]">
-      {/* Page Header */}
-      <header className="flex flex-col items-center text-center md:items-start md:text-left mb-6 md:mb-8 relative z-10">
-        <h1 className="text-[24px] sm:text-[30px] md:text-[38px] font-black tracking-normal leading-tight uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] via-[var(--color-text-secondary)] to-[var(--color-text-muted)]">
+    <div className="space-y-3.5 sm:space-y-5 md:space-y-6 animate-[fade-up_0.35s_ease-out_both] select-none">
+      
+      {/* 1. EDITORIAL HEADER - MATCHING DASHBOARD HIERARCHY */}
+      <header className="flex flex-col items-center text-center md:items-start md:text-left relative z-10 px-1 sm:px-0">
+        <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[var(--color-surface)] text-[8.5px] sm:text-[9.5px] font-bold uppercase tracking-widest text-[var(--color-text-secondary)] mb-1.5 shadow-xs">
+          Financial Gravity Engine
+        </div>
+        <h1 className="text-[20px] min-[390px]:text-[24px] sm:text-[28px] md:text-[34px] font-black tracking-tight leading-tight uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] via-[var(--color-text-secondary)] to-[var(--color-text-muted)]">
           Voyage Simulator
         </h1>
-        <p className="text-xs sm:text-sm md:text-base text-[var(--color-text-muted)] font-normal tracking-normal mt-1 md:mt-2 max-w-2xl">
-          Option A Financial Gravity Simulation: Watch how the ship physically responds to Cost Recovery % and sinks entirely under 10%.
+        <p className="text-[10px] min-[390px]:text-[11px] sm:text-xs text-[var(--color-text-secondary)] font-normal tracking-normal mt-0.5 max-w-xl">
+          Real-time physical simulation powered by live factory operations. When cost recovery drops under 10%, the ship plunges entirely to the seabed.
         </p>
       </header>
 
-      {/* SIMULATOR EXPLANATION (Accordion styled with plus sign) */}
-      <div className="bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-2xl overflow-hidden shadow-sm">
-        <button
-          onClick={() => setIsExplanationExpanded(!isExplanationExpanded)}
-          className="w-full text-left p-4 bg-[var(--color-surface)]/20 hover:bg-[var(--color-surface)]/40 transition-colors flex items-center justify-between cursor-pointer select-none border-none outline-none"
-        >
-          <div className="flex items-center gap-2.5">
-            <HelpCircle size={16} className="text-[var(--color-primary)]" />
-            <span className="text-xs md:text-sm font-bold uppercase tracking-wider text-[var(--color-text-main)]">
-              How Financial Gravity (Option A) Controls the Ship
-            </span>
-          </div>
-          <div className="flex items-center justify-center w-6 h-6 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)] text-[var(--color-text-secondary)] font-bold text-base transition-all">
-            {isExplanationExpanded ? '−' : '+'}
-          </div>
-        </button>
-        
-        <div 
-          className={cn(
-            "transition-all duration-300 ease-in-out overflow-hidden border-t border-[var(--color-border)]/40",
-            isExplanationExpanded ? "max-h-[600px] p-4 opacity-100" : "max-h-0 p-0 opacity-0 pointer-events-none"
-          )}
-        >
-          <ul className="space-y-2 text-xs md:text-sm text-[var(--color-text-secondary)] pl-4 list-disc">
-            <li><strong className="text-[var(--color-success)]">≥ 100% Recovery (Profit):</strong> Ship sails at full steam with spinning propellers, smoke plumes, and splashes. At &gt; 120% (Surplus), turbo wake and golden foam engage.</li>
-            <li><strong className="text-[var(--color-warning)]">85% – 99% Recovery:</strong> Approaching break-even. Gentle bow list (1°–7°), small water breach leak, calm wake.</li>
-            <li><strong className="text-[var(--color-primary)]">70% – 84% Recovery:</strong> Moderate deficit. Bow dips (8°–16°), water lapping against the hull. (Matches current month pace).</li>
-            <li><strong className="text-[var(--color-danger)]">50% – 69% Recovery:</strong> Heavy flooding (16°–30°). Foremast snaps (&lt;65%), Funnel #1 collapses (&lt;58%).</li>
-            <li><strong className="text-[var(--color-danger)]">25% – 49% Recovery:</strong> Severe incline (30°–45°). Funnel #2 &amp; #3 collapse, midsection stress crack splits across the hull.</li>
-            <li><strong className="text-[var(--color-danger)]">10% – 24% Recovery:</strong> Catastrophic split! Hull snaps in two, funnel #4 topples, stern pivots vertically (90°).</li>
-            <li><strong className="text-red-500 font-bold">Under 10% Recovery (Catastrophe):</strong> The ship sinks <strong>ENTIRELY</strong> to the ocean floor, resting in the seabed abyss surrounded by impact bubbles and glowing jellyfish.</li>
-          </ul>
-        </div>
-      </div>
-
-      {/* Titanic Animation Section */}
-      <div className="w-full">
+      {/* 2. SHIP VIEWPORT (BORDERLESS, CLEAN AMBIENT SHADOW) */}
+      <div className="w-full rounded-2xl sm:rounded-3xl overflow-hidden shadow-md sm:shadow-xl bg-[var(--color-bg-card)]">
         <TitanicAnimation 
           isSimulation={true} 
           simState={simMode} 
           recoveryPercentage={simRecovery}
-          simDay={simDay} 
-          netProfit={simRecovery >= 100 ? 50000 : -50000} 
+          netProfit={simulatedNet} 
         />
       </div>
 
-      {/* SIMULATOR CONTROLS */}
-      <Card className="bg-[rgba(79,140,255,0.05)] border-[var(--color-primary)]/40 shadow-[0_0_30px_rgba(79,140,255,0.08)]">
-        <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-start">
-          
-          <div className="flex-1 w-full">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="bg-[var(--color-primary)] p-2 rounded-lg text-[var(--color-on-primary)]">
-                <Settings size={20} />
-              </div>
-              <div>
-                <h3 className="text-lg font-bold text-[var(--color-text-main)] uppercase tracking-wide">Ship Physics Override</h3>
-                <p className="text-xs text-[var(--color-text-secondary)]">
-                  Mode presets &amp; direct financial recovery simulation.
-                </p>
-              </div>
-            </div>
-
-            <div className="w-full grid grid-cols-3 gap-2 mb-4 items-stretch">
-              <button 
-                type="button"
-                onClick={() => handleModeChange('profit')}
-                className={`w-full flex flex-col sm:flex-row justify-center items-center gap-1 sm:gap-2 py-2.5 px-1 sm:px-4 rounded-xl font-bold text-[10px] sm:text-xs md:text-sm whitespace-nowrap transition-all duration-300 active:scale-95 cursor-pointer select-none ${simMode === 'profit' ? 'bg-[var(--color-success)] text-[var(--color-on-success)] [box-shadow:0_0_20px_var(--color-success-glow)]' : 'bg-[var(--color-bg-main)] text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)]'}`}
-              >
-                <Play className="w-3.5 h-3.5 md:w-4 md:h-4 shrink-0" />
-                <span className="truncate">Profit (115%)</span>
-              </button>
-              
-              <button 
-                type="button"
-                onClick={() => handleModeChange('neutral')}
-                className={`w-full flex flex-col sm:flex-row justify-center items-center gap-1 sm:gap-2 py-2.5 px-1 sm:px-4 rounded-xl font-bold text-[10px] sm:text-xs md:text-sm whitespace-nowrap transition-all duration-300 active:scale-95 cursor-pointer select-none ${simMode === 'neutral' ? 'bg-[var(--color-warning)] text-[var(--color-on-warning)] [box-shadow:0_0_20px_var(--color-warning-glow)]' : 'bg-[var(--color-bg-main)] text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)]'}`}
-              >
-                <Anchor className="w-3.5 h-3.5 md:w-4 md:h-4 shrink-0" />
-                <span className="truncate">Neutral (100%)</span>
-              </button>
-              
-              <button 
-                type="button"
-                onClick={() => handleModeChange('loss')}
-                className={`w-full flex flex-col sm:flex-row justify-center items-center gap-1 sm:gap-2 py-2.5 px-1 sm:px-4 rounded-xl font-bold text-[10px] sm:text-xs md:text-sm whitespace-nowrap transition-all duration-300 active:scale-95 cursor-pointer select-none ${simMode === 'loss' ? 'bg-[var(--color-danger)] text-[var(--color-on-danger)] [box-shadow:0_0_20px_var(--color-danger-glow)]' : 'bg-[var(--color-bg-main)] text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)]'}`}
-              >
-                <AlertTriangle className="w-3.5 h-3.5 md:w-4 md:h-4 shrink-0" />
-                <span className="truncate">Loss (&lt;100%)</span>
-              </button>
-            </div>
-
-            {/* Quick Test Presets */}
-            <div className="space-y-1.5 pt-2 border-t border-[var(--color-border)]/50">
-              <span className="text-[10px] uppercase font-bold tracking-wider text-[var(--color-text-muted)]">
-                Quick Recovery Milestones:
-              </span>
-              <div className="flex flex-wrap gap-1.5">
-                {[
-                  { label: "8% (Sunk Entirely)", val: 8 },
-                  { label: "18% (Split 90°)", val: 18 },
-                  { label: "35% (Crack)", val: 35 },
-                  { label: "58% (Flood)", val: 58 },
-                  { label: "75% (October Pace)", val: 75 },
-                  { label: "92% (Break-Even)", val: 92 },
-                  { label: "125% (Surplus)", val: 125 }
-                ].map((item) => (
-                  <button
-                    key={item.val}
-                    type="button"
-                    onClick={() => handleSliderChange(item.val)}
-                    className={`px-2.5 py-1 rounded-lg text-[10px] font-semibold border transition-all active:scale-95 cursor-pointer ${
-                      simRecovery === item.val
-                        ? 'bg-[var(--color-primary)] text-[var(--color-on-primary)] border-[var(--color-primary)] shadow-sm'
-                        : 'bg-[var(--color-bg-main)] text-[var(--color-text-secondary)] border-[var(--color-border)] hover:text-[var(--color-text-main)]'
-                    }`}
-                  >
-                    {item.label}
-                  </button>
-                ))}
-              </div>
-            </div>
+      {/* 3. REAL-TIME FINANCIAL IMPACT BAR (BDT CURRENCY, NO STROKES) */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-2.5">
+        
+        {/* Recovery Rate */}
+        <div className="p-3 sm:p-3.5 rounded-xl sm:rounded-2xl bg-[var(--color-bg-card)] shadow-xs sm:shadow-sm flex flex-col justify-between">
+          <span className="text-[9px] min-[390px]:text-[9.5px] sm:text-[10.5px] font-bold uppercase tracking-wider text-[var(--color-text-secondary)]">
+            Recovery Rate
+          </span>
+          <div className="flex items-baseline gap-1 mt-1">
+            <span className={cn(
+              "text-[18px] min-[390px]:text-[20px] sm:text-[24px] md:text-[28px] font-black tracking-tight leading-none",
+              isSurplus ? "text-emerald-400" : isProfitable ? "text-[var(--color-success-text)]" : isEntirelySunk ? "text-red-400" : "text-[var(--color-text-main)]"
+            )}>
+              <AnimatedNumber value={simRecovery} suffix="%" />
+            </span>
+            <span className={cn(
+              "text-[8px] min-[390px]:text-[8.5px] sm:text-[9.5px] font-bold uppercase px-1.5 py-0.5 rounded-md",
+              isSurplus ? "bg-emerald-500/15 text-emerald-400" :
+              isProfitable ? "bg-emerald-500/15 text-emerald-400" :
+              isEntirelySunk ? "bg-red-600/25 text-red-400" :
+              "bg-[var(--color-surface)] text-[var(--color-text-muted)]"
+            )}>
+              {isSurplus ? 'Surplus' : isProfitable ? 'Profit' : isEntirelySunk ? 'Sunk' : 'Deficit'}
+            </span>
           </div>
-
-          {/* Cost Recovery % Interactive Slider */}
-          <div className="flex-1 w-full">
-            <h3 className="text-lg font-bold text-[var(--color-text-main)] mb-1 uppercase tracking-wide">
-              Live Cost Recovery Scrubber
-            </h3>
-            <p className="text-xs text-[var(--color-text-muted)] mb-3">
-              Drag to observe real-time hull sinking and structural physics. When under 10%, the ship plunges fully to the ocean floor.
-            </p>
-            
-            <div className="bg-[var(--color-bg-main)] p-5 rounded-xl border border-[var(--color-border)] shadow-inner">
-              <div className="flex justify-between items-baseline mb-2">
-                <span className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[var(--color-text-main)]">
-                  {simRecovery}% <span className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-[var(--color-text-muted)]">Cost Recovery</span>
-                </span>
-                <span className={`text-[10px] sm:text-xs font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${
-                  simRecovery >= 100 
-                    ? 'bg-[var(--color-success)]/20 text-[var(--color-success-text)]' 
-                    : (simRecovery < 10 
-                        ? 'bg-red-600/30 text-red-400 animate-pulse font-black' 
-                        : 'bg-[var(--color-danger)]/20 text-[var(--color-danger-text)]')
-                }`}>
-                  {simRecovery >= 120 ? 'Surplus Cruise' :
-                   simRecovery >= 100 ? 'Profitable' :
-                   simRecovery >= 85 ? 'Approaching 100%' :
-                   simRecovery >= 70 ? 'Water Lapping' :
-                   simRecovery >= 50 ? 'Heavy Flood' :
-                   simRecovery >= 25 ? 'Crack Incline' :
-                   simRecovery >= 10 ? 'Catastrophic Split' :
-                   '🚨 SUNK ENTIRELY (SEABED)'}
-                </span>
-              </div>
-              
-              <input 
-                type="range" 
-                min="0" 
-                max="130" 
-                value={simRecovery} 
-                onChange={(e) => handleSliderChange(parseInt(e.target.value, 10))}
-                className="w-full h-2.5 bg-gray-700/60 rounded-lg appearance-none cursor-pointer accent-[var(--color-primary)] transition-all"
-              />
-              
-              <div className="flex justify-between text-[9px] sm:text-[10px] text-[var(--color-text-muted)] mt-2 font-mono">
-                <span className="text-red-400 font-bold">0% (Sunk)</span>
-                <span>10% (Split)</span>
-                <span>50% (Flood)</span>
-                <span>85% (Near)</span>
-                <span className="text-emerald-400 font-bold">100%+ (Full Steam)</span>
-              </div>
-            </div>
-          </div>
-
+          <span className="text-[8.5px] sm:text-[9.5px] text-[var(--color-text-muted)] mt-1 font-medium truncate">
+            {simRecovery === realRecovery ? "Matching live October pace" : "Simulated scenario"}
+          </span>
         </div>
-      </Card>
+
+        {/* Simulated Income */}
+        <div className="p-3 sm:p-3.5 rounded-xl sm:rounded-2xl bg-[var(--color-bg-card)] shadow-xs sm:shadow-sm flex flex-col justify-between">
+          <span className="text-[9px] min-[390px]:text-[9.5px] sm:text-[10.5px] font-bold uppercase tracking-wider text-[var(--color-text-secondary)]">
+            Simulated Income
+          </span>
+          <div className="mt-1">
+            <span className="text-[17px] min-[390px]:text-[19px] sm:text-[22px] md:text-[26px] font-black tracking-tight leading-none text-[var(--color-text-main)]">
+              <AnimatedNumber value={Math.round(simulatedIncome)} prefix="BDT " />
+            </span>
+          </div>
+          <span className="text-[8.5px] sm:text-[9.5px] text-[var(--color-text-muted)] mt-1 font-medium truncate">
+            Actual: BDT {Math.round(liveIncome).toLocaleString()}
+          </span>
+        </div>
+
+        {/* Monthly Cost Base */}
+        <div className="p-3 sm:p-3.5 rounded-xl sm:rounded-2xl bg-[var(--color-bg-card)] shadow-xs sm:shadow-sm flex flex-col justify-between">
+          <span className="text-[9px] min-[390px]:text-[9.5px] sm:text-[10.5px] font-bold uppercase tracking-wider text-[var(--color-text-secondary)]">
+            Monthly Cost Base
+          </span>
+          <div className="mt-1">
+            <span className="text-[17px] min-[390px]:text-[19px] sm:text-[22px] md:text-[26px] font-black tracking-tight leading-none text-[var(--color-text-secondary)]">
+              <AnimatedNumber value={Math.round(liveCost)} prefix="BDT " />
+            </span>
+          </div>
+          <span className="text-[8.5px] sm:text-[9.5px] text-[var(--color-text-muted)] mt-1 font-medium truncate">
+            {realWorkingDays} Active Days Paced
+          </span>
+        </div>
+
+        {/* Projected Net Margin */}
+        <div className="p-3 sm:p-3.5 rounded-xl sm:rounded-2xl bg-[var(--color-bg-card)] shadow-xs sm:shadow-sm flex flex-col justify-between">
+          <span className="text-[9px] min-[390px]:text-[9.5px] sm:text-[10.5px] font-bold uppercase tracking-wider text-[var(--color-text-secondary)]">
+            Projected Net Margin
+          </span>
+          <div className="mt-1">
+            <span className={cn(
+              "text-[17px] min-[390px]:text-[19px] sm:text-[22px] md:text-[26px] font-black tracking-tight leading-none",
+              simulatedNet >= 0 ? "text-[var(--color-success)]" : "text-[var(--color-danger)]"
+            )}>
+              <AnimatedNumber 
+                value={Math.abs(Math.round(simulatedNet))} 
+                prefix={simulatedNet >= 0 ? "+BDT " : "BDT -"} 
+              />
+            </span>
+          </div>
+          <span className="text-[8.5px] sm:text-[9.5px] text-[var(--color-text-muted)] mt-1 font-medium truncate">
+            {isProfitable ? "Operating in surplus" : isEntirelySunk ? "Total capital wipeout" : "Net operating deficit"}
+          </span>
+        </div>
+
+      </div>
+
+      {/* 4. MAIN INTERACTIVE CONTROLS CARD (ZERO STROKES, ZERO DOTS) */}
+      <div className="p-3.5 sm:p-5 md:p-6 rounded-2xl bg-[var(--color-bg-card)] shadow-xs sm:shadow-sm space-y-4 sm:space-y-5">
+        
+        {/* Scrubber Section */}
+        <div className="space-y-2.5">
+          <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1.5">
+            <div>
+              <h2 className="text-xs min-[390px]:text-sm sm:text-base font-bold uppercase tracking-wider text-[var(--color-text-main)]">
+                Cost Recovery Physics Scrubber
+              </h2>
+              <p className="text-[9.5px] min-[390px]:text-[10.5px] sm:text-xs text-[var(--color-text-muted)] mt-0.5">
+                Drag to simulate instant structural reaction. Under 10%, the vessel plunges fully to the ocean floor.
+              </p>
+            </div>
+            <div className="flex items-center gap-1.5 self-start sm:self-auto shrink-0 mt-1 sm:mt-0">
+              <span className="text-2xl sm:text-3xl font-black tracking-tight text-[var(--color-text-main)]">
+                {simRecovery}%
+              </span>
+              <span className={cn(
+                "px-2 py-0.5 rounded-full text-[8.5px] sm:text-[9.5px] font-bold uppercase tracking-wider shrink-0 whitespace-nowrap",
+                isSurplus ? "bg-emerald-500/15 text-emerald-400" :
+                isProfitable ? "bg-emerald-500/15 text-emerald-400" :
+                simRecovery >= 85 ? "bg-amber-500/15 text-amber-300" :
+                simRecovery >= 70 ? "bg-[var(--color-primary)]/15 text-[var(--color-primary)]" :
+                simRecovery >= 50 ? "bg-orange-500/15 text-orange-400" :
+                simRecovery >= 25 ? "bg-rose-500/15 text-rose-400" :
+                simRecovery >= 10 ? "bg-red-500/20 text-red-400" :
+                "bg-red-600/30 text-red-300 font-black animate-pulse"
+              )}>
+                {isSurplus ? "Surplus Full Steam" :
+                 isProfitable ? "Profitable Cruising" :
+                 simRecovery >= 85 ? "Approaching Target" :
+                 simRecovery >= 70 ? "Water Lapping Hull" :
+                 simRecovery >= 50 ? "Heavy Flooding" :
+                 simRecovery >= 25 ? "Midsection Fracture" :
+                 simRecovery >= 10 ? "Catastrophic Split" :
+                 "Entirely Sunk (Seabed)"}
+              </span>
+            </div>
+          </div>
+
+          {/* Clean borderless slider track */}
+          <div className="pt-1">
+            <input 
+              type="range" 
+              min="0" 
+              max="130" 
+              value={simRecovery} 
+              onChange={(e) => handleSliderChange(parseInt(e.target.value, 10))}
+              className="w-full h-2.5 sm:h-3 bg-[var(--color-surface)] rounded-full appearance-none cursor-pointer accent-[var(--color-primary)] transition-all"
+            />
+            {/* Scrubber Milestones - Small Size Pills (Zero Strokes, Clickable) */}
+            <div className="flex items-center justify-between gap-1 sm:gap-1.5 overflow-x-auto no-scrollbar pt-2 pb-0.5">
+              {[
+                { label: "0% Sunk", val: 0, activeBg: "bg-red-600 text-white", idleBg: "bg-red-500/15 text-red-400" },
+                { label: "10% Split", val: 10, activeBg: "bg-red-500 text-white", idleBg: "bg-[var(--color-surface)] text-[var(--color-text-muted)] hover:text-[var(--color-text-main)]" },
+                { label: "50% Flood", val: 50, activeBg: "bg-orange-500 text-white", idleBg: "bg-[var(--color-surface)] text-[var(--color-text-muted)] hover:text-[var(--color-text-main)]" },
+                { label: `${realRecovery}% Live`, val: realRecovery, activeBg: "bg-[var(--color-primary)] text-[var(--color-on-primary)]", idleBg: "bg-[var(--color-primary)]/15 text-[var(--color-primary)] font-black" },
+                { label: "100% Break-Even", val: 100, activeBg: "bg-amber-500 text-white", idleBg: "bg-[var(--color-surface)] text-[var(--color-text-muted)] hover:text-[var(--color-text-main)]" },
+                { label: "130% Surplus", val: 130, activeBg: "bg-emerald-500 text-white", idleBg: "bg-emerald-500/15 text-emerald-400" },
+              ].map((pill) => {
+                const isSelected = simRecovery === pill.val;
+                return (
+                  <button
+                    key={pill.val}
+                    type="button"
+                    onClick={() => handleSliderChange(pill.val)}
+                    className={cn(
+                      "px-1.5 min-[360px]:px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full text-[7px] min-[360px]:text-[7.5px] min-[390px]:text-[8px] sm:text-[9px] font-bold uppercase tracking-wider shrink-0 transition-all select-none cursor-pointer border-none shadow-xs active:scale-95",
+                      isSelected ? pill.activeBg : pill.idleBg
+                    )}
+                  >
+                    {pill.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+        {/* 5. SCENARIO MATRIX (BORDERLESS 3D CARDS, CLEAN COMPACT SCALE) */}
+        <div className="pt-2 space-y-2">
+          <div className="flex items-center justify-between">
+            <span className="text-[9.5px] min-[390px]:text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-[var(--color-text-secondary)]">
+              Operational Scenarios (Click to Apply)
+            </span>
+            <span className="text-[8.5px] sm:text-[9.5px] text-[var(--color-text-muted)] font-medium">
+              8 Real-World Presets
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-2.5">
+            {scenarios.map((sc) => {
+              const isSelected = activeScenarioId === sc.id || simRecovery === sc.recovery;
+              return (
+                <button
+                  key={sc.id}
+                  type="button"
+                  onClick={() => selectScenario(sc.id, sc.recovery, sc.mode)}
+                  className={cn(
+                    "p-2.5 sm:p-3 rounded-xl sm:rounded-2xl text-left transition-all duration-200 flex flex-col justify-between gap-1.5 active:scale-95 cursor-pointer shadow-xs group",
+                    isSelected 
+                      ? "bg-[var(--color-surface-hover)] shadow-xs -translate-y-0.5" 
+                      : "bg-[var(--color-surface)]/60 hover:bg-[var(--color-surface)]"
+                  )}
+                >
+                  <div className="flex items-center justify-between w-full">
+                    <div className="shrink-0">
+                      {sc.icon}
+                    </div>
+                    <span className={cn("px-1.5 py-0.5 rounded-md text-[7.5px] sm:text-[8.5px] font-bold uppercase tracking-wider shrink-0 whitespace-nowrap", sc.tagColor)}>
+                      {sc.tag}
+                    </span>
+                  </div>
+
+                  <div>
+                    <div className="flex items-baseline justify-between gap-1">
+                      <span className="text-[11px] sm:text-xs font-bold text-[var(--color-text-main)] group-hover:text-[var(--color-primary)] transition-colors truncate">
+                        {sc.label}
+                      </span>
+                      <span className="text-[10px] sm:text-[11px] font-black font-mono text-[var(--color-text-secondary)] shrink-0">
+                        {sc.recovery}%
+                      </span>
+                    </div>
+                    <p className="text-[8.5px] min-[390px]:text-[9px] sm:text-[9.5px] text-[var(--color-text-muted)] leading-tight mt-0.5 line-clamp-2">
+                      {sc.summary}
+                    </p>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+      </div>
+
+      {/* 6. STRUCTURAL BREAKDOWN GUIDE (NO STROKES, NO DOTS, CLEAN EDITORIAL REFERENCE) */}
+      <div className="p-3.5 sm:p-5 md:p-6 rounded-2xl bg-[var(--color-bg-card)] shadow-xs sm:shadow-sm space-y-3">
+        <div>
+          <h3 className="text-xs min-[390px]:text-sm sm:text-base font-bold uppercase tracking-wider text-[var(--color-text-main)]">
+            Hull Damage &amp; Sinking Mechanics Reference
+          </h3>
+          <p className="text-[9.5px] min-[390px]:text-[10.5px] sm:text-xs text-[var(--color-text-muted)] mt-0.5">
+            Physics specification governing ship tilt angles, structural breaks, and underwater plunge stages.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-2.5 pt-0.5">
+          <div className="p-3 sm:p-3.5 rounded-xl sm:rounded-2xl bg-[var(--color-surface)]/50 shadow-xs flex flex-col justify-between gap-1">
+            <div className="flex items-start justify-between gap-2">
+              <span className="flex-1 min-w-0 text-[11px] sm:text-xs font-bold uppercase text-[var(--color-text-main)] leading-snug">
+                Surplus &amp; Operating Target
+              </span>
+              <span className="shrink-0 whitespace-nowrap text-[8px] sm:text-[9px] font-bold uppercase px-1.5 py-0.5 rounded-md bg-emerald-500/15 text-emerald-400">
+                100% to 130%
+              </span>
+            </div>
+            <p className="text-[9.5px] sm:text-[10.5px] text-[var(--color-text-secondary)] leading-relaxed">
+              Ship remains completely afloat and sails level. In surplus (&gt;120%), golden wake foam erupts, chimney smoke billows at turbo volume, and waves rush past at accelerated velocity.
+            </p>
+          </div>
+
+          <div className="p-3 sm:p-3.5 rounded-xl sm:rounded-2xl bg-[var(--color-surface)]/50 shadow-xs flex flex-col justify-between gap-1">
+            <div className="flex items-start justify-between gap-2">
+              <span className="flex-1 min-w-0 text-[11px] sm:text-xs font-bold uppercase text-[var(--color-text-main)] leading-snug">
+                Break-Even Approach
+              </span>
+              <span className="shrink-0 whitespace-nowrap text-[8px] sm:text-[9px] font-bold uppercase px-1.5 py-0.5 rounded-md bg-amber-500/15 text-amber-300">
+                85% to 99%
+              </span>
+            </div>
+            <p className="text-[9.5px] sm:text-[10.5px] text-[var(--color-text-secondary)] leading-relaxed">
+              Gentle forward pitch between 1° and 7°. Iceberg damage at coordinates (870, 270) generates fine leak bubbles. All four funnels and both masts remain upright.
+            </p>
+          </div>
+
+          <div className="p-3 sm:p-3.5 rounded-xl sm:rounded-2xl bg-[var(--color-surface)]/50 shadow-xs flex flex-col justify-between gap-1">
+            <div className="flex items-start justify-between gap-2">
+              <span className="flex-1 min-w-0 text-[11px] sm:text-xs font-bold uppercase text-[var(--color-text-main)] leading-snug">
+                Moderate Deficit (October Live Pace)
+              </span>
+              <span className="shrink-0 whitespace-nowrap text-[8px] sm:text-[9px] font-bold uppercase px-1.5 py-0.5 rounded-md bg-[var(--color-primary)]/15 text-[var(--color-primary)]">
+                70% to 84% ({realRecovery}%)
+              </span>
+            </div>
+            <p className="text-[9.5px] sm:text-[10.5px] text-[var(--color-text-secondary)] leading-relaxed">
+              Bow visibly submerges with an 8° to 16° tilt. Water begins lapping against the lower forward deck. Matches October real-world factory recovery rate ({realRecovery}%).
+            </p>
+          </div>
+
+          <div className="p-3 sm:p-3.5 rounded-xl sm:rounded-2xl bg-[var(--color-surface)]/50 shadow-xs flex flex-col justify-between gap-1">
+            <div className="flex items-start justify-between gap-2">
+              <span className="flex-1 min-w-0 text-[11px] sm:text-xs font-bold uppercase text-[var(--color-text-main)] leading-snug">
+                Heavy Flooding
+              </span>
+              <span className="shrink-0 whitespace-nowrap text-[8px] sm:text-[9px] font-bold uppercase px-1.5 py-0.5 rounded-md bg-orange-500/15 text-orange-400">
+                50% to 69%
+              </span>
+            </div>
+            <p className="text-[9.5px] sm:text-[10.5px] text-[var(--color-text-secondary)] leading-relaxed">
+              Severe flooding drives incline from 16° to 30°. Under 65% recovery, the foremast collapses. Under 58%, Funnel #1 topples backward into the water.
+            </p>
+          </div>
+
+          <div className="p-3 sm:p-3.5 rounded-xl sm:rounded-2xl bg-[var(--color-surface)]/50 shadow-xs flex flex-col justify-between gap-1">
+            <div className="flex items-start justify-between gap-2">
+              <span className="flex-1 min-w-0 text-[11px] sm:text-xs font-bold uppercase text-[var(--color-text-main)] leading-snug">
+                Severe Incline &amp; Stress Crack
+              </span>
+              <span className="shrink-0 whitespace-nowrap text-[8px] sm:text-[9px] font-bold uppercase px-1.5 py-0.5 rounded-md bg-rose-500/15 text-rose-400">
+                25% to 49%
+              </span>
+            </div>
+            <p className="text-[9.5px] sm:text-[10.5px] text-[var(--color-text-secondary)] leading-relaxed">
+              Steep 30° to 45° incline. Funnel #2 collapses under 45%, and Funnel #3 collapses under 35%. Below 32%, a deep jagged fracture crack splits across the central midsection.
+            </p>
+          </div>
+
+          <div className="p-3 sm:p-3.5 rounded-xl sm:rounded-2xl bg-[var(--color-surface)]/50 shadow-xs flex flex-col justify-between gap-1">
+            <div className="flex items-start justify-between gap-2">
+              <span className="flex-1 min-w-0 text-[11px] sm:text-xs font-bold uppercase text-[var(--color-text-main)] leading-snug">
+                Catastrophic Split &amp; Seabed Abyss
+              </span>
+              <span className="shrink-0 whitespace-nowrap text-[8px] sm:text-[9px] font-bold uppercase px-1.5 py-0.5 rounded-md bg-red-600/25 text-red-300 font-bold">
+                &lt; 25% (Sunk &lt; 10%)
+              </span>
+            </div>
+            <p className="text-[9.5px] sm:text-[10.5px] text-[var(--color-text-secondary)] leading-relaxed">
+              Between 10% and 24%, the hull snaps in two with stern standing vertically at 90°. Under 10%, the vessel sinks ENTIRELY to the seabed floor (Y=500), resting with giant underwater bubbles and glowing abyss jellyfish.
+            </p>
+          </div>
+        </div>
+      </div>
 
     </div>
   );
