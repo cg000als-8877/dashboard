@@ -514,11 +514,11 @@ export default function SimulatorPage() {
 
       {/* 6. STRUCTURAL BREAKDOWN GUIDE (NO STROKES, NO DOTS, CLEAN EDITORIAL REFERENCE) */}
       <div className="p-3.5 sm:p-5 md:p-6 rounded-2xl bg-[var(--color-bg-card)] shadow-xs sm:shadow-sm space-y-3">
-        <div>
+        <div className="text-center sm:text-left">
           <h3 className="text-xs min-[390px]:text-sm sm:text-base font-bold uppercase tracking-wider text-[var(--color-text-main)]">
             Hull Damage &amp; Sinking Mechanics Reference
           </h3>
-          <p className="text-[9.5px] min-[390px]:text-[10.5px] sm:text-xs text-[var(--color-text-muted)] mt-0.5">
+          <p className="text-[9.5px] min-[390px]:text-[10.5px] sm:text-xs text-[var(--color-text-muted)] mt-0.5 max-w-xl mx-auto sm:mx-0">
             Physics specification governing ship tilt angles, structural breaks, and underwater plunge stages.
           </p>
         </div>
