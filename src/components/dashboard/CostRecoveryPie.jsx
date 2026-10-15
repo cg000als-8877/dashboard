@@ -40,22 +40,18 @@ export function CostRecoveryPie({
   const isCovered = isProfitable || pct >= 100;
 
   // Dynamic tone & status computation based on recovery percentage and profit
-  let toneStatus = {
-    line2: "Costs exceed income",
-    line3: "Profit is currently out of range!",
-    line3Color: "text-[var(--color-danger-text)]",
-    centerLabel: "Progress",
-    strokeColor: "var(--color-primary)"
-  };
+  let toneStatus;
 
-  if (isCovered) {
+  if (isCovered || pct >= 100) {
     if (pct >= 120) {
       toneStatus = {
         line2: "Income far exceeds expenses",
         line3: "Strong positive profit margin achieved!",
         line3Color: "text-[var(--color-success-text)]",
-        centerLabel: "Recovered",
-        strokeColor: "var(--color-success)"
+        centerLabel: "Surplus",
+        centerLabelColor: "text-[var(--color-success-text)]",
+        strokeColor: "var(--color-success)",
+        glowColor: "var(--color-success-glow, rgba(16, 185, 129, 0.45))"
       };
     } else {
       toneStatus = {
@@ -63,16 +59,50 @@ export function CostRecoveryPie({
         line3: "Factory is operating in profit!",
         line3Color: "text-[var(--color-success-text)]",
         centerLabel: "Profitable",
-        strokeColor: "var(--color-success)"
+        centerLabelColor: "text-[var(--color-success-text)]",
+        strokeColor: "var(--color-success)",
+        glowColor: "var(--color-success-glow, rgba(16, 185, 129, 0.45))"
       };
     }
-  } else if (pct >= 80) {
+  } else if (pct >= 85) {
     toneStatus = {
       line2: "Approaching break-even",
-      line3: "Almost covering total expenses!",
-      line3Color: "text-amber-500 dark:text-amber-400",
+      line3: "Closing in on break-even recovery!",
+      line3Color: "text-[var(--color-warning)]",
       centerLabel: "Closing In",
-      strokeColor: "var(--color-primary)"
+      centerLabelColor: "text-[var(--color-warning)]",
+      strokeColor: "var(--color-warning)",
+      glowColor: "var(--color-warning-glow, rgba(251, 191, 36, 0.45))"
+    };
+  } else if (pct >= 65) {
+    toneStatus = {
+      line2: "Costs currently exceed income",
+      line3: "Steadily recovering production costs",
+      line3Color: "text-[var(--color-text-secondary)]",
+      centerLabel: "Recovery",
+      centerLabelColor: "text-[var(--color-text-secondary)]",
+      strokeColor: "var(--color-primary)",
+      glowColor: "var(--color-primary-glow)"
+    };
+  } else if (pct >= 45) {
+    toneStatus = {
+      line2: "Deficit gap remains high",
+      line3: "Deficit gap remains significant",
+      line3Color: "text-[var(--color-danger-text)]",
+      centerLabel: "Deficit",
+      centerLabelColor: "text-[var(--color-danger-text)]",
+      strokeColor: "var(--color-primary)",
+      glowColor: "var(--color-primary-glow)"
+    };
+  } else {
+    toneStatus = {
+      line2: "Costs severely exceed income",
+      line3: "Profit is currently out of range!",
+      line3Color: "text-[var(--color-danger-text)]",
+      centerLabel: "Deficit",
+      centerLabelColor: "text-[var(--color-danger-text)]",
+      strokeColor: "var(--color-danger)",
+      glowColor: "var(--color-danger-glow, rgba(239, 68, 68, 0.45))"
     };
   }
 
@@ -84,22 +114,23 @@ export function CostRecoveryPie({
     </span>
   );
 
-  const recoveryLabel = isCovered && Math.round(clamped) >= 100
-    ? `COST RECOVERED ${Math.round(clamped)}%`
+  const recoveryLabel = isCovered && Math.round(pct) >= 100
+    ? (Math.round(pct) > 100 ? `COST RECOVERED ${Math.round(pct)}% • SURPLUS` : `100% COST RECOVERED • BREAK-EVEN`)
     : `COST RECOVERED ${Math.round(clamped)}% ONLY`;
 
   const defaultSubtitle = (
     <div className="flex flex-col items-center justify-center text-center mt-1 sm:mt-1.5 leading-tight">
       <span className={cn(
-        "font-semibold uppercase whitespace-nowrap text-[var(--color-text-secondary)]",
+        "uppercase whitespace-nowrap transition-colors duration-300",
+        isCovered ? "text-[var(--color-success-text)] font-extrabold" : "text-[var(--color-text-secondary)] font-semibold",
         compact ? "text-[8px] min-[350px]:text-[8.5px] min-[390px]:text-[9.5px] sm:text-[10.5px]" : "text-[11px] sm:text-xs xl:text-[13px]"
       )}>
         {recoveryLabel}
       </span>
       <span className={cn(
-        "font-normal italic whitespace-nowrap mt-0.5",
+        "font-normal italic whitespace-nowrap mt-0.5 transition-colors duration-300",
         toneStatus.line3Color,
-        compact ? "text-[7.5px] min-[350px]:text-[8px] min-[390px]:text-[9px] sm:text-[10px]" : "text-[10px] sm:text-[11px] xl:text-xs"
+        compact ? "text-[8.5px] sm:text-[9px]" : "text-[10px] sm:text-[11px] xl:text-xs"
       )}>
         {toneStatus.line3}
       </span>
@@ -285,7 +316,7 @@ export function CostRecoveryPie({
               strokeLinecap="round"
               className="transition-all duration-1000 ease-out"
               style={{
-                filter: `drop-shadow(0 0 6px ${isCovered ? 'rgba(16, 185, 129, 0.55)' : 'var(--color-primary-glow, rgba(0, 240, 255, 0.5))'})`,
+                filter: `drop-shadow(0 0 6px ${toneStatus.glowColor})`,
                 animation: 'pie-stroke-glow-pulse 2.4s ease-in-out infinite',
                 transformOrigin: '80px 80px',
               }}
@@ -356,20 +387,22 @@ export function CostRecoveryPie({
         {/* Central Floating Percentage Display */}
         <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
           <span className={cn(
-            "font-black tracking-tight text-[var(--color-text-main)] leading-none",
+            "font-black tracking-tight leading-none transition-colors duration-300",
+            isCovered ? "text-[var(--color-success-text)]" : "text-[var(--color-text-main)]",
             compact 
               ? "text-[22px] min-[350px]:text-[24px] sm:text-3xl" 
               : "text-2xl sm:text-3xl md:text-4xl xl:text-[42px]"
           )}>
-            <AnimatedNumber value={Math.round(clamped)} suffix="%" />
+            <AnimatedNumber value={Math.round(isCovered ? pct : clamped)} suffix="%" />
           </span>
           <span className={cn(
-            "font-extrabold uppercase tracking-widest text-[var(--color-text-secondary)] leading-none",
+            "font-extrabold uppercase tracking-widest leading-none transition-colors duration-300",
+            toneStatus.centerLabelColor,
             compact 
               ? "text-[7px] min-[350px]:text-[7.5px] sm:text-[9px] -mt-1 sm:-mt-0.5" 
               : "text-[8px] sm:text-[9.5px] md:text-[11px] -mt-0.5 md:mt-1.5"
           )}>
-            Progress
+            {toneStatus.centerLabel}
           </span>
         </div>
       </div>

@@ -3,7 +3,15 @@
 import React, { useMemo, useState, useEffect } from "react";
 import { useTheme } from '@/components/ThemeProvider';
 
-export function TitanicAnimation({ netProfit, isSimulation = false, simState = 'profit', simDay = 1 }) {
+export function TitanicAnimation({ 
+  netProfit, 
+  recoveryPercentage, 
+  totalIncome, 
+  totalCost, 
+  isSimulation = false, 
+  simState = 'profit', 
+  simDay = 1 
+}) {
   const { theme } = useTheme();
   const isDay = theme === 'light';
 
@@ -15,9 +23,36 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
     return () => window.removeEventListener('resize', check);
   }, []);
 
-  const isLoss = isSimulation ? simState === 'loss' : netProfit < 0;
-  const isProfit = isSimulation ? simState === 'profit' : netProfit > 0;
-  const isNeutral = isSimulation ? simState === 'neutral' : netProfit === 0;
+  // ── 1. RESOLVE RECOVERY PERCENTAGE (OPTION A: FINANCIAL GRAVITY) ──
+  let effectiveRecovery;
+  if (recoveryPercentage !== undefined && recoveryPercentage !== null && !isNaN(Number(recoveryPercentage))) {
+    effectiveRecovery = Number(recoveryPercentage);
+  } else if (totalCost !== undefined && Number(totalCost) > 0 && totalIncome !== undefined) {
+    effectiveRecovery = (Number(totalIncome) / Number(totalCost)) * 100;
+  } else if (isSimulation) {
+    if (simState === 'profit') effectiveRecovery = 115;
+    else if (simState === 'neutral') effectiveRecovery = 100;
+    else {
+      // In simulator loss mode fallback: map simDay (1 to 31) -> 95% down to 0%
+      effectiveRecovery = Math.max(0, 95 - ((simDay - 1) / 30) * 95);
+    }
+  } else {
+    // Live dashboard fallback:
+    if (netProfit !== undefined && netProfit !== null) {
+      effectiveRecovery = netProfit >= 0 ? 105 : 55;
+    } else {
+      effectiveRecovery = 100;
+    }
+  }
+
+  const isProfit = isSimulation 
+    ? simState === 'profit' 
+    : (effectiveRecovery >= 100 || (netProfit !== undefined && netProfit > 0));
+  const isNeutral = isSimulation 
+    ? simState === 'neutral' 
+    : (!isProfit && (effectiveRecovery === 100 || netProfit === 0));
+  const isLoss = !isProfit && !isNeutral;
+  const isSurplus = isProfit && effectiveRecovery >= 120;
 
   let frontRotate = 0;
   let frontY = 0;
@@ -27,57 +62,65 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
   let backY = 0;
   let backX = 0;
 
-  const isCracking = isLoss && simDay === 21;
-  const isSplit = isLoss && simDay >= 22;
+  const r = Math.max(0, Math.min(effectiveRecovery, 99.99));
+
+  // ── USER SPECIFICATION: UNDER 10% RECOVERY THE SHIP MUST SINK ENTIRELY ──
+  const isEntirelySunk = isLoss && r < 10;
+  const isSplit = isLoss && (r < 25 || (isSimulation && simDay >= 22));
+  const isCracking = isLoss && !isSplit && !isEntirelySunk && (r <= 32 || (isSimulation && simDay === 21));
 
   if (isLoss) {
-    // Original Full Sinking Progression
-    if (simDay < 21) {
-      frontY = backY = (simDay / 20) * 80;
-      frontRotate = backRotate = (simDay / 20) * 45;
-    } else if (simDay === 21) {
-      frontY = backY = 80;
-      frontRotate = backRotate = 45;
-    } else if (simDay < 24) {
-      // THE SPLIT
-      const progress = (simDay - 21) / 2; 
-      frontY = 100 + progress * 150; 
-      frontRotate = 45 - progress * 45; // Front goes horizontal (0 deg)
-      frontX = progress * 80;
-      
-      backY = 100 + progress * 50; 
-      backRotate = 45 + progress * 45; // Back goes vertical (90 deg)
-      backX = progress * -50;
-    } else if (simDay < 27) {
-      const progress = (simDay - 23) / 3; 
-      frontY = 250 + progress * 250; // Sinks to 500
+    if (r < 10) {
+      // ── UNDER 10%: SUNK ENTIRELY TO THE OCEAN FLOOR SEABED ──
+      frontY = 500;
       frontRotate = 0;
-      frontX = 80 + progress * 20;
-      
-      backY = 150 + progress * 150; // Sinks to 300
-      backRotate = 90;
-      backX = -50;
+      frontX = 140;
+
+      backY = 500;
+      backRotate = 0;
+      backX = -100;
+    } else if (r < 25) {
+      // ── 10% - 24.9%: THE SPLIT & STEEP PLUNGE (STERN GOES VERTICAL 90°) ──
+      const progress = (25 - r) / 15; // 0 at 25% -> 1 at 10%
+      frontY = 100 + progress * 300;
+      frontRotate = 45 - progress * 45; // levels out toward 0
+      frontX = progress * 100;
+
+      backY = 100 + progress * 200;
+      backRotate = 45 + progress * 45; // rotates up to 90 deg vertical!
+      backX = progress * -60;
+    } else if (r < 50) {
+      // ── 25% - 49.9%: SEVERE INCLINE & MIDSECTION STRESS CRACK ──
+      const progress = (50 - r) / 25; // 0 at 50% -> 1 at 25%
+      frontY = backY = 45 + progress * 35;
+      frontRotate = backRotate = 28 + progress * 17;
+    } else if (r < 70) {
+      // ── 50% - 69.9%: SERIOUS FLOOD & COLLAPSED FUNNELS ──
+      const progress = (70 - r) / 20; // 0 at 70% -> 1 at 50%
+      frontY = backY = 22 + progress * 23;
+      frontRotate = backRotate = 16 + progress * 12;
+    } else if (r < 85) {
+      // ── 70% - 84.9%: MODERATE DEFICIT (BOW DIPS, WATER LAPPING) ──
+      const progress = (85 - r) / 15; // 0 at 85% -> 1 at 70%
+      frontY = backY = 8 + progress * 14;
+      frontRotate = backRotate = 6 + progress * 10;
     } else {
-      const progress = (simDay - 26) / 5; 
-      frontY = 500; // Sunk on ocean floor
-      frontRotate = 0;
-      frontX = 100 + progress * 50;
-      
-      backY = 300 + progress * 200; // Sinks to 500
-      backRotate = 90 - progress * 90; // Levels out to 0
-      backX = -50 - progress * 50;
+      // ── 85% - 99.9%: APPROACHING BREAK-EVEN (GENTLE LIST) ──
+      const progress = (100 - r) / 15; // 0 at 100% -> 1 at 85%
+      frontY = backY = progress * 8;
+      frontRotate = backRotate = progress * 6;
     }
   }
 
-  // Breakage Thresholds (now universally based on simDay, but only if it's a loss)
-  const frontBarBroken = isLoss && simDay >= 7;
-  const funnel1Broken = isLoss && simDay >= 12;
-  const funnel2Broken = isLoss && simDay >= 17;
-  const funnel3Broken = isLoss && simDay >= 20;
-  const funnel4Broken = isLoss && simDay >= 23;
-  const backBarsBroken = isLoss && simDay >= 26;
+  // Universal Breakage Thresholds based on Recovery %
+  const frontBarBroken = isLoss && (r < 65 || (isSimulation && simDay >= 7));
+  const funnel1Broken = isLoss && (r < 58 || (isSimulation && simDay >= 12));
+  const funnel2Broken = isLoss && (r < 45 || (isSimulation && simDay >= 17));
+  const funnel3Broken = isLoss && (r < 35 || (isSimulation && simDay >= 20));
+  const funnel4Broken = isLoss && (r < 25 || (isSimulation && simDay >= 23));
+  const backBarsBroken = isLoss && (r < 20 || (isSimulation && simDay >= 26));
 
-  const hullBreach = isLoss; // The breach causes the sinking, so it must be present from Day 1 of loss
+  const hullBreach = isLoss; // The breach causes water intake on any deficit (< 100%)
 
   const frontStyle = {
     transform: `translate(${frontX}px, ${frontY}px) rotate(${frontRotate}deg)`,
@@ -92,7 +135,9 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
   };
 
   if (isProfit) {
-    frontStyle.animation = backStyle.animation = "ship-bob 4s infinite ease-in-out";
+    frontStyle.animation = backStyle.animation = isSurplus 
+      ? "ship-bob 2.8s infinite ease-in-out" 
+      : "ship-bob 4s infinite ease-in-out";
   }
 
   const stars = useMemo(() => {
@@ -303,7 +348,7 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
       {/* Propellers */}
       <g transform="translate(130, 270)">
         <path d="M -10 -5 L 10 -5 L 5 15 L -5 15 Z" fill="#555" />
-        <g style={{ animation: isNeutral || isSplit ? 'none' : `prop-spin ${isProfit ? '0.1s' : '2s'} infinite linear`, transformOrigin: '0px 10px' }}>
+        <g style={{ animation: isNeutral || isSplit || isEntirelySunk ? 'none' : `prop-spin ${isSurplus ? '0.07s' : (isProfit ? '0.12s' : (r > 70 ? '1.5s' : '3s'))} infinite linear`, transformOrigin: '0px 10px' }}>
           <ellipse cx="0" cy="10" rx="14" ry="4" fill="#99632D" transform="rotate(-45 0 10)" />
           <ellipse cx="0" cy="10" rx="14" ry="4" fill="#99632D" transform="rotate(45 0 10)" />
           <ellipse cx="0" cy="10" rx="14" ry="4" fill="#99632D" transform="rotate(0 0 10)" />
@@ -314,7 +359,34 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
   );
 
   return (
-    <div className="w-full flex flex-col">
+    <div className="w-full flex flex-col relative">
+      {/* Floating Status Condition Badge */}
+      <div className="absolute top-2.5 left-3 sm:top-3.5 sm:left-4 z-20 flex items-center gap-2 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full bg-[var(--color-bg-card)]/85 backdrop-blur-md border border-[var(--color-border)] shadow-lg select-none transition-all">
+        <span className={`w-2 h-2 rounded-full ${
+          isSurplus ? 'bg-[var(--color-success)] animate-pulse [box-shadow:0_0_8px_var(--color-success)]' :
+          isProfit ? 'bg-[var(--color-success)]' :
+          isNeutral ? 'bg-[var(--color-warning)]' :
+          r >= 85 ? 'bg-[var(--color-warning)]' :
+          r >= 70 ? 'bg-[var(--color-primary)]' :
+          r >= 25 ? 'bg-[var(--color-danger)]' :
+          'bg-red-600 animate-pulse [box-shadow:0_0_10px_rgba(239,68,68,0.8)]'
+        }`} />
+        <span className="text-[9.5px] sm:text-[11px] font-bold uppercase tracking-wider text-[var(--color-text-main)]">
+          {isSurplus ? 'Surplus • Full Steam Ahead' :
+           isProfit ? 'Profitable • Sailing Strong' :
+           isNeutral ? 'Break-Even • Floating Neutral' :
+           r >= 85 ? 'Approaching Break-Even' :
+           r >= 70 ? 'Moderate Deficit • Water Breach' :
+           r >= 50 ? 'Heavy Flood • Funnels Toppling' :
+           r >= 25 ? 'Severe Deficit • Midsection Crack' :
+           r >= 10 ? 'Catastrophic Split • Stern Vertical' :
+           'Entirely Sunk • Ocean Floor Abyss'}
+        </span>
+        <span className="text-[9px] sm:text-[10px] text-[var(--color-text-muted)] font-mono font-medium">
+          • {Math.round(effectiveRecovery)}% recovery
+        </span>
+      </div>
+
       <div className={`w-full relative aspect-[3/2] md:aspect-auto md:h-[500px] shadow-none border-none overflow-hidden ${isDay ? 'bg-[#e0f7fa]' : 'bg-[#050A15]'}`}>
       
       <style>{`
@@ -453,7 +525,7 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
         {/* Night Sky Stars / Day Sky Sun */}
         <g className="origin-center scale-[1.1] md:scale-100 transition-transform duration-500" style={{ transformOrigin: '600px 600px' }}>
           {isDay ? (
-            <g style={{ animation: isProfit ? 'star-move 40s infinite linear' : 'none' }}>
+            <g style={{ animation: isSurplus ? 'star-move 20s infinite linear' : (isProfit ? 'star-move 35s infinite linear' : 'none') }}>
               <g>
                 <circle cx="-100" cy="150" r="40" fill="#fbc531" />
                 {Array.from({length: 20}).map((_, i) => {
@@ -470,7 +542,7 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
               </g>
             </g>
           ) : (
-            <g style={{ animation: isProfit ? 'star-move 20s infinite linear' : 'none' }}>
+            <g style={{ animation: isSurplus ? 'star-move 10s infinite linear' : (isProfit ? 'star-move 18s infinite linear' : 'none') }}>
             <g>
             {renderMoonGroup()}
             {stars.map((star, i) => (
@@ -510,7 +582,7 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
 
           {/* Back Wave details - Speeds up in Profit mode! */}
           <g transform="translate(0, 200)">
-            <g style={{ animation: `wave-flow ${isProfit ? '1.5s' : '4s'} infinite linear` }}>
+            <g style={{ animation: `wave-flow ${isSurplus ? '1s' : (isProfit ? '1.5s' : (r > 70 ? '3.5s' : '5s'))} infinite linear` }}>
               <path d={wavePath} fill={isDay ? "#0277bd" : "#13243f"} />
             </g>
           </g>
@@ -528,12 +600,12 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
                 if (broken) return null;
                 
                 // Determine smoke intensity
-                const particleCount = isProfit ? 8 : 4;
-                const driftX = isProfit ? -250 : -80;
+                const particleCount = isSurplus ? 12 : (isProfit ? 8 : (r > 70 ? 4 : 2));
+                const driftX = isSurplus ? -320 : (isProfit ? -250 : -80);
                 const driftY = isProfit ? -30 : -50;
-                const scaleTo = isProfit ? 4 : 1.5;
-                const baseOpacity = isProfit ? 0.6 : 0.3;
-                const durationBase = isProfit ? 2 : 3;
+                const scaleTo = isSurplus ? 5.5 : (isProfit ? 4 : 1.5);
+                const baseOpacity = isSurplus ? 0.75 : (isProfit ? 0.6 : 0.3);
+                const durationBase = isSurplus ? 1.5 : (isProfit ? 2 : 3);
                 
                 return (
                   <g key={`smoke-plume-${funnelIdx}`} transform={`translate(${cx}, 30)`}>
@@ -566,8 +638,8 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
               {renderShip()}
             </g>
             
-            {/* Giant Underwater Impact Bubbles on Day 28+ */}
-            {isSimulation && simDay >= 28 && (
+            {/* Giant Underwater Impact Bubbles on Day 28+ or Recovery < 10% */}
+            {(isEntirelySunk || (isSimulation && simDay >= 28)) && (
               <g>
                  {/* Front part bubbles */}
                  <g transform="translate(1000, 950)">
@@ -651,14 +723,14 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
           {/* Splashes (Only when profitable / moving) - Now massive and aggressive! */}
           {isProfit && (
             <g transform="translate(980, 250)">
-              {Array.from({length: 30}).map((_, i) => (
+              {Array.from({length: isSurplus ? 45 : 30}).map((_, i) => (
                 <circle 
                   key={`sw-${i}`} 
-                  cx={(Math.random() - 0.5) * 40} 
+                  cx={(Math.random() - 0.5) * (isSurplus ? 55 : 40)} 
                   cy={(Math.random() - 0.5) * 20} 
-                  r={Math.random() * 6 + 3} 
-                  fill="rgba(255, 255, 255, 0.8)"
-                  style={{ animation: `water-splash ${1 + Math.random()}s infinite linear ${Math.random() * 1.5}s` }}
+                  r={Math.random() * (isSurplus ? 8 : 6) + 3} 
+                  fill={isSurplus ? "rgba(255, 230, 160, 0.9)" : "rgba(255, 255, 255, 0.8)"}
+                  style={{ animation: `water-splash ${isSurplus ? '0.7s' : '1s'} infinite linear ${Math.random() * 1.5}s` }}
                 />
               ))}
             </g>
@@ -666,7 +738,7 @@ export function TitanicAnimation({ netProfit, isSimulation = false, simState = '
 
           {/* Front Wave - Speeds up in Profit mode! */}
           <g transform="translate(0, 240)">
-            <g style={{ animation: `wave-flow ${isProfit ? '1s' : '3s'} infinite linear` }}>
+            <g style={{ animation: `wave-flow ${isSurplus ? '0.8s' : (isProfit ? '1s' : (r > 70 ? '2.5s' : '4s'))} infinite linear` }}>
               <path d={frontWavePath} fill={isDay ? "rgba(3, 169, 244, 0.4)" : "rgba(28, 54, 94, 0.7)"} />
             </g>
           </g>

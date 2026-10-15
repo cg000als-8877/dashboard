@@ -655,13 +655,31 @@ export function DashboardContent({ month, isArchive = false }) {
         )}
 
         {/* Titanic Animation (Live Dashboard Only) - Smoothly descends from above */}
-        {!isArchive && showAnimation && (
-          <div className="flex flex-col relative z-10 -mx-3.5 sm:-mx-5 md:-mx-8 w-[calc(100%+1.75rem)] sm:w-[calc(100%+2.5rem)] md:w-[calc(100%+4rem)] overflow-hidden mb-3 animate-[fade-down_0.35s_cubic-bezier(0.16,1,0.3,1)] origin-top">
-            <div className="w-full transition-all duration-500 ease-in-out origin-top overflow-hidden border-none rounded-none opacity-100">
-              <TitanicAnimation netProfit={stats.netProfit} simDay={displayDay} />
+        {!isArchive && showAnimation && (() => {
+          const liveRecovery = (stats?.totalCost || 0) > 0 
+            ? ((stats.totalIncome / stats.totalCost) * 100) 
+            : (stats?.netProfit >= 0 ? 100 : 0);
+          const activeNet = interactiveDay !== null && currentDayData?.profit !== undefined
+            ? currentDayData.profit
+            : stats.netProfit;
+          const activeRecovery = interactiveDay !== null && currentDayData?.cost > 0
+            ? ((currentDayData.income / currentDayData.cost) * 100)
+            : liveRecovery;
+
+          return (
+            <div className="flex flex-col relative z-10 -mx-3.5 sm:-mx-5 md:-mx-8 w-[calc(100%+1.75rem)] sm:w-[calc(100%+2.5rem)] md:w-[calc(100%+4rem)] overflow-hidden mb-3 animate-[fade-down_0.35s_cubic-bezier(0.16,1,0.3,1)] origin-top">
+              <div className="w-full transition-all duration-500 ease-in-out origin-top overflow-hidden border-none rounded-none opacity-100">
+                <TitanicAnimation 
+                  netProfit={activeNet} 
+                  recoveryPercentage={activeRecovery}
+                  totalIncome={stats.totalIncome}
+                  totalCost={stats.totalCost}
+                  simDay={displayDay} 
+                />
+              </div>
             </div>
-          </div>
-        )}
+          );
+        })()}
 
         {/* Desktop Visuals Toggle (Hidden on Mobile) */}
         {!isArchive && (
