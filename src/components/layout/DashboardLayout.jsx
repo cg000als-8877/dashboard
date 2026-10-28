@@ -49,7 +49,7 @@ export default function DashboardLayout({ children }) {
   const [showCanteenModal, setShowCanteenModal] = useState(false);
   const [mobileThemeTab, setMobileThemeTab] = useState('palette'); // 'palette' | 'background'
 
-  let datePart = 'October 14th, 2026';
+  let datePart = 'October 27th, 2026';
   if (dailyTrends && dailyTrends.length > 0) {
     try {
       const endDate = dailyTrends[dailyTrends.length - 1]?.date;
@@ -57,7 +57,7 @@ export default function DashboardLayout({ children }) {
         datePart = format(parseISO(endDate), 'MMMM do, yyyy');
       }
     } catch (e) {
-      datePart = 'October 14th, 2026';
+      datePart = 'October 27th, 2026';
     }
   }
 
@@ -138,16 +138,16 @@ export default function DashboardLayout({ children }) {
             {isMobileMenuOpen && (
               <>
                 <div className="fixed inset-0 z-[90] bg-black/50" onClick={() => setIsMobileMenuOpen(false)}></div>
-                <div className="absolute top-12 right-2.5 w-72 sm:w-80 bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-2xl shadow-2xl flex flex-col p-2.5 sm:p-3 animate-[fade-down_0.15s_ease-out_both] z-[100] origin-top-right">
+                <div className="absolute top-11 right-2 w-[264px] sm:w-[276px] bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-2xl shadow-2xl flex flex-col p-2 animate-[fade-down_0.15s_ease-out_both] z-[100] origin-top-right">
                   
                   {/* Header with Title and Close Button */}
-                  <div className="flex items-center justify-between pb-2 border-b border-[var(--color-border)]/60 mb-2">
-                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-[var(--color-text-main)]">
+                  <div className="flex items-center justify-between pb-1.5 border-b border-[var(--color-border)]/50 mb-1.5 px-0.5">
+                    <span className="text-[9px] font-black uppercase tracking-wider text-[var(--color-text-main)]">
                       Appearance &amp; Style
                     </span>
                     <button 
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className="p-1 -mr-1 rounded-md text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface)] transition-colors cursor-pointer"
+                      className="p-0.5 rounded-md text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface)] transition-colors cursor-pointer"
                       aria-label="Close menu"
                     >
                       <X size={13} />
@@ -155,19 +155,19 @@ export default function DashboardLayout({ children }) {
                   </div>
 
                   {/* Unified 4-in-a-Row Controls: Light | Dark | Palette | Background */}
-                  <div className="grid grid-cols-4 gap-1 p-1 bg-[var(--color-surface)] rounded-xl border border-[var(--color-border)]/40 mb-1.5">
+                  <div className="grid grid-cols-4 gap-1 p-0.5 bg-[var(--color-surface)]/70 rounded-xl border border-[var(--color-border)]/40 mb-1.5">
                     {/* Light (Day) */}
                     <button
                       onClick={() => setMode('light')}
                       className={cn(
-                        "py-1 px-0.5 rounded-lg flex flex-col items-center justify-center gap-0.5 transition-all cursor-pointer text-center",
+                        "py-1.5 px-0.5 rounded-lg flex flex-col items-center justify-center transition-all cursor-pointer text-center",
                         mode === 'light'
-                          ? "bg-[var(--color-bg-card)] text-[var(--color-primary)] shadow-xs"
+                          ? "bg-[var(--color-bg-card)] text-amber-500 shadow-xs ring-1 ring-amber-400/30"
                           : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-bg-card)]/40"
                       )}
                     >
-                      <Sun size={17} className={mode === 'light' ? "text-amber-400" : ""} />
-                      <span className="text-[7.5px] font-bold uppercase tracking-wider leading-none mt-0.5">
+                      <Sun size={21} strokeWidth={2.2} className={mode === 'light' ? "text-amber-400" : ""} />
+                      <span className="text-[7px] font-extrabold uppercase tracking-widest leading-none mt-1">
                         Light
                       </span>
                     </button>
@@ -176,14 +176,14 @@ export default function DashboardLayout({ children }) {
                     <button
                       onClick={() => setMode('dark')}
                       className={cn(
-                        "py-1 px-0.5 rounded-lg flex flex-col items-center justify-center gap-0.5 transition-all cursor-pointer text-center",
+                        "py-1.5 px-0.5 rounded-lg flex flex-col items-center justify-center transition-all cursor-pointer text-center",
                         mode === 'dark'
-                          ? "bg-[var(--color-bg-card)] text-[var(--color-primary)] shadow-xs"
+                          ? "bg-[var(--color-bg-card)] text-indigo-400 shadow-xs ring-1 ring-indigo-400/30"
                           : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-bg-card)]/40"
                       )}
                     >
-                      <Moon size={17} className={mode === 'dark' ? "text-indigo-400" : ""} />
-                      <span className="text-[7.5px] font-bold uppercase tracking-wider leading-none mt-0.5">
+                      <Moon size={21} strokeWidth={2.2} className={mode === 'dark' ? "text-indigo-400" : ""} />
+                      <span className="text-[7px] font-extrabold uppercase tracking-widest leading-none mt-1">
                         Dark
                       </span>
                     </button>
@@ -192,14 +192,14 @@ export default function DashboardLayout({ children }) {
                     <button
                       onClick={() => setMobileThemeTab('palette')}
                       className={cn(
-                        "py-1 px-0.5 rounded-lg flex flex-col items-center justify-center gap-0.5 transition-all cursor-pointer text-center",
+                        "py-1.5 px-0.5 rounded-lg flex flex-col items-center justify-center transition-all cursor-pointer text-center",
                         mobileThemeTab === 'palette'
-                          ? "bg-[var(--color-bg-card)] text-[var(--color-primary)] shadow-xs"
+                          ? "bg-[var(--color-bg-card)] text-[var(--color-primary)] shadow-xs ring-1 ring-[var(--color-primary)]/30"
                           : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-bg-card)]/40"
                       )}
                     >
-                      <Palette size={17} />
-                      <span className="text-[7.5px] font-bold uppercase tracking-wider leading-none mt-0.5">
+                      <Palette size={21} strokeWidth={2.2} className={mobileThemeTab === 'palette' ? "text-[var(--color-primary)]" : ""} />
+                      <span className="text-[7px] font-extrabold uppercase tracking-widest leading-none mt-1">
                         Palette
                       </span>
                     </button>
@@ -208,14 +208,14 @@ export default function DashboardLayout({ children }) {
                     <button
                       onClick={() => setMobileThemeTab('background')}
                       className={cn(
-                        "py-1 px-0.5 rounded-lg flex flex-col items-center justify-center gap-0.5 transition-all cursor-pointer text-center",
+                        "py-1.5 px-0.5 rounded-lg flex flex-col items-center justify-center transition-all cursor-pointer text-center",
                         mobileThemeTab === 'background'
-                          ? "bg-[var(--color-bg-card)] text-[var(--color-primary)] shadow-xs"
+                          ? "bg-[var(--color-bg-card)] text-[var(--color-primary)] shadow-xs ring-1 ring-[var(--color-primary)]/30"
                           : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-bg-card)]/40"
                       )}
                     >
-                      <Sparkles size={17} />
-                      <span className="text-[7.5px] font-bold uppercase tracking-wider leading-none mt-0.5">
+                      <Sparkles size={21} strokeWidth={2.2} className={mobileThemeTab === 'background' ? "text-[var(--color-primary)]" : ""} />
+                      <span className="text-[7px] font-extrabold uppercase tracking-widest leading-none mt-1">
                         Background
                       </span>
                     </button>
@@ -231,7 +231,7 @@ export default function DashboardLayout({ children }) {
                             key={t.id}
                             onClick={() => { setVisualTheme(t.id); }}
                             className={cn(
-                              "flex items-center justify-between px-2 py-1.5 rounded-lg border text-[10px] font-semibold transition-all cursor-pointer text-left",
+                              "flex items-center justify-between px-2 py-1 rounded-md border text-[9px] font-semibold transition-all cursor-pointer text-left leading-tight",
                               isSelected
                                 ? "bg-[var(--color-primary)]/15 text-[var(--color-primary)] border-[var(--color-primary)]/40 shadow-xs"
                                 : "bg-[var(--color-surface)]/50 text-[var(--color-text-secondary)] border-[var(--color-border)]/40 hover:bg-[var(--color-surface)] hover:text-[var(--color-text-main)]"
@@ -239,13 +239,13 @@ export default function DashboardLayout({ children }) {
                           >
                             <div className="flex items-center gap-1.5 min-w-0">
                               <span 
-                                className="w-2.5 h-2.5 rounded-full shrink-0 shadow-xs" 
+                                className="w-2 h-2 rounded-full shrink-0 shadow-xs" 
                                 style={{ backgroundColor: t.color }} 
                               />
                               <span className="truncate">{t.name}</span>
                             </div>
                             {isSelected && (
-                              <Check size={10} className="text-[var(--color-primary)] shrink-0 ml-1" />
+                              <Check size={9} className="text-[var(--color-primary)] shrink-0 ml-1" />
                             )}
                           </button>
                         );
@@ -255,7 +255,7 @@ export default function DashboardLayout({ children }) {
 
                   {/* Tab 2: Background Effects List - All Visible Together (No Scroll) */}
                   {mobileThemeTab === 'background' && (
-                    <div className="grid grid-cols-2 gap-1.5">
+                    <div className="grid grid-cols-2 gap-1">
                       {BG_EFFECTS.map((b) => {
                         const isSelected = bgEffect === b.id;
                         return (
@@ -263,19 +263,19 @@ export default function DashboardLayout({ children }) {
                             key={b.id}
                             onClick={() => { setBgEffect(b.id); }}
                             className={cn(
-                              "flex flex-col gap-0.5 p-2 rounded-lg text-left transition-all cursor-pointer border",
+                              "flex flex-col gap-0.5 p-1.5 rounded-md text-left transition-all cursor-pointer border leading-tight",
                               isSelected
                                 ? "bg-[var(--color-primary)]/15 text-[var(--color-primary)] border-[var(--color-primary)]/40 shadow-xs"
                                 : "bg-[var(--color-surface)]/50 text-[var(--color-text-secondary)] border-[var(--color-border)]/40 hover:text-[var(--color-text-main)] hover:border-[var(--color-primary)]/30"
                             )}
                           >
                             <div className="flex items-center justify-between">
-                              <span className="text-[9.5px] font-bold text-[var(--color-text-main)] truncate">{b.name}</span>
+                              <span className="text-[8.5px] font-bold text-[var(--color-text-main)] truncate">{b.name}</span>
                               {isSelected && (
-                                <Check size={10} className="text-[var(--color-primary)] shrink-0 ml-1" />
+                                <Check size={9} className="text-[var(--color-primary)] shrink-0 ml-1" />
                               )}
                             </div>
-                            <span className="text-[8px] text-[var(--color-text-muted)] line-clamp-1 leading-tight">{b.desc}</span>
+                            <span className="text-[7px] text-[var(--color-text-muted)] line-clamp-1 leading-none">{b.desc}</span>
                           </button>
                         );
                       })}

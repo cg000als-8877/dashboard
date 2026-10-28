@@ -80,7 +80,7 @@ export default function Sidebar({ onClose }) {
     }
   }, [pathname]);
 
-  let updateDate = "October 14th, 2026";
+  let updateDate = 'October 27th, 2026';
   if (dailyTrends && dailyTrends.length > 0) {
     try {
       const endDate = dailyTrends[dailyTrends.length - 1]?.date;
@@ -88,7 +88,7 @@ export default function Sidebar({ onClose }) {
         updateDate = format(parseISO(endDate), 'MMMM do, yyyy');
       }
     } catch (e) {
-      updateDate = 'October 14th, 2026';
+      updateDate = 'October 27th, 2026';
     }
   }
 
@@ -507,7 +507,7 @@ export default function Sidebar({ onClose }) {
             <>
               <div className="mx-1 px-0.5 flex items-center gap-1 text-[8.5px] italic text-[var(--color-text-muted)] tracking-wider">
                 <span>Last Updated :</span>
-                <span className="text-[var(--color-primary)] font-semibold not-italic">{updateDate || 'October 14th, 2026'}</span>
+                <span className="text-[var(--color-primary)] font-semibold not-italic">{updateDate || 'October 27th, 2026'}</span>
               </div>
               <div className="px-2 py-1.5 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)] flex items-center justify-between group hover:border-[var(--color-primary)]/40 transition-colors cursor-default relative overflow-hidden">
                 <div className="flex items-center gap-1.5 relative z-10">

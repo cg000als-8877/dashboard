@@ -1,6 +1,23 @@
-import * as XLSX from 'xlsx';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const XLSX = require('xlsx');
 import fs from 'fs/promises';
 import path from 'path';
+
+
+function parseExcelDate(serial) {
+  const ssf = XLSX.SSF || XLSX.default?.SSF;
+  if (ssf && typeof ssf.parse_date_code === 'function') {
+    return ssf.parse_date_code(serial);
+  }
+  const utcDays = Math.floor(serial - 25569);
+  const dateInfo = new Date(utcDays * 86400 * 1000);
+  return {
+    y: dateInfo.getUTCFullYear(),
+    m: dateInfo.getUTCMonth() + 1,
+    d: dateInfo.getUTCDate()
+  };
+}
 
 let cachedLivePayload = null;
 let lastLiveFetchTime = 0;
@@ -109,7 +126,7 @@ export async function getLiveProductionData(forceRefresh = false) {
       const dateSerial = row[0];
       if (!dateSerial || isNaN(dateSerial)) continue;
 
-      const parsedDate = XLSX.SSF.parse_date_code(dateSerial);
+      const parsedDate = parseExcelDate(dateSerial);
       const dateStr = `${parsedDate.y}-${String(parsedDate.m).padStart(2, '0')}-${String(parsedDate.d).padStart(2, '0')}`;
 
       if (row.length < 5 || !row[4]) {
@@ -154,7 +171,7 @@ export async function getLiveProductionData(forceRefresh = false) {
             for (let k = 1; k < 5; k++) {
               const maybeDate = hData[r][c + k];
               if (maybeDate && !isNaN(maybeDate) && typeof maybeDate === 'number') {
-                const parsedHDate = XLSX.SSF.parse_date_code(maybeDate);
+                const parsedHDate = parseExcelDate(maybeDate);
                 reportDateStr = `${parsedHDate.y}-${String(parsedHDate.m).padStart(2, '0')}-${String(parsedHDate.d).padStart(2, '0')}`;
                 break;
               }
