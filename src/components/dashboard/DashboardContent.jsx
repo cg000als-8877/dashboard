@@ -13,7 +13,6 @@ import { cn } from '@/components/layout/Sidebar';
 import { CostRecoveryJar } from '@/components/dashboard/CostRecoveryJar';
 import { CostRecoveryPie } from '@/components/dashboard/CostRecoveryPie';
 import { SystemIntelligenceCards } from '@/components/dashboard/SystemIntelligenceCards';
-import { Trend3DBarArrow } from '@/components/dashboard/Trend3DBarArrow';
 
 const DEFAULT_LINE_ITEMS = {
   A: 'Sherpa Jacket, Boys Shirt',
@@ -954,6 +953,9 @@ export function DashboardContent({ month, isArchive = false }) {
                       className="p-3 sm:p-3.5 rounded-2xl transition-all shadow-sm overflow-hidden border-0"
                       style={{
                         backgroundColor: 'var(--color-bg-card)',
+                        backgroundImage: isLastDayProfit 
+                          ? 'linear-gradient(135deg, var(--color-bg-card) 55%, rgba(16, 185, 129, 0.12) 100%)' 
+                          : 'linear-gradient(135deg, var(--color-bg-card) 55%, rgba(239, 68, 68, 0.12) 100%)'
                       }}
                     >
                       <div className="flex items-center justify-between w-full gap-2">
@@ -965,7 +967,7 @@ export function DashboardContent({ month, isArchive = false }) {
                           </span>
                         </div>
 
-                        {/* Right: Actual Loss/Profit with BDT prefix + Small Animated Trend Curve */}
+                        {/* Right: Actual Loss/Profit with BDT prefix */}
                         <div className="flex items-center gap-1.5 shrink-0">
                           <p className={cn(
                             "font-black tracking-tight text-[15px] sm:text-[16px] leading-none [filter:var(--shadow-text)] whitespace-nowrap",
@@ -976,10 +978,6 @@ export function DashboardContent({ month, isArchive = false }) {
                               prefix={isLastDayProfit ? "+BDT " : "BDT -"} 
                             />
                           </p>
-                          <Trend3DBarArrow 
-                            isProfit={isLastDayProfit} 
-                            className="w-9 sm:w-10 h-7 sm:h-8 ml-0.5" 
-                          />
                         </div>
                       </div>
                     </Card>
@@ -1074,71 +1072,44 @@ export function DashboardContent({ month, isArchive = false }) {
                     {/* Lines Badges List: Line Name, Item, & Total Production (Active lines only) */}
                     {(() => {
                       const linesCount = renderedActiveLines.length;
-                      // Side by side if 1, 2, or 3 lines; stack one over another when 4 lines
-                      const gridColsClass = linesCount === 2 
-                        ? 'grid-cols-2' 
-                        : linesCount === 3 
-                          ? 'grid-cols-3' 
-                          : 'grid-cols-1';
+                      // 3 lines: row 1 (2 cols), row 2 (1 col full width). 4 lines: 2 cols x 2 rows. 2 lines: 2 cols. 1 line: 1 col.
+                      const gridColsClass = linesCount >= 2 ? 'grid-cols-2' : 'grid-cols-1';
 
                       return (
                         <div className={cn(
                           "grid gap-1.5 pt-2",
                           gridColsClass
                         )}>
-                          {renderedActiveLines.map((lineId) => {
+                          {renderedActiveLines.map((lineId, index) => {
                             const lineData = currentActiveLines?.find(l => l.id?.toUpperCase() === lineId);
                             const itemDesc = (lineData?.items && lineData.items.length > 0 ? lineData.items.join(', ') : null) || lineData?.item || lineData?.lastActiveDay?.item || lineData?.today?.item || DEFAULT_LINE_ITEMS[lineId] || 'Polo Shirt';
                             const totalProd = lineData?.totalProduction || 0;
+                            const isThirdInThree = linesCount === 3 && index === 2;
 
                             return (
                               <div
                                 key={lineId}
                                 className={cn(
-                                  "rounded-[6px] transition-all bg-[var(--color-surface)] shadow-xs min-w-0 flex items-center justify-between",
-                                  linesCount === 3 ? "p-1.5 gap-1" : linesCount === 2 ? "p-2 gap-1.5" : "p-2 sm:p-2.5 gap-2"
+                                  "rounded-[6px] transition-all bg-[var(--color-surface)] shadow-xs min-w-0 flex items-center justify-between p-2 sm:p-2.5 gap-1.5",
+                                  isThirdInThree && "col-span-2"
                                 )}
                               >
                                 {/* Line Info: Line Name & Item Name */}
                                 <div className="min-w-0 flex-1">
-                                  <span className={cn(
-                                    "font-bold text-[var(--color-text-main)] truncate block leading-tight",
-                                    linesCount === 3 
-                                      ? "text-[9.5px] sm:text-[10.5px]" 
-                                      : linesCount === 2 
-                                        ? "text-[10.5px] sm:text-xs" 
-                                        : "text-[11px] sm:text-xs"
-                                  )}>
+                                  <span className="font-bold text-[var(--color-text-main)] truncate block leading-tight text-[10.5px] sm:text-xs">
                                     Line {lineId}
                                   </span>
-                                  <p className={cn(
-                                    "font-medium text-[var(--color-text-muted)] truncate mt-0.5 leading-tight",
-                                    linesCount === 3 
-                                      ? "text-[7.5px] sm:text-[8.5px]" 
-                                      : linesCount === 2 
-                                        ? "text-[8.5px] sm:text-[9.5px]" 
-                                        : "text-[9px] sm:text-[9.5px]"
-                                  )}>
+                                  <p className="font-medium text-[var(--color-text-muted)] truncate mt-0.5 leading-tight text-[8.5px] sm:text-[9.5px]">
                                     {itemDesc}
                                   </p>
                                 </div>
 
                                 {/* Total Production Output */}
-                                <div className="text-right shrink-0 pl-0.5">
-                                  <span className={cn(
-                                    "font-bold text-[var(--color-text-main)] block leading-tight",
-                                    linesCount === 3 
-                                      ? "text-[9.5px] sm:text-[10.5px]" 
-                                      : linesCount === 2 
-                                        ? "text-[10.5px] sm:text-xs" 
-                                        : "text-[11px] sm:text-xs"
-                                  )}>
+                                <div className="text-right shrink-0 pl-1">
+                                  <span className="font-bold text-[var(--color-text-main)] block leading-tight text-[10.5px] sm:text-xs">
                                     <AnimatedNumber value={totalProd} />
                                   </span>
-                                  <span className={cn(
-                                    "font-semibold uppercase text-[var(--color-text-muted)] block leading-none",
-                                    linesCount === 3 ? "text-[7px] sm:text-[7.5px]" : "text-[7.5px] sm:text-[8px]"
-                                  )}>
+                                  <span className="font-semibold uppercase text-[var(--color-text-muted)] block leading-none text-[7.5px] sm:text-[8px]">
                                     pcs
                                   </span>
                                 </div>
@@ -1247,6 +1218,9 @@ export function DashboardContent({ month, isArchive = false }) {
                         className="p-3 px-4 xl:px-5 rounded-2xl transition-all shadow-sm md:shadow-[0_10px_25px_-4px_var(--shadow-color,rgba(0,0,0,0.12)),0_4px_10px_-2px_var(--shadow-color,rgba(0,0,0,0.06))] border-0 overflow-hidden"
                         style={{
                           backgroundColor: 'var(--color-bg-card)',
+                          backgroundImage: isLastDayProfit 
+                            ? 'linear-gradient(135deg, var(--color-bg-card) 55%, rgba(16, 185, 129, 0.12) 100%)' 
+                            : 'linear-gradient(135deg, var(--color-bg-card) 55%, rgba(239, 68, 68, 0.12) 100%)'
                         }}
                       >
                         <div className="flex items-center justify-between w-full gap-2">
@@ -1258,7 +1232,7 @@ export function DashboardContent({ month, isArchive = false }) {
                             </span>
                           </div>
 
-                          {/* Right: Actual Loss/Profit with BDT prefix + Small Animated Trend Curve */}
+                          {/* Right: Actual Loss/Profit with BDT prefix */}
                           <div className="flex items-center gap-2 shrink-0">
                             <p className={cn(
                               "font-black tracking-tight text-base xl:text-lg leading-none [filter:var(--shadow-text)] whitespace-nowrap",
@@ -1269,10 +1243,6 @@ export function DashboardContent({ month, isArchive = false }) {
                                 prefix={isLastDayProfit ? "+BDT " : "BDT -"} 
                               />
                             </p>
-                            <Trend3DBarArrow 
-                              isProfit={isLastDayProfit} 
-                              className="w-10 xl:w-11 h-7.5 xl:h-8.5 ml-1" 
-                            />
                           </div>
                         </div>
                       </Card>

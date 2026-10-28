@@ -51,8 +51,8 @@ export function PwaManager({ children }) {
       window.location.protocol === 'ionic:'
     );
 
-    // If running in native Capacitor, unregister any legacy service workers to prevent Android WebView ERR_FAILED on reload
-    if (isNativeCapacitor && 'serviceWorker' in navigator) {
+    // If running in native Capacitor or in development, unregister any legacy service workers to prevent port caching conflicts
+    if ((isNativeCapacitor || process.env.NODE_ENV === 'development') && 'serviceWorker' in navigator) {
       navigator.serviceWorker.getRegistrations().then((registrations) => {
         registrations.forEach((r) => r.unregister());
       });

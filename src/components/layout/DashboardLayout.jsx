@@ -138,7 +138,7 @@ export default function DashboardLayout({ children }) {
             {isMobileMenuOpen && (
               <>
                 <div className="fixed inset-0 z-[90] bg-black/50" onClick={() => setIsMobileMenuOpen(false)}></div>
-                <div className="absolute top-12 right-2.5 w-72 sm:w-80 bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-2xl shadow-2xl flex flex-col p-3 animate-[fade-down_0.15s_ease-out_both] z-[100] origin-top-right">
+                <div className="absolute top-12 right-2.5 w-72 sm:w-80 bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-2xl shadow-2xl flex flex-col p-2.5 sm:p-3 animate-[fade-down_0.15s_ease-out_both] z-[100] origin-top-right">
                   
                   {/* Header with Title and Close Button */}
                   <div className="flex items-center justify-between pb-2 border-b border-[var(--color-border)]/60 mb-2">
@@ -154,59 +154,76 @@ export default function DashboardLayout({ children }) {
                     </button>
                   </div>
 
-                  {/* Compact Appearance Mode Switcher */}
-                  <div className="grid grid-cols-2 gap-1 p-0.5 bg-[var(--color-surface)] rounded-lg border border-[var(--color-border)]/60 mb-2">
-                    {APPEARANCE_MODES.map((m) => {
-                      const isSelected = mode === m.id;
-                      return (
-                        <button
-                          key={m.id}
-                          onClick={() => { setMode(m.id); }}
-                          className={cn(
-                            "py-1 rounded text-[9.5px] font-bold uppercase tracking-wider transition-all text-center flex items-center justify-center gap-1 cursor-pointer",
-                            isSelected
-                              ? "bg-[var(--color-bg-card)] text-[var(--color-primary)] shadow-xs"
-                              : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)]"
-                          )}
-                        >
-                          {m.id === 'light' ? <Sun size={10} /> : <Moon size={10} />}
-                          <span>{m.name}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
+                  {/* Unified 4-in-a-Row Controls: Light | Dark | Palette | Background */}
+                  <div className="grid grid-cols-4 gap-1 p-1 bg-[var(--color-surface)] rounded-xl border border-[var(--color-border)]/40 mb-1.5">
+                    {/* Light (Day) */}
+                    <button
+                      onClick={() => setMode('light')}
+                      className={cn(
+                        "py-1 px-0.5 rounded-lg flex flex-col items-center justify-center gap-0.5 transition-all cursor-pointer text-center",
+                        mode === 'light'
+                          ? "bg-[var(--color-bg-card)] text-[var(--color-primary)] shadow-xs"
+                          : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-bg-card)]/40"
+                      )}
+                    >
+                      <Sun size={17} className={mode === 'light' ? "text-amber-400" : ""} />
+                      <span className="text-[7.5px] font-bold uppercase tracking-wider leading-none mt-0.5">
+                        Light
+                      </span>
+                    </button>
 
-                  {/* Tab Selector: Palettes vs Background FX */}
-                  <div className="grid grid-cols-2 gap-1 p-0.5 bg-[var(--color-surface)] rounded-lg border border-[var(--color-border)]/40 mb-2">
+                    {/* Dark (Night) */}
+                    <button
+                      onClick={() => setMode('dark')}
+                      className={cn(
+                        "py-1 px-0.5 rounded-lg flex flex-col items-center justify-center gap-0.5 transition-all cursor-pointer text-center",
+                        mode === 'dark'
+                          ? "bg-[var(--color-bg-card)] text-[var(--color-primary)] shadow-xs"
+                          : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-bg-card)]/40"
+                      )}
+                    >
+                      <Moon size={17} className={mode === 'dark' ? "text-indigo-400" : ""} />
+                      <span className="text-[7.5px] font-bold uppercase tracking-wider leading-none mt-0.5">
+                        Dark
+                      </span>
+                    </button>
+
+                    {/* Palette Tab */}
                     <button
                       onClick={() => setMobileThemeTab('palette')}
                       className={cn(
-                        "py-1 rounded text-[9px] font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-1 cursor-pointer",
+                        "py-1 px-0.5 rounded-lg flex flex-col items-center justify-center gap-0.5 transition-all cursor-pointer text-center",
                         mobileThemeTab === 'palette'
                           ? "bg-[var(--color-bg-card)] text-[var(--color-primary)] shadow-xs"
-                          : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)]"
+                          : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-bg-card)]/40"
                       )}
                     >
-                      <Palette size={10} />
-                      <span>Palette</span>
+                      <Palette size={17} />
+                      <span className="text-[7.5px] font-bold uppercase tracking-wider leading-none mt-0.5">
+                        Palette
+                      </span>
                     </button>
+
+                    {/* Background Tab */}
                     <button
                       onClick={() => setMobileThemeTab('background')}
                       className={cn(
-                        "py-1 rounded text-[9px] font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-1 cursor-pointer",
+                        "py-1 px-0.5 rounded-lg flex flex-col items-center justify-center gap-0.5 transition-all cursor-pointer text-center",
                         mobileThemeTab === 'background'
                           ? "bg-[var(--color-bg-card)] text-[var(--color-primary)] shadow-xs"
-                          : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)]"
+                          : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-bg-card)]/40"
                       )}
                     >
-                      <Sparkles size={10} />
-                      <span>Background</span>
+                      <Sparkles size={17} />
+                      <span className="text-[7.5px] font-bold uppercase tracking-wider leading-none mt-0.5">
+                        Background
+                      </span>
                     </button>
                   </div>
 
                   {/* Tab 1: Palette List - All Visible Together (No Scroll) */}
                   {mobileThemeTab === 'palette' && (
-                    <div className="grid grid-cols-2 gap-1.5">
+                    <div className="grid grid-cols-2 gap-1">
                       {VISUAL_THEMES.map((t) => {
                         const isSelected = visualTheme === t.id;
                         return (
