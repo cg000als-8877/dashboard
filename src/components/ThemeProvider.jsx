@@ -21,13 +21,19 @@ export const APPEARANCE_MODES = [
 ];
 
 export const BG_EFFECTS = [
-  { id: 'bokeh', name: 'Moving Bokeh (Default)', tag: 'Bokeh', desc: 'Floating dynamic orbital light spheres' },
-  { id: 'aurora', name: 'Ambient Aurora', tag: 'Orbs', desc: 'Organic glowing orbs matching active theme' },
-  { id: 'spotlight', name: 'Interactive Spotlight', tag: 'Spotlight', desc: 'Mouse-following radiant halo & ambient pulse' },
-  { id: 'grain', name: 'Velvet Frosted Grain', tag: 'Velvet', desc: 'Deep multi-stop gradient with fine grain texture' },
-  { id: 'grid', name: 'Grid', tag: 'Grid', desc: 'Precision blueprint grid with radial aura' },
-  { id: 'honeycomb', name: 'Honeycomb', tag: 'Hex', desc: 'Hexagonal geometric matrix with radial aura' },
-  { id: 'solid', name: 'Minimal Solid', tag: 'Clean', desc: 'Classic clean solid background' },
+  { id: 'bokeh', name: 'Bokeh', tag: 'Bokeh', desc: 'Floating orbital light spheres' },
+  { id: 'aurora', name: 'Aurora', tag: 'Aurora', desc: 'Organic ambient glowing orbs' },
+  { id: 'spotlight', name: 'Spotlight', tag: 'Light', desc: 'Cursor radiant halo glow' },
+  { id: 'grain', name: 'Grain', tag: 'Grain', desc: 'Velvet frosted texture' },
+  { id: 'grid', name: 'Grid', tag: 'Grid', desc: 'Precision blueprint grid' },
+  { id: 'honeycomb', name: 'Honeycomb', tag: 'Hex', desc: 'Hexagonal matrix mesh' },
+  { id: 'textile', name: 'Textile', tag: 'Weave', desc: 'Woven fabric warp & weft' },
+  { id: 'topography', name: 'Topography', tag: 'Contour', desc: 'Elevation contour lines' },
+  { id: 'dots', name: 'Dot Matrix', tag: 'Dots', desc: 'Telemetry dots & radar pulse' },
+  { id: 'silk', name: 'Silk Waves', tag: 'Silk', desc: 'Flowing satin fabric drape' },
+  { id: 'rays', name: 'Light Rays', tag: 'Rays', desc: 'Volumetric sunbeam caustics' },
+  { id: 'starlight', name: 'Starlight', tag: 'Stars', desc: 'Subtle micro constellation' },
+  { id: 'solid', name: 'Solid', tag: 'Solid', desc: 'Clean minimal background' },
 ];
 
 // Ember Tide is the full-time default theme
