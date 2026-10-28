@@ -46,20 +46,21 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" data-theme="ember-tide" data-mode="light" className="light-mode" data-bg-effect="bokeh" suppressHydrationWarning>
+    <html lang="en" data-theme="nordic-slate" data-mode="dark" data-bg-effect="grain" suppressHydrationWarning>
       <head>
         <script
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
                 try {
-                  var emberMigrated = localStorage.getItem('app-ember-default-v2');
+                  var migrated = localStorage.getItem('app-nordic-grain-dark-v1');
                   var m = localStorage.getItem('app-mode');
                   var t = localStorage.getItem('app-visual-theme');
                   var b = localStorage.getItem('app-bg-effect');
-                  if (!emberMigrated) {
-                    m = 'light';
-                    t = 'ember-tide';
+                  if (!migrated) {
+                    m = 'dark';
+                    t = 'nordic-slate';
+                    b = 'grain';
                   }
                   if (m) {
                     document.documentElement.setAttribute('data-mode', m);
@@ -69,18 +70,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                       document.documentElement.classList.remove('light-mode');
                     }
                   } else {
-                    document.documentElement.setAttribute('data-mode', 'light');
-                    document.documentElement.classList.add('light-mode');
+                    document.documentElement.setAttribute('data-mode', 'dark');
+                    document.documentElement.classList.remove('light-mode');
                   }
                   if (t) {
                     document.documentElement.setAttribute('data-theme', t);
                   } else {
-                    document.documentElement.setAttribute('data-theme', 'ember-tide');
+                    document.documentElement.setAttribute('data-theme', 'nordic-slate');
                   }
                   if (b && b !== 'ember-tide-aurora') {
                     document.documentElement.setAttribute('data-bg-effect', b);
                   } else {
-                    document.documentElement.setAttribute('data-bg-effect', 'bokeh');
+                    document.documentElement.setAttribute('data-bg-effect', 'grain');
                   }
                   var z = localStorage.getItem('app_screen_zoom');
                   if (z) {
