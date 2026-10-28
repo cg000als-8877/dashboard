@@ -195,52 +195,29 @@ export const BackgroundCanvas = memo(function BackgroundCanvas() {
         </div>
       )}
 
-      {/* 4. Velvet Frosted Grain Layer — High-Texture Analog Grain */}
+      {/* 4. Velvet Frosted Grain Layer */}
       {showGrain && (
         <>
           <div
             className="animate-in fade-in duration-700 absolute inset-0"
             style={{
               backgroundImage: isDark
-                ? `radial-gradient(circle at 15% 15%, var(--color-primary-glow) 0%, transparent 50%),
-                   radial-gradient(circle at 85% 85%, rgba(168, 85, 247, 0.16) 0%, transparent 55%),
-                   radial-gradient(circle at 50% 50%, rgba(52, 211, 153, 0.10) 0%, transparent 60%)`
-                : `radial-gradient(circle at 15% 15%, var(--color-primary-glow) 0%, transparent 50%),
-                   radial-gradient(circle at 85% 85%, rgba(168, 85, 247, 0.08) 0%, transparent 55%)`,
-              opacity: 0.95,
+                ? `radial-gradient(circle at 15% 15%, var(--color-primary-glow) 0%, transparent 45%),
+                   radial-gradient(circle at 85% 85%, rgba(168, 85, 247, 0.1) 0%, transparent 50%),
+                   radial-gradient(circle at 50% 50%, rgba(52, 211, 153, 0.06) 0%, transparent 55%)`
+                : `radial-gradient(circle at 15% 15%, var(--color-primary-glow) 0%, transparent 45%),
+                   radial-gradient(circle at 85% 85%, rgba(168, 85, 247, 0.05) 0%, transparent 50%)`,
+              opacity: 0.9,
             }}
           />
-          {/* Enhanced High-Density Tactile Grain */}
-          <svg
-            className="absolute inset-0 w-full h-full pointer-events-none contrast-[220%] brightness-105"
-            style={{
-              opacity: isDark ? 0.22 : 0.16,
-              mixBlendMode: isDark ? 'screen' : 'multiply',
-            }}
-            xmlns="http://www.w3.org/2000/svg"
-          >
+          <svg className="absolute inset-0 w-full h-full opacity-[0.068] contrast-150 brightness-100 pointer-events-none" xmlns="http://www.w3.org/2000/svg">
             <defs>
               <filter id="grain-noise">
-                <feTurbulence type="fractalNoise" baseFrequency="0.75" numOctaves="4" stitchTiles="stitch" />
-                <feColorMatrix type="matrix" values="0.33 0.33 0.33 0 0  0.33 0.33 0.33 0 0  0.33 0.33 0.33 0 0  0 0 0 1 0" />
+                <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch" />
+                <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 1 0" />
               </filter>
             </defs>
             <rect width="100%" height="100%" filter="url(#grain-noise)" />
-          </svg>
-          {/* Subtle micro-grain overlay for analog depth */}
-          <svg
-            className="absolute inset-0 w-full h-full pointer-events-none mix-blend-overlay contrast-200"
-            style={{
-              opacity: isDark ? 0.14 : 0.09,
-            }}
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <defs>
-              <filter id="fine-grain-noise">
-                <feTurbulence type="fractalNoise" baseFrequency="0.95" numOctaves="3" stitchTiles="stitch" />
-              </filter>
-            </defs>
-            <rect width="100%" height="100%" filter="url(#fine-grain-noise)" />
           </svg>
         </>
       )}
