@@ -765,7 +765,7 @@ export function DashboardContent({ month, isArchive = false }) {
           {!isArchive && (
             <div className="flex flex-col items-center justify-center w-full mb-2 sm:mb-2.5 relative z-10 gap-1.5 sm:gap-2">
               {/* Compact 2-Line Mini Trend Card (Highlights Month, Days, Amounts in BDT with Going Down Curve) */}
-              <div className="inline-flex flex-col items-center justify-center py-1 sm:py-1.5 px-3 sm:px-4 rounded-xl bg-[var(--color-surface)]/80 md:bg-[var(--color-surface)]/90 backdrop-blur-md border border-[var(--color-border)]/60 shadow-xs max-w-full text-center select-none transition-all duration-200">
+              <div className="hidden md:inline-flex flex-col items-center justify-center py-1 sm:py-1.5 px-3 sm:px-4 rounded-xl bg-[var(--color-surface)]/80 md:bg-[var(--color-surface)]/90 backdrop-blur-md border border-[var(--color-border)]/60 shadow-xs max-w-full text-center select-none transition-all duration-200">
                 {/* Line 1: Month Name + Loss/Profit Badge + Little Going Down Curve */}
                 <div className="flex items-center justify-center gap-1.5 sm:gap-2 leading-none">
                   <span className="text-[11.5px] sm:text-[12.5px] font-bold text-[var(--color-text-main)] font-display tracking-tight">
@@ -970,8 +970,13 @@ export function DashboardContent({ month, isArchive = false }) {
             return (
               <>
                 {/* Dynamic Date Context (Inside Card under Month Tabs) */}
-                <div className="flex justify-center items-center w-full mt-0.5 mb-2.5 sm:mb-3.5 relative z-10">
+                <div className="flex flex-col justify-center items-center w-full mt-0.5 mb-2.5 sm:mb-3.5 relative z-10 text-center">
                   <DashboardDateRange dateInfo={activeDateInfo} workingDays={displayStats?.workingDays} />
+                  {isPastMonth && (
+                    <p className="text-[10px] sm:text-[11px] text-[var(--color-text-muted)] font-medium tracking-normal mt-0.5 select-none">
+                      Comparing with current month (NOV)
+                    </p>
+                  )}
                 </div>
                 {/* ── MOBILE VIEW ONLY: Wireframe-matched Redesign Layout ── */}
                 <div className="md:hidden flex flex-col gap-1.5 relative z-10 px-0.5">
@@ -1612,8 +1617,13 @@ export function DashboardContent({ month, isArchive = false }) {
                 <h2 className="text-[20px] sm:text-[23px] md:text-[27px] font-bold tracking-normal uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] via-[var(--color-text-secondary)] to-[var(--color-text-muted)] text-center leading-tight">
                   LINE SUMMARY {activeMonthName.toUpperCase()}
                 </h2>
-                <div className="mt-1 flex items-center justify-center">
+                <div className="mt-1 flex flex-col items-center justify-center text-center">
                   <DashboardDateRange dateInfo={activeDateInfo} workingDays={currentStatsForDate?.workingDays} />
+                  {!isArchive && selectedCardMonth !== 'current' && (
+                    <p className="text-[10px] sm:text-[11px] text-[var(--color-text-muted)] font-medium tracking-normal mt-0.5 select-none">
+                      Comparing with current month (NOV)
+                    </p>
+                  )}
                 </div>
               </div>
 
