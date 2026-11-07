@@ -694,7 +694,7 @@ export default function ComparePage() {
                     onChange={(e) => setMonth1(e.target.value)}
                     className="w-full bg-[var(--color-surface)] border-0 text-[var(--color-text-main)] text-[11px] sm:text-xs rounded-xl p-2 sm:p-2.5 font-bold focus:outline-none cursor-pointer hover:bg-[var(--color-surface-hover)] transition-colors shadow-xs"
                   >
-                    <option value="live" className="bg-[var(--color-bg-card)]">October 2026 (Live)</option>
+                    <option value="live" className="bg-[var(--color-bg-card)]">November 2026 (Live)</option>
                     {availableMonths.map(m => <option key={m.id} value={m.id} className="bg-[var(--color-bg-card)]">{m.name}</option>)}
                   </select>
                 </div>
@@ -712,7 +712,7 @@ export default function ComparePage() {
                     onChange={(e) => setMonth2(e.target.value)}
                     className="w-full bg-[var(--color-surface)] border-0 text-[var(--color-text-main)] text-[11px] sm:text-xs rounded-xl p-2 sm:p-2.5 font-bold focus:outline-none cursor-pointer hover:bg-[var(--color-surface-hover)] transition-colors shadow-xs"
                   >
-                    <option value="live" className="bg-[var(--color-bg-card)]">October 2026 (Live)</option>
+                    <option value="live" className="bg-[var(--color-bg-card)]">November 2026 (Live)</option>
                     {availableMonths.map(m => <option key={m.id} value={m.id} className="bg-[var(--color-bg-card)]">{m.name}</option>)}
                   </select>
                 </div>
@@ -727,7 +727,7 @@ export default function ComparePage() {
               <Card className="p-3.5 sm:p-4 md:p-5 bg-[var(--color-bg-card)] border-0 rounded-2xl shadow-sm md:shadow-[0_10px_25px_-4px_var(--shadow-color,rgba(0,0,0,0.12))]">
                 <div className="flex justify-between items-center mb-3">
                   <h4 className="text-xs sm:text-sm md:text-base font-black text-[var(--color-primary)]">
-                    {month1 === 'live' ? 'October 2026' : availableMonths.find(m => m.id === month1)?.name}
+                    {month1 === 'live' ? 'November 2026' : availableMonths.find(m => m.id === month1)?.name}
                   </h4>
                   <span className="px-2 py-0.5 rounded text-[8.5px] sm:text-[9px] font-bold uppercase tracking-widest bg-[var(--color-surface)] text-[var(--color-text-muted)] border-0">
                     Snapshot Totals
@@ -781,7 +781,7 @@ export default function ComparePage() {
               <Card className="p-3.5 sm:p-4 md:p-5 bg-[var(--color-bg-card)] border-0 rounded-2xl shadow-sm md:shadow-[0_10px_25px_-4px_var(--shadow-color,rgba(0,0,0,0.12))]">
                 <div className="flex justify-between items-center mb-3">
                   <h4 className="text-xs sm:text-sm md:text-base font-black text-[var(--color-warning)]">
-                    {month2 === 'live' ? 'October 2026' : availableMonths.find(m => m.id === month2)?.name}
+                    {month2 === 'live' ? 'November 2026' : availableMonths.find(m => m.id === month2)?.name}
                   </h4>
                   <span className="px-2 py-0.5 rounded text-[8.5px] sm:text-[9px] font-bold uppercase tracking-widest bg-[var(--color-surface)] text-[var(--color-text-muted)] border-0">
                     Snapshot Totals
@@ -847,11 +847,11 @@ export default function ComparePage() {
                     <YAxis stroke="var(--color-text-muted)" fontSize={9.5} />
                     <Tooltip 
                       contentStyle={{ backgroundColor: 'var(--color-bg-card)', border: 'none', borderRadius: '12px', boxShadow: '0 8px 30px rgba(0,0,0,0.2)' }}
-                      formatter={(value, name, props) => [`${value} ${props.payload.unit}`, name === 'month1' ? (month1 === 'live' ? 'October 2026' : (availableMonths.find(m => m.id === month1)?.name || 'Month 1')) : (month2 === 'live' ? 'October 2026' : (availableMonths.find(m => m.id === month2)?.name || 'Month 2'))]}
+                      formatter={(value, name, props) => [`${value} ${props.payload.unit}`, name === 'month1' ? (month1 === 'live' ? 'November 2026' : (availableMonths.find(m => m.id === month1)?.name || 'Month 1')) : (month2 === 'live' ? 'November 2026' : (availableMonths.find(m => m.id === month2)?.name || 'Month 2'))]}
                     />
                     <Legend 
                       wrapperStyle={{ fontSize: '11px', fontWeight: 'bold', textTransform: 'uppercase' }}
-                      formatter={(value) => value === 'month1' ? (month1 === 'live' ? 'October 2026' : (availableMonths.find(m => m.id === month1)?.name || 'Month 1')) : (month2 === 'live' ? 'October 2026' : (availableMonths.find(m => m.id === month2)?.name || 'Month 2'))}
+                      formatter={(value) => value === 'month1' ? (month1 === 'live' ? 'November 2026' : (availableMonths.find(m => m.id === month1)?.name || 'Month 1')) : (month2 === 'live' ? 'November 2026' : (availableMonths.find(m => m.id === month2)?.name || 'Month 2'))}
                     />
                     <Bar dataKey="month1" fill="var(--color-primary)" radius={[4, 4, 0, 0]} />
                     <Bar dataKey="month2" fill="var(--color-warning)" radius={[4, 4, 0, 0]} />

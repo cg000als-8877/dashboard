@@ -32,9 +32,31 @@ import {
 // Formats date range as e.g. FROM "01 SEP TO 02 SEP, 2026" with highlight (all uppercase)
 function formatDateRangeInfo(startDateStr, endDateStr, overrideMonth, overrideYear) {
   if (overrideMonth && overrideYear) {
+    const isNov = overrideMonth.toLowerCase().startsWith('nov');
+    const isOct = overrideMonth.toLowerCase().startsWith('oct');
     const isSep = overrideMonth.toLowerCase().startsWith('sep');
     const isAug = overrideMonth.toLowerCase().startsWith('aug');
     const isJul = overrideMonth.toLowerCase().startsWith('jul');
+    if (isNov) {
+      return {
+        isRange: true,
+        startDay: '01',
+        endDay: '30',
+        startMonthShort: 'NOV',
+        endMonthShort: 'NOV',
+        year: overrideYear
+      };
+    }
+    if (isOct) {
+      return {
+        isRange: true,
+        startDay: '01',
+        endDay: '31',
+        startMonthShort: 'OCT',
+        endMonthShort: 'OCT',
+        year: overrideYear
+      };
+    }
     if (isSep) {
       return {
         isRange: true,
@@ -187,32 +209,32 @@ export default function ProductionLinesPage() {
     } catch (e) {}
   };
 
-  // Load datasets for Live (October), September archive, August archive, and July archive
+  // Load datasets for Live (November), October archive, September archive, and August archive
   const { rawEngine: liveEngine, stats: liveStats, dailyTrends: liveDailyTrends, lines: liveLines, loading: liveLoading, error: liveError } = useKpiData('live');
+  const { rawEngine: octoberEngine, stats: octoberStats, dailyTrends: octoberDailyTrends, lines: octoberLines, loading: octoberLoading } = useKpiData('2026-10');
   const { rawEngine: septemberEngine, stats: septemberStats, dailyTrends: septemberDailyTrends, lines: septemberLines, loading: septemberLoading } = useKpiData('2026-09');
   const { rawEngine: augustEngine, stats: augustStats, dailyTrends: augustDailyTrends, lines: augustLines, loading: augustLoading } = useKpiData('2026-08');
-  const { rawEngine: julyEngine, stats: julyStats, dailyTrends: julyDailyTrends, lines: julyLines, loading: julyLoading } = useKpiData('2026-07');
 
   // Active dataset determination
+  const isOctober = selectedMonthTab === 'october';
   const isSeptember = selectedMonthTab === 'september';
   const isAugust = selectedMonthTab === 'august';
-  const isJuly = selectedMonthTab === 'july';
   const isLive = selectedMonthTab === 'current';
 
-  const currentStats = isSeptember ? (septemberStats || liveStats) : (isAugust ? (augustStats || liveStats) : (isJuly ? (julyStats || liveStats) : liveStats));
-  const currentLines = isSeptember ? (septemberLines || liveLines || []) : (isAugust ? (augustLines || liveLines || []) : (isJuly ? (julyLines || liveLines || []) : (liveLines || [])));
-  const currentEngine = isSeptember ? septemberEngine : (isAugust ? augustEngine : (isJuly ? julyEngine : liveEngine));
-  const activeMonthName = isSeptember ? 'SEPTEMBER' : (isAugust ? 'AUGUST' : (isJuly ? 'JULY' : 'OCTOBER'));
+  const currentStats = isOctober ? (octoberStats || liveStats) : (isSeptember ? (septemberStats || liveStats) : (isAugust ? (augustStats || liveStats) : liveStats));
+  const currentLines = isOctober ? (octoberLines || liveLines || []) : (isSeptember ? (septemberLines || liveLines || []) : (isAugust ? (augustLines || liveLines || []) : (liveLines || [])));
+  const currentEngine = isOctober ? octoberEngine : (isSeptember ? septemberEngine : (isAugust ? augustEngine : liveEngine));
+  const activeMonthName = isOctober ? 'OCTOBER' : (isSeptember ? 'SEPTEMBER' : (isAugust ? 'AUGUST' : 'NOVEMBER'));
 
   const startDate = liveDailyTrends?.length > 0 ? liveDailyTrends[0].date : null;
   const endDate = liveDailyTrends?.length > 0 ? liveDailyTrends[liveDailyTrends.length - 1].date : null;
 
   const activeDateInfo = useMemo(() => {
+    if (isOctober) return formatDateRangeInfo(null, null, 'october', '2026');
     if (isSeptember) return formatDateRangeInfo(null, null, 'september', '2026');
     if (isAugust) return formatDateRangeInfo(null, null, 'august', '2026');
-    if (isJuly) return formatDateRangeInfo(null, null, 'july', '2026');
     return formatDateRangeInfo(startDate, endDate);
-  }, [isSeptember, isAugust, isJuly, startDate, endDate]);
+  }, [isOctober, isSeptember, isAugust, startDate, endDate]);
 
   // Compute Floor Leadership Rankings across lines (Only active lines with actual production and costs qualify)
   const floorRankings = useMemo(() => {
@@ -293,9 +315,22 @@ export default function ProductionLinesPage() {
                     : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)] font-medium"
                 )}
               >
-                <span>OCTOBER</span>
+                <span>NOVEMBER</span>
                 <span className="text-[7.5px] sm:text-[9.5px] text-red-500 font-black tracking-wide">(LIVE)</span>
                 <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.8)] animate-pulse shrink-0" />
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setSelectedMonthTab('october')}
+                className={cn(
+                  "px-2 sm:px-4 py-1 sm:py-1.5 rounded-lg text-[9px] sm:text-xs uppercase tracking-wider font-bold transition-all duration-200 cursor-pointer select-none shrink-0",
+                  isOctober
+                    ? "bg-[var(--color-bg-card)] text-[var(--color-text-main)] border border-[var(--color-border)] shadow-sm"
+                    : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)] font-medium"
+                )}
+              >
+                OCTOBER
               </button>
 
               <button
@@ -322,19 +357,6 @@ export default function ProductionLinesPage() {
                 )}
               >
                 AUGUST
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setSelectedMonthTab('july')}
-                className={cn(
-                  "px-2 sm:px-4 py-1 sm:py-1.5 rounded-lg text-[9px] sm:text-xs uppercase tracking-wider font-bold transition-all duration-200 cursor-pointer select-none shrink-0",
-                  isJuly
-                    ? "bg-[var(--color-bg-card)] text-[var(--color-text-main)] border border-[var(--color-border)] shadow-sm"
-                    : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)] font-medium"
-                )}
-              >
-                JULY
               </button>
             </div>
           </div>
@@ -445,7 +467,7 @@ export default function ProductionLinesPage() {
             {sortedCurrentLines.map((line) => {
             const isInactive = (line.totalProduction || 0) === 0 && (line.totalCost || 0) === 0;
             const isProfitable = !isInactive && (line.netProfit || 0) >= 0;
-            const detailsUrl = isAugust ? `/archive/2026-08/lines/${line.id}` : (isJuly ? `/archive/2026-07/lines/${line.id}` : `/lines/${line.id}`);
+            const detailsUrl = isOctober ? `/archive/2026-10/lines/${line.id}` : (isSeptember ? `/archive/2026-09/lines/${line.id}` : (isAugust ? `/archive/2026-08/lines/${line.id}` : `/lines/${line.id}`));
 
             // Floor Leadership Badges
             const isTopProfit = !isInactive && floorRankings.topProfitId === line.id;
@@ -635,12 +657,12 @@ export default function ProductionLinesPage() {
             const isTopRecovery = !isInactive && !isTopProfit && !isTopOutput && floorRankings.topRecoveryId === line.id;
 
             // Target line details URL
-            const detailsUrl = isSeptember 
-              ? `/archive/2026-09/lines/${line.id}` 
-              : (isAugust 
-                  ? `/archive/2026-08/lines/${line.id}` 
-                  : (isJuly 
-                      ? `/archive/2026-07/lines/${line.id}` 
+            const detailsUrl = isOctober
+              ? `/archive/2026-10/lines/${line.id}`
+              : (isSeptember 
+                  ? `/archive/2026-09/lines/${line.id}` 
+                  : (isAugust 
+                      ? `/archive/2026-08/lines/${line.id}` 
                       : `/lines/${line.id}`));
 
             return (

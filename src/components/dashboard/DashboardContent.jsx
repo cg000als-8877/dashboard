@@ -3,7 +3,7 @@ import { format, parseISO, subMonths } from 'date-fns';
 import { useKpiData } from '@/utils/useKpiData';
 import { MetricCard, Card } from '@/components/ui/Card';
 import { TitanicAnimation } from '@/components/ui/TitanicAnimation';
-import { Sparkles, ArrowRight, Download, FileText, Ship, Siren, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Sparkles, ArrowRight, Download, FileText, Ship, Siren, ChevronDown, ChevronLeft, ChevronRight, TrendingDown, TrendingUp } from 'lucide-react';
 import Link from 'next/link';
 import { RealTimeClock } from '@/components/ui/RealTimeClock';
 import { PrintableArchiveReport } from '@/components/report/PrintableArchiveReport';
@@ -33,9 +33,31 @@ function AmbulanceBeacon() {
 // Formats date range as e.g. FROM "01 OCT TO 02 OCT, 2026" with highlight (all uppercase)
 function formatDateRangeInfo(startDateStr, endDateStr, overrideMonth, overrideYear) {
   if (overrideMonth && overrideYear) {
+    const isNov = overrideMonth.toLowerCase().startsWith('nov');
+    const isOct = overrideMonth.toLowerCase().startsWith('oct');
     const isSep = overrideMonth.toLowerCase().startsWith('sep');
     const isAug = overrideMonth.toLowerCase().startsWith('aug');
     const isJul = overrideMonth.toLowerCase().startsWith('jul');
+    if (isNov) {
+      return {
+        isRange: true,
+        startDay: '01',
+        endDay: '30',
+        startMonthShort: 'NOV',
+        endMonthShort: 'NOV',
+        year: overrideYear
+      };
+    }
+    if (isOct) {
+      return {
+        isRange: true,
+        startDay: '01',
+        endDay: '31',
+        startMonthShort: 'OCT',
+        endMonthShort: 'OCT',
+        year: overrideYear
+      };
+    }
     if (isSep) {
       return {
         isRange: true,
@@ -472,11 +494,11 @@ function computeMetricComparison(currStats, compStats, compLabel) {
 export function DashboardContent({ month, isArchive = false }) {
   const { stats, dailyTrends, insights, lines, loading, error } = useKpiData(month);
 
-  // For Live Dashboard: Load September ('2026-09'), August ('2026-08'), and July ('2026-07') archives for tabs & comparisons
+  // For Live Dashboard: Load October ('2026-10'), September ('2026-09'), and August ('2026-08') archives for tabs & comparisons
+  const { stats: octoberStats, dailyTrends: octoberDailyTrends, lines: octoberLines, rawEngine: octoberEngine } = useKpiData('2026-10');
   const { stats: septemberStats, dailyTrends: septemberDailyTrends, lines: septemberLines, rawEngine: septemberEngine } = useKpiData('2026-09');
   const { stats: augustStats, dailyTrends: augustDailyTrends, lines: augustLines, rawEngine: augustEngine } = useKpiData('2026-08');
-  const { stats: julyStats, dailyTrends: julyDailyTrends, lines: julyLines, rawEngine: julyEngine } = useKpiData('2026-07');
-  const [selectedCardMonth, setSelectedCardMonth] = useState('current'); // 'current' | 'september' | 'august' | 'july'
+  const [selectedCardMonth, setSelectedCardMonth] = useState('current'); // 'current' | 'october' | 'september' | 'august'
   const [selectedMobileLine, setSelectedMobileLine] = useState('A');
   const [interactiveDay, setInteractiveDay] = useState(null);
   const [showAnimation, setShowAnimation] = useState(false);
@@ -561,6 +583,13 @@ export function DashboardContent({ month, isArchive = false }) {
     currentCalendarDay = parseInt(endDate.split('-')[2], 10);
   }
 
+  const octoberDateComponents = {
+    startDay: '1st',
+    endDay: '31st',
+    month: 'October',
+    year: '2026'
+  };
+
   const septemberDateComponents = {
     startDay: '1st',
     endDay: '30th',
@@ -575,48 +604,72 @@ export function DashboardContent({ month, isArchive = false }) {
     year: '2026'
   };
 
-  const julyDateComponents = {
-    startDay: '1st',
-    endDay: '31st',
-    month: 'July',
-    year: '2026'
-  };
-
   const maxDays = dailyTrends?.length || 1;
   const displayDay = interactiveDay !== null ? interactiveDay : currentCalendarDay;
   const currentDayData = dailyTrends && dailyTrends.length >= displayDay ? dailyTrends[displayDay - 1] : null;
 
   // ── LIKE-FOR-LIKE / PACE-MATCHED SLICES FOR PAST MONTHS ──
-  const currentWorkingDays = stats?.workingDays > 0 ? stats.workingDays : (dailyTrends?.length || 10);
+  const currentWorkingDays = stats?.workingDays > 0 ? stats.workingDays : (dailyTrends?.length || 1);
+  const octoberPaced = getPacedMonthData(octoberDailyTrends, octoberLines, octoberEngine, currentWorkingDays);
   const septemberPaced = getPacedMonthData(septemberDailyTrends, septemberLines, septemberEngine, currentWorkingDays);
   const augustPaced = getPacedMonthData(augustDailyTrends, augustLines, augustEngine, currentWorkingDays);
-  const julyPaced = getPacedMonthData(julyDailyTrends, julyLines, julyEngine, currentWorkingDays);
 
   if (!stats) return <DashboardSkeleton />;
 
-  // Contextual labels
-  let livePeriodLabel = "September";
+  // Contextual labels - benchmark directly against October (replacing September)
+  let livePeriodLabel = "October";
   if (!isArchive) {
-    if (septemberPaced?.dateInfo?.startDay && septemberPaced?.dateInfo?.endDay) {
-      const sD = parseInt(septemberPaced.dateInfo.startDay, 10);
-      const eD = parseInt(septemberPaced.dateInfo.endDay, 10);
-      livePeriodLabel = `September (${sD}${getOrdinal(sD)}–${eD}${getOrdinal(eD)})`;
+    if (octoberPaced?.dateInfo?.startDay && octoberPaced?.dateInfo?.endDay) {
+      const sD = parseInt(octoberPaced.dateInfo.startDay, 10);
+      const eD = parseInt(octoberPaced.dateInfo.endDay, 10);
+      livePeriodLabel = `October (${sD}${getOrdinal(sD)}–${eD}${getOrdinal(eD)})`;
     } else if (dateComponents?.startDay && dateComponents?.endDay) {
-      livePeriodLabel = `September (${dateComponents.startDay}–${dateComponents.endDay})`;
+      livePeriodLabel = `October (${dateComponents.startDay}–${dateComponents.endDay})`;
     }
   }
 
   const livePaceLabel = dateComponents?.startDay && dateComponents?.endDay
-    ? `October (${dateComponents.startDay}–${dateComponents.endDay})`
-    : `October (Current Pace)`;
+    ? `November (${dateComponents.startDay}–${dateComponents.endDay})`
+    : `November (Current Pace)`;
 
   // Bidirectional comparisons
-  const liveComparison = computeMetricComparison(stats, septemberPaced?.stats || septemberStats, livePeriodLabel);
+  const liveComparison = computeMetricComparison(stats, octoberPaced?.stats || octoberStats, livePeriodLabel);
+  const octoberComparison = computeMetricComparison(octoberPaced?.stats || octoberStats, stats, livePaceLabel);
   const septemberComparison = computeMetricComparison(septemberPaced?.stats || septemberStats, stats, livePaceLabel);
   const augustComparison = computeMetricComparison(augustPaced?.stats || augustStats, stats, livePaceLabel);
-  const julyComparison = computeMetricComparison(julyPaced?.stats || julyStats, stats, livePaceLabel);
 
   const totalLines = stats?.totalLinesCount || lines?.length || 4;
+
+  // Month Card Summaries for the compact 2-line trend card over the month tabs
+  const monthCardSummaries = {
+    current: {
+      monthName: 'November 2026',
+      monthId: '2026-11',
+      workingDays: stats?.workingDays || (dailyTrends?.length || 1),
+      netProfit: stats?.netProfit !== undefined ? stats.netProfit : 0,
+    },
+    october: {
+      monthName: 'October 2026',
+      monthId: '2026-10',
+      workingDays: octoberStats?.workingDays || 24,
+      netProfit: octoberStats?.netProfit !== undefined ? octoberStats.netProfit : -1822224,
+    },
+    september: {
+      monthName: 'September 2026',
+      monthId: '2026-09',
+      workingDays: septemberStats?.workingDays || 25,
+      netProfit: septemberStats?.netProfit !== undefined ? septemberStats.netProfit : -2515675,
+    },
+    august: {
+      monthName: 'August 2026',
+      monthId: '2026-08',
+      workingDays: augustStats?.workingDays || 24,
+      netProfit: augustStats?.netProfit !== undefined ? augustStats.netProfit : -2387333,
+    }
+  };
+
+  const activeCardSummary = monthCardSummaries[selectedCardMonth] || monthCardSummaries.current;
+  const isCardProfit = activeCardSummary.netProfit >= 0;
 
   return (
     <>
@@ -710,7 +763,69 @@ export function DashboardContent({ month, isArchive = false }) {
 
           {/* Month Tab Switcher for 6 KPI Stat Cards (Live Dashboard Only) */}
           {!isArchive && (
-            <div className="flex justify-center items-center w-full mb-2 sm:mb-2.5 relative z-10">
+            <div className="flex flex-col items-center justify-center w-full mb-2 sm:mb-2.5 relative z-10 gap-1.5 sm:gap-2">
+              {/* Compact 2-Line Mini Trend Card (Highlights Month, Days, Amounts in BDT with Going Down Curve) */}
+              <div className="inline-flex flex-col items-center justify-center py-1 sm:py-1.5 px-3 sm:px-4 rounded-xl bg-[var(--color-surface)]/80 md:bg-[var(--color-surface)]/90 backdrop-blur-md border border-[var(--color-border)]/60 shadow-xs max-w-full text-center select-none transition-all duration-200">
+                {/* Line 1: Month Name + Loss/Profit Badge + Little Going Down Curve */}
+                <div className="flex items-center justify-center gap-1.5 sm:gap-2 leading-none">
+                  <span className="text-[11.5px] sm:text-[12.5px] font-bold text-[var(--color-text-main)] font-display tracking-tight">
+                    {activeCardSummary.monthName}
+                  </span>
+                  <span className={cn(
+                    "flex items-center gap-0.5 sm:gap-1 text-[8px] sm:text-[9px] font-bold uppercase tracking-wider px-1.5 sm:px-2 py-0.5 rounded-full border leading-none",
+                    isCardProfit
+                      ? "text-emerald-500 bg-emerald-500/10 border-emerald-500/20"
+                      : "text-rose-500 bg-rose-500/10 border-rose-500/20"
+                  )}>
+                    {isCardProfit ? <TrendingUp size={10} className="stroke-[2.5]" /> : <TrendingDown size={10} className="stroke-[2.5]" />}
+                    {isCardProfit ? 'Profit' : 'Loss'}
+                  </span>
+                  {/* Little going down curve with terminal arrow */}
+                  <svg
+                    className={cn("w-7 sm:w-8 h-3 sm:h-3.5 shrink-0 overflow-visible", isCardProfit ? "text-emerald-500" : "text-rose-500")}
+                    viewBox="0 0 34 14"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d={
+                        isCardProfit
+                          ? "M 2 11.5 C 9 11.5, 13 7, 18 8 C 23 9, 27 3.5, 32 3.5"
+                          : "M 2 2.5 C 9 2.5, 13 7, 18 6 C 23 5, 27 10.5, 32 10.5"
+                      }
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d={
+                        isCardProfit
+                          ? "M 27 3.5 H 32 V 8.5"
+                          : "M 27 10.5 H 32 V 5.5"
+                      }
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </div>
+
+                {/* Line 2: Working Days & Net Loss in BDT */}
+                <p className="text-[9.5px] sm:text-[10.5px] text-[var(--color-text-muted)] italic leading-tight mt-0.5 whitespace-nowrap">
+                  Recorded{' '}
+                  <span className="font-bold not-italic text-[var(--color-text-main)] underline decoration-[var(--color-primary)]/40 underline-offset-2">
+                    {activeCardSummary.workingDays} working days
+                  </span>{' '}
+                  with a net{' '}
+                  <span className={cn("font-bold not-italic", isCardProfit ? "text-emerald-500" : "text-rose-500")}>
+                    {isCardProfit ? 'profit' : 'loss'} of BDT {Math.abs(Math.round(activeCardSummary.netProfit)).toLocaleString()}
+                  </span>
+                  .
+                </p>
+              </div>
               <div className="inline-flex p-0.5 sm:p-1 bg-[var(--color-surface)] border-0 rounded-xl gap-0.5 md:gap-1 shadow-none md:shadow-sm backdrop-blur-md items-center">
                 <button
                   type="button"
@@ -722,9 +837,22 @@ export function DashboardContent({ month, isArchive = false }) {
                       : "bg-transparent text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)] font-medium"
                   )}
                 >
-                  <span>OCTOBER</span>
+                  <span>NOVEMBER</span>
                   <span className="text-[8px] sm:text-[10px] text-red-500 font-black tracking-wide">(LIVE)</span>
                   <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.8)] animate-pulse shrink-0" />
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setSelectedCardMonth('october')}
+                  className={cn(
+                    "px-2 sm:px-4 py-1 sm:py-1.5 rounded-lg text-[9.5px] sm:text-xs uppercase tracking-wider transition-all duration-200 cursor-pointer select-none shrink-0 border-0 outline-none",
+                    selectedCardMonth === 'october'
+                      ? "bg-white text-gray-900 md:bg-[var(--color-bg-card)] md:text-[var(--color-text-main)] font-black md:font-bold shadow-xs md:shadow-sm"
+                      : "bg-transparent text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)] font-medium"
+                  )}
+                >
+                  OCTOBER
                 </button>
 
                 <button
@@ -752,19 +880,6 @@ export function DashboardContent({ month, isArchive = false }) {
                 >
                   AUGUST
                 </button>
-
-                <button
-                  type="button"
-                  onClick={() => setSelectedCardMonth('july')}
-                  className={cn(
-                    "px-2 sm:px-4 py-1 sm:py-1.5 rounded-lg text-[9.5px] sm:text-xs uppercase tracking-wider transition-all duration-200 cursor-pointer select-none shrink-0 border-0 outline-none",
-                    selectedCardMonth === 'july'
-                      ? "bg-white text-gray-900 md:bg-[var(--color-bg-card)] md:text-[var(--color-text-main)] font-black md:font-bold shadow-xs md:shadow-sm"
-                      : "bg-transparent text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)] font-medium"
-                  )}
-                >
-                  JULY
-                </button>
               </div>
             </div>
           )}
@@ -777,7 +892,12 @@ export function DashboardContent({ month, isArchive = false }) {
             let activeComp = liveComparison;
 
             if (!isArchive) {
-              if (selectedCardMonth === 'september' && (septemberPaced || septemberStats)) {
+              if (selectedCardMonth === 'october' && (octoberPaced || octoberStats)) {
+                displayStats = octoberPaced?.stats || octoberStats;
+                activeDateInfo = octoberPaced?.dateInfo || formatDateRangeInfo(null, null, 'october', '2026');
+                activeActiveLines = octoberPaced?.lines || octoberLines || lines || [];
+                activeComp = octoberComparison;
+              } else if (selectedCardMonth === 'september' && (septemberPaced || septemberStats)) {
                 displayStats = septemberPaced?.stats || septemberStats;
                 activeDateInfo = septemberPaced?.dateInfo || formatDateRangeInfo(null, null, 'september', '2026');
                 activeActiveLines = septemberPaced?.lines || septemberLines || lines || [];
@@ -787,11 +907,6 @@ export function DashboardContent({ month, isArchive = false }) {
                 activeDateInfo = augustPaced?.dateInfo || formatDateRangeInfo(null, null, 'august', '2026');
                 activeActiveLines = augustPaced?.lines || augustLines || lines || [];
                 activeComp = augustComparison;
-              } else if (selectedCardMonth === 'july' && (julyPaced || julyStats)) {
-                displayStats = julyPaced?.stats || julyStats;
-                activeDateInfo = julyPaced?.dateInfo || formatDateRangeInfo(null, null, 'july', '2026');
-                activeActiveLines = julyPaced?.lines || julyLines || lines || [];
-                activeComp = julyComparison;
               }
             }
 
@@ -814,7 +929,7 @@ export function DashboardContent({ month, isArchive = false }) {
             const isPastMonth = !isArchive && selectedCardMonth !== 'current';
             const daysComp = isArchive ? null : {
               highlight: `${displayStats?.workingDays || 0} Days`,
-              label: isPastMonth ? `matching October pace (${displayStats?.workingDays} active days)` : `matching ${livePeriodLabel} pace`,
+              label: isPastMonth ? `matching November pace (${displayStats?.workingDays} active days)` : `matching ${livePeriodLabel} pace`,
               trend: "neutral",
               isPositive: true
             };
@@ -834,12 +949,12 @@ export function DashboardContent({ month, isArchive = false }) {
 
             let activeDailyTrends = dailyTrends;
             if (!isArchive) {
-              if (selectedCardMonth === 'september' && septemberDailyTrends) {
+              if (selectedCardMonth === 'october' && octoberDailyTrends) {
+                activeDailyTrends = octoberDailyTrends.slice(0, currentWorkingDays);
+              } else if (selectedCardMonth === 'september' && septemberDailyTrends) {
                 activeDailyTrends = septemberDailyTrends.slice(0, currentWorkingDays);
               } else if (selectedCardMonth === 'august' && augustDailyTrends) {
                 activeDailyTrends = augustDailyTrends.slice(0, currentWorkingDays);
-              } else if (selectedCardMonth === 'july' && julyDailyTrends) {
-                activeDailyTrends = julyDailyTrends.slice(0, currentWorkingDays);
               }
             }
 
@@ -1452,21 +1567,24 @@ export function DashboardContent({ month, isArchive = false }) {
         {(() => {
           const activeLines = isArchive
             ? (lines || [])
-            : (selectedCardMonth === 'september' 
-                ? (septemberPaced?.lines || septemberLines || lines || []) 
-                : (selectedCardMonth === 'august' 
-                    ? (augustPaced?.lines || augustLines || lines || []) 
-                    : (selectedCardMonth === 'july' 
-                        ? (julyPaced?.lines || julyLines || lines || []) 
+            : (selectedCardMonth === 'october' 
+                ? (octoberPaced?.lines || octoberLines || lines || []) 
+                : (selectedCardMonth === 'september' 
+                    ? (septemberPaced?.lines || septemberLines || lines || []) 
+                    : (selectedCardMonth === 'august' 
+                        ? (augustPaced?.lines || augustLines || lines || []) 
                         : (lines || []))));
 
           const activeMonthName = isArchive
             ? (dateComponents?.month || 'Archive')
-            : (selectedCardMonth === 'september' ? 'September' : (selectedCardMonth === 'august' ? 'August' : (selectedCardMonth === 'july' ? 'July' : (dateComponents?.month || 'October'))));
+            : (selectedCardMonth === 'october' ? 'October' : (selectedCardMonth === 'september' ? 'September' : (selectedCardMonth === 'august' ? 'August' : (dateComponents?.month || 'November'))));
 
           const activeDateInfo = (() => {
             if (isArchive) {
               return formatDateRangeInfo(startDate, endDate, dateComponents?.month, dateComponents?.year);
+            }
+            if (selectedCardMonth === 'october') {
+              return octoberPaced?.dateInfo || formatDateRangeInfo(null, null, 'october', '2026');
             }
             if (selectedCardMonth === 'september') {
               return septemberPaced?.dateInfo || formatDateRangeInfo(null, null, 'september', '2026');
@@ -1474,20 +1592,17 @@ export function DashboardContent({ month, isArchive = false }) {
             if (selectedCardMonth === 'august') {
               return augustPaced?.dateInfo || formatDateRangeInfo(null, null, 'august', '2026');
             }
-            if (selectedCardMonth === 'july') {
-              return julyPaced?.dateInfo || formatDateRangeInfo(null, null, 'july', '2026');
-            }
             return formatDateRangeInfo(startDate, endDate);
           })();
 
           const currentStatsForDate = isArchive
             ? stats
-            : (selectedCardMonth === 'september' 
-                ? (septemberPaced?.stats || septemberStats) 
-                : (selectedCardMonth === 'august' 
-                    ? (augustPaced?.stats || augustStats) 
-                    : (selectedCardMonth === 'july' 
-                        ? (julyPaced?.stats || julyStats) 
+            : (selectedCardMonth === 'october' 
+                ? (octoberPaced?.stats || octoberStats) 
+                : (selectedCardMonth === 'september' 
+                    ? (septemberPaced?.stats || septemberStats) 
+                    : (selectedCardMonth === 'august' 
+                        ? (augustPaced?.stats || augustStats) 
                         : stats)));
 
           return (
@@ -1703,12 +1818,12 @@ export function DashboardContent({ month, isArchive = false }) {
                           href={
                             isArchive
                               ? `/archive/${month}/lines/${line.id}`
-                              : selectedCardMonth === 'september'
-                                ? `/archive/2026-09/lines/${line.id}`
-                                : selectedCardMonth === 'august'
-                                  ? `/archive/2026-08/lines/${line.id}`
-                                  : selectedCardMonth === 'july'
-                                    ? `/archive/2026-07/lines/${line.id}`
+                              : selectedCardMonth === 'october'
+                                ? `/archive/2026-10/lines/${line.id}`
+                                : selectedCardMonth === 'september'
+                                  ? `/archive/2026-09/lines/${line.id}`
+                                  : selectedCardMonth === 'august'
+                                    ? `/archive/2026-08/lines/${line.id}`
                                     : `/lines/${line.id}`
                           }
                           className={cn(

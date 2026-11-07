@@ -49,7 +49,7 @@ export default function DashboardLayout({ children }) {
   const [showCanteenModal, setShowCanteenModal] = useState(false);
   const [mobileThemeTab, setMobileThemeTab] = useState('palette'); // 'palette' | 'background'
 
-  let datePart = 'October 27th, 2026';
+  let datePart = 'November 1st, 2026';
   if (dailyTrends && dailyTrends.length > 0) {
     try {
       const endDate = dailyTrends[dailyTrends.length - 1]?.date;
@@ -57,7 +57,7 @@ export default function DashboardLayout({ children }) {
         datePart = format(parseISO(endDate), 'MMMM do, yyyy');
       }
     } catch (e) {
-      datePart = 'October 27th, 2026';
+      datePart = 'November 1st, 2026';
     }
   }
 

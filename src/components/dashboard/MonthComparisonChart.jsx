@@ -22,10 +22,10 @@ function cn(...classes) {
 }
 
 const DEFAULT_MONTHS = [
-  { id: 'live', name: 'October 2026 (Live)', short: 'October' },
+  { id: 'live', name: 'November 2026 (Live)', short: 'November' },
+  { id: '2026-10', name: 'October 2026', short: 'October' },
   { id: '2026-09', name: 'September 2026', short: 'September' },
-  { id: '2026-08', name: 'August 2026', short: 'August' },
-  { id: '2026-07', name: 'July 2026', short: 'July' }
+  { id: '2026-08', name: 'August 2026', short: 'August' }
 ];
 
 const METRICS = [

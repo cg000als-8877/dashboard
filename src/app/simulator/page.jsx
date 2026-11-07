@@ -216,12 +216,12 @@ export default function SimulatorPage() {
       icon: <Icon3DCruise />
     },
     {
-      id: 'oct-pace',
-      label: 'October Live Pace',
+      id: 'current-live-pace',
+      label: 'Current Live Pace',
       recovery: realRecovery,
       mode: 'loss',
       summary: `Exact live website data: 12° bow dip, water lapping hull (${realRecovery}% pace)`,
-      tag: 'October Live',
+      tag: 'Live Pace',
       tagColor: 'bg-[var(--color-primary)]/15 text-[var(--color-primary)]',
       icon: <Icon3DFlood />
     },
@@ -319,7 +319,7 @@ export default function SimulatorPage() {
             </span>
           </div>
           <span className="text-[8.5px] sm:text-[9.5px] text-[var(--color-text-muted)] mt-1 font-medium truncate">
-            {simRecovery === realRecovery ? "Matching live October pace" : "Simulated scenario"}
+            {simRecovery === realRecovery ? "Matching current live pace" : "Simulated scenario"}
           </span>
         </div>
 
@@ -555,14 +555,14 @@ export default function SimulatorPage() {
           <div className="p-3 sm:p-3.5 rounded-xl sm:rounded-2xl bg-[var(--color-surface)]/50 shadow-xs flex flex-col justify-between gap-1">
             <div className="flex items-start justify-between gap-2">
               <span className="flex-1 min-w-0 text-[11px] sm:text-xs font-bold uppercase text-[var(--color-text-main)] leading-snug">
-                Moderate Deficit (October Live Pace)
+                Moderate Deficit (Current Live Pace)
               </span>
               <span className="shrink-0 whitespace-nowrap text-[8px] sm:text-[9px] font-bold uppercase px-1.5 py-0.5 rounded-md bg-[var(--color-primary)]/15 text-[var(--color-primary)]">
                 70% to 84% ({realRecovery}%)
               </span>
             </div>
             <p className="text-[9.5px] sm:text-[10.5px] text-[var(--color-text-secondary)] leading-relaxed">
-              Bow visibly submerges with an 8° to 16° tilt. Water begins lapping against the lower forward deck. Matches October real-world factory recovery rate ({realRecovery}%).
+              Bow visibly submerges with an 8° to 16° tilt. Water begins lapping against the lower forward deck. Matches real-world factory recovery rate ({realRecovery}%).
             </p>
           </div>
 

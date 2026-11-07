@@ -129,7 +129,21 @@ export async function getLiveProductionData(forceRefresh = false) {
       const parsedDate = parseExcelDate(dateSerial);
       const dateStr = `${parsedDate.y}-${String(parsedDate.m).padStart(2, '0')}-${String(parsedDate.d).padStart(2, '0')}`;
 
-      if (row.length < 5 || !row[4]) {
+      const isExplicitHoliday = 
+        String(row[2] || '').toUpperCase().includes('FRIDAY') || 
+        String(row[3] || '').toUpperCase().includes('FRIDAY') ||
+        String(row[2] || '').toUpperCase().includes('HOLIDAY') ||
+        String(row[3] || '').toUpperCase().includes('HOLIDAY');
+
+      const hasProductionData = 
+        (row[4] !== undefined && row[4] !== null && String(row[4]).trim() !== '') ||
+        (row[6] !== undefined && Number(row[6]) > 0) ||
+        (row[7] !== undefined && Number(row[7]) > 0) ||
+        (row[10] !== undefined && Number(row[10]) > 0) ||
+        (row[2] && String(row[2]).trim() !== '') ||
+        (row[3] && String(row[3]).trim() !== '');
+
+      if (isExplicitHoliday || !hasProductionData) {
         dailyProduction.push({
           date: dateStr,
           line_id: lineId,
