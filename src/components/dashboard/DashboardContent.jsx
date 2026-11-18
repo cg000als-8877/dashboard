@@ -640,37 +640,6 @@ export function DashboardContent({ month, isArchive = false }) {
 
   const totalLines = stats?.totalLinesCount || lines?.length || 4;
 
-  // Month Card Summaries for the compact 2-line trend card over the month tabs
-  const monthCardSummaries = {
-    current: {
-      monthName: 'November 2026',
-      monthId: '2026-11',
-      workingDays: stats?.workingDays || (dailyTrends?.length || 1),
-      netProfit: stats?.netProfit !== undefined ? stats.netProfit : 0,
-    },
-    october: {
-      monthName: 'October 2026',
-      monthId: '2026-10',
-      workingDays: octoberStats?.workingDays || 24,
-      netProfit: octoberStats?.netProfit !== undefined ? octoberStats.netProfit : -1822224,
-    },
-    september: {
-      monthName: 'September 2026',
-      monthId: '2026-09',
-      workingDays: septemberStats?.workingDays || 25,
-      netProfit: septemberStats?.netProfit !== undefined ? septemberStats.netProfit : -2515675,
-    },
-    august: {
-      monthName: 'August 2026',
-      monthId: '2026-08',
-      workingDays: augustStats?.workingDays || 24,
-      netProfit: augustStats?.netProfit !== undefined ? augustStats.netProfit : -2387333,
-    }
-  };
-
-  const activeCardSummary = monthCardSummaries[selectedCardMonth] || monthCardSummaries.current;
-  const isCardProfit = activeCardSummary.netProfit >= 0;
-
   return (
     <>
       <div className="space-y-6 animate-[fade-up_0.4s_ease-out_both] no-print">
@@ -764,68 +733,6 @@ export function DashboardContent({ month, isArchive = false }) {
           {/* Month Tab Switcher for 6 KPI Stat Cards (Live Dashboard Only) */}
           {!isArchive && (
             <div className="flex flex-col items-center justify-center w-full mb-2 sm:mb-2.5 relative z-10 gap-1.5 sm:gap-2">
-              {/* Compact 2-Line Mini Trend Card (Highlights Month, Days, Amounts in BDT with Going Down Curve) */}
-              <div className="hidden md:inline-flex flex-col items-center justify-center py-1 sm:py-1.5 px-3 sm:px-4 rounded-xl bg-[var(--color-surface)]/80 md:bg-[var(--color-surface)]/90 backdrop-blur-md border border-[var(--color-border)]/60 shadow-xs max-w-full text-center select-none transition-all duration-200">
-                {/* Line 1: Month Name + Loss/Profit Badge + Little Going Down Curve */}
-                <div className="flex items-center justify-center gap-1.5 sm:gap-2 leading-none">
-                  <span className="text-[11.5px] sm:text-[12.5px] font-bold text-[var(--color-text-main)] font-display tracking-tight">
-                    {activeCardSummary.monthName}
-                  </span>
-                  <span className={cn(
-                    "flex items-center gap-0.5 sm:gap-1 text-[8px] sm:text-[9px] font-bold uppercase tracking-wider px-1.5 sm:px-2 py-0.5 rounded-full border leading-none",
-                    isCardProfit
-                      ? "text-emerald-500 bg-emerald-500/10 border-emerald-500/20"
-                      : "text-rose-500 bg-rose-500/10 border-rose-500/20"
-                  )}>
-                    {isCardProfit ? <TrendingUp size={10} className="stroke-[2.5]" /> : <TrendingDown size={10} className="stroke-[2.5]" />}
-                    {isCardProfit ? 'Profit' : 'Loss'}
-                  </span>
-                  {/* Little going down curve with terminal arrow */}
-                  <svg
-                    className={cn("w-7 sm:w-8 h-3 sm:h-3.5 shrink-0 overflow-visible", isCardProfit ? "text-emerald-500" : "text-rose-500")}
-                    viewBox="0 0 34 14"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    aria-hidden="true"
-                  >
-                    <path
-                      d={
-                        isCardProfit
-                          ? "M 2 11.5 C 9 11.5, 13 7, 18 8 C 23 9, 27 3.5, 32 3.5"
-                          : "M 2 2.5 C 9 2.5, 13 7, 18 6 C 23 5, 27 10.5, 32 10.5"
-                      }
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d={
-                        isCardProfit
-                          ? "M 27 3.5 H 32 V 8.5"
-                          : "M 27 10.5 H 32 V 5.5"
-                      }
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </div>
-
-                {/* Line 2: Working Days & Net Loss in BDT */}
-                <p className="text-[9.5px] sm:text-[10.5px] text-[var(--color-text-muted)] italic leading-tight mt-0.5 whitespace-nowrap">
-                  Recorded{' '}
-                  <span className="font-bold not-italic text-[var(--color-text-main)] underline decoration-[var(--color-primary)]/40 underline-offset-2">
-                    {activeCardSummary.workingDays} working days
-                  </span>{' '}
-                  with a net{' '}
-                  <span className={cn("font-bold not-italic", isCardProfit ? "text-emerald-500" : "text-rose-500")}>
-                    {isCardProfit ? 'profit' : 'loss'} of BDT {Math.abs(Math.round(activeCardSummary.netProfit)).toLocaleString()}
-                  </span>
-                  .
-                </p>
-              </div>
               <div className="inline-flex p-1 bg-[var(--color-surface)]/80 border border-[var(--color-border)]/60 rounded-full -space-x-2 sm:-space-x-2.5 shadow-inner backdrop-blur-md items-center select-none shrink-0">
                 <button
                   type="button"
@@ -1171,6 +1078,9 @@ export function DashboardContent({ month, isArchive = false }) {
                       <CostRecoveryPie
                         percentage={recoveryPercent}
                         isProfitable={displayStats.totalIncome >= displayStats.totalCost}
+                        totalIncome={displayStats.totalIncome}
+                        totalCost={displayStats.totalCost}
+                        netProfit={displayStats.netProfit}
                         compact
                         className="h-full justify-between"
                       />
@@ -1439,6 +1349,9 @@ export function DashboardContent({ month, isArchive = false }) {
                       <CostRecoveryPie
                         percentage={recoveryPercent}
                         isProfitable={displayStats.totalIncome >= displayStats.totalCost}
+                        totalIncome={displayStats.totalIncome}
+                        totalCost={displayStats.totalCost}
+                        netProfit={displayStats.netProfit}
                         className="h-full justify-between"
                       />
                     </Card>

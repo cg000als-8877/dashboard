@@ -159,65 +159,61 @@ export default function DashboardLayout({ children }) {
                     {/* Light (Day) */}
                     <button
                       onClick={() => setMode('light')}
+                      title="Light Mode"
+                      aria-label="Light Mode"
                       className={cn(
-                        "py-1.5 px-0.5 rounded-lg flex flex-col items-center justify-center transition-all cursor-pointer text-center",
+                        "py-1.5 px-1 rounded-lg flex items-center justify-center transition-all cursor-pointer text-center",
                         mode === 'light'
                           ? "bg-[var(--color-bg-card)] text-amber-500 shadow-xs ring-1 ring-amber-400/30"
                           : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-bg-card)]/40"
                       )}
                     >
-                      <Sun size={21} strokeWidth={2.2} className={mode === 'light' ? "text-amber-400" : ""} />
-                      <span className="text-[7px] font-extrabold uppercase tracking-widest leading-none mt-1">
-                        Light
-                      </span>
+                      <Sun size={15} strokeWidth={2.2} className={mode === 'light' ? "text-amber-400" : ""} />
                     </button>
 
                     {/* Dark (Night) */}
                     <button
                       onClick={() => setMode('dark')}
+                      title="Dark Mode"
+                      aria-label="Dark Mode"
                       className={cn(
-                        "py-1.5 px-0.5 rounded-lg flex flex-col items-center justify-center transition-all cursor-pointer text-center",
+                        "py-1.5 px-1 rounded-lg flex items-center justify-center transition-all cursor-pointer text-center",
                         mode === 'dark'
                           ? "bg-[var(--color-bg-card)] text-indigo-400 shadow-xs ring-1 ring-indigo-400/30"
                           : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-bg-card)]/40"
                       )}
                     >
-                      <Moon size={21} strokeWidth={2.2} className={mode === 'dark' ? "text-indigo-400" : ""} />
-                      <span className="text-[7px] font-extrabold uppercase tracking-widest leading-none mt-1">
-                        Dark
-                      </span>
+                      <Moon size={15} strokeWidth={2.2} className={mode === 'dark' ? "text-indigo-400" : ""} />
                     </button>
 
                     {/* Palette Tab */}
                     <button
                       onClick={() => setMobileThemeTab('palette')}
+                      title="Color Palette"
+                      aria-label="Color Palette"
                       className={cn(
-                        "py-1.5 px-0.5 rounded-lg flex flex-col items-center justify-center transition-all cursor-pointer text-center",
+                        "py-1.5 px-1 rounded-lg flex items-center justify-center transition-all cursor-pointer text-center",
                         mobileThemeTab === 'palette'
                           ? "bg-[var(--color-bg-card)] text-[var(--color-primary)] shadow-xs ring-1 ring-[var(--color-primary)]/30"
                           : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-bg-card)]/40"
                       )}
                     >
-                      <Palette size={21} strokeWidth={2.2} className={mobileThemeTab === 'palette' ? "text-[var(--color-primary)]" : ""} />
-                      <span className="text-[7px] font-extrabold uppercase tracking-widest leading-none mt-1">
-                        Palette
-                      </span>
+                      <Palette size={15} strokeWidth={2.2} className={mobileThemeTab === 'palette' ? "text-[var(--color-primary)]" : ""} />
                     </button>
 
                     {/* Background Tab */}
                     <button
                       onClick={() => setMobileThemeTab('background')}
+                      title="Background Effects"
+                      aria-label="Background Effects"
                       className={cn(
-                        "py-1.5 px-0.5 rounded-lg flex flex-col items-center justify-center transition-all cursor-pointer text-center",
+                        "py-1.5 px-1 rounded-lg flex items-center justify-center transition-all cursor-pointer text-center",
                         mobileThemeTab === 'background'
                           ? "bg-[var(--color-bg-card)] text-[var(--color-primary)] shadow-xs ring-1 ring-[var(--color-primary)]/30"
                           : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-bg-card)]/40"
                       )}
                     >
-                      <Sparkles size={21} strokeWidth={2.2} className={mobileThemeTab === 'background' ? "text-[var(--color-primary)]" : ""} />
-                      <span className="text-[7px] font-extrabold uppercase tracking-widest leading-none mt-1">
-                        Background
-                      </span>
+                      <Sparkles size={15} strokeWidth={2.2} className={mobileThemeTab === 'background' ? "text-[var(--color-primary)]" : ""} />
                     </button>
                   </div>
 
