@@ -854,6 +854,23 @@ export function DashboardContent({ month, isArchive = false }) {
               return (lineData.totalProduction > 0 || lineData.totalCost > 0 || (lineData.activeDaysCount && lineData.activeDaysCount > 0));
             });
             const renderedActiveLines = activeLinesToRender.length > 0 ? activeLinesToRender : ['A', 'B', 'C'];
+
+            // Calculate line loss and max loss across rendered lines for dynamic red heat map effect
+            const getLineLoss = (lData) => {
+              if (!lData) return 0;
+              if (typeof lData.netProfit === 'number' && lData.netProfit < 0) return Math.abs(lData.netProfit);
+              const diff = (lData.totalCost || 0) - (lData.totalIncome || 0);
+              return diff > 0 ? diff : 0;
+            };
+
+            const maxLineLoss = Math.max(
+              ...renderedActiveLines.map(id => {
+                const ld = currentActiveLines?.find(l => l.id?.toUpperCase() === id);
+                return getLineLoss(ld);
+              }),
+              1
+            );
+
             const recoveryPercent = (displayStats?.totalCost || 0) > 0 
               ? (((displayStats?.totalIncome || 0) / displayStats.totalCost) * 100) 
               : 0;
@@ -1103,17 +1120,32 @@ export function DashboardContent({ month, isArchive = false }) {
                       </p>
                     </div>
 
-                    {/* Lines Badges List: Line Name, Item, & Total Production (Stacked view in mobile) */}
+                    {/* Lines Badges List: Line Name, Item, & Total Production (Stacked view in mobile with dynamic Red Heat Map) */}
                     <div className="flex flex-col gap-1.5 pt-1.5 sm:pt-2">
                       {renderedActiveLines.map((lineId) => {
                         const lineData = currentActiveLines?.find(l => l.id?.toUpperCase() === lineId);
                         const itemDesc = (lineData?.items && lineData.items.length > 0 ? lineData.items.join(', ') : null) || lineData?.item || lineData?.lastActiveDay?.item || lineData?.today?.item || DEFAULT_LINE_ITEMS[lineId] || 'Polo Shirt';
                         const totalProd = lineData?.totalProduction || 0;
+                        const lineLoss = getLineLoss(lineData);
+                        const lossRatio = maxLineLoss > 0 ? Math.min(1, Math.max(0, lineLoss / maxLineLoss)) : 0;
 
                         return (
                           <div
                             key={lineId}
-                            className="rounded-[6px] transition-all bg-[var(--color-surface)] shadow-xs min-w-0 flex items-center justify-between p-2 sm:p-2.5 gap-2"
+                            className="rounded-[6px] transition-all min-w-0 flex items-center justify-between p-2 sm:p-2.5 gap-2 relative overflow-hidden"
+                            style={{
+                              backgroundColor: 'var(--color-surface)',
+                              backgroundImage: lineLoss > 0
+                                ? `linear-gradient(90deg, rgba(239, 68, 68, ${(0.03 + lossRatio * 0.07).toFixed(3)}) 0%, rgba(239, 68, 68, ${(0.01 + lossRatio * 0.02).toFixed(3)}) 40%, transparent 80%)`
+                                : undefined,
+                              border: '1px solid',
+                              borderColor: lineLoss > 0
+                                ? `rgba(239, 68, 68, ${(0.10 + lossRatio * 0.18).toFixed(2)})`
+                                : 'var(--color-border)',
+                              borderLeft: lineLoss > 0
+                                ? `3px solid rgba(239, 68, 68, ${(0.25 + lossRatio * 0.45).toFixed(2)})`
+                                : '3px solid transparent'
+                            }}
                           >
                             {/* Line Info: Line Name & Item Name */}
                             <div className="min-w-0 flex-1">
@@ -1362,18 +1394,33 @@ export function DashboardContent({ month, isArchive = false }) {
                         </p>
                       </div>
 
-                      {/* Lines Badges List: Line & Item In Production (Only active lines) */}
+                      {/* Lines Badges List: Line & Item In Production (Only active lines with dynamic Red Heat Map) */}
                       <div className="flex flex-col gap-2 xl:gap-2.5 pt-3.5 flex-1 justify-around">
                         {renderedActiveLines.map((lineId) => {
                           const lineData = currentActiveLines?.find(l => l.id?.toUpperCase() === lineId);
                           const itemDesc = (lineData?.items && lineData.items.length > 0 ? lineData.items.join(', ') : null) || lineData?.item || lineData?.lastActiveDay?.item || lineData?.today?.item || DEFAULT_LINE_ITEMS[lineId] || 'Polo Shirt';
                           const workers = lineData?.lastDay?.worker_count || lineData?.averageWorkers || 0;
                           const output = lineData?.totalProduction || 0;
+                          const lineLoss = getLineLoss(lineData);
+                          const lossRatio = maxLineLoss > 0 ? Math.min(1, Math.max(0, lineLoss / maxLineLoss)) : 0;
 
                           return (
                             <div
                               key={lineId}
-                              className="flex items-center justify-between gap-2.5 p-2 xl:p-2.5 rounded-[4px] transition-all bg-[var(--color-surface)] shadow-xs"
+                              className="flex items-center justify-between gap-2.5 p-2 xl:p-2.5 rounded-[4px] transition-all relative overflow-hidden"
+                              style={{
+                                backgroundColor: 'var(--color-surface)',
+                                backgroundImage: lineLoss > 0
+                                  ? `linear-gradient(90deg, rgba(239, 68, 68, ${(0.03 + lossRatio * 0.07).toFixed(3)}) 0%, rgba(239, 68, 68, ${(0.01 + lossRatio * 0.02).toFixed(3)}) 40%, transparent 80%)`
+                                  : undefined,
+                                border: '1px solid',
+                                borderColor: lineLoss > 0
+                                  ? `rgba(239, 68, 68, ${(0.10 + lossRatio * 0.18).toFixed(2)})`
+                                  : 'var(--color-border)',
+                                borderLeft: lineLoss > 0
+                                  ? `3px solid rgba(239, 68, 68, ${(0.25 + lossRatio * 0.45).toFixed(2)})`
+                                  : '3px solid transparent'
+                              }}
                             >
                               <div className="flex items-center gap-2.5 min-w-0 flex-1">
                                 {/* Line Letter Pill */}
