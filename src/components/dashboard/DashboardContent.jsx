@@ -494,11 +494,12 @@ function computeMetricComparison(currStats, compStats, compLabel) {
 export function DashboardContent({ month, isArchive = false }) {
   const { stats, dailyTrends, insights, lines, loading, error } = useKpiData(month);
 
-  // For Live Dashboard: Load October ('2026-10'), September ('2026-09'), and August ('2026-08') archives for tabs & comparisons
+  // For Live Dashboard: Load October ('2026-10'), September ('2026-09'), August ('2026-08'), and July ('2026-07') archives for tabs & comparisons
   const { stats: octoberStats, dailyTrends: octoberDailyTrends, lines: octoberLines, rawEngine: octoberEngine } = useKpiData('2026-10');
   const { stats: septemberStats, dailyTrends: septemberDailyTrends, lines: septemberLines, rawEngine: septemberEngine } = useKpiData('2026-09');
   const { stats: augustStats, dailyTrends: augustDailyTrends, lines: augustLines, rawEngine: augustEngine } = useKpiData('2026-08');
-  const [selectedCardMonth, setSelectedCardMonth] = useState('current'); // 'current' | 'october' | 'september' | 'august'
+  const { stats: julyStats, dailyTrends: julyDailyTrends, lines: julyLines, rawEngine: julyEngine } = useKpiData('2026-07');
+  const [selectedCardMonth, setSelectedCardMonth] = useState('current'); // 'current' | 'october' | 'september' | 'august' | 'july'
   const [selectedMobileLine, setSelectedMobileLine] = useState('A');
   const [interactiveDay, setInteractiveDay] = useState(null);
   const [showAnimation, setShowAnimation] = useState(false);
@@ -604,6 +605,13 @@ export function DashboardContent({ month, isArchive = false }) {
     year: '2026'
   };
 
+  const julyDateComponents = {
+    startDay: '1st',
+    endDay: '31st',
+    month: 'July',
+    year: '2026'
+  };
+
   const maxDays = dailyTrends?.length || 1;
   const displayDay = interactiveDay !== null ? interactiveDay : currentCalendarDay;
   const currentDayData = dailyTrends && dailyTrends.length >= displayDay ? dailyTrends[displayDay - 1] : null;
@@ -613,6 +621,7 @@ export function DashboardContent({ month, isArchive = false }) {
   const octoberPaced = getPacedMonthData(octoberDailyTrends, octoberLines, octoberEngine, currentWorkingDays);
   const septemberPaced = getPacedMonthData(septemberDailyTrends, septemberLines, septemberEngine, currentWorkingDays);
   const augustPaced = getPacedMonthData(augustDailyTrends, augustLines, augustEngine, currentWorkingDays);
+  const julyPaced = getPacedMonthData(julyDailyTrends, julyLines, julyEngine, currentWorkingDays);
 
   if (!stats) return <DashboardSkeleton />;
 
@@ -637,6 +646,7 @@ export function DashboardContent({ month, isArchive = false }) {
   const octoberComparison = computeMetricComparison(octoberPaced?.stats || octoberStats, stats, livePaceLabel);
   const septemberComparison = computeMetricComparison(septemberPaced?.stats || septemberStats, stats, livePaceLabel);
   const augustComparison = computeMetricComparison(augustPaced?.stats || augustStats, stats, livePaceLabel);
+  const julyComparison = computeMetricComparison(julyPaced?.stats || julyStats, stats, livePaceLabel);
 
   const totalLines = stats?.totalLinesCount || lines?.length || 4;
 
@@ -733,15 +743,15 @@ export function DashboardContent({ month, isArchive = false }) {
           {/* Month Tab Switcher for 6 KPI Stat Cards (Live Dashboard Only) */}
           {!isArchive && (
             <div className="flex flex-col items-center justify-center w-full mb-2 sm:mb-2.5 relative z-10 gap-1.5 sm:gap-2">
-              <div className="inline-flex p-1 bg-[var(--color-surface)]/80 border border-[var(--color-border)]/60 rounded-full -space-x-2 sm:-space-x-2.5 shadow-inner backdrop-blur-md items-center select-none shrink-0">
+              <div className="inline-flex items-center -space-x-2.5 sm:-space-x-3.5 select-none shrink-0 py-1.5 px-2">
                 <button
                   type="button"
                   onClick={() => setSelectedCardMonth('current')}
                   className={cn(
-                    "flex items-center gap-1 sm:gap-1.5 rounded-full px-3 sm:px-4 py-1 sm:py-1.5 text-[10px] sm:text-xs uppercase tracking-wider transition-all duration-200 cursor-pointer select-none shrink-0 outline-none border",
+                    "flex items-center gap-1 sm:gap-1.5 rounded-full px-3 sm:px-4 py-1 sm:py-1.5 text-[10px] sm:text-xs uppercase tracking-wider transition-all duration-300 cursor-pointer select-none shrink-0 outline-none border",
                     selectedCardMonth === 'current'
-                      ? "relative z-20 bg-white text-gray-950 md:bg-[var(--color-bg-card)] md:text-[var(--color-text-main)] font-black shadow-[0_3px_12px_rgba(0,0,0,0.35)] dark:shadow-[0_4px_16px_rgba(0,0,0,0.5)] border-white/90 dark:border-white/20 md:border-[var(--color-border)] scale-[1.05]"
-                      : "relative z-10 bg-[var(--color-bg-card)]/90 text-slate-300 dark:text-slate-300 hover:text-white hover:bg-[var(--color-surface-hover)] hover:z-15 font-bold border-white/10 dark:border-white/10 shadow-[0_2px_6px_rgba(0,0,0,0.25)]"
+                      ? "relative z-30 bg-white text-gray-950 md:bg-[var(--color-bg-card)] md:text-[var(--color-text-main)] font-black shadow-[0_6px_20px_rgba(0,0,0,0.45),-4px_0_12px_rgba(0,0,0,0.22),4px_0_12px_rgba(0,0,0,0.22)] dark:shadow-[0_8px_24px_rgba(0,0,0,0.65),-4px_0_14px_rgba(0,0,0,0.35),4px_0_14px_rgba(0,0,0,0.35)] border-white/90 dark:border-white/25 md:border-[var(--color-border)] scale-[1.06]"
+                      : "relative z-10 bg-[var(--color-bg-card)]/90 text-slate-300 dark:text-slate-300 hover:text-white hover:bg-[var(--color-surface-hover)] hover:z-20 font-bold border border-white/10 dark:border-white/10 shadow-[0_2px_6px_rgba(0,0,0,0.2)]"
                   )}
                 >
                   <span className="sm:hidden font-black">NOV</span>
@@ -754,10 +764,10 @@ export function DashboardContent({ month, isArchive = false }) {
                   type="button"
                   onClick={() => setSelectedCardMonth('october')}
                   className={cn(
-                    "rounded-full px-3 sm:px-4 py-1 sm:py-1.5 text-[10px] sm:text-xs uppercase tracking-wider transition-all duration-200 cursor-pointer select-none shrink-0 outline-none border",
+                    "rounded-full px-3 sm:px-4 py-1 sm:py-1.5 text-[10px] sm:text-xs uppercase tracking-wider transition-all duration-300 cursor-pointer select-none shrink-0 outline-none border",
                     selectedCardMonth === 'october'
-                      ? "relative z-20 bg-white text-gray-950 md:bg-[var(--color-bg-card)] md:text-[var(--color-text-main)] font-black shadow-[0_3px_12px_rgba(0,0,0,0.35)] dark:shadow-[0_4px_16px_rgba(0,0,0,0.5)] border-white/90 dark:border-white/20 md:border-[var(--color-border)] scale-[1.05]"
-                      : "relative z-10 bg-[var(--color-bg-card)]/90 text-slate-300 dark:text-slate-300 hover:text-white hover:bg-[var(--color-surface-hover)] hover:z-15 font-bold border-white/10 dark:border-white/10 shadow-[0_2px_6px_rgba(0,0,0,0.25)]"
+                      ? "relative z-30 bg-white text-gray-950 md:bg-[var(--color-bg-card)] md:text-[var(--color-text-main)] font-black shadow-[0_6px_20px_rgba(0,0,0,0.45),-4px_0_12px_rgba(0,0,0,0.22),4px_0_12px_rgba(0,0,0,0.22)] dark:shadow-[0_8px_24px_rgba(0,0,0,0.65),-4px_0_14px_rgba(0,0,0,0.35),4px_0_14px_rgba(0,0,0,0.35)] border-white/90 dark:border-white/25 md:border-[var(--color-border)] scale-[1.06]"
+                      : "relative z-10 bg-[var(--color-bg-card)]/90 text-slate-300 dark:text-slate-300 hover:text-white hover:bg-[var(--color-surface-hover)] hover:z-20 font-bold border border-white/10 dark:border-white/10 shadow-[0_2px_6px_rgba(0,0,0,0.2)]"
                   )}
                 >
                   <span className="sm:hidden font-black">OCT</span>
@@ -768,10 +778,10 @@ export function DashboardContent({ month, isArchive = false }) {
                   type="button"
                   onClick={() => setSelectedCardMonth('september')}
                   className={cn(
-                    "rounded-full px-3 sm:px-4 py-1 sm:py-1.5 text-[10px] sm:text-xs uppercase tracking-wider transition-all duration-200 cursor-pointer select-none shrink-0 outline-none border",
+                    "rounded-full px-3 sm:px-4 py-1 sm:py-1.5 text-[10px] sm:text-xs uppercase tracking-wider transition-all duration-300 cursor-pointer select-none shrink-0 outline-none border",
                     selectedCardMonth === 'september'
-                      ? "relative z-20 bg-white text-gray-950 md:bg-[var(--color-bg-card)] md:text-[var(--color-text-main)] font-black shadow-[0_3px_12px_rgba(0,0,0,0.35)] dark:shadow-[0_4px_16px_rgba(0,0,0,0.5)] border-white/90 dark:border-white/20 md:border-[var(--color-border)] scale-[1.05]"
-                      : "relative z-10 bg-[var(--color-bg-card)]/90 text-slate-300 dark:text-slate-300 hover:text-white hover:bg-[var(--color-surface-hover)] hover:z-15 font-bold border-white/10 dark:border-white/10 shadow-[0_2px_6px_rgba(0,0,0,0.25)]"
+                      ? "relative z-30 bg-white text-gray-950 md:bg-[var(--color-bg-card)] md:text-[var(--color-text-main)] font-black shadow-[0_6px_20px_rgba(0,0,0,0.45),-4px_0_12px_rgba(0,0,0,0.22),4px_0_12px_rgba(0,0,0,0.22)] dark:shadow-[0_8px_24px_rgba(0,0,0,0.65),-4px_0_14px_rgba(0,0,0,0.35),4px_0_14px_rgba(0,0,0,0.35)] border-white/90 dark:border-white/25 md:border-[var(--color-border)] scale-[1.06]"
+                      : "relative z-10 bg-[var(--color-bg-card)]/90 text-slate-300 dark:text-slate-300 hover:text-white hover:bg-[var(--color-surface-hover)] hover:z-20 font-bold border border-white/10 dark:border-white/10 shadow-[0_2px_6px_rgba(0,0,0,0.2)]"
                   )}
                 >
                   <span className="sm:hidden font-black">SEP</span>
@@ -782,14 +792,28 @@ export function DashboardContent({ month, isArchive = false }) {
                   type="button"
                   onClick={() => setSelectedCardMonth('august')}
                   className={cn(
-                    "rounded-full px-3 sm:px-4 py-1 sm:py-1.5 text-[10px] sm:text-xs uppercase tracking-wider transition-all duration-200 cursor-pointer select-none shrink-0 outline-none border",
+                    "rounded-full px-3 sm:px-4 py-1 sm:py-1.5 text-[10px] sm:text-xs uppercase tracking-wider transition-all duration-300 cursor-pointer select-none shrink-0 outline-none border",
                     selectedCardMonth === 'august'
-                      ? "relative z-20 bg-white text-gray-950 md:bg-[var(--color-bg-card)] md:text-[var(--color-text-main)] font-black shadow-[0_3px_12px_rgba(0,0,0,0.35)] dark:shadow-[0_4px_16px_rgba(0,0,0,0.5)] border-white/90 dark:border-white/20 md:border-[var(--color-border)] scale-[1.05]"
-                      : "relative z-10 bg-[var(--color-bg-card)]/90 text-slate-300 dark:text-slate-300 hover:text-white hover:bg-[var(--color-surface-hover)] hover:z-15 font-bold border-white/10 dark:border-white/10 shadow-[0_2px_6px_rgba(0,0,0,0.25)]"
+                      ? "relative z-30 bg-white text-gray-950 md:bg-[var(--color-bg-card)] md:text-[var(--color-text-main)] font-black shadow-[0_6px_20px_rgba(0,0,0,0.45),-4px_0_12px_rgba(0,0,0,0.22),4px_0_12px_rgba(0,0,0,0.22)] dark:shadow-[0_8px_24px_rgba(0,0,0,0.65),-4px_0_14px_rgba(0,0,0,0.35),4px_0_14px_rgba(0,0,0,0.35)] border-white/90 dark:border-white/25 md:border-[var(--color-border)] scale-[1.06]"
+                      : "relative z-10 bg-[var(--color-bg-card)]/90 text-slate-300 dark:text-slate-300 hover:text-white hover:bg-[var(--color-surface-hover)] hover:z-20 font-bold border border-white/10 dark:border-white/10 shadow-[0_2px_6px_rgba(0,0,0,0.2)]"
                   )}
                 >
                   <span className="sm:hidden font-black">AUG</span>
                   <span className="hidden sm:inline font-bold">AUGUST</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setSelectedCardMonth('july')}
+                  className={cn(
+                    "rounded-full px-3 sm:px-4 py-1 sm:py-1.5 text-[10px] sm:text-xs uppercase tracking-wider transition-all duration-300 cursor-pointer select-none shrink-0 outline-none border",
+                    selectedCardMonth === 'july'
+                      ? "relative z-30 bg-white text-gray-950 md:bg-[var(--color-bg-card)] md:text-[var(--color-text-main)] font-black shadow-[0_6px_20px_rgba(0,0,0,0.45),-4px_0_12px_rgba(0,0,0,0.22),4px_0_12px_rgba(0,0,0,0.22)] dark:shadow-[0_8px_24px_rgba(0,0,0,0.65),-4px_0_14px_rgba(0,0,0,0.35),4px_0_14px_rgba(0,0,0,0.35)] border-white/90 dark:border-white/25 md:border-[var(--color-border)] scale-[1.06]"
+                      : "relative z-10 bg-[var(--color-bg-card)]/90 text-slate-300 dark:text-slate-300 hover:text-white hover:bg-[var(--color-surface-hover)] hover:z-20 font-bold border border-white/10 dark:border-white/10 shadow-[0_2px_6px_rgba(0,0,0,0.2)]"
+                  )}
+                >
+                  <span className="sm:hidden font-black">JUL</span>
+                  <span className="hidden sm:inline font-bold">JULY</span>
                 </button>
               </div>
             </div>
@@ -818,6 +842,11 @@ export function DashboardContent({ month, isArchive = false }) {
                 activeDateInfo = augustPaced?.dateInfo || formatDateRangeInfo(null, null, 'august', '2026');
                 activeActiveLines = augustPaced?.lines || augustLines || lines || [];
                 activeComp = augustComparison;
+              } else if (selectedCardMonth === 'july' && (julyPaced || julyStats)) {
+                displayStats = julyPaced?.stats || julyStats;
+                activeDateInfo = julyPaced?.dateInfo || formatDateRangeInfo(null, null, 'july', '2026');
+                activeActiveLines = julyPaced?.lines || julyLines || lines || [];
+                activeComp = julyComparison;
               }
             }
 
@@ -883,6 +912,8 @@ export function DashboardContent({ month, isArchive = false }) {
                 activeDailyTrends = septemberDailyTrends.slice(0, currentWorkingDays);
               } else if (selectedCardMonth === 'august' && augustDailyTrends) {
                 activeDailyTrends = augustDailyTrends.slice(0, currentWorkingDays);
+              } else if (selectedCardMonth === 'july' && julyDailyTrends) {
+                activeDailyTrends = julyDailyTrends.slice(0, currentWorkingDays);
               }
             }
 
@@ -902,7 +933,7 @@ export function DashboardContent({ month, isArchive = false }) {
                   <DashboardDateRange dateInfo={activeDateInfo} workingDays={displayStats?.workingDays} />
                   {isPastMonth && (
                     <p className="text-[10px] sm:text-[11px] text-[var(--color-text-muted)] font-medium tracking-normal mt-0.5 select-none">
-                      Comparing with current month (NOV)
+                      Comparing {selectedCardMonth.slice(0, 3).toUpperCase()} (same days) with current month (NOV)
                     </p>
                   )}
                 </div>
@@ -1533,11 +1564,13 @@ export function DashboardContent({ month, isArchive = false }) {
                     ? (septemberPaced?.lines || septemberLines || lines || []) 
                     : (selectedCardMonth === 'august' 
                         ? (augustPaced?.lines || augustLines || lines || []) 
-                        : (lines || []))));
+                        : (selectedCardMonth === 'july'
+                            ? (julyPaced?.lines || julyLines || lines || [])
+                            : (lines || [])))));
 
           const activeMonthName = isArchive
             ? (dateComponents?.month || 'Archive')
-            : (selectedCardMonth === 'october' ? 'October' : (selectedCardMonth === 'september' ? 'September' : (selectedCardMonth === 'august' ? 'August' : (dateComponents?.month || 'November'))));
+            : (selectedCardMonth === 'october' ? 'October' : (selectedCardMonth === 'september' ? 'September' : (selectedCardMonth === 'august' ? 'August' : (selectedCardMonth === 'july' ? 'July' : (dateComponents?.month || 'November')))));
 
           const activeDateInfo = (() => {
             if (isArchive) {
@@ -1552,6 +1585,9 @@ export function DashboardContent({ month, isArchive = false }) {
             if (selectedCardMonth === 'august') {
               return augustPaced?.dateInfo || formatDateRangeInfo(null, null, 'august', '2026');
             }
+            if (selectedCardMonth === 'july') {
+              return julyPaced?.dateInfo || formatDateRangeInfo(null, null, 'july', '2026');
+            }
             return formatDateRangeInfo(startDate, endDate);
           })();
 
@@ -1563,7 +1599,9 @@ export function DashboardContent({ month, isArchive = false }) {
                     ? (septemberPaced?.stats || septemberStats) 
                     : (selectedCardMonth === 'august' 
                         ? (augustPaced?.stats || augustStats) 
-                        : stats)));
+                        : (selectedCardMonth === 'july'
+                            ? (julyPaced?.stats || julyStats)
+                            : stats))));
 
           return (
             <div className="mt-12 mb-10 relative z-10">
@@ -1576,7 +1614,7 @@ export function DashboardContent({ month, isArchive = false }) {
                   <DashboardDateRange dateInfo={activeDateInfo} workingDays={currentStatsForDate?.workingDays} />
                   {!isArchive && selectedCardMonth !== 'current' && (
                     <p className="text-[10px] sm:text-[11px] text-[var(--color-text-muted)] font-medium tracking-normal mt-0.5 select-none">
-                      Comparing with current month (NOV)
+                      Comparing {selectedCardMonth.slice(0, 3).toUpperCase()} (same days) with current month (NOV)
                     </p>
                   )}
                 </div>
@@ -1789,7 +1827,9 @@ export function DashboardContent({ month, isArchive = false }) {
                                   ? `/archive/2026-09/lines/${line.id}`
                                   : selectedCardMonth === 'august'
                                     ? `/archive/2026-08/lines/${line.id}`
-                                    : `/lines/${line.id}`
+                                    : selectedCardMonth === 'july'
+                                      ? `/archive/2026-07/lines/${line.id}`
+                                      : `/lines/${line.id}`
                           }
                           className={cn(
                             "w-full px-4 font-bold uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer select-none group bg-[var(--color-primary)] hover:opacity-90 text-[var(--color-on-primary,white)] shadow-md",

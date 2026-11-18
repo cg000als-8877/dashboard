@@ -209,22 +209,24 @@ export default function ProductionLinesPage() {
     } catch (e) {}
   };
 
-  // Load datasets for Live (November), October archive, September archive, and August archive
+  // Load datasets for Live (November), October archive, September archive, August archive, and July archive
   const { rawEngine: liveEngine, stats: liveStats, dailyTrends: liveDailyTrends, lines: liveLines, loading: liveLoading, error: liveError } = useKpiData('live');
   const { rawEngine: octoberEngine, stats: octoberStats, dailyTrends: octoberDailyTrends, lines: octoberLines, loading: octoberLoading } = useKpiData('2026-10');
   const { rawEngine: septemberEngine, stats: septemberStats, dailyTrends: septemberDailyTrends, lines: septemberLines, loading: septemberLoading } = useKpiData('2026-09');
   const { rawEngine: augustEngine, stats: augustStats, dailyTrends: augustDailyTrends, lines: augustLines, loading: augustLoading } = useKpiData('2026-08');
+  const { rawEngine: julyEngine, stats: julyStats, dailyTrends: julyDailyTrends, lines: julyLines, loading: julyLoading } = useKpiData('2026-07');
 
   // Active dataset determination
   const isOctober = selectedMonthTab === 'october';
   const isSeptember = selectedMonthTab === 'september';
   const isAugust = selectedMonthTab === 'august';
+  const isJuly = selectedMonthTab === 'july';
   const isLive = selectedMonthTab === 'current';
 
-  const currentStats = isOctober ? (octoberStats || liveStats) : (isSeptember ? (septemberStats || liveStats) : (isAugust ? (augustStats || liveStats) : liveStats));
-  const currentLines = isOctober ? (octoberLines || liveLines || []) : (isSeptember ? (septemberLines || liveLines || []) : (isAugust ? (augustLines || liveLines || []) : (liveLines || [])));
-  const currentEngine = isOctober ? octoberEngine : (isSeptember ? septemberEngine : (isAugust ? augustEngine : liveEngine));
-  const activeMonthName = isOctober ? 'OCTOBER' : (isSeptember ? 'SEPTEMBER' : (isAugust ? 'AUGUST' : 'NOVEMBER'));
+  const currentStats = isOctober ? (octoberStats || liveStats) : (isSeptember ? (septemberStats || liveStats) : (isAugust ? (augustStats || liveStats) : (isJuly ? (julyStats || liveStats) : liveStats)));
+  const currentLines = isOctober ? (octoberLines || liveLines || []) : (isSeptember ? (septemberLines || liveLines || []) : (isAugust ? (augustLines || liveLines || []) : (isJuly ? (julyLines || liveLines || []) : (liveLines || []))));
+  const currentEngine = isOctober ? octoberEngine : (isSeptember ? septemberEngine : (isAugust ? augustEngine : (isJuly ? julyEngine : liveEngine)));
+  const activeMonthName = isOctober ? 'OCTOBER' : (isSeptember ? 'SEPTEMBER' : (isAugust ? 'AUGUST' : (isJuly ? 'JULY' : 'NOVEMBER')));
 
   const startDate = liveDailyTrends?.length > 0 ? liveDailyTrends[0].date : null;
   const endDate = liveDailyTrends?.length > 0 ? liveDailyTrends[liveDailyTrends.length - 1].date : null;
@@ -233,8 +235,9 @@ export default function ProductionLinesPage() {
     if (isOctober) return formatDateRangeInfo(null, null, 'october', '2026');
     if (isSeptember) return formatDateRangeInfo(null, null, 'september', '2026');
     if (isAugust) return formatDateRangeInfo(null, null, 'august', '2026');
+    if (isJuly) return formatDateRangeInfo(null, null, 'july', '2026');
     return formatDateRangeInfo(startDate, endDate);
-  }, [isOctober, isSeptember, isAugust, startDate, endDate]);
+  }, [isOctober, isSeptember, isAugust, isJuly, startDate, endDate]);
 
   // Compute Floor Leadership Rankings across lines (Only active lines with actual production and costs qualify)
   const floorRankings = useMemo(() => {
@@ -304,15 +307,15 @@ export default function ProductionLinesPage() {
 
           {/* 2. Month Tabs Switcher */}
           <div className="flex justify-center items-center max-w-full overflow-x-auto hide-scrollbar px-0.5">
-            <div className="inline-flex p-1 bg-[var(--color-surface)]/80 border border-[var(--color-border)]/60 rounded-full -space-x-2 sm:-space-x-2.5 shadow-inner backdrop-blur-md items-center select-none shrink-0">
+            <div className="inline-flex items-center -space-x-2.5 sm:-space-x-3.5 select-none shrink-0 py-1.5 px-2">
               <button
                 type="button"
                 onClick={() => setSelectedMonthTab('current')}
                 className={cn(
-                  "flex items-center gap-1 sm:gap-1.5 rounded-full px-3 sm:px-4 py-1 sm:py-1.5 text-[10px] sm:text-xs uppercase tracking-wider transition-all duration-200 cursor-pointer select-none shrink-0 outline-none border",
+                  "flex items-center gap-1 sm:gap-1.5 rounded-full px-3 sm:px-4 py-1 sm:py-1.5 text-[10px] sm:text-xs uppercase tracking-wider transition-all duration-300 cursor-pointer select-none shrink-0 outline-none border",
                   isLive
-                    ? "relative z-20 bg-white text-gray-950 md:bg-[var(--color-bg-card)] md:text-[var(--color-text-main)] font-black shadow-[0_3px_12px_rgba(0,0,0,0.35)] dark:shadow-[0_4px_16px_rgba(0,0,0,0.5)] border-white/90 dark:border-white/20 md:border-[var(--color-border)] scale-[1.05]"
-                    : "relative z-10 bg-[var(--color-bg-card)]/90 text-slate-300 dark:text-slate-300 hover:text-white hover:bg-[var(--color-surface-hover)] hover:z-15 font-bold border-white/10 dark:border-white/10 shadow-[0_2px_6px_rgba(0,0,0,0.25)]"
+                    ? "relative z-30 bg-white text-gray-950 md:bg-[var(--color-bg-card)] md:text-[var(--color-text-main)] font-black shadow-[0_6px_20px_rgba(0,0,0,0.45),-4px_0_12px_rgba(0,0,0,0.22),4px_0_12px_rgba(0,0,0,0.22)] dark:shadow-[0_8px_24px_rgba(0,0,0,0.65),-4px_0_14px_rgba(0,0,0,0.35),4px_0_14px_rgba(0,0,0,0.35)] border-white/90 dark:border-white/25 md:border-[var(--color-border)] scale-[1.06]"
+                    : "relative z-10 bg-[var(--color-bg-card)]/90 text-slate-300 dark:text-slate-300 hover:text-white hover:bg-[var(--color-surface-hover)] hover:z-20 font-bold border border-white/10 dark:border-white/10 shadow-[0_2px_6px_rgba(0,0,0,0.2)]"
                 )}
               >
                 <span className="sm:hidden font-black">NOV</span>
@@ -325,10 +328,10 @@ export default function ProductionLinesPage() {
                 type="button"
                 onClick={() => setSelectedMonthTab('october')}
                 className={cn(
-                  "rounded-full px-3 sm:px-4 py-1 sm:py-1.5 text-[10px] sm:text-xs uppercase tracking-wider transition-all duration-200 cursor-pointer select-none shrink-0 outline-none border",
+                  "rounded-full px-3 sm:px-4 py-1 sm:py-1.5 text-[10px] sm:text-xs uppercase tracking-wider transition-all duration-300 cursor-pointer select-none shrink-0 outline-none border",
                   isOctober
-                    ? "relative z-20 bg-white text-gray-950 md:bg-[var(--color-bg-card)] md:text-[var(--color-text-main)] font-black shadow-[0_3px_12px_rgba(0,0,0,0.35)] dark:shadow-[0_4px_16px_rgba(0,0,0,0.5)] border-white/90 dark:border-white/20 md:border-[var(--color-border)] scale-[1.05]"
-                    : "relative z-10 bg-[var(--color-bg-card)]/90 text-slate-300 dark:text-slate-300 hover:text-white hover:bg-[var(--color-surface-hover)] hover:z-15 font-bold border-white/10 dark:border-white/10 shadow-[0_2px_6px_rgba(0,0,0,0.25)]"
+                    ? "relative z-30 bg-white text-gray-950 md:bg-[var(--color-bg-card)] md:text-[var(--color-text-main)] font-black shadow-[0_6px_20px_rgba(0,0,0,0.45),-4px_0_12px_rgba(0,0,0,0.22),4px_0_12px_rgba(0,0,0,0.22)] dark:shadow-[0_8px_24px_rgba(0,0,0,0.65),-4px_0_14px_rgba(0,0,0,0.35),4px_0_14px_rgba(0,0,0,0.35)] border-white/90 dark:border-white/25 md:border-[var(--color-border)] scale-[1.06]"
+                    : "relative z-10 bg-[var(--color-bg-card)]/90 text-slate-300 dark:text-slate-300 hover:text-white hover:bg-[var(--color-surface-hover)] hover:z-20 font-bold border border-white/10 dark:border-white/10 shadow-[0_2px_6px_rgba(0,0,0,0.2)]"
                 )}
               >
                 <span className="sm:hidden font-black">OCT</span>
@@ -339,10 +342,10 @@ export default function ProductionLinesPage() {
                 type="button"
                 onClick={() => setSelectedMonthTab('september')}
                 className={cn(
-                  "rounded-full px-3 sm:px-4 py-1 sm:py-1.5 text-[10px] sm:text-xs uppercase tracking-wider transition-all duration-200 cursor-pointer select-none shrink-0 outline-none border",
+                  "rounded-full px-3 sm:px-4 py-1 sm:py-1.5 text-[10px] sm:text-xs uppercase tracking-wider transition-all duration-300 cursor-pointer select-none shrink-0 outline-none border",
                   isSeptember
-                    ? "relative z-20 bg-white text-gray-950 md:bg-[var(--color-bg-card)] md:text-[var(--color-text-main)] font-black shadow-[0_3px_12px_rgba(0,0,0,0.35)] dark:shadow-[0_4px_16px_rgba(0,0,0,0.5)] border-white/90 dark:border-white/20 md:border-[var(--color-border)] scale-[1.05]"
-                    : "relative z-10 bg-[var(--color-bg-card)]/90 text-slate-300 dark:text-slate-300 hover:text-white hover:bg-[var(--color-surface-hover)] hover:z-15 font-bold border-white/10 dark:border-white/10 shadow-[0_2px_6px_rgba(0,0,0,0.25)]"
+                    ? "relative z-30 bg-white text-gray-950 md:bg-[var(--color-bg-card)] md:text-[var(--color-text-main)] font-black shadow-[0_6px_20px_rgba(0,0,0,0.45),-4px_0_12px_rgba(0,0,0,0.22),4px_0_12px_rgba(0,0,0,0.22)] dark:shadow-[0_8px_24px_rgba(0,0,0,0.65),-4px_0_14px_rgba(0,0,0,0.35),4px_0_14px_rgba(0,0,0,0.35)] border-white/90 dark:border-white/25 md:border-[var(--color-border)] scale-[1.06]"
+                    : "relative z-10 bg-[var(--color-bg-card)]/90 text-slate-300 dark:text-slate-300 hover:text-white hover:bg-[var(--color-surface-hover)] hover:z-20 font-bold border border-white/10 dark:border-white/10 shadow-[0_2px_6px_rgba(0,0,0,0.2)]"
                 )}
               >
                 <span className="sm:hidden font-black">SEP</span>
@@ -353,14 +356,28 @@ export default function ProductionLinesPage() {
                 type="button"
                 onClick={() => setSelectedMonthTab('august')}
                 className={cn(
-                  "rounded-full px-3 sm:px-4 py-1 sm:py-1.5 text-[10px] sm:text-xs uppercase tracking-wider transition-all duration-200 cursor-pointer select-none shrink-0 outline-none border",
+                  "rounded-full px-3 sm:px-4 py-1 sm:py-1.5 text-[10px] sm:text-xs uppercase tracking-wider transition-all duration-300 cursor-pointer select-none shrink-0 outline-none border",
                   isAugust
-                    ? "relative z-20 bg-white text-gray-950 md:bg-[var(--color-bg-card)] md:text-[var(--color-text-main)] font-black shadow-[0_3px_12px_rgba(0,0,0,0.35)] dark:shadow-[0_4px_16px_rgba(0,0,0,0.5)] border-white/90 dark:border-white/20 md:border-[var(--color-border)] scale-[1.05]"
-                    : "relative z-10 bg-[var(--color-bg-card)]/90 text-slate-300 dark:text-slate-300 hover:text-white hover:bg-[var(--color-surface-hover)] hover:z-15 font-bold border-white/10 dark:border-white/10 shadow-[0_2px_6px_rgba(0,0,0,0.25)]"
+                    ? "relative z-30 bg-white text-gray-950 md:bg-[var(--color-bg-card)] md:text-[var(--color-text-main)] font-black shadow-[0_6px_20px_rgba(0,0,0,0.45),-4px_0_12px_rgba(0,0,0,0.22),4px_0_12px_rgba(0,0,0,0.22)] dark:shadow-[0_8px_24px_rgba(0,0,0,0.65),-4px_0_14px_rgba(0,0,0,0.35),4px_0_14px_rgba(0,0,0,0.35)] border-white/90 dark:border-white/25 md:border-[var(--color-border)] scale-[1.06]"
+                    : "relative z-10 bg-[var(--color-bg-card)]/90 text-slate-300 dark:text-slate-300 hover:text-white hover:bg-[var(--color-surface-hover)] hover:z-20 font-bold border border-white/10 dark:border-white/10 shadow-[0_2px_6px_rgba(0,0,0,0.2)]"
                 )}
               >
                 <span className="sm:hidden font-black">AUG</span>
                 <span className="hidden sm:inline font-bold">AUGUST</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setSelectedMonthTab('july')}
+                className={cn(
+                  "rounded-full px-3 sm:px-4 py-1 sm:py-1.5 text-[10px] sm:text-xs uppercase tracking-wider transition-all duration-300 cursor-pointer select-none shrink-0 outline-none border",
+                  isJuly
+                    ? "relative z-30 bg-white text-gray-950 md:bg-[var(--color-bg-card)] md:text-[var(--color-text-main)] font-black shadow-[0_6px_20px_rgba(0,0,0,0.45),-4px_0_12px_rgba(0,0,0,0.22),4px_0_12px_rgba(0,0,0,0.22)] dark:shadow-[0_8px_24px_rgba(0,0,0,0.65),-4px_0_14px_rgba(0,0,0,0.35),4px_0_14px_rgba(0,0,0,0.35)] border-white/90 dark:border-white/25 md:border-[var(--color-border)] scale-[1.06]"
+                    : "relative z-10 bg-[var(--color-bg-card)]/90 text-slate-300 dark:text-slate-300 hover:text-white hover:bg-[var(--color-surface-hover)] hover:z-20 font-bold border border-white/10 dark:border-white/10 shadow-[0_2px_6px_rgba(0,0,0,0.2)]"
+                )}
+              >
+                <span className="sm:hidden font-black">JUL</span>
+                <span className="hidden sm:inline font-bold">JULY</span>
               </button>
             </div>
           </div>
@@ -471,7 +488,7 @@ export default function ProductionLinesPage() {
             {sortedCurrentLines.map((line) => {
             const isInactive = (line.totalProduction || 0) === 0 && (line.totalCost || 0) === 0;
             const isProfitable = !isInactive && (line.netProfit || 0) >= 0;
-            const detailsUrl = isOctober ? `/archive/2026-10/lines/${line.id}` : (isSeptember ? `/archive/2026-09/lines/${line.id}` : (isAugust ? `/archive/2026-08/lines/${line.id}` : `/lines/${line.id}`));
+            const detailsUrl = isOctober ? `/archive/2026-10/lines/${line.id}` : (isSeptember ? `/archive/2026-09/lines/${line.id}` : (isAugust ? `/archive/2026-08/lines/${line.id}` : (isJuly ? `/archive/2026-07/lines/${line.id}` : `/lines/${line.id}`)));
 
             // Floor Leadership Badges
             const isTopProfit = !isInactive && floorRankings.topProfitId === line.id;
@@ -667,7 +684,9 @@ export default function ProductionLinesPage() {
                   ? `/archive/2026-09/lines/${line.id}` 
                   : (isAugust 
                       ? `/archive/2026-08/lines/${line.id}` 
-                      : `/lines/${line.id}`));
+                      : (isJuly
+                          ? `/archive/2026-07/lines/${line.id}`
+                          : `/lines/${line.id}`)));
 
             return (
               <Card className="relative overflow-hidden w-full h-full p-0 flex flex-col justify-between border border-[var(--color-border)] shadow-md hover:shadow-xl transition-all duration-300">
