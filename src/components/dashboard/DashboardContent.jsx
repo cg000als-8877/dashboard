@@ -1103,56 +1103,41 @@ export function DashboardContent({ month, isArchive = false }) {
                       </p>
                     </div>
 
-                    {/* Lines Badges List: Line Name, Item, & Total Production (Active lines only) */}
-                    {(() => {
-                      const linesCount = renderedActiveLines.length;
-                      // 3 lines: row 1 (2 cols), row 2 (1 col full width). 4 lines: 2 cols x 2 rows. 2 lines: 2 cols. 1 line: 1 col.
-                      const gridColsClass = linesCount >= 2 ? 'grid-cols-2' : 'grid-cols-1';
+                    {/* Lines Badges List: Line Name, Item, & Total Production (Stacked view in mobile) */}
+                    <div className="flex flex-col gap-1.5 pt-1.5 sm:pt-2">
+                      {renderedActiveLines.map((lineId) => {
+                        const lineData = currentActiveLines?.find(l => l.id?.toUpperCase() === lineId);
+                        const itemDesc = (lineData?.items && lineData.items.length > 0 ? lineData.items.join(', ') : null) || lineData?.item || lineData?.lastActiveDay?.item || lineData?.today?.item || DEFAULT_LINE_ITEMS[lineId] || 'Polo Shirt';
+                        const totalProd = lineData?.totalProduction || 0;
 
-                      return (
-                        <div className={cn(
-                          "grid gap-1.5 pt-2",
-                          gridColsClass
-                        )}>
-                          {renderedActiveLines.map((lineId, index) => {
-                            const lineData = currentActiveLines?.find(l => l.id?.toUpperCase() === lineId);
-                            const itemDesc = (lineData?.items && lineData.items.length > 0 ? lineData.items.join(', ') : null) || lineData?.item || lineData?.lastActiveDay?.item || lineData?.today?.item || DEFAULT_LINE_ITEMS[lineId] || 'Polo Shirt';
-                            const totalProd = lineData?.totalProduction || 0;
-                            const isThirdInThree = linesCount === 3 && index === 2;
+                        return (
+                          <div
+                            key={lineId}
+                            className="rounded-[6px] transition-all bg-[var(--color-surface)] shadow-xs min-w-0 flex items-center justify-between p-2 sm:p-2.5 gap-2"
+                          >
+                            {/* Line Info: Line Name & Item Name */}
+                            <div className="min-w-0 flex-1">
+                              <span className="font-bold text-[var(--color-text-main)] truncate block leading-tight text-[10.5px] sm:text-xs">
+                                Line {lineId}
+                              </span>
+                              <p className="font-medium text-[var(--color-text-muted)] truncate mt-0.5 leading-tight text-[8.5px] sm:text-[9.5px]">
+                                {itemDesc}
+                              </p>
+                            </div>
 
-                            return (
-                              <div
-                                key={lineId}
-                                className={cn(
-                                  "rounded-[6px] transition-all bg-[var(--color-surface)] shadow-xs min-w-0 flex items-center justify-between p-2 sm:p-2.5 gap-1.5",
-                                  isThirdInThree && "col-span-2"
-                                )}
-                              >
-                                {/* Line Info: Line Name & Item Name */}
-                                <div className="min-w-0 flex-1">
-                                  <span className="font-bold text-[var(--color-text-main)] truncate block leading-tight text-[10.5px] sm:text-xs">
-                                    Line {lineId}
-                                  </span>
-                                  <p className="font-medium text-[var(--color-text-muted)] truncate mt-0.5 leading-tight text-[8.5px] sm:text-[9.5px]">
-                                    {itemDesc}
-                                  </p>
-                                </div>
-
-                                {/* Total Production Output */}
-                                <div className="text-right shrink-0 pl-1">
-                                  <span className="font-bold text-[var(--color-text-main)] block leading-tight text-[10.5px] sm:text-xs">
-                                    <AnimatedNumber value={totalProd} />
-                                  </span>
-                                  <span className="font-semibold uppercase text-[var(--color-text-muted)] block leading-none text-[7.5px] sm:text-[8px]">
-                                    pcs
-                                  </span>
-                                </div>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      );
-                    })()}
+                            {/* Total Production Output */}
+                            <div className="text-right shrink-0 pl-1">
+                              <span className="font-bold text-[var(--color-text-main)] block leading-tight text-[10.5px] sm:text-xs">
+                                <AnimatedNumber value={totalProd} />
+                              </span>
+                              <span className="font-semibold uppercase text-[var(--color-text-muted)] block leading-none text-[7.5px] sm:text-[8px]">
+                                pcs
+                              </span>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
                   </Card>
                 </div>
 

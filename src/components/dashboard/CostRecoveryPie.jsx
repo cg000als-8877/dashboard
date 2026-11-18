@@ -1,31 +1,21 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useId } from 'react';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { cn } from '@/components/layout/Sidebar';
-
-function formatK(num) {
-  const n = Math.abs(Number(num) || 0);
-  if (n >= 1000000) {
-    return (n / 1000000).toFixed(2) + 'M';
-  }
-  if (n >= 1000) {
-    return (n / 1000).toFixed(1) + 'K';
-  }
-  return n.toLocaleString();
-}
 
 export function CostRecoveryPie({ 
   percentage = 0, 
   isProfitable = false, 
-  totalIncome = 0,
-  totalCost = 0,
-  netProfit = 0,
   compact = false,
   title,
   subtitle,
   className = "" 
 }) {
+  const rawId = useId();
+  const uniqueId = rawId.replace(/[^a-zA-Z0-9-_]/g, '');
+  const shimmerGradId = `pie-shimmer-grad-${uniqueId}`;
+
   const [fillLevel, setFillLevel] = useState(0);
   const clamped = Math.min(Math.max(Number(percentage) || 0, 0), 100);
 
@@ -36,54 +26,83 @@ export function CostRecoveryPie({
     return () => clearTimeout(timeout);
   }, [clamped]);
 
+  // Circle dimensions: radius 58, strokeWidth 12
+  const radius = 58;
+  const circumference = 2 * Math.PI * radius;
+  const strokeDashoffset = circumference - (fillLevel / 100) * circumference;
+
+  // Calculate tip coordinates for live pulsating beacon (inside -rotate-90 SVG)
+  const angleRad = ((fillLevel / 100) * 360 * Math.PI) / 180;
+  const tipX = 80 + radius * Math.cos(angleRad);
+  const tipY = 80 + radius * Math.sin(angleRad);
+
   const pct = Number(percentage) || 0;
   const isCovered = isProfitable || pct >= 100;
 
   // Dynamic tone & status computation based on recovery percentage and profit
   let toneStatus;
+
   if (isCovered || pct >= 100) {
     if (pct >= 120) {
       toneStatus = {
-        statusTag: "Surplus Covered",
-        statusTagColor: "text-[var(--color-success-text)]",
+        line2: "Income far exceeds expenses",
         line3: "Strong positive profit margin achieved!",
         line3Color: "text-[var(--color-success-text)]",
+        centerLabel: "Surplus",
+        centerLabelColor: "text-[var(--color-success-text)]",
+        strokeColor: "var(--color-success)",
+        glowColor: "var(--color-success-glow, rgba(16, 185, 129, 0.45))"
       };
     } else {
       toneStatus = {
-        statusTag: "Target Covered",
-        statusTagColor: "text-[var(--color-success-text)]",
+        line2: "Income surpasses expenses",
         line3: "Factory is operating in profit!",
         line3Color: "text-[var(--color-success-text)]",
+        centerLabel: "Profitable",
+        centerLabelColor: "text-[var(--color-success-text)]",
+        strokeColor: "var(--color-success)",
+        glowColor: "var(--color-success-glow, rgba(16, 185, 129, 0.45))"
       };
     }
   } else if (pct >= 85) {
     toneStatus = {
-      statusTag: "Closing Gap",
-      statusTagColor: "text-[var(--color-warning-text,var(--color-warning))]",
+      line2: "Approaching break-even",
       line3: "Closing in on break-even recovery!",
-      line3Color: "text-[var(--color-warning-text,var(--color-warning))]",
+      line3Color: "text-[var(--color-warning)]",
+      centerLabel: "Closing In",
+      centerLabelColor: "text-[var(--color-warning)]",
+      strokeColor: "var(--color-warning)",
+      glowColor: "var(--color-warning-glow, rgba(251, 191, 36, 0.45))"
     };
   } else if (pct >= 65) {
     toneStatus = {
-      statusTag: "Recovering",
-      statusTagColor: "text-[var(--color-text-secondary)]",
+      line2: "Costs currently exceed income",
       line3: "Steadily recovering production costs",
       line3Color: "text-[var(--color-text-secondary)]",
+      centerLabel: "Recovery",
+      centerLabelColor: "text-[var(--color-text-secondary)]",
+      strokeColor: "var(--color-primary)",
+      glowColor: "var(--color-primary-glow)"
     };
   } else if (pct >= 45) {
     toneStatus = {
-      statusTag: "Deficit Gap",
-      statusTagColor: "text-[var(--color-danger-text,var(--color-danger))]",
+      line2: "Deficit gap remains high",
       line3: "Deficit gap remains significant",
-      line3Color: "text-[var(--color-danger-text,var(--color-danger))]",
+      line3Color: "text-[var(--color-danger-text)]",
+      centerLabel: "Deficit",
+      centerLabelColor: "text-[var(--color-danger-text)]",
+      strokeColor: "var(--color-primary)",
+      glowColor: "var(--color-primary-glow)"
     };
   } else {
     toneStatus = {
-      statusTag: "Recovery Deficit",
-      statusTagColor: "text-[var(--color-danger-text,var(--color-danger))]",
+      line2: "Costs severely exceed income",
       line3: "Profit is currently out of range!",
-      line3Color: "text-[var(--color-danger-text,var(--color-danger))]",
+      line3Color: "text-[var(--color-danger-text)]",
+      centerLabel: "Deficit",
+      centerLabelColor: "text-[var(--color-danger-text)]",
+      strokeColor: "var(--color-danger)",
+      glowColor: "var(--color-danger-glow, rgba(239, 68, 68, 0.45))"
     };
   }
 
@@ -121,114 +140,274 @@ export function CostRecoveryPie({
   const displayTitle = title ?? defaultTitle;
   const displaySubtitle = subtitle ?? defaultSubtitle;
 
-  const litCount = Math.round((fillLevel / 100) * 10);
-
   return (
-    <div className={cn("flex flex-col items-center justify-between w-full h-full relative select-none py-1", className)}>
-      {/* Battery System Body */}
-      <div className="w-full flex-1 flex items-center justify-center my-auto min-h-[110px] sm:min-h-[135px] px-1">
-        <div className="flex items-center justify-center gap-3.5 sm:gap-5 w-full">
-          {/* Battery Vertical Tower */}
-          <div className="flex flex-col items-center shrink-0">
-            {/* Top Terminal Cap */}
-            <div className="w-3.5 sm:w-4.5 h-1 sm:h-1.5 rounded-t-xs bg-[var(--color-border-strong,var(--color-border))] border-t border-x border-[var(--color-border)] mb-0.5 transition-colors" />
-            
-            {/* Battery Segment Stack Enclosure */}
-            <div className="p-1 sm:p-1.5 rounded-xl bg-[var(--color-bg-main)]/70 border border-[var(--color-border)] flex flex-col-reverse gap-1 shadow-inner backdrop-blur-xs transition-colors">
-              {Array.from({ length: 10 }).map((_, idx) => {
-                const blockIndex = idx + 1;
-                const isLit = blockIndex <= litCount;
-                const isTopActive = blockIndex === litCount;
+    <div className={cn("flex flex-col items-center justify-between w-full h-full relative select-none py-0.5", className)}>
+      {/* SVG Pie / Circular Progress Ring - Thick Stroke, No Glow */}
+      <div className={cn(
+        "relative w-full aspect-square flex items-center justify-center my-auto",
+        compact 
+          ? "max-w-[116px] min-[380px]:max-w-[124px] sm:max-w-[136px]" 
+          : "max-w-[150px] sm:max-w-[175px] md:max-w-[200px] xl:max-w-[230px]"
+      )}>
+        <svg
+          viewBox="0 0 160 160"
+          className="w-full h-full transform -rotate-90 overflow-visible"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <style>{`
+            @keyframes pie-stroke-glow-pulse {
+              0%, 100% {
+                opacity: 0.90;
+                stroke-width: 12px;
+              }
+              50% {
+                opacity: 1;
+                stroke-width: 12.8px;
+              }
+            }
+            @keyframes pie-shimmer-sweep {
+              0% {
+                opacity: 0.1;
+              }
+              50% {
+                opacity: 0.55;
+              }
+              100% {
+                opacity: 0.1;
+              }
+            }
+            @keyframes pie-beacon-pulse {
+              0%, 100% {
+                transform: scale(0.9);
+                opacity: 0.65;
+              }
+              50% {
+                transform: scale(1.35);
+                opacity: 0.2;
+              }
+            }
+          `}</style>
 
-                // Color tiering according to energy recovery level using Theme tokens
-                let blockStyle = {};
-                let blockClass = "";
+          <defs>
+            {/* SVG Gaussian Blur Filters for Mobile View (Soft feathered edges) */}
+            <filter id={`${uniqueId}-pie-blur-wide`} x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="3.2" />
+            </filter>
+            <filter id={`${uniqueId}-pie-blur-medium`} x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="1.8" />
+            </filter>
+            <filter id={`${uniqueId}-pie-blur-core`} x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="0.9" />
+            </filter>
 
-                if (isLit) {
-                  if (blockIndex >= 9) {
-                    // Surplus / Target zone: Success Theme Token
-                    blockStyle = {
-                      backgroundColor: 'var(--color-success)',
-                      boxShadow: '0 0 10px var(--color-success-glow, rgba(16, 185, 129, 0.6))',
-                    };
-                    blockClass = "border border-white/30 dark:border-white/20";
-                  } else if (blockIndex >= 6) {
-                    // Mid / Approaching break-even zone: Warning Theme Token
-                    blockStyle = {
-                      backgroundColor: 'var(--color-warning)',
-                      boxShadow: '0 0 10px var(--color-warning-glow, rgba(251, 191, 36, 0.6))',
-                    };
-                    blockClass = "border border-white/30 dark:border-white/20";
-                  } else {
-                    // Low / Deficit zone: Danger Theme Token
-                    blockStyle = {
-                      backgroundColor: 'var(--color-danger)',
-                      boxShadow: '0 0 10px var(--color-danger-glow, rgba(239, 68, 68, 0.6))',
-                    };
-                    blockClass = "border border-white/30 dark:border-white/20";
-                  }
-                } else {
-                  // Unlit slots: fully visible & themed in both Dark and Light modes across all palettes
-                  blockClass = "bg-[var(--color-surface)] border border-[var(--color-border)]/50";
-                }
+            {/* Shimmer gradient that sweeps smoothly along the progress stroke with unique instance ID */}
+            <linearGradient id={shimmerGradId} x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0">
+                <animate attributeName="offset" values="-0.3; 1.3" dur="2.6s" repeatCount="indefinite" />
+              </stop>
+              <stop offset="20%" stopColor="#FFFFFF" stopOpacity="0.45">
+                <animate attributeName="offset" values="-0.1; 1.5" dur="2.6s" repeatCount="indefinite" />
+              </stop>
+              <stop offset="40%" stopColor="#FFFFFF" stopOpacity="0">
+                <animate attributeName="offset" values="0.1; 1.7" dur="2.6s" repeatCount="indefinite" />
+              </stop>
+            </linearGradient>
+          </defs>
 
-                return (
-                  <div
-                    key={idx}
-                    style={isLit ? blockStyle : undefined}
-                    className={cn(
-                      "w-8 min-[380px]:w-9.5 sm:w-11 h-2 sm:h-2.5 rounded-[2px] transition-all duration-300 relative overflow-hidden",
-                      blockClass
-                    )}
-                  >
-                    {/* Micro shimmer shine on the top active bar */}
-                    {isTopActive && (
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-pulse" />
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
+          {/* Background Track Circle */}
+          <circle
+            cx="80"
+            cy="80"
+            r={radius}
+            stroke="var(--color-border)"
+            strokeWidth="12"
+            strokeLinecap="round"
+            className="opacity-40"
+          />
 
-          {/* Right-Side Metrics & Status */}
-          <div className="flex flex-col items-start justify-center select-none">
-            {/* Big Recovery Percentage */}
-            <span className={cn(
-              "font-black tracking-tight leading-none text-2xl sm:text-3xl [filter:var(--shadow-text)] transition-colors duration-300",
-              isCovered ? "text-[var(--color-success-text)]" : "text-[var(--color-text-main)]"
-            )}>
-              <AnimatedNumber value={Math.round(fillLevel)} suffix="%" />
-            </span>
+          {/* ── MOBILE VIEW: Soft Blurry "Edges Don't Show Up" Progress Arc ── */}
+          <g className="md:hidden">
+            {/* Outer Aura: Wide Soft Diffusion */}
+            <circle
+              cx="80"
+              cy="80"
+              r={radius}
+              stroke={toneStatus.strokeColor}
+              strokeWidth="14"
+              strokeDasharray={circumference}
+              strokeDashoffset={strokeDashoffset}
+              strokeLinecap="round"
+              className="transition-all duration-1000 ease-out pointer-events-none"
+              filter={`url(#${uniqueId}-pie-blur-wide)`}
+              style={{
+                opacity: 0.35,
+                transformOrigin: '80px 80px',
+              }}
+            />
 
-            {/* Dynamic Status Tag */}
-            <span className={cn(
-              "text-[8px] sm:text-[9.5px] uppercase tracking-wider font-black mt-1 transition-colors duration-300",
-              toneStatus.statusTagColor
-            )}>
-              {toneStatus.statusTag}
-            </span>
+            {/* Mid Aura: Feathered Glow */}
+            <circle
+              cx="80"
+              cy="80"
+              r={radius}
+              stroke={toneStatus.strokeColor}
+              strokeWidth="13"
+              strokeDasharray={circumference}
+              strokeDashoffset={strokeDashoffset}
+              strokeLinecap="round"
+              className="transition-all duration-1000 ease-out pointer-events-none"
+              filter={`url(#${uniqueId}-pie-blur-medium)`}
+              style={{
+                opacity: 0.6,
+                transformOrigin: '80px 80px',
+              }}
+            />
 
-            {/* Income & Cost breakdown */}
-            <div className="mt-2 pt-1.5 border-t border-[var(--color-border)] flex flex-col gap-0.5 text-[8.5px] sm:text-[9.5px] min-w-[100px]">
-              <span className="text-[var(--color-text-muted)] flex items-center justify-between gap-2">
-                <span>Income:</span>
-                <strong className="text-[var(--color-text-main)] font-bold font-mono">
-                  BDT {formatK(totalIncome)}
-                </strong>
-              </span>
-              <span className="text-[var(--color-text-muted)] flex items-center justify-between gap-2">
-                <span>Cost:</span>
-                <strong className="text-[var(--color-text-secondary)] font-bold font-mono">
-                  BDT {formatK(totalCost)}
-                </strong>
-              </span>
-            </div>
-          </div>
+            {/* Core Arc: Softened with No Sharp Boundary */}
+            <circle
+              cx="80"
+              cy="80"
+              r={radius}
+              stroke={toneStatus.strokeColor}
+              strokeWidth="12"
+              strokeDasharray={circumference}
+              strokeDashoffset={strokeDashoffset}
+              strokeLinecap="round"
+              className="transition-all duration-1000 ease-out"
+              filter={`url(#${uniqueId}-pie-blur-core)`}
+              style={{
+                opacity: 0.98,
+                transformOrigin: '80px 80px',
+              }}
+            />
+
+            {/* Soft Shimmer along the blurred stroke on mobile */}
+            {fillLevel > 0 && (
+              <circle
+                cx="80"
+                cy="80"
+                r={radius}
+                stroke={`url(#${shimmerGradId})`}
+                strokeWidth="12"
+                strokeDasharray={circumference}
+                strokeDashoffset={strokeDashoffset}
+                strokeLinecap="round"
+                className="pointer-events-none transition-all duration-1000 ease-out"
+                filter={`url(#${uniqueId}-pie-blur-core)`}
+                style={{
+                  animation: 'pie-shimmer-sweep 2.6s ease-in-out infinite',
+                }}
+              />
+            )}
+          </g>
+
+          {/* ── DESKTOP VIEW: Standard Crisp Progress Arc ── */}
+          <g className="hidden md:block">
+            {/* Active Progress Pie Stroke (Reliable CSS drop-shadow + continuous dual animations) */}
+            <circle
+              cx="80"
+              cy="80"
+              r={radius}
+              stroke={toneStatus.strokeColor}
+              strokeWidth="12"
+              strokeDasharray={circumference}
+              strokeDashoffset={strokeDashoffset}
+              strokeLinecap="round"
+              className="transition-all duration-1000 ease-out"
+              style={{
+                filter: `drop-shadow(0 0 6px ${toneStatus.glowColor})`,
+                animation: 'pie-stroke-glow-pulse 2.4s ease-in-out infinite',
+                transformOrigin: '80px 80px',
+              }}
+            >
+              <animate
+                attributeName="stroke-width"
+                values="12; 12.8; 12"
+                dur="2.4s"
+                repeatCount="indefinite"
+              />
+              <animate
+                attributeName="opacity"
+                values="0.92; 1; 0.92"
+                dur="2.4s"
+                repeatCount="indefinite"
+              />
+            </circle>
+
+            {/* Overlay Traveling Shimmer Wave along the stroke (Desktop) */}
+            {fillLevel > 0 && (
+              <circle
+                cx="80"
+                cy="80"
+                r={radius}
+                stroke={`url(#${shimmerGradId})`}
+                strokeWidth="12"
+                strokeDasharray={circumference}
+                strokeDashoffset={strokeDashoffset}
+                strokeLinecap="round"
+                className="pointer-events-none transition-all duration-1000 ease-out"
+                style={{
+                  animation: 'pie-shimmer-sweep 2.6s ease-in-out infinite',
+                }}
+              />
+            )}
+          </g>
+
+          {/* Live Pulsing Beacon at Leading Tip */}
+          {fillLevel > 2 && (
+            <g className="pointer-events-none">
+              {/* Outer expanding pulse halo */}
+              <circle
+                cx={tipX}
+                cy={tipY}
+                r="7"
+                fill={toneStatus.strokeColor}
+                style={{
+                  animation: 'pie-beacon-pulse 1.8s ease-in-out infinite',
+                  transformOrigin: `${tipX}px ${tipY}px`,
+                }}
+              >
+                <animate attributeName="r" values="5; 10; 5" dur="1.8s" repeatCount="indefinite" />
+                <animate attributeName="opacity" values="0.65; 0; 0.65" dur="1.8s" repeatCount="indefinite" />
+              </circle>
+              {/* Core bright white indicator */}
+              <circle
+                cx={tipX}
+                cy={tipY}
+                r="3.2"
+                fill="#FFFFFF"
+              >
+                <animate attributeName="opacity" values="0.85; 1; 0.85" dur="1.8s" repeatCount="indefinite" />
+              </circle>
+            </g>
+          )}
+        </svg>
+
+        {/* Central Floating Percentage Display */}
+        <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+          <span className={cn(
+            "font-black tracking-tight leading-none transition-colors duration-300",
+            isCovered ? "text-[var(--color-success-text)]" : "text-[var(--color-text-main)]",
+            compact 
+              ? "text-[22px] min-[350px]:text-[24px] sm:text-3xl" 
+              : "text-2xl sm:text-3xl md:text-4xl xl:text-[42px]"
+          )}>
+            <AnimatedNumber value={Math.round(isCovered ? pct : clamped)} suffix="%" />
+          </span>
+          <span className={cn(
+            "font-extrabold uppercase tracking-widest leading-none transition-colors duration-300",
+            toneStatus.centerLabelColor,
+            compact 
+              ? "text-[7px] min-[350px]:text-[7.5px] sm:text-[9px] -mt-1 sm:-mt-0.5" 
+              : "text-[8px] sm:text-[9.5px] md:text-[11px] -mt-0.5 md:mt-1.5"
+          )}>
+            {toneStatus.centerLabel}
+          </span>
         </div>
       </div>
 
-      {/* Card Footer Title & Subtitle */}
+      {/* Card Footer Title */}
       <div className={cn(
         "flex flex-col items-center text-center w-full mt-auto",
         compact ? "pt-1 pb-0.5 px-0.5" : "mt-2 pb-1"
