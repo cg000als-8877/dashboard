@@ -1815,49 +1815,97 @@ export function DashboardContent({ month, isArchive = false }) {
                       ))}
                     </div>
 
-                    {/* Mobile View: Smooth Touch Carousel + Scroll Indicator Dots (No side arrows, wider full-width card) */}
-                    <div className="md:hidden flex flex-col gap-3 -mx-2 sm:mx-0">
-                      <div className="relative w-full">
-                        {/* Carousel Touch Track */}
-                        <div 
-                          className="w-full overflow-hidden touch-pan-y select-none"
-                          onTouchStart={handleTouchStart}
-                          onTouchEnd={handleTouchEnd}
-                        >
-                          <div 
-                            className="flex transition-transform duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] will-change-transform"
-                            style={{ transform: `translateX(-${activeLineIndex * 100}%)` }}
-                          >
-                            {sortedActiveLines.map(line => (
-                              <div key={line.id} className="w-full flex-none shrink-0 px-0.5">
-                                {renderCardInner(line, true)}
+                    {/* Mobile View: Smooth Touch Carousel + Minimal Animated Arrows + Scroll Indicator Dots */}
+                    {(() => {
+                      const activeLineIds = sortedActiveLines.length > 0 ? sortedActiveLines.map(l => l.id) : linesOrder;
+
+                      const handlePrevLine = (e) => {
+                        e.stopPropagation();
+                        const currentIndex = activeLineIds.indexOf(selectedMobileLine);
+                        const prevIndex = (currentIndex - 1 + activeLineIds.length) % activeLineIds.length;
+                        setSelectedMobileLine(activeLineIds[prevIndex]);
+                      };
+
+                      const handleNextLine = (e) => {
+                        e.stopPropagation();
+                        const currentIndex = activeLineIds.indexOf(selectedMobileLine);
+                        const nextIndex = (currentIndex + 1) % activeLineIds.length;
+                        setSelectedMobileLine(activeLineIds[nextIndex]);
+                      };
+
+                      return (
+                        <div className="md:hidden flex flex-col gap-3 -mx-2 sm:mx-0">
+                          <div className="relative w-full">
+                            {/* Minimal Left Animated Arrow (Theme Adaptive) */}
+                            <button
+                              type="button"
+                              onClick={handlePrevLine}
+                              className="absolute -left-1 sm:-left-2 top-1/2 -translate-y-1/2 z-20 w-7 h-10 flex items-center justify-center bg-transparent border-none outline-none cursor-pointer select-none active:scale-75 transition-all p-0 text-[var(--color-primary)]"
+                              aria-label="Previous Line"
+                            >
+                              <ChevronLeft 
+                                size={22} 
+                                strokeWidth={2.4} 
+                                className="animate-arrow-nudge-left drop-shadow-[0_0_8px_var(--color-primary-glow)]" 
+                              />
+                            </button>
+
+                            {/* Carousel Touch Track */}
+                            <div 
+                              className="w-full overflow-hidden touch-pan-y select-none"
+                              onTouchStart={handleTouchStart}
+                              onTouchEnd={handleTouchEnd}
+                            >
+                              <div 
+                                className="flex transition-transform duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] will-change-transform"
+                                style={{ transform: `translateX(-${activeLineIndex * 100}%)` }}
+                              >
+                                {sortedActiveLines.map(line => (
+                                  <div key={line.id} className="w-full flex-none shrink-0 px-0.5">
+                                    {renderCardInner(line, true)}
+                                  </div>
+                                ))}
                               </div>
-                            ))}
+                            </div>
+
+                            {/* Minimal Right Animated Arrow (Theme Adaptive) */}
+                            <button
+                              type="button"
+                              onClick={handleNextLine}
+                              className="absolute -right-1 sm:-right-2 top-1/2 -translate-y-1/2 z-20 w-7 h-10 flex items-center justify-center bg-transparent border-none outline-none cursor-pointer select-none active:scale-75 transition-all p-0 text-[var(--color-primary)]"
+                              aria-label="Next Line"
+                            >
+                              <ChevronRight 
+                                size={22} 
+                                strokeWidth={2.4} 
+                                className="animate-arrow-nudge-right drop-shadow-[0_0_8px_var(--color-primary-glow)]" 
+                              />
+                            </button>
+                          </div>
+
+                          {/* Small Scroll Indicator Dots */}
+                          <div className="flex items-center justify-center gap-1.5 pt-1">
+                            {linesOrder.map(lineId => {
+                              const isSelected = selectedMobileLine === lineId;
+                              return (
+                                <button
+                                  key={lineId}
+                                  type="button"
+                                  onClick={() => setSelectedMobileLine(lineId)}
+                                  className={cn(
+                                    "transition-all duration-300 rounded-full cursor-pointer p-0 border-0 outline-none",
+                                    isSelected 
+                                      ? "w-7 h-1.5 bg-[var(--color-primary)]" 
+                                      : "w-1.5 h-1.5 bg-[var(--color-border)]/60 hover:bg-[var(--color-primary)]/50"
+                                  )}
+                                  aria-label={`Select Line ${lineId}`}
+                                />
+                              );
+                            })}
                           </div>
                         </div>
-                      </div>
-
-                      {/* Small Scroll Indicator Dots */}
-                      <div className="flex items-center justify-center gap-1.5 pt-1">
-                        {linesOrder.map(lineId => {
-                          const isSelected = selectedMobileLine === lineId;
-                          return (
-                            <button
-                              key={lineId}
-                              type="button"
-                              onClick={() => setSelectedMobileLine(lineId)}
-                              className={cn(
-                                "transition-all duration-300 rounded-full cursor-pointer p-0 border-0 outline-none",
-                                isSelected 
-                                  ? "w-7 h-1.5 bg-[var(--color-primary)]" 
-                                  : "w-1.5 h-1.5 bg-[var(--color-border)]/60 hover:bg-[var(--color-primary)]/50"
-                              )}
-                              aria-label={`Select Line ${lineId}`}
-                            />
-                          );
-                        })}
-                      </div>
-                    </div>
+                      );
+                    })()}
                   </div>
                 );
               })()}

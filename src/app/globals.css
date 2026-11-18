@@ -2445,3 +2445,39 @@ svg:active {
 .animate-rays-sway {
   animation: rays-sway 18s ease-in-out infinite;
 }
+
+
+/* ═══════════════════════════════════════════
+   MOBILE BOTTOM NAV ACTIVE MICRO-ANIMATION
+═══════════════════════════════════════════ */
+@keyframes navActivePulse {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+    filter: drop-shadow(0 0 3px rgba(244, 244, 245, 0.45));
+  }
+  50% {
+    transform: translateY(-1.5px) scale(1.08);
+    filter: drop-shadow(0 0 8px rgba(244, 244, 245, 0.85));
+  }
+}
+
+@keyframes navLabelPulse {
+  0%, 100% {
+    opacity: 0.92;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.04);
+  }
+}
+
+.animate-nav-active {
+  animation: navActivePulse 2.4s ease-in-out infinite;
+  will-change: transform, filter;
+}
+
+.animate-nav-label {
+  animation: navLabelPulse 2.4s ease-in-out infinite;
+  will-change: transform, opacity;
+}
