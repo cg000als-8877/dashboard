@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { 
@@ -12,309 +12,137 @@ import {
   X
 } from 'lucide-react';
 import { cn } from './Sidebar';
-import { useTheme } from '@/components/ThemeProvider';
-
-function getCenterDashboardConfig(visualTheme, isLight) {
-  // 1. ABSTRACT THEME
-  if (visualTheme === 'abstract') {
-    if (isLight) {
-      return {
-        buttonClass: "border-none bg-[#18181B] text-white shadow-[0_0_12px_rgba(0,0,0,0.2)]",
-        activeGlow: "shadow-[0_0_16px_rgba(0,0,0,0.35)]",
-        iconColor: "#FFFFFF"
-      };
-    }
-    return {
-      buttonClass: "border-none bg-black text-gray-400 shadow-[0_0_12px_rgba(255,255,255,0.2)]",
-      activeGlow: "shadow-[0_0_18px_rgba(255,255,255,0.35)]",
-      iconColor: "#FFFFFF"
-    };
-  }
-
-  // 2. ALL OTHER THEMES
-  if (isLight) {
-    return {
-      buttonClass: "border-none bg-[var(--color-primary)] text-white shadow-[0_0_14px_var(--color-primary-glow)]",
-      activeGlow: "shadow-[0_0_20px_var(--color-primary-glow-hover)]",
-      iconColor: "#FFFFFF"
-    };
-  }
-
-  // Dark/night mode
-  const darkIconThemes = [
-    'nordic-slate',
-    'arcade-overdrive',
-    'lime-ivory',
-    'terminal',
-    'verdant',
-    'jungle-nebula'
-  ];
-
-  const useDarkIcon = darkIconThemes.includes(visualTheme);
-
-  if (useDarkIcon) {
-    return {
-      buttonClass: "border-none bg-[var(--color-primary)] shadow-[0_0_14px_var(--color-primary-glow)]",
-      activeGlow: "shadow-[0_0_22px_var(--color-primary-glow-hover)]",
-      iconColor: "#0B0F19"
-    };
-  }
-
-  return {
-    buttonClass: "border-none bg-[var(--color-primary)] shadow-[0_0_14px_var(--color-primary-glow)]",
-    activeGlow: "shadow-[0_0_22px_var(--color-primary-glow-hover)]",
-    iconColor: "#FFFFFF"
-  };
-}
 
 export function MobileBottomNav({ isOthersOpen, onToggleOthers, onOthersClose }) {
   const pathname = usePathname();
-  const [clickedDashboard, setClickedDashboard] = useState(false);
-  const { mode, visualTheme } = useTheme();
-  const isLight = mode === 'light';
-  const dashboardConfig = getCenterDashboardConfig(visualTheme, isLight);
 
-  const isLines = pathname === '/lines' || pathname.startsWith('/lines/');
-  const isArchive = pathname === '/archive' || pathname.startsWith('/archive/');
   const isDashboard = pathname === '/';
+  const isLines = pathname === '/lines' || pathname.startsWith('/lines/');
   const isAnalytics = pathname === '/analytics' || pathname.startsWith('/analytics/');
+  const isArchive = pathname === '/archive' || pathname.startsWith('/archive/');
   const isOthers = isOthersOpen;
 
-  const handleDashboardClick = () => {
-    setClickedDashboard(true);
-    setTimeout(() => setClickedDashboard(false), 600);
-    onOthersClose?.();
-  };
+  const navItems = [
+    {
+      id: 'dashboard',
+      label: 'Dashboard',
+      href: '/',
+      icon: LayoutDashboard,
+      isActive: isDashboard,
+      onClick: () => onOthersClose?.()
+    },
+    {
+      id: 'lines',
+      label: 'Lines',
+      href: '/lines',
+      icon: Factory,
+      isActive: isLines,
+      onClick: () => onOthersClose?.()
+    },
+    {
+      id: 'analytics',
+      label: 'Analytics',
+      href: '/analytics',
+      icon: BarChart3,
+      isActive: isAnalytics,
+      onClick: () => onOthersClose?.()
+    },
+    {
+      id: 'archive',
+      label: 'Archive',
+      href: '/archive',
+      icon: History,
+      isActive: isArchive,
+      onClick: () => onOthersClose?.()
+    },
+    {
+      id: 'others',
+      label: 'Others',
+      icon: isOthers ? X : MoreHorizontal,
+      isButton: true,
+      isActive: isOthers,
+      onClick: onToggleOthers
+    }
+  ];
 
   return (
-    <>
-      {/* ── Progressive Blur Bed Under Mobile Floating Nav ───────────────────────── */}
-      <div 
-        aria-hidden="true"
-        className="md:hidden fixed bottom-0 inset-x-0 h-36 pointer-events-none select-none z-30 overflow-hidden"
-      >
-        {/* Hardware-Accelerated Frosted Backdrop Blur with Gradual Fade Mask */}
-        <div 
-          className="absolute inset-0"
-          style={{
-            backdropFilter: 'blur(28px) saturate(140%)',
-            WebkitBackdropFilter: 'blur(28px) saturate(140%)',
-            maskImage: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 45%, rgba(0,0,0,0.85) 65%, rgba(0,0,0,0.35) 85%, transparent 100%)',
-            WebkitMaskImage: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 45%, rgba(0,0,0,0.85) 65%, rgba(0,0,0,0.35) 85%, transparent 100%)',
-          }}
-        />
+    <div className="md:hidden fixed bottom-0 inset-x-0 w-full z-50 pointer-events-auto select-none font-sans bg-[var(--color-bg-card)]/95 backdrop-blur-xl border-t border-[var(--color-border)] shadow-[0_-4px_24px_rgba(0,0,0,0.18)] pb-[env(safe-area-inset-bottom)] transition-all">
+      <nav className="grid grid-cols-5 w-full h-[52px] items-center px-1">
+        {navItems.map((item) => {
+          const Icon = item.icon;
+          const isActive = item.isActive;
 
-        {/* Dense Ambient Theme Tone Gradient Fade upwards */}
-        <div 
-          className="absolute inset-0"
-          style={{
-            background: 'linear-gradient(to top, var(--color-bg-main) 0%, var(--color-bg-main) 30%, transparent 100%)',
-            opacity: isLight ? 0.90 : 0.82,
-            maskImage: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 40%, rgba(0,0,0,0.6) 70%, transparent 100%)',
-            WebkitMaskImage: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 40%, rgba(0,0,0,0.6) 70%, transparent 100%)',
-          }}
-        />
-      </div>
-
-      <div className="md:hidden fixed bottom-3 inset-x-0 mx-auto w-[calc(100%-12px)] max-w-[520px] z-50 pointer-events-auto select-none font-sans animate-[fade-up_0.3s_ease-out]">
-      <div className="relative w-full h-[56px] flex items-center justify-center">
-        
-        {/* Ambient Depth Shadows */}
-        <div className={cn(
-          "absolute inset-x-4 -bottom-1 h-8 rounded-full pointer-events-none -z-10 blur-md",
-          isLight ? "bg-black/10" : "bg-black/25"
-        )} />
-        
-        {/* Deep Background Pill with Smooth Curved Center Scoop SVG */}
-        <svg
-          viewBox="0 0 500 70"
-          preserveAspectRatio="none"
-          className={cn(
-            "absolute inset-0 w-full h-full overflow-visible",
-            isLight 
-              ? "drop-shadow-[0_8px_24px_rgba(0,0,0,0.08)]" 
-              : "drop-shadow-[0_8px_28px_rgba(0,0,0,0.3)]"
-          )}
-        >
-          {/* Feathered/Blurry Outer Edge Underlay */}
-          <path
-            d="M 35 0 L 204 0 C 218 0, 224 32, 250 32 C 276 32, 282 0, 296 0 L 465 0 A 35 35 0 0 1 500 35 A 35 35 0 0 1 465 70 L 35 70 A 35 35 0 0 1 0 35 A 35 35 0 0 1 35 0 Z"
-            fill="var(--color-bg-card)"
-            stroke="var(--color-bg-card)"
-            strokeWidth="4"
-            style={{ filter: 'blur(3.5px)', opacity: isLight ? 0.8 : 0.65 }}
-          />
-
-          {/* Main Solid Path (No Stroke) */}
-          <path
-            d="M 35 0 L 204 0 C 218 0, 224 32, 250 32 C 276 32, 282 0, 296 0 L 465 0 A 35 35 0 0 1 500 35 A 35 35 0 0 1 465 70 L 35 70 A 35 35 0 0 1 0 35 A 35 35 0 0 1 35 0 Z"
-            fill="var(--color-bg-card)"
-            stroke="none"
-          />
-        </svg>
-
-        {/* Floating Center Elevated Circle ("DASHBOARD" - Default Opening Page) */}
-        <div className="absolute -top-[23px] left-1/2 -translate-x-1/2 z-30 flex flex-col items-center">
-          {/* Soft Blurry Feathered Edge Halo under circle */}
-          <div 
-            aria-hidden="true" 
-            className="absolute -inset-1 rounded-full pointer-events-none blur-xs transition-all duration-300"
-            style={{ 
-              backgroundColor: 'var(--color-primary)',
-              opacity: isDashboard ? 0.6 : 0.35
-            }} 
-          />
-
-          <Link
-            href="/"
-            onClick={handleDashboardClick}
-            className={cn(
-              "relative w-10 h-10 rounded-full transition-all duration-300 active:scale-95 flex items-center justify-center cursor-pointer group border-none outline-none",
-              dashboardConfig.buttonClass,
-              isDashboard
-                ? cn("scale-105", dashboardConfig.activeGlow)
-                : "hover:scale-105"
-            )}
-            aria-label="Dashboard"
-          >
-            <LayoutDashboard 
-              size={20}
-              strokeWidth={isDashboard ? 2.5 : 2}
-              style={{ color: dashboardConfig.iconColor }}
-              className={cn(
-                "transition-transform duration-300",
-                clickedDashboard ? "scale-125 rotate-6" : "group-hover:scale-110"
+          const content = (
+            <div className="flex flex-col items-center justify-center w-full h-full relative py-1">
+              {/* Active Top Bar Indicator */}
+              {isActive && (
+                <span 
+                  className="absolute top-0 inset-x-0 mx-auto w-7 h-[2px] rounded-b-full bg-[var(--color-primary)] shadow-[0_1px_6px_var(--color-primary-glow)] animate-in fade-in duration-200" 
+                />
               )}
-            />
-          </Link>
-        </div>
 
-        {/* 5 Navigation Columns */}
-        <nav className="relative z-20 grid grid-cols-5 w-full h-full items-center px-1.5">
-          
-          {/* 1. LINES (Takes Dashboard's former place) */}
-          <Link
-            href="/lines"
-            onClick={() => onOthersClose?.()}
-            className="flex flex-col items-center justify-center h-full group active:scale-95 transition-transform cursor-pointer"
-          >
-            <Factory 
-              size={18}
-              strokeWidth={isLines ? 2.5 : 1.8}
-              className={cn(
-                "mb-0.5 transition-colors",
-                isLines ? "text-[var(--color-primary)]" : "text-[var(--color-text-muted)] group-hover:text-[var(--color-text-main)]"
-              )} 
-            />
-            <span 
-              className={cn(
-                "text-[8.5px] uppercase tracking-wide leading-none transition-colors",
-                isLines ? "text-[var(--color-primary)] font-black" : "text-[var(--color-text-muted)] font-extrabold group-hover:text-[var(--color-text-main)]"
-              )}
+              {/* Icon Capsule Pill */}
+              <div 
+                className={cn(
+                  "px-3 py-1 rounded-full transition-all duration-200 flex items-center justify-center",
+                  isActive 
+                    ? "bg-[var(--color-primary)]/15 text-[var(--color-primary)] shadow-[0_0_12px_var(--color-primary-glow)] ring-1 ring-[var(--color-primary)]/30 scale-105" 
+                    : "bg-transparent text-[var(--color-text-muted)] group-hover:text-[var(--color-text-main)]"
+                )}
+              >
+                <Icon 
+                  size={17}
+                  strokeWidth={isActive ? 2.5 : 1.9}
+                  className={cn(
+                    "transition-colors duration-200",
+                    isActive ? "text-[var(--color-primary)]" : "text-[var(--color-text-muted)] group-hover:text-[var(--color-text-main)]",
+                    item.id === 'others' && isOthers && "rotate-90 transition-transform duration-200"
+                  )}
+                />
+              </div>
+
+              {/* Small Label */}
+              <span 
+                className={cn(
+                  "text-[8.5px] uppercase tracking-wider leading-none transition-colors duration-200 mt-0.5",
+                  isActive 
+                    ? "text-[var(--color-primary)] font-black" 
+                    : "text-[var(--color-text-muted)] font-bold group-hover:text-[var(--color-text-main)]"
+                )}
+              >
+                {item.label}
+              </span>
+            </div>
+          );
+
+          if (item.isButton) {
+            return (
+              <button
+                key={item.id}
+                type="button"
+                onClick={item.onClick}
+                className="flex items-center justify-center w-full h-full group active:scale-95 transition-transform cursor-pointer border-none bg-transparent outline-none p-0"
+                aria-label={item.label}
+              >
+                {content}
+              </button>
+            );
+          }
+
+          return (
+            <Link
+              key={item.id}
+              href={item.href}
+              onClick={item.onClick}
+              className="flex items-center justify-center w-full h-full group active:scale-95 transition-transform cursor-pointer"
             >
-              LINES
-            </span>
-          </Link>
-
-          {/* 2. ARCHIVE (Takes Lines' former place) */}
-          <Link
-            href="/archive"
-            onClick={() => onOthersClose?.()}
-            className="flex flex-col items-center justify-center h-full group active:scale-95 transition-transform cursor-pointer"
-          >
-            <History 
-              size={18}
-              strokeWidth={isArchive ? 2.5 : 1.8}
-              className={cn(
-                "mb-0.5 transition-colors",
-                isArchive ? "text-[var(--color-primary)]" : "text-[var(--color-text-muted)] group-hover:text-[var(--color-text-main)]"
-              )} 
-            />
-            <span 
-              className={cn(
-                "text-[8.5px] uppercase tracking-wide leading-none transition-colors",
-                isArchive ? "text-[var(--color-primary)] font-black" : "text-[var(--color-text-muted)] font-extrabold group-hover:text-[var(--color-text-main)]"
-              )}
-            >
-              ARCHIVE
-            </span>
-          </Link>
-
-          {/* 3. DASHBOARD (Center Column Label below cutout) */}
-          <Link
-            href="/"
-            onClick={handleDashboardClick}
-            className="flex flex-col items-center justify-end h-full pb-1.5 group active:scale-95 transition-transform cursor-pointer"
-          >
-            <span 
-              className={cn(
-                "text-[8.5px] uppercase tracking-wide leading-none transition-colors",
-                isDashboard ? "text-[var(--color-primary)] font-black" : "text-[var(--color-text-secondary)] font-black group-hover:text-[var(--color-text-main)]"
-              )}
-            >
-              DASHBOARD
-            </span>
-          </Link>
-
-          {/* 4. ANALYTICS (Takes Archive's former place) */}
-          <Link
-            href="/analytics"
-            onClick={() => onOthersClose?.()}
-            className="flex flex-col items-center justify-center h-full group active:scale-95 transition-transform cursor-pointer"
-          >
-            <BarChart3 
-              size={18}
-              strokeWidth={isAnalytics ? 2.5 : 1.8}
-              className={cn(
-                "mb-0.5 transition-colors",
-                isAnalytics ? "text-[var(--color-primary)]" : "text-[var(--color-text-muted)] group-hover:text-[var(--color-text-main)]"
-              )} 
-            />
-            <span 
-              className={cn(
-                "text-[8.5px] uppercase tracking-wide leading-none transition-colors",
-                isAnalytics ? "text-[var(--color-primary)] font-black" : "text-[var(--color-text-muted)] font-extrabold group-hover:text-[var(--color-text-main)]"
-              )}
-            >
-              ANALYTICS
-            </span>
-          </Link>
-
-          {/* 5. OTHERS */}
-          <button
-            type="button"
-            onClick={onToggleOthers}
-            className="flex flex-col items-center justify-center h-full group active:scale-95 transition-transform cursor-pointer"
-          >
-            {isOthers ? (
-              <X 
-                size={18}
-                strokeWidth={2.6}
-                className="mb-0.5 text-[var(--color-primary)] transition-transform duration-200 rotate-90"
-              />
-            ) : (
-              <MoreHorizontal 
-                size={18}
-                strokeWidth={2.2}
-                className="mb-0.5 text-[var(--color-text-muted)] group-hover:text-[var(--color-text-main)] transition-colors"
-              />
-            )}
-            <span 
-              className={cn(
-                "text-[8.5px] uppercase tracking-wide leading-none transition-colors",
-                isOthers ? "text-[var(--color-primary)] font-black" : "text-[var(--color-text-muted)] font-extrabold group-hover:text-[var(--color-text-main)]"
-              )}
-            >
-              OTHERS
-            </span>
-          </button>
-
-        </nav>
-
-      </div>
+              {content}
+            </Link>
+          );
+        })}
+      </nav>
     </div>
-  </>
-);
+  );
 }
 
 export default MobileBottomNav;
