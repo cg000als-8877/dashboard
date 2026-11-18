@@ -201,12 +201,19 @@ export const BackgroundCanvas = memo(function BackgroundCanvas() {
           <div
             className="animate-in fade-in duration-700 absolute inset-0"
             style={{
-              backgroundImage: isDark
-                ? `radial-gradient(circle at 15% 15%, var(--color-primary-glow) 0%, transparent 45%),
-                   radial-gradient(circle at 85% 85%, rgba(168, 85, 247, 0.1) 0%, transparent 50%),
-                   radial-gradient(circle at 50% 50%, rgba(52, 211, 153, 0.06) 0%, transparent 55%)`
-                : `radial-gradient(circle at 15% 15%, var(--color-primary-glow) 0%, transparent 45%),
-                   radial-gradient(circle at 85% 85%, rgba(168, 85, 247, 0.05) 0%, transparent 50%)`,
+              backgroundImage: visualTheme === 'royal'
+                ? (isDark
+                    ? `radial-gradient(circle at 18% 18%, var(--color-primary-glow) 0%, transparent 50%),
+                       radial-gradient(circle at 82% 82%, var(--color-danger-glow) 0%, transparent 50%),
+                       radial-gradient(circle at 50% 50%, rgba(37, 99, 235, 0.08) 0%, transparent 60%)`
+                    : `radial-gradient(circle at 18% 18%, var(--color-primary-glow) 0%, transparent 50%),
+                       radial-gradient(circle at 82% 82%, var(--color-danger-glow) 0%, transparent 50%)`)
+                : (isDark
+                    ? `radial-gradient(circle at 15% 15%, var(--color-primary-glow) 0%, transparent 45%),
+                       radial-gradient(circle at 85% 85%, rgba(168, 85, 247, 0.1) 0%, transparent 50%),
+                       radial-gradient(circle at 50% 50%, rgba(52, 211, 153, 0.06) 0%, transparent 55%)`
+                    : `radial-gradient(circle at 15% 15%, var(--color-primary-glow) 0%, transparent 45%),
+                       radial-gradient(circle at 85% 85%, rgba(168, 85, 247, 0.05) 0%, transparent 50%)`),
               opacity: 0.9,
             }}
           />

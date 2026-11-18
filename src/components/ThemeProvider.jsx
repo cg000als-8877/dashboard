@@ -13,6 +13,7 @@ export const VISUAL_THEMES = [
   { id: 'ocean-dark', name: 'Ocean Dark', color: '#4F8CFF' },
   { id: 'terminal', name: 'Terminal (Night Shift)', color: '#22C55E' },
   { id: 'gen-z', name: 'Gen-Z Pink', color: '#FF007F' },
+  { id: 'royal', name: 'Royal', color: '#2563EB' },
 ];
 
 export const APPEARANCE_MODES = [
@@ -114,6 +115,10 @@ export function ThemeProvider({ children }) {
       setVisualThemeState(id);
       localStorage.setItem('app-visual-theme', id);
       sessionStorage.setItem('app-night-theme-overridden', 'true');
+      if (id === 'royal') {
+        setBgEffectState('grain');
+        localStorage.setItem('app-bg-effect', 'grain');
+      }
     }
   };
 

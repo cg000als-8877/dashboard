@@ -361,8 +361,8 @@ export function TitanicAnimation({
   return (
     <div className="w-full flex flex-col relative">
       {/* Floating Status Condition Badge - Zero Strokes, No Dots */}
-      <div className="absolute top-2.5 left-3 sm:top-3.5 sm:left-4 z-20 flex items-center gap-2 px-3 sm:px-3.5 py-1.5 rounded-full bg-[var(--color-bg-card)]/90 backdrop-blur-xl shadow-2xl select-none transition-all max-w-[calc(100%-24px)] overflow-hidden">
-        <span className={`text-[9px] sm:text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full shrink-0 whitespace-nowrap ${
+      <div className="absolute top-2 left-1/2 -translate-x-1/2 sm:top-3 sm:left-4 sm:translate-x-0 z-20 flex items-center justify-center gap-1.5 px-2 sm:px-2.5 py-0.5 rounded-full bg-[var(--color-bg-card)]/90 backdrop-blur-xl shadow-xl select-none transition-all max-w-[calc(100%-24px)] overflow-hidden whitespace-nowrap">
+        <span className={`text-[7px] sm:text-[8px] font-black italic uppercase tracking-wider px-1.5 py-0.5 rounded-full shrink-0 whitespace-nowrap ${
           isSurplus ? 'bg-[var(--color-success)]/15 text-[var(--color-success-text)]' :
           isProfit ? 'bg-[var(--color-success)]/15 text-[var(--color-success-text)]' :
           isNeutral ? 'bg-[var(--color-warning)]/15 text-[var(--color-warning)]' :
@@ -381,7 +381,7 @@ export function TitanicAnimation({
            r >= 10 ? 'Catastrophic Split' :
            'Entirely Sunk'}
         </span>
-        <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-[var(--color-text-main)]">
+        <span className="text-[7.5px] sm:text-[8.5px] font-bold italic uppercase tracking-wider text-[var(--color-text-main)] truncate">
           {isSurplus ? 'Full Steam Ahead' :
            isProfit ? 'Sailing Strong' :
            isNeutral ? 'Floating Neutral' :
@@ -392,7 +392,7 @@ export function TitanicAnimation({
            r >= 10 ? 'Stern Vertical' :
            'Ocean Seabed Abyss'}
         </span>
-        <span className="text-[9.5px] sm:text-[10px] text-[var(--color-text-muted)] font-mono font-semibold">
+        <span className="text-[7px] sm:text-[8px] text-[var(--color-text-muted)] font-mono font-semibold italic shrink-0">
           {Math.round(effectiveRecovery)}%
         </span>
       </div>

@@ -1098,6 +1098,135 @@ html[data-theme="verdant"][data-mode="light"] {
   --shadow-color: rgba(20, 45, 20, 0.10);
 }
 
+/* ===========================================
+   ROYAL -- Royal Midnight Blue x Crimson Red
+   Pleasant royal blue primary with red accent signals
+   Bg Dark:  #07101E
+=========================================== */
+html[data-theme="royal"] {
+  --color-primary: #2563EB;
+  --color-primary-bright: #3B82F6;
+  --color-primary-soft: #0E1D3B;
+  --color-primary-glow: rgba(37, 99, 235, 0.24);
+  --color-primary-glow-hover: rgba(37, 99, 235, 0.45);
+
+  --color-secondary: #1D4ED8;
+  --color-secondary-bright: #60A5FA;
+  --color-secondary-soft: #0C1A36;
+
+  --color-success: #3B82F6;
+  --color-success-text: #60A5FA;
+  --color-success-glow: rgba(59, 130, 246, 0.24);
+
+  --color-danger: #EF4444;
+  --color-danger-text: #F87171;
+  --color-danger-glow: rgba(239, 68, 68, 0.24);
+
+  --color-warning: #F59E0B;
+  --color-warning-text: #FBBF24;
+  --color-warning-glow: rgba(245, 158, 11, 0.24);
+
+  --color-info: #38BDF8;
+
+  --color-highlight-1: #38BDF8;
+  --color-highlight-2: #60A5FA;
+  --color-highlight-3: #818CF8;
+  --color-highlight-4: #93C5FD;
+  --color-highlight-5: #C7D2FE;
+}
+
+html[data-theme="royal"][data-mode="dark"] {
+  --color-bg-main: #07101E;
+  --color-bg-card: #0D1B33;
+  --color-bg-card-hover: #142747;
+  --color-bg-elevated: #11223F;
+
+  --color-surface: rgba(255, 255, 255, 0.035);
+  --color-surface-hover: rgba(255, 255, 255, 0.065);
+
+  --color-border: rgba(37, 99, 235, 0.16);
+  --color-border-strong: rgba(37, 99, 235, 0.28);
+
+  --color-text-main: #F1F5F9;
+  --color-text-secondary: #94A3B8;
+  --color-text-muted: #64748B;
+  --color-text-subtle: #475569;
+
+  --color-primary: #2563EB;
+  --color-primary-bright: #3B82F6;
+  --color-primary-soft: #0E1D3B;
+  --color-primary-glow: rgba(37, 99, 235, 0.24);
+
+  --color-secondary: #1D4ED8;
+  --color-secondary-bright: #60A5FA;
+  --color-secondary-soft: #0C1A36;
+
+  --color-success: #3B82F6;
+  --color-success-text: #60A5FA;
+
+  --color-danger: #EF4444;
+  --color-danger-text: #F87171;
+
+  --color-warning: #F59E0B;
+  --color-warning-text: #FBBF24;
+
+  --color-info: #38BDF8;
+
+  --color-highlight-1: #38BDF8;
+  --color-highlight-2: #60A5FA;
+  --color-highlight-3: #818CF8;
+  --color-highlight-4: #93C5FD;
+  --color-highlight-5: #C7D2FE;
+
+  --shadow-color: rgba(0, 0, 0, 0.58);
+}
+
+html[data-theme="royal"][data-mode="light"] {
+  --color-bg-main: #EEF3FA;
+  --color-bg-card: #FFFFFF;
+  --color-bg-card-hover: #F6F9FD;
+  --color-bg-elevated: #FAFBFD;
+
+  --color-surface: rgba(29, 78, 216, 0.04);
+  --color-surface-hover: rgba(29, 78, 216, 0.08);
+
+  --color-border: rgba(29, 78, 216, 0.16);
+  --color-border-strong: rgba(29, 78, 216, 0.28);
+
+  --color-text-main: #0B132B;
+  --color-text-secondary: #1E293B;
+  --color-text-muted: #334155;
+  --color-text-subtle: #475569;
+
+  --color-primary: #1D4ED8;
+  --color-primary-bright: #1E40AF;
+  --color-primary-soft: #DBEAFE;
+  --color-primary-glow: rgba(29, 78, 216, 0.18);
+
+  --color-secondary: #2563EB;
+  --color-secondary-bright: #3B82F6;
+  --color-secondary-soft: #EFF6FF;
+
+  --color-success: #1D4ED8;
+  --color-success-text: #1E40AF;
+
+  --color-danger: #DC2626;
+  --color-danger-text: #B91C1C;
+
+  --color-warning: #B45309;
+  --color-warning-text: #92400E;
+
+  --color-info: #0284C7;
+
+  --color-highlight-1: #2563EB;
+  --color-highlight-2: #3B82F6;
+  --color-highlight-3: #60A5FA;
+  --color-highlight-4: #93C5FD;
+  --color-highlight-5: #BFDBFE;
+
+  --shadow-color: rgba(15, 23, 42, 0.10);
+}
+
 /* ═══════════════════════════════════════════
    LIME IVORY — Acid Lime × Ivory Charcoal
    Primary:  #9BE52C (Dark Mode Acid Lime)
