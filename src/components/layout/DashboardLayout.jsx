@@ -138,86 +138,58 @@ export default function DashboardLayout({ children }) {
             {isMobileMenuOpen && (
               <>
                 <div className="fixed inset-0 z-[90] bg-black/50" onClick={() => setIsMobileMenuOpen(false)}></div>
-                <div className="absolute top-11 right-2 w-[264px] sm:w-[276px] bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-2xl shadow-2xl flex flex-col p-2 animate-[fade-down_0.15s_ease-out_both] z-[100] origin-top-right">
+                <div className="absolute top-11 right-2 w-[264px] sm:w-[276px] bg-[var(--color-bg-card)] border-0 rounded-2xl shadow-2xl flex flex-col p-2 animate-[fade-down_0.15s_ease-out_both] z-[100] origin-top-right">
                   
-                  {/* Header with Title and Close Button */}
-                  <div className="flex items-center justify-between pb-1.5 border-b border-[var(--color-border)]/50 mb-1.5 px-0.5">
+                  {/* Header with Title and Close Button (Stroke-free) */}
+                  <div className="flex items-center justify-between pb-1.5 border-0 mb-1 px-0.5">
                     <span className="text-[9px] font-black uppercase tracking-wider text-[var(--color-text-main)]">
                       Appearance &amp; Style
                     </span>
                     <button 
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className="p-0.5 rounded-md text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface)] transition-colors cursor-pointer"
+                      className="p-0.5 rounded-md text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface)] transition-colors cursor-pointer border-0 outline-none"
                       aria-label="Close menu"
                     >
                       <X size={13} />
                     </button>
                   </div>
 
-                  {/* Unified 4-in-a-Row Controls: Light | Dark | Palette | Background */}
-                  <div className="grid grid-cols-4 gap-1 p-0.5 bg-[var(--color-surface)]/70 rounded-xl border border-[var(--color-border)]/40 mb-1.5">
-                    {/* Light (Day) */}
-                    <button
-                      onClick={() => setMode('light')}
-                      title="Light Mode"
-                      aria-label="Light Mode"
-                      className={cn(
-                        "py-1.5 px-1 rounded-lg flex items-center justify-center transition-all cursor-pointer text-center",
-                        mode === 'light'
-                          ? "bg-[var(--color-bg-card)] text-amber-500 shadow-xs ring-1 ring-amber-400/30"
-                          : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-bg-card)]/40"
-                      )}
-                    >
-                      <Sun size={15} strokeWidth={2.2} className={mode === 'light' ? "text-amber-400" : ""} />
-                    </button>
-
-                    {/* Dark (Night) */}
-                    <button
-                      onClick={() => setMode('dark')}
-                      title="Dark Mode"
-                      aria-label="Dark Mode"
-                      className={cn(
-                        "py-1.5 px-1 rounded-lg flex items-center justify-center transition-all cursor-pointer text-center",
-                        mode === 'dark'
-                          ? "bg-[var(--color-bg-card)] text-indigo-400 shadow-xs ring-1 ring-indigo-400/30"
-                          : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-bg-card)]/40"
-                      )}
-                    >
-                      <Moon size={15} strokeWidth={2.2} className={mode === 'dark' ? "text-indigo-400" : ""} />
-                    </button>
-
+                  {/* Controls: Palette (Theme) & Background Only (Stroke-free) */}
+                  <div className="grid grid-cols-2 gap-1 p-0.5 bg-[var(--color-surface)]/70 rounded-xl border-0 mb-1.5">
                     {/* Palette Tab */}
                     <button
+                      type="button"
                       onClick={() => setMobileThemeTab('palette')}
                       title="Color Palette"
                       aria-label="Color Palette"
                       className={cn(
-                        "py-1.5 px-1 rounded-lg flex items-center justify-center transition-all cursor-pointer text-center",
+                        "py-1.5 px-2 rounded-lg flex items-center justify-center transition-all cursor-pointer text-center border-0 outline-none",
                         mobileThemeTab === 'palette'
-                          ? "bg-[var(--color-bg-card)] text-[var(--color-primary)] shadow-xs ring-1 ring-[var(--color-primary)]/30"
+                          ? "bg-[var(--color-bg-card)] text-[var(--color-primary)] shadow-xs"
                           : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-bg-card)]/40"
                       )}
                     >
-                      <Palette size={15} strokeWidth={2.2} className={mobileThemeTab === 'palette' ? "text-[var(--color-primary)]" : ""} />
+                      <Palette size={16} strokeWidth={2.2} className={mobileThemeTab === 'palette' ? "text-[var(--color-primary)]" : ""} />
                     </button>
 
                     {/* Background Tab */}
                     <button
+                      type="button"
                       onClick={() => setMobileThemeTab('background')}
                       title="Background Effects"
                       aria-label="Background Effects"
                       className={cn(
-                        "py-1.5 px-1 rounded-lg flex items-center justify-center transition-all cursor-pointer text-center",
+                        "py-1.5 px-2 rounded-lg flex items-center justify-center transition-all cursor-pointer text-center border-0 outline-none",
                         mobileThemeTab === 'background'
-                          ? "bg-[var(--color-bg-card)] text-[var(--color-primary)] shadow-xs ring-1 ring-[var(--color-primary)]/30"
+                          ? "bg-[var(--color-bg-card)] text-[var(--color-primary)] shadow-xs"
                           : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-bg-card)]/40"
                       )}
                     >
-                      <Sparkles size={15} strokeWidth={2.2} className={mobileThemeTab === 'background' ? "text-[var(--color-primary)]" : ""} />
+                      <Sparkles size={16} strokeWidth={2.2} className={mobileThemeTab === 'background' ? "text-[var(--color-primary)]" : ""} />
                     </button>
                   </div>
 
-                  {/* Tab 1: Palette List - All Visible Together (No Scroll) */}
+                  {/* Tab 1: Palette List - All Visible Together (Stroke-free) */}
                   {mobileThemeTab === 'palette' && (
                     <div className="grid grid-cols-2 gap-1">
                       {VISUAL_THEMES.map((t) => {
@@ -225,12 +197,13 @@ export default function DashboardLayout({ children }) {
                         return (
                           <button
                             key={t.id}
+                            type="button"
                             onClick={() => { setVisualTheme(t.id); }}
                             className={cn(
-                              "flex items-center justify-between px-2 py-1 rounded-md border text-[9px] font-semibold transition-all cursor-pointer text-left leading-tight",
+                              "flex items-center justify-between px-2 py-1 rounded-md border-0 text-[9px] font-semibold transition-all cursor-pointer text-left leading-tight outline-none",
                               isSelected
-                                ? "bg-[var(--color-primary)]/15 text-[var(--color-primary)] border-[var(--color-primary)]/40 shadow-xs"
-                                : "bg-[var(--color-surface)]/50 text-[var(--color-text-secondary)] border-[var(--color-border)]/40 hover:bg-[var(--color-surface)] hover:text-[var(--color-text-main)]"
+                                ? "bg-[var(--color-primary)]/20 text-[var(--color-primary)] shadow-xs font-bold"
+                                : "bg-[var(--color-surface)]/60 text-[var(--color-text-secondary)] hover:bg-[var(--color-surface)] hover:text-[var(--color-text-main)]"
                             )}
                           >
                             <div className="flex items-center gap-1.5 min-w-0">
@@ -249,7 +222,7 @@ export default function DashboardLayout({ children }) {
                     </div>
                   )}
 
-                  {/* Tab 2: Background Effects List - Clean Compact List (No Descriptions) */}
+                  {/* Tab 2: Background Effects List - Clean Compact List (Stroke-free) */}
                   {mobileThemeTab === 'background' && (
                     <div className="grid grid-cols-2 gap-1 max-h-[250px] overflow-y-auto no-scrollbar pr-0.5">
                       {BG_EFFECTS.map((b) => {
@@ -257,12 +230,13 @@ export default function DashboardLayout({ children }) {
                         return (
                           <button
                             key={b.id}
+                            type="button"
                             onClick={() => { setBgEffect(b.id); }}
                             className={cn(
-                              "flex items-center justify-between px-2 py-1.5 rounded-md border text-[9.5px] font-semibold transition-all cursor-pointer text-left leading-tight",
+                              "flex items-center justify-between px-2 py-1.5 rounded-md border-0 text-[9.5px] font-semibold transition-all cursor-pointer text-left leading-tight outline-none",
                               isSelected
-                                ? "bg-[var(--color-primary)]/15 text-[var(--color-primary)] border-[var(--color-primary)]/40 shadow-xs"
-                                : "bg-[var(--color-surface)]/50 text-[var(--color-text-secondary)] border-[var(--color-border)]/40 hover:bg-[var(--color-surface)] hover:text-[var(--color-text-main)]"
+                                ? "bg-[var(--color-primary)]/20 text-[var(--color-primary)] shadow-xs font-bold"
+                                : "bg-[var(--color-surface)]/60 text-[var(--color-text-secondary)] hover:bg-[var(--color-surface)] hover:text-[var(--color-text-main)]"
                             )}
                           >
                             <span className="truncate">{b.name}</span>
