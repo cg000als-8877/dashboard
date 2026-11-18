@@ -85,7 +85,17 @@
     {
       "date": "2026-11-05",
       "line_id": "A",
-      "status": "HOLIDAY"
+      "style": "",
+      "item": "SHORTALL",
+      "worker_count": 56,
+      "per_head_cost": 1830,
+      "total_cost": 102480,
+      "production_qty": 1000,
+      "production_dzn": 83.33333333,
+      "cm_per_dzn": 950,
+      "total_income": 79166.66667,
+      "net_profit": -23313.33333,
+      "status": "ACTIVE"
     },
     {
       "date": "2026-11-06",
@@ -95,32 +105,92 @@
     {
       "date": "2026-11-07",
       "line_id": "A",
-      "status": "HOLIDAY"
+      "style": "",
+      "item": "SHORTALL",
+      "worker_count": 56,
+      "per_head_cost": 1830,
+      "total_cost": 102480,
+      "production_qty": 1300,
+      "production_dzn": 108.3333333,
+      "cm_per_dzn": 950,
+      "total_income": 102916.6667,
+      "net_profit": 436.6666667,
+      "status": "ACTIVE"
     },
     {
       "date": "2026-11-08",
       "line_id": "A",
-      "status": "HOLIDAY"
+      "style": "",
+      "item": "DENIM SHORT",
+      "worker_count": 50,
+      "per_head_cost": 1830,
+      "total_cost": 91500,
+      "production_qty": 135,
+      "production_dzn": 11.25,
+      "cm_per_dzn": 738,
+      "total_income": 8302.5,
+      "net_profit": -83197.5,
+      "status": "ACTIVE"
     },
     {
       "date": "2026-11-09",
       "line_id": "A",
-      "status": "HOLIDAY"
+      "style": "",
+      "item": "DENIM SHORT",
+      "worker_count": 50,
+      "per_head_cost": 1830,
+      "total_cost": 91500,
+      "production_qty": 80,
+      "production_dzn": 6.666666667,
+      "cm_per_dzn": 738,
+      "total_income": 4920,
+      "net_profit": -86580,
+      "status": "ACTIVE"
     },
     {
       "date": "2026-11-10",
       "line_id": "A",
-      "status": "HOLIDAY"
+      "style": "",
+      "item": "DENIM SHORT",
+      "worker_count": 50,
+      "per_head_cost": 1830,
+      "total_cost": 91500,
+      "production_qty": 160,
+      "production_dzn": 13.33333333,
+      "cm_per_dzn": 738,
+      "total_income": 9840,
+      "net_profit": -81660,
+      "status": "ACTIVE"
     },
     {
       "date": "2026-11-11",
       "line_id": "A",
-      "status": "HOLIDAY"
+      "style": "",
+      "item": "DENIM SHORT",
+      "worker_count": 50,
+      "per_head_cost": 1830,
+      "total_cost": 91500,
+      "production_qty": 310,
+      "production_dzn": 25.83333333,
+      "cm_per_dzn": 738,
+      "total_income": 19065,
+      "net_profit": -72435,
+      "status": "ACTIVE"
     },
     {
       "date": "2026-11-12",
       "line_id": "A",
-      "status": "HOLIDAY"
+      "style": "",
+      "item": "DENIM SHORT",
+      "worker_count": 50,
+      "per_head_cost": 1830,
+      "total_cost": 91500,
+      "production_qty": 420,
+      "production_dzn": 35,
+      "cm_per_dzn": 738,
+      "total_income": 25830,
+      "net_profit": -65670,
+      "status": "ACTIVE"
     },
     {
       "date": "2026-11-13",
@@ -130,7 +200,17 @@
     {
       "date": "2026-11-14",
       "line_id": "A",
-      "status": "HOLIDAY"
+      "style": "",
+      "item": "DENIM SHORT",
+      "worker_count": 50,
+      "per_head_cost": 1830,
+      "total_cost": 91500,
+      "production_qty": 500,
+      "production_dzn": 41.66666667,
+      "cm_per_dzn": 738,
+      "total_income": 30750,
+      "net_profit": -60750,
+      "status": "ACTIVE"
     },
     {
       "date": "2026-11-15",
@@ -262,20 +342,30 @@
       "line_id": "B",
       "style": "",
       "item": "TEE SHIRT",
-      "worker_count": 32,
+      "worker_count": 35,
       "per_head_cost": 1830,
-      "total_cost": 58560,
+      "total_cost": 64050,
       "production_qty": 1400,
       "production_dzn": 116.6666667,
       "cm_per_dzn": 200,
       "total_income": 23333.33333,
-      "net_profit": -35226.66667,
+      "net_profit": -40716.66667,
       "status": "ACTIVE"
     },
     {
       "date": "2026-11-05",
       "line_id": "B",
-      "status": "HOLIDAY"
+      "style": "",
+      "item": "TEE SHIRT",
+      "worker_count": 35,
+      "per_head_cost": 1830,
+      "total_cost": 64050,
+      "production_qty": 1500,
+      "production_dzn": 125,
+      "cm_per_dzn": 200,
+      "total_income": 25000,
+      "net_profit": -39050,
+      "status": "ACTIVE"
     },
     {
       "date": "2026-11-06",
@@ -285,32 +375,92 @@
     {
       "date": "2026-11-07",
       "line_id": "B",
-      "status": "HOLIDAY"
+      "style": "",
+      "item": "TEE SHIRT",
+      "worker_count": 35,
+      "per_head_cost": 1830,
+      "total_cost": 64050,
+      "production_qty": 860,
+      "production_dzn": 71.66666667,
+      "cm_per_dzn": 200,
+      "total_income": 14333.33333,
+      "net_profit": -49716.66667,
+      "status": "ACTIVE"
     },
     {
       "date": "2026-11-08",
       "line_id": "B",
-      "status": "HOLIDAY"
+      "style": "",
+      "item": "TEE SHIRT",
+      "worker_count": 35,
+      "per_head_cost": 1830,
+      "total_cost": 64050,
+      "production_qty": 600,
+      "production_dzn": 50,
+      "cm_per_dzn": 200,
+      "total_income": 10000,
+      "net_profit": -54050,
+      "status": "ACTIVE"
     },
     {
       "date": "2026-11-09",
       "line_id": "B",
-      "status": "HOLIDAY"
+      "style": "",
+      "item": "TEE SHIRT",
+      "worker_count": 35,
+      "per_head_cost": 1830,
+      "total_cost": 64050,
+      "production_qty": 840,
+      "production_dzn": 70,
+      "cm_per_dzn": 200,
+      "total_income": 14000,
+      "net_profit": -50050,
+      "status": "ACTIVE"
     },
     {
       "date": "2026-11-10",
       "line_id": "B",
-      "status": "HOLIDAY"
+      "style": "",
+      "item": "DENIM PANT",
+      "worker_count": 50,
+      "per_head_cost": 1830,
+      "total_cost": 91500,
+      "production_qty": 0,
+      "production_dzn": 0,
+      "cm_per_dzn": 200,
+      "total_income": 0,
+      "net_profit": -91500,
+      "status": "ACTIVE"
     },
     {
       "date": "2026-11-11",
       "line_id": "B",
-      "status": "HOLIDAY"
+      "style": "",
+      "item": "DENIM PANT",
+      "worker_count": 50,
+      "per_head_cost": 1830,
+      "total_cost": 91500,
+      "production_qty": 60,
+      "production_dzn": 5,
+      "cm_per_dzn": 738,
+      "total_income": 3690,
+      "net_profit": -87810,
+      "status": "ACTIVE"
     },
     {
       "date": "2026-11-12",
       "line_id": "B",
-      "status": "HOLIDAY"
+      "style": "",
+      "item": "DENIM PANT",
+      "worker_count": 50,
+      "per_head_cost": 1830,
+      "total_cost": 91500,
+      "production_qty": 215,
+      "production_dzn": 17.91666667,
+      "cm_per_dzn": 738,
+      "total_income": 13222.5,
+      "net_profit": -78277.5,
+      "status": "ACTIVE"
     },
     {
       "date": "2026-11-13",
@@ -320,7 +470,17 @@
     {
       "date": "2026-11-14",
       "line_id": "B",
-      "status": "HOLIDAY"
+      "style": "",
+      "item": "DENIM PANT",
+      "worker_count": 50,
+      "per_head_cost": 1830,
+      "total_cost": 91500,
+      "production_qty": 600,
+      "production_dzn": 50,
+      "cm_per_dzn": 738,
+      "total_income": 36900,
+      "net_profit": -54600,
+      "status": "ACTIVE"
     },
     {
       "date": "2026-11-15",
@@ -465,7 +625,17 @@
     {
       "date": "2026-11-05",
       "line_id": "C",
-      "status": "HOLIDAY"
+      "style": "",
+      "item": "BOXER",
+      "worker_count": 15,
+      "per_head_cost": 1830,
+      "total_cost": 27450,
+      "production_qty": 0,
+      "production_dzn": 0,
+      "cm_per_dzn": 250,
+      "total_income": 0,
+      "net_profit": -27450,
+      "status": "ACTIVE"
     },
     {
       "date": "2026-11-06",
@@ -475,32 +645,92 @@
     {
       "date": "2026-11-07",
       "line_id": "C",
-      "status": "HOLIDAY"
+      "style": "",
+      "item": "BOXER",
+      "worker_count": 15,
+      "per_head_cost": 1830,
+      "total_cost": 27450,
+      "production_qty": 0,
+      "production_dzn": 0,
+      "cm_per_dzn": 250,
+      "total_income": 0,
+      "net_profit": -27450,
+      "status": "ACTIVE"
     },
     {
       "date": "2026-11-08",
       "line_id": "C",
-      "status": "HOLIDAY"
+      "style": "",
+      "item": "BOXER",
+      "worker_count": 15,
+      "per_head_cost": 1830,
+      "total_cost": 27450,
+      "production_qty": 0,
+      "production_dzn": 0,
+      "cm_per_dzn": 250,
+      "total_income": 0,
+      "net_profit": -27450,
+      "status": "ACTIVE"
     },
     {
       "date": "2026-11-09",
       "line_id": "C",
-      "status": "HOLIDAY"
+      "style": "",
+      "item": "BOXER",
+      "worker_count": 15,
+      "per_head_cost": 1830,
+      "total_cost": 27450,
+      "production_qty": 0,
+      "production_dzn": 0,
+      "cm_per_dzn": 250,
+      "total_income": 0,
+      "net_profit": -27450,
+      "status": "ACTIVE"
     },
     {
       "date": "2026-11-10",
       "line_id": "C",
-      "status": "HOLIDAY"
+      "style": "",
+      "item": "BOXER",
+      "worker_count": 15,
+      "per_head_cost": 1830,
+      "total_cost": 27450,
+      "production_qty": 0,
+      "production_dzn": 0,
+      "cm_per_dzn": 250,
+      "total_income": 0,
+      "net_profit": -27450,
+      "status": "ACTIVE"
     },
     {
       "date": "2026-11-11",
       "line_id": "C",
-      "status": "HOLIDAY"
+      "style": "",
+      "item": "BOXER",
+      "worker_count": 15,
+      "per_head_cost": 1830,
+      "total_cost": 27450,
+      "production_qty": 0,
+      "production_dzn": 0,
+      "cm_per_dzn": 250,
+      "total_income": 0,
+      "net_profit": -27450,
+      "status": "ACTIVE"
     },
     {
       "date": "2026-11-12",
       "line_id": "C",
-      "status": "HOLIDAY"
+      "style": "",
+      "item": "BOXER",
+      "worker_count": 15,
+      "per_head_cost": 1830,
+      "total_cost": 27450,
+      "production_qty": 0,
+      "production_dzn": 0,
+      "cm_per_dzn": 250,
+      "total_income": 0,
+      "net_profit": -27450,
+      "status": "ACTIVE"
     },
     {
       "date": "2026-11-13",
@@ -510,7 +740,17 @@
     {
       "date": "2026-11-14",
       "line_id": "C",
-      "status": "HOLIDAY"
+      "style": "",
+      "item": "BOXER",
+      "worker_count": 15,
+      "per_head_cost": 1830,
+      "total_cost": 27450,
+      "production_qty": 400,
+      "production_dzn": 33.33333333,
+      "cm_per_dzn": 250,
+      "total_income": 8333.333333,
+      "net_profit": -19116.66667,
+      "status": "ACTIVE"
     },
     {
       "date": "2026-11-15",

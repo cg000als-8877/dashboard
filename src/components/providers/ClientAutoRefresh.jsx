@@ -12,28 +12,8 @@ export function ClientAutoRefresh() {
   const idleInterval = useRef(null);
 
   useEffect(() => {
-    // Intercept client-side 401 responses and immediately redirect to /login
-    const originalFetch = window.fetch;
-    window.fetch = async function(...args) {
-      const response = await originalFetch.apply(this, args);
-      if (response.status === 401 && typeof window !== 'undefined' && !window.location.pathname.startsWith('/login')) {
-        const urlStr = typeof args[0] === 'string' ? args[0] : (args[0]?.url || '');
-        if (!urlStr.includes('/api/auth')) {
-          window.location.href = '/login?from=' + encodeURIComponent(window.location.pathname);
-        }
-      }
-      return response;
-    };
-
-    return () => {
-      window.fetch = originalFetch;
-    };
-  }, []);
-
-  useEffect(() => {
     // Safe refresh: updates data without blowing away the client-side session or crashing offline
     const handleRefresh = () => {
-      if (typeof window !== 'undefined' && window.location.pathname.startsWith('/login')) return;
       if (typeof navigator !== 'undefined' && !navigator.onLine) return; // Do not reload while offline
       
       try {

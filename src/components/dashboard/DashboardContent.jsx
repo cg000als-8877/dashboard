@@ -826,19 +826,20 @@ export function DashboardContent({ month, isArchive = false }) {
                   .
                 </p>
               </div>
-              <div className="inline-flex p-0.5 sm:p-1 bg-[var(--color-surface)] border-0 rounded-xl gap-0.5 md:gap-1 shadow-none md:shadow-sm backdrop-blur-md items-center">
+              <div className="inline-flex p-1 bg-[var(--color-surface)]/80 border border-[var(--color-border)]/60 rounded-full -space-x-2 sm:-space-x-2.5 shadow-inner backdrop-blur-md items-center select-none shrink-0">
                 <button
                   type="button"
                   onClick={() => setSelectedCardMonth('current')}
                   className={cn(
-                    "flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-4 py-1 sm:py-1.5 rounded-lg text-[9.5px] sm:text-xs uppercase tracking-wider transition-all duration-200 cursor-pointer select-none shrink-0 border-0 outline-none",
+                    "flex items-center gap-1 sm:gap-1.5 rounded-full px-3 sm:px-4 py-1 sm:py-1.5 text-[10px] sm:text-xs uppercase tracking-wider transition-all duration-200 cursor-pointer select-none shrink-0 outline-none border",
                     selectedCardMonth === 'current'
-                      ? "bg-white text-gray-900 md:bg-[var(--color-bg-card)] md:text-[var(--color-text-main)] font-black md:font-bold shadow-xs md:shadow-sm"
-                      : "bg-transparent text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)] font-medium"
+                      ? "relative z-20 bg-white text-gray-950 md:bg-[var(--color-bg-card)] md:text-[var(--color-text-main)] font-black shadow-[0_3px_12px_rgba(0,0,0,0.35)] dark:shadow-[0_4px_16px_rgba(0,0,0,0.5)] border-white/90 dark:border-white/20 md:border-[var(--color-border)] scale-[1.05]"
+                      : "relative z-10 bg-[var(--color-bg-card)]/90 text-slate-300 dark:text-slate-300 hover:text-white hover:bg-[var(--color-surface-hover)] hover:z-15 font-bold border-white/10 dark:border-white/10 shadow-[0_2px_6px_rgba(0,0,0,0.25)]"
                   )}
                 >
-                  <span>NOVEMBER</span>
-                  <span className="text-[8px] sm:text-[10px] text-red-500 font-black tracking-wide">(LIVE)</span>
+                  <span className="sm:hidden font-black">NOV</span>
+                  <span className="hidden sm:inline font-bold">NOVEMBER</span>
+                  <span className="hidden sm:inline text-[8px] sm:text-[10px] text-red-500 font-black tracking-wide">(LIVE)</span>
                   <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.8)] animate-pulse shrink-0" />
                 </button>
 
@@ -846,39 +847,42 @@ export function DashboardContent({ month, isArchive = false }) {
                   type="button"
                   onClick={() => setSelectedCardMonth('october')}
                   className={cn(
-                    "px-2 sm:px-4 py-1 sm:py-1.5 rounded-lg text-[9.5px] sm:text-xs uppercase tracking-wider transition-all duration-200 cursor-pointer select-none shrink-0 border-0 outline-none",
+                    "rounded-full px-3 sm:px-4 py-1 sm:py-1.5 text-[10px] sm:text-xs uppercase tracking-wider transition-all duration-200 cursor-pointer select-none shrink-0 outline-none border",
                     selectedCardMonth === 'october'
-                      ? "bg-white text-gray-900 md:bg-[var(--color-bg-card)] md:text-[var(--color-text-main)] font-black md:font-bold shadow-xs md:shadow-sm"
-                      : "bg-transparent text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)] font-medium"
+                      ? "relative z-20 bg-white text-gray-950 md:bg-[var(--color-bg-card)] md:text-[var(--color-text-main)] font-black shadow-[0_3px_12px_rgba(0,0,0,0.35)] dark:shadow-[0_4px_16px_rgba(0,0,0,0.5)] border-white/90 dark:border-white/20 md:border-[var(--color-border)] scale-[1.05]"
+                      : "relative z-10 bg-[var(--color-bg-card)]/90 text-slate-300 dark:text-slate-300 hover:text-white hover:bg-[var(--color-surface-hover)] hover:z-15 font-bold border-white/10 dark:border-white/10 shadow-[0_2px_6px_rgba(0,0,0,0.25)]"
                   )}
                 >
-                  OCTOBER
+                  <span className="sm:hidden font-black">OCT</span>
+                  <span className="hidden sm:inline font-bold">OCTOBER</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setSelectedCardMonth('september')}
                   className={cn(
-                    "px-2 sm:px-4 py-1 sm:py-1.5 rounded-lg text-[9.5px] sm:text-xs uppercase tracking-wider transition-all duration-200 cursor-pointer select-none shrink-0 border-0 outline-none",
+                    "rounded-full px-3 sm:px-4 py-1 sm:py-1.5 text-[10px] sm:text-xs uppercase tracking-wider transition-all duration-200 cursor-pointer select-none shrink-0 outline-none border",
                     selectedCardMonth === 'september'
-                      ? "bg-white text-gray-900 md:bg-[var(--color-bg-card)] md:text-[var(--color-text-main)] font-black md:font-bold shadow-xs md:shadow-sm"
-                      : "bg-transparent text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)] font-medium"
+                      ? "relative z-20 bg-white text-gray-950 md:bg-[var(--color-bg-card)] md:text-[var(--color-text-main)] font-black shadow-[0_3px_12px_rgba(0,0,0,0.35)] dark:shadow-[0_4px_16px_rgba(0,0,0,0.5)] border-white/90 dark:border-white/20 md:border-[var(--color-border)] scale-[1.05]"
+                      : "relative z-10 bg-[var(--color-bg-card)]/90 text-slate-300 dark:text-slate-300 hover:text-white hover:bg-[var(--color-surface-hover)] hover:z-15 font-bold border-white/10 dark:border-white/10 shadow-[0_2px_6px_rgba(0,0,0,0.25)]"
                   )}
                 >
-                  SEPTEMBER
+                  <span className="sm:hidden font-black">SEP</span>
+                  <span className="hidden sm:inline font-bold">SEPTEMBER</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setSelectedCardMonth('august')}
                   className={cn(
-                    "px-2 sm:px-4 py-1 sm:py-1.5 rounded-lg text-[9.5px] sm:text-xs uppercase tracking-wider transition-all duration-200 cursor-pointer select-none shrink-0 border-0 outline-none",
+                    "rounded-full px-3 sm:px-4 py-1 sm:py-1.5 text-[10px] sm:text-xs uppercase tracking-wider transition-all duration-200 cursor-pointer select-none shrink-0 outline-none border",
                     selectedCardMonth === 'august'
-                      ? "bg-white text-gray-900 md:bg-[var(--color-bg-card)] md:text-[var(--color-text-main)] font-black md:font-bold shadow-xs md:shadow-sm"
-                      : "bg-transparent text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)] font-medium"
+                      ? "relative z-20 bg-white text-gray-950 md:bg-[var(--color-bg-card)] md:text-[var(--color-text-main)] font-black shadow-[0_3px_12px_rgba(0,0,0,0.35)] dark:shadow-[0_4px_16px_rgba(0,0,0,0.5)] border-white/90 dark:border-white/20 md:border-[var(--color-border)] scale-[1.05]"
+                      : "relative z-10 bg-[var(--color-bg-card)]/90 text-slate-300 dark:text-slate-300 hover:text-white hover:bg-[var(--color-surface-hover)] hover:z-15 font-bold border-white/10 dark:border-white/10 shadow-[0_2px_6px_rgba(0,0,0,0.25)]"
                   )}
                 >
-                  AUGUST
+                  <span className="sm:hidden font-black">AUG</span>
+                  <span className="hidden sm:inline font-bold">AUGUST</span>
                 </button>
               </div>
             </div>
