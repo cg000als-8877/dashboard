@@ -1136,15 +1136,18 @@ export function DashboardContent({ month, isArchive = false }) {
                             style={{
                               backgroundColor: 'var(--color-surface)',
                               backgroundImage: lineLoss > 0
-                                ? `linear-gradient(90deg, rgba(239, 68, 68, ${(0.03 + lossRatio * 0.07).toFixed(3)}) 0%, rgba(239, 68, 68, ${(0.01 + lossRatio * 0.02).toFixed(3)}) 40%, transparent 80%)`
+                                ? `linear-gradient(270deg, rgba(239, 68, 68, ${(0.06 + lossRatio * 0.14).toFixed(3)}) 0%, rgba(239, 68, 68, ${(0.015 + lossRatio * 0.04).toFixed(3)}) 45%, transparent 85%)`
                                 : undefined,
                               border: '1px solid',
                               borderColor: lineLoss > 0
-                                ? `rgba(239, 68, 68, ${(0.10 + lossRatio * 0.18).toFixed(2)})`
+                                ? `rgba(239, 68, 68, ${(0.12 + lossRatio * 0.20).toFixed(2)})`
                                 : 'var(--color-border)',
-                              borderLeft: lineLoss > 0
-                                ? `3px solid rgba(239, 68, 68, ${(0.25 + lossRatio * 0.45).toFixed(2)})`
-                                : '3px solid transparent'
+                              borderRight: lineLoss > 0
+                                ? `3.5px solid rgba(239, 68, 68, ${(0.35 + lossRatio * 0.50).toFixed(2)})`
+                                : '3.5px solid transparent',
+                              boxShadow: lineLoss > 0
+                                ? `0 1px 3px rgba(0,0,0,0.2), inset -6px 0 12px rgba(239, 68, 68, ${(0.05 + lossRatio * 0.15).toFixed(3)})`
+                                : undefined
                             }}
                           >
                             {/* Line Info: Line Name & Item Name */}
@@ -1411,15 +1414,18 @@ export function DashboardContent({ month, isArchive = false }) {
                               style={{
                                 backgroundColor: 'var(--color-surface)',
                                 backgroundImage: lineLoss > 0
-                                  ? `linear-gradient(90deg, rgba(239, 68, 68, ${(0.03 + lossRatio * 0.07).toFixed(3)}) 0%, rgba(239, 68, 68, ${(0.01 + lossRatio * 0.02).toFixed(3)}) 40%, transparent 80%)`
+                                  ? `linear-gradient(270deg, rgba(239, 68, 68, ${(0.06 + lossRatio * 0.14).toFixed(3)}) 0%, rgba(239, 68, 68, ${(0.015 + lossRatio * 0.04).toFixed(3)}) 45%, transparent 85%)`
                                   : undefined,
                                 border: '1px solid',
                                 borderColor: lineLoss > 0
-                                  ? `rgba(239, 68, 68, ${(0.10 + lossRatio * 0.18).toFixed(2)})`
+                                  ? `rgba(239, 68, 68, ${(0.12 + lossRatio * 0.20).toFixed(2)})`
                                   : 'var(--color-border)',
-                                borderLeft: lineLoss > 0
-                                  ? `3px solid rgba(239, 68, 68, ${(0.25 + lossRatio * 0.45).toFixed(2)})`
-                                  : '3px solid transparent'
+                                borderRight: lineLoss > 0
+                                  ? `3.5px solid rgba(239, 68, 68, ${(0.35 + lossRatio * 0.50).toFixed(2)})`
+                                  : '3.5px solid transparent',
+                                boxShadow: lineLoss > 0
+                                  ? `0 1px 3px rgba(0,0,0,0.2), inset -6px 0 12px rgba(239, 68, 68, ${(0.05 + lossRatio * 0.15).toFixed(3)})`
+                                  : undefined
                               }}
                             >
                               <div className="flex items-center gap-2.5 min-w-0 flex-1">
@@ -1809,97 +1815,49 @@ export function DashboardContent({ month, isArchive = false }) {
                       ))}
                     </div>
 
-                    {/* Mobile View: Smooth Touch Carousel + Left/Right Navigation Arrows + Scroll Indicator Dots */}
-                    {(() => {
-                      const activeLineIds = sortedActiveLines.length > 0 ? sortedActiveLines.map(l => l.id) : linesOrder;
-
-                      const handlePrevLine = (e) => {
-                        e.stopPropagation();
-                        const currentIndex = activeLineIds.indexOf(selectedMobileLine);
-                        const prevIndex = (currentIndex - 1 + activeLineIds.length) % activeLineIds.length;
-                        setSelectedMobileLine(activeLineIds[prevIndex]);
-                      };
-
-                      const handleNextLine = (e) => {
-                        e.stopPropagation();
-                        const currentIndex = activeLineIds.indexOf(selectedMobileLine);
-                        const nextIndex = (currentIndex + 1) % activeLineIds.length;
-                        setSelectedMobileLine(activeLineIds[nextIndex]);
-                      };
-
-                      return (
-                        <div className="md:hidden flex flex-col gap-3">
-                          <div className="relative w-full">
-                            {/* Minimalist Left Navigation Arrow */}
-                            <button
-                              type="button"
-                              onClick={handlePrevLine}
-                              className="absolute -left-2 sm:-left-3.5 top-1/2 -translate-y-1/2 z-20 w-8 h-12 flex items-center justify-center bg-transparent border-0 outline-none cursor-pointer select-none active:scale-75 transition-transform text-[var(--color-primary)]"
-                              aria-label="Previous Line"
-                            >
-                              <ChevronLeft 
-                                size={26} 
-                                strokeWidth={2.4} 
-                                className="animate-arrow-nudge-left drop-shadow-[0_0_8px_var(--color-primary-glow)]" 
-                              />
-                            </button>
-
-                            {/* Carousel Touch Track */}
-                            <div 
-                              className="w-full overflow-hidden touch-pan-y select-none"
-                              onTouchStart={handleTouchStart}
-                              onTouchEnd={handleTouchEnd}
-                            >
-                              <div 
-                                className="flex transition-transform duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] will-change-transform"
-                                style={{ transform: `translateX(-${activeLineIndex * 100}%)` }}
-                              >
-                                {sortedActiveLines.map(line => (
-                                  <div key={line.id} className="w-full flex-none shrink-0 px-0.5">
-                                    {renderCardInner(line, true)}
-                                  </div>
-                                ))}
+                    {/* Mobile View: Smooth Touch Carousel + Scroll Indicator Dots (No side arrows, wider full-width card) */}
+                    <div className="md:hidden flex flex-col gap-3 -mx-2 sm:mx-0">
+                      <div className="relative w-full">
+                        {/* Carousel Touch Track */}
+                        <div 
+                          className="w-full overflow-hidden touch-pan-y select-none"
+                          onTouchStart={handleTouchStart}
+                          onTouchEnd={handleTouchEnd}
+                        >
+                          <div 
+                            className="flex transition-transform duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] will-change-transform"
+                            style={{ transform: `translateX(-${activeLineIndex * 100}%)` }}
+                          >
+                            {sortedActiveLines.map(line => (
+                              <div key={line.id} className="w-full flex-none shrink-0 px-0.5">
+                                {renderCardInner(line, true)}
                               </div>
-                            </div>
-
-                            {/* Minimalist Right Navigation Arrow */}
-                            <button
-                              type="button"
-                              onClick={handleNextLine}
-                              className="absolute -right-2 sm:-right-3.5 top-1/2 -translate-y-1/2 z-20 w-8 h-12 flex items-center justify-center bg-transparent border-0 outline-none cursor-pointer select-none active:scale-75 transition-transform text-[var(--color-primary)]"
-                              aria-label="Next Line"
-                            >
-                              <ChevronRight 
-                                size={26} 
-                                strokeWidth={2.4} 
-                                className="animate-arrow-nudge-right drop-shadow-[0_0_8px_var(--color-primary-glow)]" 
-                              />
-                            </button>
-                          </div>
-
-                          {/* Small Scroll Indicator Dots */}
-                          <div className="flex items-center justify-center gap-1.5 pt-1">
-                            {linesOrder.map(lineId => {
-                              const isSelected = selectedMobileLine === lineId;
-                              return (
-                                <button
-                                  key={lineId}
-                                  type="button"
-                                  onClick={() => setSelectedMobileLine(lineId)}
-                                  className={cn(
-                                    "transition-all duration-300 rounded-full cursor-pointer p-0 border-0 outline-none",
-                                    isSelected
-                                      ? "w-6 h-1.5 bg-[var(--color-primary)] shadow-[0_0_8px_var(--color-primary-glow)]"
-                                      : "w-1.5 h-1.5 bg-[var(--color-text-muted)]/35 hover:bg-[var(--color-text-muted)]"
-                                  )}
-                                  aria-label={`Slide to Line ${lineId}`}
-                                />
-                              );
-                            })}
+                            ))}
                           </div>
                         </div>
-                      );
-                    })()}
+                      </div>
+
+                      {/* Small Scroll Indicator Dots */}
+                      <div className="flex items-center justify-center gap-1.5 pt-1">
+                        {linesOrder.map(lineId => {
+                          const isSelected = selectedMobileLine === lineId;
+                          return (
+                            <button
+                              key={lineId}
+                              type="button"
+                              onClick={() => setSelectedMobileLine(lineId)}
+                              className={cn(
+                                "transition-all duration-300 rounded-full cursor-pointer p-0 border-0 outline-none",
+                                isSelected 
+                                  ? "w-7 h-1.5 bg-[var(--color-primary)]" 
+                                  : "w-1.5 h-1.5 bg-[var(--color-border)]/60 hover:bg-[var(--color-primary)]/50"
+                              )}
+                              aria-label={`Select Line ${lineId}`}
+                            />
+                          );
+                        })}
+                      </div>
+                    </div>
                   </div>
                 );
               })()}
