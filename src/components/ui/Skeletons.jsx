@@ -160,7 +160,7 @@ export function AnalyticsSkeleton() {
         <ShimmerBlock className="h-4 w-56 bg-[var(--color-text-muted)]/15" />
       </div>
 
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 -mx-2.5 sm:mx-0">
         <div className="xl:col-span-2 bg-[var(--color-bg-card)] border border-[var(--color-border)]/50 p-6 rounded-2xl h-[420px] flex flex-col justify-between shimmer">
           <ShimmerBlock className="h-5 w-32 bg-[var(--color-text-muted)]/25" />
           <div className="flex-1 flex items-end gap-3 mt-6 mb-4">

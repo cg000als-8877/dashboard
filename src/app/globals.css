@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where([data-mode="dark"], [data-mode="dark"] *, .dark, .dark *));
+
 @theme {
   --color-bg-main: #0B0F19;
   --color-bg-card: #131B2B;
@@ -167,11 +169,11 @@ html[data-mode="light"] .shimmer {
   --color-on-warning: #0B0F19;
   --shadow-color: rgba(0, 0, 0, 0.45);
 
-  /* Default theme primary — Nordic Slate */
-  --color-primary: #60A5FA;
+  /* Default theme primary — Royal */
+  --color-primary: #A4D4EE;
   --color-on-primary: #0B0F19;
-  --color-primary-glow: rgba(96, 165, 250, 0.15);
-  --color-primary-glow-hover: rgba(96, 165, 250, 0.25);
+  --color-primary-glow: rgba(164, 212, 238, 0.24);
+  --color-primary-glow-hover: rgba(164, 212, 238, 0.45);
 }
 
 /* Polished Day/Night & Theme Transitions (Coordinated across containers, cards, and surfaces) */
@@ -1144,25 +1146,25 @@ html[data-theme="royal"][data-mode="dark"] {
   --color-surface: rgba(255, 255, 255, 0.035);
   --color-surface-hover: rgba(255, 255, 255, 0.065);
 
-  --color-border: rgba(37, 99, 235, 0.16);
-  --color-border-strong: rgba(37, 99, 235, 0.28);
+  --color-border: rgba(164, 212, 238, 0.16);
+  --color-border-strong: rgba(164, 212, 238, 0.28);
 
   --color-text-main: #F1F5F9;
   --color-text-secondary: #94A3B8;
   --color-text-muted: #64748B;
   --color-text-subtle: #475569;
 
-  --color-primary: #2563EB;
-  --color-primary-bright: #3B82F6;
+  --color-primary: #A4D4EE;
+  --color-primary-bright: #BAE6FD;
   --color-primary-soft: #0E1D3B;
-  --color-primary-glow: rgba(37, 99, 235, 0.24);
+  --color-primary-glow: rgba(164, 212, 238, 0.24);
 
-  --color-secondary: #1D4ED8;
-  --color-secondary-bright: #60A5FA;
+  --color-secondary: #7DD3FC;
+  --color-secondary-bright: #BAE6FD;
   --color-secondary-soft: #0C1A36;
 
-  --color-success: #3B82F6;
-  --color-success-text: #60A5FA;
+  --color-success: #38BDF8;
+  --color-success-text: #7DD3FC;
 
   --color-danger: #EF4444;
   --color-danger-text: #F87171;
@@ -2590,6 +2592,17 @@ svg:active {
   }
 }
 
+@keyframes navActivePulseLight {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+    filter: drop-shadow(0 1px 3px var(--color-primary-glow));
+  }
+  50% {
+    transform: translateY(-1.5px) scale(1.08);
+    filter: drop-shadow(0 2px 8px var(--color-primary-glow-hover));
+  }
+}
+
 @keyframes navLabelPulse {
   0%, 100% {
     opacity: 0.92;
@@ -2604,6 +2617,11 @@ svg:active {
 .animate-nav-active {
   animation: navActivePulse 2.4s ease-in-out infinite;
   will-change: transform, filter;
+}
+
+html[data-mode="light"] .animate-nav-active,
+.light-mode .animate-nav-active {
+  animation: navActivePulseLight 2.4s ease-in-out infinite;
 }
 
 .animate-nav-label {

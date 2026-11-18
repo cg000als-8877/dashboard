@@ -46,20 +46,25 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" data-theme="nordic-slate" data-mode="dark" data-bg-effect="grain" suppressHydrationWarning>
+    <html lang="en" data-theme="royal" data-mode="dark" data-bg-effect="grain" suppressHydrationWarning>
       <head>
         <script
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
                 try {
-                  var migrated = localStorage.getItem('app-nordic-grain-dark-v1');
+                  var migrated = localStorage.getItem('app-royal-grain-dark-v1');
                   var m = localStorage.getItem('app-mode');
                   var t = localStorage.getItem('app-visual-theme');
                   var b = localStorage.getItem('app-bg-effect');
                   if (!migrated) {
+                    localStorage.setItem('app-royal-grain-dark-v1', 'true');
+                    localStorage.setItem('app-visual-theme', 'royal');
+                    localStorage.setItem('app-mode', 'dark');
+                    localStorage.setItem('theme', 'dark');
+                    localStorage.setItem('app-bg-effect', 'grain');
                     m = 'dark';
-                    t = 'nordic-slate';
+                    t = 'royal';
                     b = 'grain';
                   }
                   if (m) {
@@ -76,7 +81,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   if (t) {
                     document.documentElement.setAttribute('data-theme', t);
                   } else {
-                    document.documentElement.setAttribute('data-theme', 'nordic-slate');
+                    document.documentElement.setAttribute('data-theme', 'royal');
                   }
                   if (b && b !== 'ember-tide-aurora') {
                     document.documentElement.setAttribute('data-bg-effect', b);

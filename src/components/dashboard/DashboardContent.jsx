@@ -729,8 +729,9 @@ export function DashboardContent({ month, isArchive = false }) {
           <h2 className="text-[20px] sm:text-[23px] md:text-[27px] font-bold tracking-normal uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] via-[var(--color-text-secondary)] to-[var(--color-text-muted)] text-center leading-tight">
             FACTORY FINANCIALS
           </h2>
-          <p className="text-[10.5px] sm:text-[11.5px] md:text-xs text-[var(--color-text-muted)] font-medium tracking-normal text-center mt-0.5 flex items-center justify-center flex-wrap gap-1">
-            <span>Financial Data Analyst :</span>
+          <p className="text-[8.5px] sm:text-[11.5px] md:text-xs text-[var(--color-text-muted)] font-medium tracking-normal text-center mt-0.5 flex items-center justify-center whitespace-nowrap gap-1">
+            <span className="hidden sm:inline">Financial Data Analyst :</span>
+            <span className="sm:hidden">Analyst :</span>
             <span className="text-[var(--color-primary)] font-bold uppercase italic">Rofiqul Islam Zia</span>
             <span className="text-[var(--color-text-secondary)] font-semibold">(Merchandiser)</span>
           </p>
@@ -750,8 +751,8 @@ export function DashboardContent({ month, isArchive = false }) {
                   className={cn(
                     "flex items-center gap-1 sm:gap-1.5 rounded-full px-3 sm:px-4 py-1 sm:py-1.5 text-[10px] sm:text-xs uppercase tracking-wider transition-all duration-300 cursor-pointer select-none shrink-0 outline-none border",
                     selectedCardMonth === 'current'
-                      ? "relative z-30 bg-white text-gray-950 md:bg-[var(--color-bg-card)] md:text-[var(--color-text-main)] font-black shadow-[0_6px_20px_rgba(0,0,0,0.45),-4px_0_12px_rgba(0,0,0,0.22),4px_0_12px_rgba(0,0,0,0.22)] dark:shadow-[0_8px_24px_rgba(0,0,0,0.65),-4px_0_14px_rgba(0,0,0,0.35),4px_0_14px_rgba(0,0,0,0.35)] border-white/90 dark:border-white/25 md:border-[var(--color-border)] scale-[1.06]"
-                      : "relative z-10 bg-[var(--color-bg-card)]/90 text-slate-300 dark:text-slate-300 hover:text-white hover:bg-[var(--color-surface-hover)] hover:z-20 font-bold border border-white/10 dark:border-white/10 shadow-[0_2px_6px_rgba(0,0,0,0.2)]"
+                      ? "relative z-30 bg-white text-slate-950 font-black shadow-[0_4px_14px_rgba(15,23,42,0.12),-3px_0_8px_rgba(15,23,42,0.06),3px_0_8px_rgba(15,23,42,0.06)] dark:shadow-[0_8px_24px_rgba(0,0,0,0.65),-4px_0_14px_rgba(0,0,0,0.35),4px_0_14px_rgba(0,0,0,0.35)] border-slate-300/90 dark:border-white/25 scale-[1.05]"
+                      : "relative z-[15] bg-slate-100/90 hover:bg-slate-200/90 dark:bg-[var(--color-bg-card)]/90 dark:hover:bg-[var(--color-surface-hover)] hover:z-25 text-slate-700 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white font-bold border-slate-300/80 dark:border-white/10 shadow-[0_1px_3px_rgba(15,23,42,0.08)] dark:shadow-[0_2px_6px_rgba(0,0,0,0.2)]"
                   )}
                 >
                   <span className="sm:hidden font-black">NOV</span>
@@ -766,8 +767,8 @@ export function DashboardContent({ month, isArchive = false }) {
                   className={cn(
                     "rounded-full px-3 sm:px-4 py-1 sm:py-1.5 text-[10px] sm:text-xs uppercase tracking-wider transition-all duration-300 cursor-pointer select-none shrink-0 outline-none border",
                     selectedCardMonth === 'october'
-                      ? "relative z-30 bg-white text-gray-950 md:bg-[var(--color-bg-card)] md:text-[var(--color-text-main)] font-black shadow-[0_6px_20px_rgba(0,0,0,0.45),-4px_0_12px_rgba(0,0,0,0.22),4px_0_12px_rgba(0,0,0,0.22)] dark:shadow-[0_8px_24px_rgba(0,0,0,0.65),-4px_0_14px_rgba(0,0,0,0.35),4px_0_14px_rgba(0,0,0,0.35)] border-white/90 dark:border-white/25 md:border-[var(--color-border)] scale-[1.06]"
-                      : "relative z-10 bg-[var(--color-bg-card)]/90 text-slate-300 dark:text-slate-300 hover:text-white hover:bg-[var(--color-surface-hover)] hover:z-20 font-bold border border-white/10 dark:border-white/10 shadow-[0_2px_6px_rgba(0,0,0,0.2)]"
+                      ? "relative z-30 bg-white text-slate-950 font-black shadow-[0_4px_14px_rgba(15,23,42,0.12),-3px_0_8px_rgba(15,23,42,0.06),3px_0_8px_rgba(15,23,42,0.06)] dark:shadow-[0_8px_24px_rgba(0,0,0,0.65),-4px_0_14px_rgba(0,0,0,0.35),4px_0_14px_rgba(0,0,0,0.35)] border-slate-300/90 dark:border-white/25 scale-[1.05]"
+                      : "relative z-[14] bg-slate-100/90 hover:bg-slate-200/90 dark:bg-[var(--color-bg-card)]/90 dark:hover:bg-[var(--color-surface-hover)] hover:z-25 text-slate-700 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white font-bold border-slate-300/80 dark:border-white/10 shadow-[0_1px_3px_rgba(15,23,42,0.08)] dark:shadow-[0_2px_6px_rgba(0,0,0,0.2)]"
                   )}
                 >
                   <span className="sm:hidden font-black">OCT</span>
@@ -780,8 +781,8 @@ export function DashboardContent({ month, isArchive = false }) {
                   className={cn(
                     "rounded-full px-3 sm:px-4 py-1 sm:py-1.5 text-[10px] sm:text-xs uppercase tracking-wider transition-all duration-300 cursor-pointer select-none shrink-0 outline-none border",
                     selectedCardMonth === 'september'
-                      ? "relative z-30 bg-white text-gray-950 md:bg-[var(--color-bg-card)] md:text-[var(--color-text-main)] font-black shadow-[0_6px_20px_rgba(0,0,0,0.45),-4px_0_12px_rgba(0,0,0,0.22),4px_0_12px_rgba(0,0,0,0.22)] dark:shadow-[0_8px_24px_rgba(0,0,0,0.65),-4px_0_14px_rgba(0,0,0,0.35),4px_0_14px_rgba(0,0,0,0.35)] border-white/90 dark:border-white/25 md:border-[var(--color-border)] scale-[1.06]"
-                      : "relative z-10 bg-[var(--color-bg-card)]/90 text-slate-300 dark:text-slate-300 hover:text-white hover:bg-[var(--color-surface-hover)] hover:z-20 font-bold border border-white/10 dark:border-white/10 shadow-[0_2px_6px_rgba(0,0,0,0.2)]"
+                      ? "relative z-30 bg-white text-slate-950 font-black shadow-[0_4px_14px_rgba(15,23,42,0.12),-3px_0_8px_rgba(15,23,42,0.06),3px_0_8px_rgba(15,23,42,0.06)] dark:shadow-[0_8px_24px_rgba(0,0,0,0.65),-4px_0_14px_rgba(0,0,0,0.35),4px_0_14px_rgba(0,0,0,0.35)] border-slate-300/90 dark:border-white/25 scale-[1.05]"
+                      : "relative z-[13] bg-slate-100/90 hover:bg-slate-200/90 dark:bg-[var(--color-bg-card)]/90 dark:hover:bg-[var(--color-surface-hover)] hover:z-25 text-slate-700 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white font-bold border-slate-300/80 dark:border-white/10 shadow-[0_1px_3px_rgba(15,23,42,0.08)] dark:shadow-[0_2px_6px_rgba(0,0,0,0.2)]"
                   )}
                 >
                   <span className="sm:hidden font-black">SEP</span>
@@ -794,8 +795,8 @@ export function DashboardContent({ month, isArchive = false }) {
                   className={cn(
                     "rounded-full px-3 sm:px-4 py-1 sm:py-1.5 text-[10px] sm:text-xs uppercase tracking-wider transition-all duration-300 cursor-pointer select-none shrink-0 outline-none border",
                     selectedCardMonth === 'august'
-                      ? "relative z-30 bg-white text-gray-950 md:bg-[var(--color-bg-card)] md:text-[var(--color-text-main)] font-black shadow-[0_6px_20px_rgba(0,0,0,0.45),-4px_0_12px_rgba(0,0,0,0.22),4px_0_12px_rgba(0,0,0,0.22)] dark:shadow-[0_8px_24px_rgba(0,0,0,0.65),-4px_0_14px_rgba(0,0,0,0.35),4px_0_14px_rgba(0,0,0,0.35)] border-white/90 dark:border-white/25 md:border-[var(--color-border)] scale-[1.06]"
-                      : "relative z-10 bg-[var(--color-bg-card)]/90 text-slate-300 dark:text-slate-300 hover:text-white hover:bg-[var(--color-surface-hover)] hover:z-20 font-bold border border-white/10 dark:border-white/10 shadow-[0_2px_6px_rgba(0,0,0,0.2)]"
+                      ? "relative z-30 bg-white text-slate-950 font-black shadow-[0_4px_14px_rgba(15,23,42,0.12),-3px_0_8px_rgba(15,23,42,0.06),3px_0_8px_rgba(15,23,42,0.06)] dark:shadow-[0_8px_24px_rgba(0,0,0,0.65),-4px_0_14px_rgba(0,0,0,0.35),4px_0_14px_rgba(0,0,0,0.35)] border-slate-300/90 dark:border-white/25 scale-[1.05]"
+                      : "relative z-[12] bg-slate-100/90 hover:bg-slate-200/90 dark:bg-[var(--color-bg-card)]/90 dark:hover:bg-[var(--color-surface-hover)] hover:z-25 text-slate-700 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white font-bold border-slate-300/80 dark:border-white/10 shadow-[0_1px_3px_rgba(15,23,42,0.08)] dark:shadow-[0_2px_6px_rgba(0,0,0,0.2)]"
                   )}
                 >
                   <span className="sm:hidden font-black">AUG</span>
@@ -808,8 +809,8 @@ export function DashboardContent({ month, isArchive = false }) {
                   className={cn(
                     "rounded-full px-3 sm:px-4 py-1 sm:py-1.5 text-[10px] sm:text-xs uppercase tracking-wider transition-all duration-300 cursor-pointer select-none shrink-0 outline-none border",
                     selectedCardMonth === 'july'
-                      ? "relative z-30 bg-white text-gray-950 md:bg-[var(--color-bg-card)] md:text-[var(--color-text-main)] font-black shadow-[0_6px_20px_rgba(0,0,0,0.45),-4px_0_12px_rgba(0,0,0,0.22),4px_0_12px_rgba(0,0,0,0.22)] dark:shadow-[0_8px_24px_rgba(0,0,0,0.65),-4px_0_14px_rgba(0,0,0,0.35),4px_0_14px_rgba(0,0,0,0.35)] border-white/90 dark:border-white/25 md:border-[var(--color-border)] scale-[1.06]"
-                      : "relative z-10 bg-[var(--color-bg-card)]/90 text-slate-300 dark:text-slate-300 hover:text-white hover:bg-[var(--color-surface-hover)] hover:z-20 font-bold border border-white/10 dark:border-white/10 shadow-[0_2px_6px_rgba(0,0,0,0.2)]"
+                      ? "relative z-30 bg-white text-slate-950 font-black shadow-[0_4px_14px_rgba(15,23,42,0.12),-3px_0_8px_rgba(15,23,42,0.06),3px_0_8px_rgba(15,23,42,0.06)] dark:shadow-[0_8px_24px_rgba(0,0,0,0.65),-4px_0_14px_rgba(0,0,0,0.35),4px_0_14px_rgba(0,0,0,0.35)] border-slate-300/90 dark:border-white/25 scale-[1.05]"
+                      : "relative z-[11] bg-slate-100/90 hover:bg-slate-200/90 dark:bg-[var(--color-bg-card)]/90 dark:hover:bg-[var(--color-surface-hover)] hover:z-25 text-slate-700 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white font-bold border-slate-300/80 dark:border-white/10 shadow-[0_1px_3px_rgba(15,23,42,0.08)] dark:shadow-[0_2px_6px_rgba(0,0,0,0.2)]"
                   )}
                 >
                   <span className="sm:hidden font-black">JUL</span>
@@ -1141,13 +1142,13 @@ export function DashboardContent({ month, isArchive = false }) {
                     className="p-3.5 sm:p-4 rounded-2xl shadow-sm flex flex-col gap-2.5 transition-all"
                     style={{ backgroundColor: 'var(--color-bg-card)' }}
                   >
-                    {/* Header Row: Title & Active Lines Counter */}
-                    <div>
+                    {/* Header Row: Title & Active Lines Counter (One line on mobile from left to right) */}
+                    <div className="flex items-center justify-between w-full">
                       <h4 className="text-[11px] sm:text-xs font-bold uppercase tracking-widest text-[var(--color-text-secondary)] leading-none">
                         Production Lines
                       </h4>
-                      <p className="font-black text-[18px] sm:text-[20px] text-[var(--color-text-main)] tracking-tight mt-1 leading-none [filter:var(--shadow-text)]">
-                        <AnimatedNumber value={actLinesCount} /> of <AnimatedNumber value={totLinesCount} /> <span className="text-[13px] sm:text-[14px] font-bold text-[var(--color-primary)] uppercase">Active</span>
+                      <p className="font-black text-[14px] sm:text-[16px] text-[var(--color-text-main)] tracking-tight leading-none [filter:var(--shadow-text)] flex items-center gap-1">
+                        <AnimatedNumber value={actLinesCount} /> of <AnimatedNumber value={totLinesCount} /> <span className="text-[11px] sm:text-[12px] font-bold text-[var(--color-primary)] uppercase ml-0.5">Active</span>
                       </p>
                     </div>
 

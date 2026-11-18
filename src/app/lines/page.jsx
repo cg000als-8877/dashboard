@@ -314,8 +314,8 @@ export default function ProductionLinesPage() {
                 className={cn(
                   "flex items-center gap-1 sm:gap-1.5 rounded-full px-3 sm:px-4 py-1 sm:py-1.5 text-[10px] sm:text-xs uppercase tracking-wider transition-all duration-300 cursor-pointer select-none shrink-0 outline-none border",
                   isLive
-                    ? "relative z-30 bg-white text-gray-950 md:bg-[var(--color-bg-card)] md:text-[var(--color-text-main)] font-black shadow-[0_6px_20px_rgba(0,0,0,0.45),-4px_0_12px_rgba(0,0,0,0.22),4px_0_12px_rgba(0,0,0,0.22)] dark:shadow-[0_8px_24px_rgba(0,0,0,0.65),-4px_0_14px_rgba(0,0,0,0.35),4px_0_14px_rgba(0,0,0,0.35)] border-white/90 dark:border-white/25 md:border-[var(--color-border)] scale-[1.06]"
-                    : "relative z-10 bg-[var(--color-bg-card)]/90 text-slate-300 dark:text-slate-300 hover:text-white hover:bg-[var(--color-surface-hover)] hover:z-20 font-bold border border-white/10 dark:border-white/10 shadow-[0_2px_6px_rgba(0,0,0,0.2)]"
+                    ? "relative z-30 bg-white text-slate-950 font-black shadow-[0_4px_14px_rgba(15,23,42,0.12),-3px_0_8px_rgba(15,23,42,0.06),3px_0_8px_rgba(15,23,42,0.06)] dark:shadow-[0_8px_24px_rgba(0,0,0,0.65),-4px_0_14px_rgba(0,0,0,0.35),4px_0_14px_rgba(0,0,0,0.35)] border-slate-300/90 dark:border-white/25 scale-[1.05]"
+                    : "relative z-[15] bg-slate-100/90 hover:bg-slate-200/90 dark:bg-[var(--color-bg-card)]/90 dark:hover:bg-[var(--color-surface-hover)] hover:z-25 text-slate-700 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white font-bold border-slate-300/80 dark:border-white/10 shadow-[0_1px_3px_rgba(15,23,42,0.08)] dark:shadow-[0_2px_6px_rgba(0,0,0,0.2)]"
                 )}
               >
                 <span className="sm:hidden font-black">NOV</span>
@@ -330,8 +330,8 @@ export default function ProductionLinesPage() {
                 className={cn(
                   "rounded-full px-3 sm:px-4 py-1 sm:py-1.5 text-[10px] sm:text-xs uppercase tracking-wider transition-all duration-300 cursor-pointer select-none shrink-0 outline-none border",
                   isOctober
-                    ? "relative z-30 bg-white text-gray-950 md:bg-[var(--color-bg-card)] md:text-[var(--color-text-main)] font-black shadow-[0_6px_20px_rgba(0,0,0,0.45),-4px_0_12px_rgba(0,0,0,0.22),4px_0_12px_rgba(0,0,0,0.22)] dark:shadow-[0_8px_24px_rgba(0,0,0,0.65),-4px_0_14px_rgba(0,0,0,0.35),4px_0_14px_rgba(0,0,0,0.35)] border-white/90 dark:border-white/25 md:border-[var(--color-border)] scale-[1.06]"
-                    : "relative z-10 bg-[var(--color-bg-card)]/90 text-slate-300 dark:text-slate-300 hover:text-white hover:bg-[var(--color-surface-hover)] hover:z-20 font-bold border border-white/10 dark:border-white/10 shadow-[0_2px_6px_rgba(0,0,0,0.2)]"
+                    ? "relative z-30 bg-white text-slate-950 font-black shadow-[0_4px_14px_rgba(15,23,42,0.12),-3px_0_8px_rgba(15,23,42,0.06),3px_0_8px_rgba(15,23,42,0.06)] dark:shadow-[0_8px_24px_rgba(0,0,0,0.65),-4px_0_14px_rgba(0,0,0,0.35),4px_0_14px_rgba(0,0,0,0.35)] border-slate-300/90 dark:border-white/25 scale-[1.05]"
+                    : "relative z-[14] bg-slate-100/90 hover:bg-slate-200/90 dark:bg-[var(--color-bg-card)]/90 dark:hover:bg-[var(--color-surface-hover)] hover:z-25 text-slate-700 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white font-bold border-slate-300/80 dark:border-white/10 shadow-[0_1px_3px_rgba(15,23,42,0.08)] dark:shadow-[0_2px_6px_rgba(0,0,0,0.2)]"
                 )}
               >
                 <span className="sm:hidden font-black">OCT</span>
@@ -344,8 +344,8 @@ export default function ProductionLinesPage() {
                 className={cn(
                   "rounded-full px-3 sm:px-4 py-1 sm:py-1.5 text-[10px] sm:text-xs uppercase tracking-wider transition-all duration-300 cursor-pointer select-none shrink-0 outline-none border",
                   isSeptember
-                    ? "relative z-30 bg-white text-gray-950 md:bg-[var(--color-bg-card)] md:text-[var(--color-text-main)] font-black shadow-[0_6px_20px_rgba(0,0,0,0.45),-4px_0_12px_rgba(0,0,0,0.22),4px_0_12px_rgba(0,0,0,0.22)] dark:shadow-[0_8px_24px_rgba(0,0,0,0.65),-4px_0_14px_rgba(0,0,0,0.35),4px_0_14px_rgba(0,0,0,0.35)] border-white/90 dark:border-white/25 md:border-[var(--color-border)] scale-[1.06]"
-                    : "relative z-10 bg-[var(--color-bg-card)]/90 text-slate-300 dark:text-slate-300 hover:text-white hover:bg-[var(--color-surface-hover)] hover:z-20 font-bold border border-white/10 dark:border-white/10 shadow-[0_2px_6px_rgba(0,0,0,0.2)]"
+                    ? "relative z-30 bg-white text-slate-950 font-black shadow-[0_4px_14px_rgba(15,23,42,0.12),-3px_0_8px_rgba(15,23,42,0.06),3px_0_8px_rgba(15,23,42,0.06)] dark:shadow-[0_8px_24px_rgba(0,0,0,0.65),-4px_0_14px_rgba(0,0,0,0.35),4px_0_14px_rgba(0,0,0,0.35)] border-slate-300/90 dark:border-white/25 scale-[1.05]"
+                    : "relative z-[13] bg-slate-100/90 hover:bg-slate-200/90 dark:bg-[var(--color-bg-card)]/90 dark:hover:bg-[var(--color-surface-hover)] hover:z-25 text-slate-700 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white font-bold border-slate-300/80 dark:border-white/10 shadow-[0_1px_3px_rgba(15,23,42,0.08)] dark:shadow-[0_2px_6px_rgba(0,0,0,0.2)]"
                 )}
               >
                 <span className="sm:hidden font-black">SEP</span>
@@ -358,8 +358,8 @@ export default function ProductionLinesPage() {
                 className={cn(
                   "rounded-full px-3 sm:px-4 py-1 sm:py-1.5 text-[10px] sm:text-xs uppercase tracking-wider transition-all duration-300 cursor-pointer select-none shrink-0 outline-none border",
                   isAugust
-                    ? "relative z-30 bg-white text-gray-950 md:bg-[var(--color-bg-card)] md:text-[var(--color-text-main)] font-black shadow-[0_6px_20px_rgba(0,0,0,0.45),-4px_0_12px_rgba(0,0,0,0.22),4px_0_12px_rgba(0,0,0,0.22)] dark:shadow-[0_8px_24px_rgba(0,0,0,0.65),-4px_0_14px_rgba(0,0,0,0.35),4px_0_14px_rgba(0,0,0,0.35)] border-white/90 dark:border-white/25 md:border-[var(--color-border)] scale-[1.06]"
-                    : "relative z-10 bg-[var(--color-bg-card)]/90 text-slate-300 dark:text-slate-300 hover:text-white hover:bg-[var(--color-surface-hover)] hover:z-20 font-bold border border-white/10 dark:border-white/10 shadow-[0_2px_6px_rgba(0,0,0,0.2)]"
+                    ? "relative z-30 bg-white text-slate-950 font-black shadow-[0_4px_14px_rgba(15,23,42,0.12),-3px_0_8px_rgba(15,23,42,0.06),3px_0_8px_rgba(15,23,42,0.06)] dark:shadow-[0_8px_24px_rgba(0,0,0,0.65),-4px_0_14px_rgba(0,0,0,0.35),4px_0_14px_rgba(0,0,0,0.35)] border-slate-300/90 dark:border-white/25 scale-[1.05]"
+                    : "relative z-[12] bg-slate-100/90 hover:bg-slate-200/90 dark:bg-[var(--color-bg-card)]/90 dark:hover:bg-[var(--color-surface-hover)] hover:z-25 text-slate-700 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white font-bold border-slate-300/80 dark:border-white/10 shadow-[0_1px_3px_rgba(15,23,42,0.08)] dark:shadow-[0_2px_6px_rgba(0,0,0,0.2)]"
                 )}
               >
                 <span className="sm:hidden font-black">AUG</span>
@@ -372,8 +372,8 @@ export default function ProductionLinesPage() {
                 className={cn(
                   "rounded-full px-3 sm:px-4 py-1 sm:py-1.5 text-[10px] sm:text-xs uppercase tracking-wider transition-all duration-300 cursor-pointer select-none shrink-0 outline-none border",
                   isJuly
-                    ? "relative z-30 bg-white text-gray-950 md:bg-[var(--color-bg-card)] md:text-[var(--color-text-main)] font-black shadow-[0_6px_20px_rgba(0,0,0,0.45),-4px_0_12px_rgba(0,0,0,0.22),4px_0_12px_rgba(0,0,0,0.22)] dark:shadow-[0_8px_24px_rgba(0,0,0,0.65),-4px_0_14px_rgba(0,0,0,0.35),4px_0_14px_rgba(0,0,0,0.35)] border-white/90 dark:border-white/25 md:border-[var(--color-border)] scale-[1.06]"
-                    : "relative z-10 bg-[var(--color-bg-card)]/90 text-slate-300 dark:text-slate-300 hover:text-white hover:bg-[var(--color-surface-hover)] hover:z-20 font-bold border border-white/10 dark:border-white/10 shadow-[0_2px_6px_rgba(0,0,0,0.2)]"
+                    ? "relative z-30 bg-white text-slate-950 font-black shadow-[0_4px_14px_rgba(15,23,42,0.12),-3px_0_8px_rgba(15,23,42,0.06),3px_0_8px_rgba(15,23,42,0.06)] dark:shadow-[0_8px_24px_rgba(0,0,0,0.65),-4px_0_14px_rgba(0,0,0,0.35),4px_0_14px_rgba(0,0,0,0.35)] border-slate-300/90 dark:border-white/25 scale-[1.05]"
+                    : "relative z-[11] bg-slate-100/90 hover:bg-slate-200/90 dark:bg-[var(--color-bg-card)]/90 dark:hover:bg-[var(--color-surface-hover)] hover:z-25 text-slate-700 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white font-bold border-slate-300/80 dark:border-white/10 shadow-[0_1px_3px_rgba(15,23,42,0.08)] dark:shadow-[0_2px_6px_rgba(0,0,0,0.2)]"
                 )}
               >
                 <span className="sm:hidden font-black">JUL</span>
@@ -499,7 +499,7 @@ export default function ProductionLinesPage() {
             const recoveryVal = parseFloat(line.monthCostRecovery || 0);
 
             return (
-              <Card key={line.id} className="relative overflow-hidden p-3.5 sm:p-4 border border-[var(--color-border)] bg-[var(--color-bg-card)] shadow-xs hover:shadow-md transition-all duration-200">
+              <Card key={line.id} className="relative overflow-hidden px-3 py-3.5 sm:p-4 border border-[var(--color-border)] bg-[var(--color-bg-card)] shadow-xs hover:shadow-md transition-all duration-200">
                 <div className="grid grid-cols-2 lg:grid-cols-[230px_repeat(4,1fr)_140px_100px] xl:grid-cols-[260px_repeat(4,1fr)_150px_110px] items-center gap-2.5 sm:gap-3.5">
                   
                   {/* Col 1: Line Pill + Name + Badges + Item & Workers */}
@@ -962,7 +962,7 @@ export default function ProductionLinesPage() {
         return (
           <>
             {/* Mobile View: Always and permanently the compact List View */}
-            <div className="md:hidden">
+            <div className="md:hidden -mx-2.5 sm:mx-0">
               {renderCompactListView()}
             </div>
 

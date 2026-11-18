@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
 export const VISUAL_THEMES = [
+  { id: 'royal', name: 'Royal', color: '#2563EB' },
   { id: 'nordic-slate', name: 'Nordic Slate', color: '#60A5FA' },
   { id: 'ember-tide', name: 'Ember Tide', color: '#F97316' },
   { id: 'abstract', name: 'Abstract', color: '#ECEEF2' },
@@ -13,7 +14,6 @@ export const VISUAL_THEMES = [
   { id: 'ocean-dark', name: 'Ocean Dark', color: '#4F8CFF' },
   { id: 'terminal', name: 'Terminal (Night Shift)', color: '#22C55E' },
   { id: 'gen-z', name: 'Gen-Z Pink', color: '#FF007F' },
-  { id: 'royal', name: 'Royal', color: '#2563EB' },
 ];
 
 export const APPEARANCE_MODES = [
@@ -39,7 +39,7 @@ export const BG_EFFECTS = [
 
 // Ember Tide is the full-time default theme
 export function getScheduledDefaultTheme() {
-  return 'nordic-slate';
+  return 'royal';
 }
 
 export function getDefaultBgEffect() {
@@ -49,7 +49,7 @@ export function getDefaultBgEffect() {
 const ThemeContext = createContext();
 
 export function ThemeProvider({ children }) {
-  const [visualTheme, setVisualThemeState] = useState('nordic-slate');
+  const [visualTheme, setVisualThemeState] = useState('royal');
   const [mode, setModeState] = useState('dark');
   const [bgEffect, setBgEffectState] = useState('grain');
   const [mounted, setMounted] = useState(false);
@@ -57,16 +57,16 @@ export function ThemeProvider({ children }) {
   useEffect(() => {
     setMounted(true);
 
-    // Apply Nordic Slate + Dark Mode + Grain Background as default for any device
-    const isDefaultApplied = localStorage.getItem('app-nordic-grain-dark-v1');
+    // Apply Royal + Dark Mode + Grain Background as default for any device
+    const isDefaultApplied = localStorage.getItem('app-royal-grain-dark-v1');
 
     if (!isDefaultApplied) {
-      localStorage.setItem('app-nordic-grain-dark-v1', 'true');
-      localStorage.setItem('app-visual-theme', 'nordic-slate');
+      localStorage.setItem('app-royal-grain-dark-v1', 'true');
+      localStorage.setItem('app-visual-theme', 'royal');
       localStorage.setItem('app-mode', 'dark');
       localStorage.setItem('theme', 'dark');
       localStorage.setItem('app-bg-effect', 'grain');
-      setVisualThemeState('nordic-slate');
+      setVisualThemeState('royal');
       setModeState('dark');
       setBgEffectState('grain');
       return;
@@ -80,7 +80,7 @@ export function ThemeProvider({ children }) {
     if (storedVisualTheme && VISUAL_THEMES.some(t => t.id === storedVisualTheme)) {
       setVisualThemeState(storedVisualTheme);
     } else {
-      setVisualThemeState('nordic-slate');
+      setVisualThemeState('royal');
     }
 
     if (storedMode) {
@@ -104,8 +104,10 @@ export function ThemeProvider({ children }) {
 
       if (mode === 'light') {
         document.documentElement.classList.add('light-mode');
+        document.documentElement.classList.remove('dark');
       } else {
         document.documentElement.classList.remove('light-mode');
+        document.documentElement.classList.add('dark');
       }
     }
   }, [visualTheme, mode, bgEffect, mounted]);

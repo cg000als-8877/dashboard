@@ -66,7 +66,7 @@ export function MobileBottomNav({ isOthersOpen, onToggleOthers, onOthersClose })
   ];
 
   return (
-    <div className="md:hidden fixed bottom-0 inset-x-0 w-full z-50 pointer-events-auto select-none font-sans bg-[var(--color-bg-card)]/95 backdrop-blur-xl border-t border-[var(--color-border)] shadow-[0_-4px_24px_rgba(0,0,0,0.25)] pb-[env(safe-area-inset-bottom)] transition-all">
+    <div className="md:hidden fixed bottom-0 inset-x-0 w-full z-50 pointer-events-auto select-none font-sans bg-[var(--color-bg-card)]/95 backdrop-blur-xl border-t border-slate-200/80 dark:border-[var(--color-border)] shadow-[0_-2px_14px_rgba(15,23,42,0.06)] dark:shadow-[0_-4px_24px_rgba(0,0,0,0.4)] pb-[env(safe-area-inset-bottom)] transition-all">
       <nav className="grid grid-cols-5 w-full h-[52px] items-center px-1">
         {navItems.map((item) => {
           const Icon = item.icon;
@@ -74,7 +74,7 @@ export function MobileBottomNav({ isOthersOpen, onToggleOthers, onOthersClose })
 
           const content = (
             <div className="flex flex-col items-center justify-center w-full h-full relative py-1">
-              {/* Icon - Pure, clean, off-white and animating when active (No shape holders, no strokes) */}
+              {/* Icon - Theme primary in Day Mode, crisp off-white in Night Mode, animating when active */}
               <div 
                 className={cn(
                   "transition-all duration-300 flex items-center justify-center",
@@ -87,20 +87,20 @@ export function MobileBottomNav({ isOthersOpen, onToggleOthers, onOthersClose })
                   className={cn(
                     "transition-colors duration-200",
                     isActive 
-                      ? "text-[#F4F4F5]" 
-                      : "text-[var(--color-text-muted)] group-hover:text-zinc-300",
+                      ? "text-[var(--color-primary)] dark:text-[#F4F4F5]" 
+                      : "text-slate-400 dark:text-[var(--color-text-muted)] group-hover:text-slate-600 dark:group-hover:text-zinc-300",
                     item.id === 'others' && isOthers && "rotate-90 transition-transform duration-200"
                   )}
                 />
               </div>
 
-              {/* Small Label - Off-white and animating when active, muted when inactive */}
+              {/* Small Label - Theme primary in Day Mode, off-white in Night Mode, animating when active */}
               <span 
                 className={cn(
                   "text-[8.5px] uppercase tracking-wider leading-none transition-colors duration-200 mt-1",
                   isActive 
-                    ? "text-[#F4F4F5] font-black animate-nav-label drop-shadow-[0_1px_3px_rgba(0,0,0,0.6)]" 
-                    : "text-[var(--color-text-muted)] font-semibold group-hover:text-zinc-300"
+                    ? "text-[var(--color-primary)] dark:text-[#F4F4F5] font-black animate-nav-label dark:drop-shadow-[0_1px_3px_rgba(0,0,0,0.6)]" 
+                    : "text-slate-400 dark:text-[var(--color-text-muted)] font-semibold group-hover:text-slate-600 dark:group-hover:text-zinc-300"
                 )}
               >
                 {item.label}

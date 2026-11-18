@@ -28,17 +28,19 @@ export default function Analytics() {
         </p>
       </header>
 
-      <div className="grid grid-cols-1 gap-6">
-        <IncomeVsCostChart data={dailyTrends} />
-      </div>
-      
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <DailyPerformanceChart data={dailyTrends} />
-        <MonthlyProfitBarChart data={dailyTrends} />
-      </div>
+      <div className="space-y-6 sm:space-y-8 -mx-2.5 sm:mx-0">
+        <div className="grid grid-cols-1 gap-4 sm:gap-6">
+          <IncomeVsCostChart data={dailyTrends} />
+        </div>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+          <DailyPerformanceChart data={dailyTrends} />
+          <MonthlyProfitBarChart data={dailyTrends} />
+        </div>
 
-      {/* Month-to-Month Comparative Analytics Graph */}
-      <MonthComparisonChart />
+        {/* Month-to-Month Comparative Analytics Graph */}
+        <MonthComparisonChart />
+      </div>
     </div>
   );
 }
