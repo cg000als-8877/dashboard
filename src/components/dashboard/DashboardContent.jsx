@@ -3,7 +3,7 @@ import { format, parseISO, subMonths } from 'date-fns';
 import { useKpiData } from '@/utils/useKpiData';
 import { MetricCard, Card } from '@/components/ui/Card';
 import { TitanicAnimation } from '@/components/ui/TitanicAnimation';
-import { Sparkles, ArrowRight, Download, FileText, Ship, Siren, ChevronDown, ChevronLeft, ChevronRight, TrendingDown, TrendingUp } from 'lucide-react';
+import { Sparkles, ArrowRight, Download, FileText, Ship, Siren, ChevronDown, ChevronLeft, ChevronRight, TrendingDown, TrendingUp, Check } from 'lucide-react';
 import Link from 'next/link';
 import { RealTimeClock } from '@/components/ui/RealTimeClock';
 import { PrintableArchiveReport } from '@/components/report/PrintableArchiveReport';
@@ -775,78 +775,38 @@ export function DashboardContent({ month, isArchive = false }) {
           {/* Month Tab Switcher for 6 KPI Stat Cards (Live Dashboard Only) */}
           {!isArchive && (
             <div className="flex flex-col items-center justify-center w-full mb-2 sm:mb-2.5 relative z-10 gap-1.5 sm:gap-2">
-              <div className="inline-flex items-center -space-x-2.5 sm:-space-x-3.5 select-none shrink-0 py-1.5 px-2">
-                <button
-                  type="button"
-                  onClick={() => setSelectedCardMonth('current')}
-                  className={cn(
-                    "flex items-center gap-1 sm:gap-1.5 rounded-full px-3 sm:px-4 py-1 sm:py-1.5 text-[10px] sm:text-xs uppercase tracking-wider transition-all duration-300 cursor-pointer select-none shrink-0 outline-none border",
-                    selectedCardMonth === 'current'
-                      ? "relative z-30 bg-white text-slate-950 font-black shadow-[0_4px_14px_rgba(15,23,42,0.12),-3px_0_8px_rgba(15,23,42,0.06),3px_0_8px_rgba(15,23,42,0.06)] dark:shadow-[0_8px_24px_rgba(0,0,0,0.65),-4px_0_14px_rgba(0,0,0,0.35),4px_0_14px_rgba(0,0,0,0.35)] border-slate-300/90 dark:border-white/25 scale-[1.05]"
-                      : "relative z-[15] bg-slate-100/90 hover:bg-slate-200/90 dark:bg-[var(--color-bg-card)]/90 dark:hover:bg-[var(--color-surface-hover)] hover:z-25 text-slate-700 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white font-bold border-slate-300/80 dark:border-white/10 shadow-[0_1px_3px_rgba(15,23,42,0.08)] dark:shadow-[0_2px_6px_rgba(0,0,0,0.2)]"
-                  )}
-                >
-                  <span className="sm:hidden font-black">NOV</span>
-                  <span className="hidden sm:inline font-bold">NOVEMBER</span>
-                  <span className="hidden sm:inline text-[8px] sm:text-[10px] text-red-500 font-black tracking-wide">(LIVE)</span>
-                  <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.8)] animate-pulse shrink-0" />
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setSelectedCardMonth('october')}
-                  className={cn(
-                    "rounded-full px-3 sm:px-4 py-1 sm:py-1.5 text-[10px] sm:text-xs uppercase tracking-wider transition-all duration-300 cursor-pointer select-none shrink-0 outline-none border",
-                    selectedCardMonth === 'october'
-                      ? "relative z-30 bg-white text-slate-950 font-black shadow-[0_4px_14px_rgba(15,23,42,0.12),-3px_0_8px_rgba(15,23,42,0.06),3px_0_8px_rgba(15,23,42,0.06)] dark:shadow-[0_8px_24px_rgba(0,0,0,0.65),-4px_0_14px_rgba(0,0,0,0.35),4px_0_14px_rgba(0,0,0,0.35)] border-slate-300/90 dark:border-white/25 scale-[1.05]"
-                      : "relative z-[14] bg-slate-100/90 hover:bg-slate-200/90 dark:bg-[var(--color-bg-card)]/90 dark:hover:bg-[var(--color-surface-hover)] hover:z-25 text-slate-700 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white font-bold border-slate-300/80 dark:border-white/10 shadow-[0_1px_3px_rgba(15,23,42,0.08)] dark:shadow-[0_2px_6px_rgba(0,0,0,0.2)]"
-                  )}
-                >
-                  <span className="sm:hidden font-black">OCT</span>
-                  <span className="hidden sm:inline font-bold">OCTOBER</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setSelectedCardMonth('september')}
-                  className={cn(
-                    "rounded-full px-3 sm:px-4 py-1 sm:py-1.5 text-[10px] sm:text-xs uppercase tracking-wider transition-all duration-300 cursor-pointer select-none shrink-0 outline-none border",
-                    selectedCardMonth === 'september'
-                      ? "relative z-30 bg-white text-slate-950 font-black shadow-[0_4px_14px_rgba(15,23,42,0.12),-3px_0_8px_rgba(15,23,42,0.06),3px_0_8px_rgba(15,23,42,0.06)] dark:shadow-[0_8px_24px_rgba(0,0,0,0.65),-4px_0_14px_rgba(0,0,0,0.35),4px_0_14px_rgba(0,0,0,0.35)] border-slate-300/90 dark:border-white/25 scale-[1.05]"
-                      : "relative z-[13] bg-slate-100/90 hover:bg-slate-200/90 dark:bg-[var(--color-bg-card)]/90 dark:hover:bg-[var(--color-surface-hover)] hover:z-25 text-slate-700 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white font-bold border-slate-300/80 dark:border-white/10 shadow-[0_1px_3px_rgba(15,23,42,0.08)] dark:shadow-[0_2px_6px_rgba(0,0,0,0.2)]"
-                  )}
-                >
-                  <span className="sm:hidden font-black">SEP</span>
-                  <span className="hidden sm:inline font-bold">SEPTEMBER</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setSelectedCardMonth('august')}
-                  className={cn(
-                    "rounded-full px-3 sm:px-4 py-1 sm:py-1.5 text-[10px] sm:text-xs uppercase tracking-wider transition-all duration-300 cursor-pointer select-none shrink-0 outline-none border",
-                    selectedCardMonth === 'august'
-                      ? "relative z-30 bg-white text-slate-950 font-black shadow-[0_4px_14px_rgba(15,23,42,0.12),-3px_0_8px_rgba(15,23,42,0.06),3px_0_8px_rgba(15,23,42,0.06)] dark:shadow-[0_8px_24px_rgba(0,0,0,0.65),-4px_0_14px_rgba(0,0,0,0.35),4px_0_14px_rgba(0,0,0,0.35)] border-slate-300/90 dark:border-white/25 scale-[1.05]"
-                      : "relative z-[12] bg-slate-100/90 hover:bg-slate-200/90 dark:bg-[var(--color-bg-card)]/90 dark:hover:bg-[var(--color-surface-hover)] hover:z-25 text-slate-700 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white font-bold border-slate-300/80 dark:border-white/10 shadow-[0_1px_3px_rgba(15,23,42,0.08)] dark:shadow-[0_2px_6px_rgba(0,0,0,0.2)]"
-                  )}
-                >
-                  <span className="sm:hidden font-black">AUG</span>
-                  <span className="hidden sm:inline font-bold">AUGUST</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setSelectedCardMonth('july')}
-                  className={cn(
-                    "rounded-full px-3 sm:px-4 py-1 sm:py-1.5 text-[10px] sm:text-xs uppercase tracking-wider transition-all duration-300 cursor-pointer select-none shrink-0 outline-none border",
-                    selectedCardMonth === 'july'
-                      ? "relative z-30 bg-white text-slate-950 font-black shadow-[0_4px_14px_rgba(15,23,42,0.12),-3px_0_8px_rgba(15,23,42,0.06),3px_0_8px_rgba(15,23,42,0.06)] dark:shadow-[0_8px_24px_rgba(0,0,0,0.65),-4px_0_14px_rgba(0,0,0,0.35),4px_0_14px_rgba(0,0,0,0.35)] border-slate-300/90 dark:border-white/25 scale-[1.05]"
-                      : "relative z-[11] bg-slate-100/90 hover:bg-slate-200/90 dark:bg-[var(--color-bg-card)]/90 dark:hover:bg-[var(--color-surface-hover)] hover:z-25 text-slate-700 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white font-bold border-slate-300/80 dark:border-white/10 shadow-[0_1px_3px_rgba(15,23,42,0.08)] dark:shadow-[0_2px_6px_rgba(0,0,0,0.2)]"
-                  )}
-                >
-                  <span className="sm:hidden font-black">JUL</span>
-                  <span className="hidden sm:inline font-bold">JULY</span>
-                </button>
+              <div className="inline-flex items-center gap-1.5 sm:gap-2 select-none shrink-0 py-1 px-2 max-w-full overflow-x-auto no-scrollbar">
+                {[
+                  { id: 'current', short: 'NOV', full: 'NOVEMBER', isLive: true },
+                  { id: 'october', short: 'OCT', full: 'OCTOBER', isLive: false },
+                  { id: 'september', short: 'SEP', full: 'SEPTEMBER', isLive: false },
+                  { id: 'august', short: 'AUG', full: 'AUGUST', isLive: false },
+                  { id: 'july', short: 'JUL', full: 'JULY', isLive: false },
+                ].map(m => {
+                  const isSelected = selectedCardMonth === m.id;
+                  return (
+                    <button
+                      key={m.id}
+                      type="button"
+                      onClick={() => setSelectedCardMonth(m.id)}
+                      className={cn(
+                        "rounded-full px-3 sm:px-4 py-1 sm:py-1.5 text-[10px] sm:text-xs uppercase tracking-wider transition-all duration-300 cursor-pointer select-none shrink-0 outline-none border flex items-center gap-1.5",
+                        isSelected
+                          ? "relative z-20 bg-white text-slate-950 font-black shadow-[0_4px_14px_rgba(15,23,42,0.12)] dark:shadow-[0_8px_24px_rgba(0,0,0,0.65)] border-slate-300/90 dark:border-white/25 scale-[1.02]"
+                          : "relative z-10 bg-slate-100/90 hover:bg-slate-200/90 dark:bg-[var(--color-bg-card)]/90 dark:hover:bg-[var(--color-surface-hover)] text-slate-700 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white font-bold border-slate-300/80 dark:border-white/10 shadow-[0_1px_3px_rgba(15,23,42,0.08)]"
+                      )}
+                    >
+                      <span className="sm:hidden font-black">{m.short}</span>
+                      <span className="hidden sm:inline font-bold">{m.full}</span>
+                      {m.isLive && (
+                        <>
+                          <span className="hidden sm:inline text-[8px] sm:text-[10px] text-red-500 font-black tracking-wide">(LIVE)</span>
+                          <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.8)] animate-pulse shrink-0" />
+                        </>
+                      )}
+                    </button>
+                  );
+                })}
               </div>
             </div>
           )}
