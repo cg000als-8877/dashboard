@@ -775,7 +775,7 @@ export function DashboardContent({ month, isArchive = false }) {
           {/* Month Tab Switcher for 6 KPI Stat Cards (Live Dashboard Only) */}
           {!isArchive && (
             <div className="flex flex-col items-center justify-center w-full mb-2 sm:mb-2.5 relative z-10 gap-1.5 sm:gap-2">
-              <div className="inline-flex items-center gap-1.5 sm:gap-2 select-none shrink-0 py-1 px-2 max-w-full overflow-x-auto no-scrollbar">
+              <div className="inline-flex items-center gap-1.5 sm:gap-2 select-none shrink-0 py-2 px-2.5 max-w-full overflow-x-auto no-scrollbar">
                 {[
                   { id: 'current', short: 'NOV', full: 'NOVEMBER', isLive: true },
                   { id: 'october', short: 'OCT', full: 'OCTOBER', isLive: false },
@@ -792,7 +792,7 @@ export function DashboardContent({ month, isArchive = false }) {
                       className={cn(
                         "rounded-full px-3 sm:px-4 py-1 sm:py-1.5 text-[10px] sm:text-xs uppercase tracking-wider transition-all duration-300 cursor-pointer select-none shrink-0 outline-none border flex items-center gap-1.5",
                         isSelected
-                          ? "relative z-20 bg-white text-slate-950 font-black shadow-[0_4px_14px_rgba(15,23,42,0.12)] dark:shadow-[0_8px_24px_rgba(0,0,0,0.65)] border-slate-300/90 dark:border-white/25 scale-[1.02]"
+                          ? "relative z-20 bg-white text-slate-950 font-black shadow-[0_2px_8px_rgba(0,0,0,0.1)] dark:shadow-[0_2px_8px_rgba(0,0,0,0.3)] border-slate-300/90 dark:border-white/20"
                           : "relative z-10 bg-slate-100/90 hover:bg-slate-200/90 dark:bg-[var(--color-bg-card)]/90 dark:hover:bg-[var(--color-surface-hover)] text-slate-700 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white font-bold border-slate-300/80 dark:border-white/10 shadow-[0_1px_3px_rgba(15,23,42,0.08)]"
                       )}
                     >
@@ -801,7 +801,7 @@ export function DashboardContent({ month, isArchive = false }) {
                       {m.isLive && (
                         <>
                           <span className="hidden sm:inline text-[8px] sm:text-[10px] text-red-500 font-black tracking-wide">(LIVE)</span>
-                          <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.8)] animate-pulse shrink-0" />
+                          <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-red-500 shadow-[0_0_6px_rgba(239,68,68,0.6)] animate-pulse shrink-0" />
                         </>
                       )}
                     </button>
