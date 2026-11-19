@@ -21,6 +21,14 @@ const DEFAULT_LINE_ITEMS = {
   D: 'Fleece Hoodie'
 };
 
+function toTitleCase(str) {
+  if (!str) return '';
+  return str.split(/(\s+|,|\/|-)/).map(part => {
+    if (!part || /^\s+$/.test(part) || part === ',' || part === '/' || part === '-') return part;
+    return part.charAt(0).toUpperCase() + part.slice(1).toLowerCase();
+  }).join('');
+}
+
 // Hot red emergency siren indicator
 function AmbulanceBeacon() {
   return (
@@ -274,6 +282,7 @@ function getPacedMonthData(dailyTrends, lines, rawEngine, targetDays) {
       let activeDays = 0;
       let lastDayEntry = null;
       const itemsSet = new Set();
+      const itemTotals = {};
 
       lineEntries.forEach(d => {
         lineIncome += d.total_income || 0;
@@ -284,9 +293,22 @@ function getPacedMonthData(dailyTrends, lines, rawEngine, targetDays) {
         if (d.item && typeof d.item === 'string' && d.item.trim()) {
           const splitItems = d.item.split(/[,/&]+/).map(s => s.trim()).filter(Boolean);
           if (splitItems.length > 0) {
-            splitItems.forEach(it => itemsSet.add(it));
+            splitItems.forEach(it => {
+              itemsSet.add(it);
+              if (splitItems.length === 1) {
+                itemTotals[it] = (itemTotals[it] || 0) + (d.production_qty || 0);
+              }
+            });
+            if (splitItems.length > 1) {
+              const perItemQty = Math.round((d.production_qty || 0) / splitItems.length);
+              splitItems.forEach(it => {
+                itemTotals[it] = (itemTotals[it] || 0) + perItemQty;
+              });
+            }
           } else {
-            itemsSet.add(d.item.trim());
+            const rawItem = d.item.trim();
+            itemsSet.add(rawItem);
+            itemTotals[rawItem] = (itemTotals[rawItem] || 0) + (d.production_qty || 0);
           }
         }
         if (!lastDayEntry || (d.date && d.date >= lastDayEntry.date)) {
@@ -295,6 +317,13 @@ function getPacedMonthData(dailyTrends, lines, rawEngine, targetDays) {
       });
 
       const uniqueItems = Array.from(itemsSet);
+      const itemBreakdown = uniqueItems.map(it => ({
+        name: it,
+        qty: Math.round(itemTotals[it] || 0)
+      }));
+      const itemProdSummary = itemBreakdown.length > 1 && itemBreakdown.some(ib => ib.qty > 0)
+        ? itemBreakdown.map(ib => ib.qty.toLocaleString()).join(', ')
+        : null;
       const avgWorkers = activeDays > 0 ? Math.round(workerSum / activeDays) : 0;
       const lineNetProfit = lineIncome - lineCost;
       const monthCostRecovery = lineCost > 0 ? ((lineIncome / lineCost) * 100).toFixed(1) : '0.0';
@@ -314,6 +343,8 @@ function getPacedMonthData(dailyTrends, lines, rawEngine, targetDays) {
         activeDaysCount: activeDays,
         item: uniqueItems.join(', ') || DEFAULT_LINE_ITEMS[l.id] || 'Polo Shirt',
         items: uniqueItems,
+        itemBreakdown,
+        itemProdSummary,
         lastDay: lastDayEntry,
         lastDayDate: lastDayEntry?.date || endDate,
         monthCostRecovery,
@@ -1160,6 +1191,8 @@ export function DashboardContent({ month, isArchive = false }) {
                         const totalProd = lineData?.totalProduction || 0;
                         const lineLoss = getLineLoss(lineData);
                         const lossRatio = maxLineLoss > 0 ? Math.min(1, Math.max(0, lineLoss / maxLineLoss)) : 0;
+                        const activeBreakdown = lineData?.itemBreakdown?.filter(ib => (ib.qty || 0) > 0) || [];
+                        const hasMultipleItems = activeBreakdown.length > 1;
 
                         return (
                           <div
@@ -1182,23 +1215,36 @@ export function DashboardContent({ month, isArchive = false }) {
                                 : undefined
                             }}
                           >
-                            {/* Line Info: Line Name & Item Name */}
-                            <div className="min-w-0 flex-1">
+                            {/* Line Info: Line Name & Item Breakdown */}
+                            <div className="min-w-0 flex-1 pr-1">
                               <span className="font-bold text-[var(--color-text-main)] truncate block leading-tight text-[10.5px] sm:text-xs">
                                 Line {lineId}
                               </span>
                               <p className="font-medium text-[var(--color-text-muted)] truncate mt-0.5 leading-tight text-[8.5px] sm:text-[9.5px]">
-                                {itemDesc}
+                                {hasMultipleItems ? (
+                                  activeBreakdown.map((ib, idx) => (
+                                    <span key={ib.name}>
+                                      {idx > 0 && ", "}
+                                      <span className="font-bold text-[var(--color-text-secondary)]">{ib.qty.toLocaleString()}</span>{" "}
+                                      <span>{toTitleCase(ib.name)}</span>
+                                    </span>
+                                  ))
+                                ) : (
+                                  toTitleCase(itemDesc)
+                                )}
                               </p>
                             </div>
 
                             {/* Total Production Output */}
-                            <div className="text-right shrink-0 pl-1">
-                              <span className="font-bold text-[var(--color-text-main)] block leading-tight text-[10.5px] sm:text-xs">
+                            <div className="text-right shrink-0 pl-1.5">
+                              <span 
+                                className="font-bold text-[var(--color-text-main)] block leading-tight text-[10.5px] sm:text-xs whitespace-nowrap"
+                                title={hasMultipleItems ? activeBreakdown.map(ib => `${ib.qty.toLocaleString()} ${toTitleCase(ib.name)}`).join(', ') + ` (Total: ${totalProd.toLocaleString()} pcs)` : undefined}
+                              >
                                 <AnimatedNumber value={totalProd} />
                               </span>
-                              <span className="font-semibold uppercase text-[var(--color-text-muted)] block leading-none text-[7.5px] sm:text-[8px]">
-                                pcs
+                              <span className="font-semibold uppercase text-[var(--color-text-muted)] block leading-none text-[7.5px] sm:text-[8px] mt-0.5">
+                                {hasMultipleItems ? 'total pcs' : 'pcs'}
                               </span>
                             </div>
                           </div>
@@ -1438,6 +1484,8 @@ export function DashboardContent({ month, isArchive = false }) {
                           const output = lineData?.totalProduction || 0;
                           const lineLoss = getLineLoss(lineData);
                           const lossRatio = maxLineLoss > 0 ? Math.min(1, Math.max(0, lineLoss / maxLineLoss)) : 0;
+                          const activeBreakdown = lineData?.itemBreakdown?.filter(ib => (ib.qty || 0) > 0) || [];
+                          const hasMultipleItems = activeBreakdown.length > 1;
 
                           return (
                             <div
@@ -1471,15 +1519,35 @@ export function DashboardContent({ month, isArchive = false }) {
                                   <span className="text-xs xl:text-[13px] font-bold text-[var(--color-text-main)] truncate block leading-tight">
                                     Line {lineId}
                                   </span>
-                                  <p className="text-[10px] xl:text-[11px] font-medium text-[var(--color-text-muted)] truncate leading-tight mt-0.5">
-                                    {itemDesc}
+                                  <p className="text-[9px] xl:text-[10px] font-medium text-[var(--color-text-muted)] truncate leading-tight mt-0.5">
+                                    {hasMultipleItems ? (
+                                      activeBreakdown.map((ib, idx) => (
+                                        <span key={ib.name}>
+                                          {idx > 0 && ", "}
+                                          <span className="font-bold text-[var(--color-text-secondary)]">{ib.qty.toLocaleString()}</span>{" "}
+                                          <span>{toTitleCase(ib.name)}</span>
+                                        </span>
+                                      ))
+                                    ) : (
+                                      toTitleCase(itemDesc)
+                                    )}
                                   </p>
                                 </div>
                               </div>
 
-                              <div className="text-right shrink-0 pl-1">
-                                <span className="text-xs xl:text-[13px] font-bold text-[var(--color-text-main)] block whitespace-nowrap">
-                                  {output > 0 ? <><AnimatedNumber value={output} /> pcs</> : <><AnimatedNumber value={workers} /> w</>}
+                              <div className="text-right shrink-0 pl-1.5">
+                                <span 
+                                  className="text-xs xl:text-[13px] font-bold text-[var(--color-text-main)] block leading-tight whitespace-nowrap"
+                                  title={hasMultipleItems ? activeBreakdown.map(ib => `${ib.qty.toLocaleString()} ${toTitleCase(ib.name)}`).join(', ') + ` (Total: ${output.toLocaleString()} pcs)` : undefined}
+                                >
+                                  {output > 0 ? (
+                                    <AnimatedNumber value={output} />
+                                  ) : (
+                                    <><AnimatedNumber value={workers} /> w</>
+                                  )}
+                                </span>
+                                <span className="text-[8.5px] xl:text-[9.5px] text-[var(--color-text-muted)] uppercase font-semibold block leading-none mt-0.5 whitespace-nowrap">
+                                  {hasMultipleItems ? 'total pcs' : 'pcs'}
                                 </span>
                               </div>
                             </div>

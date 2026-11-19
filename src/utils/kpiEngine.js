@@ -53,7 +53,8 @@ export function createKpiEngine(rawData) {
           averageCm: 0,
           totalCm: 0,
           today: null, // will store latest day data
-          itemsSet: new Set()
+          itemsSet: new Set(),
+          itemTotals: {}
         };
       });
 
@@ -76,9 +77,22 @@ export function createKpiEngine(rawData) {
         if (d.item && typeof d.item === 'string' && d.item.trim() !== '') {
           const splitItems = d.item.split(/[,/&]+/).map(s => s.trim()).filter(Boolean);
           if (splitItems.length > 0) {
-            splitItems.forEach(it => line.itemsSet.add(it));
+            splitItems.forEach(it => {
+              line.itemsSet.add(it);
+              if (splitItems.length === 1) {
+                line.itemTotals[it] = (line.itemTotals[it] || 0) + (d.production_qty || 0);
+              }
+            });
+            if (splitItems.length > 1) {
+              const perItemQty = Math.round((d.production_qty || 0) / splitItems.length);
+              splitItems.forEach(it => {
+                line.itemTotals[it] = (line.itemTotals[it] || 0) + perItemQty;
+              });
+            }
           } else {
-            line.itemsSet.add(d.item.trim());
+            const raw = d.item.trim();
+            line.itemsSet.add(raw);
+            line.itemTotals[raw] = (line.itemTotals[raw] || 0) + (d.production_qty || 0);
           }
         }
 
@@ -93,6 +107,13 @@ export function createKpiEngine(rawData) {
 
       return Object.values(linesMap).map(line => {
         const uniqueItems = Array.from(line.itemsSet);
+        const itemBreakdown = uniqueItems.map(it => ({
+          name: it,
+          qty: Math.round(line.itemTotals[it] || 0)
+        }));
+        const itemProdSummary = itemBreakdown.length > 1 && itemBreakdown.some(ib => ib.qty > 0)
+          ? itemBreakdown.map(ib => ib.qty.toLocaleString()).join(', ')
+          : null;
         const itemLabel = uniqueItems.length > 0
           ? uniqueItems.join(', ')
           : (line.lastActiveDay?.item || line.today?.item || (
@@ -114,6 +135,8 @@ export function createKpiEngine(rawData) {
           ...line,
           items: uniqueItems,
           item: itemLabel,
+          itemBreakdown,
+          itemProdSummary,
           totalIncome: Math.round(line.totalIncome),
           totalCost: Math.round(line.totalCost),
           netProfit: Math.round(line.netProfit),
