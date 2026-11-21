@@ -1588,7 +1588,7 @@ export function DashboardContent({ month, isArchive = false }) {
                             : stats))));
 
           return (
-            <div className="mt-12 mb-10 relative z-10">
+            <div className="mt-8 md:mt-12 mb-0 md:mb-8 relative z-10">
               {/* Header Title & Date Subtitle */}
               <div className="flex flex-col items-center justify-center mb-5 sm:mb-6 text-center">
                 <h2 className="text-[20px] sm:text-[23px] md:text-[27px] font-bold tracking-normal uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] via-[var(--color-text-secondary)] to-[var(--color-text-muted)] text-center leading-tight">

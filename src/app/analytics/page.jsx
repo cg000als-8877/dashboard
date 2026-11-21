@@ -35,16 +35,16 @@ export default function Analytics() {
         </p>
       </header>
 
-      {/* ── 2-SIDED TAB SWITCHER (One side Analytics, one side System Intelligence; No dots, No strokes) ── */}
-      <div className="flex items-center justify-center md:justify-start w-full">
-        <div className="grid grid-cols-2 gap-1 p-1 w-full max-w-[420px] sm:w-[380px] bg-[var(--color-surface)]/80 backdrop-blur-md rounded-2xl border-0 shadow-xs select-none">
+      {/* ── 2-SIDED TAB SWITCHER (Center aligned on mobile and PC; No dots, No strokes, Single line) ── */}
+      <div className="flex items-center justify-center w-full my-1 sm:my-2">
+        <div className="inline-grid grid-cols-2 gap-1 p-1 w-full max-w-[320px] sm:max-w-[360px] bg-[var(--color-surface)]/80 backdrop-blur-md rounded-xl sm:rounded-2xl border-0 shadow-xs select-none">
           <button
             type="button"
             onClick={() => setActiveTab('analytics')}
             className={cn(
-              "py-2 sm:py-2.5 px-3 rounded-xl text-xs sm:text-sm font-black uppercase tracking-wider transition-all duration-200 cursor-pointer border-0 outline-none text-center select-none",
+              "py-1.5 sm:py-2 px-2 sm:px-3 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-bold uppercase tracking-wider transition-all duration-200 cursor-pointer border-0 outline-none text-center select-none whitespace-nowrap flex items-center justify-center",
               activeTab === 'analytics'
-                ? "bg-[var(--color-primary)] text-[var(--color-on-primary,white)] shadow-md scale-[1.02]"
+                ? "bg-[var(--color-primary)] text-[var(--color-on-primary,white)] shadow-md"
                 : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)] bg-transparent"
             )}
           >
@@ -55,9 +55,9 @@ export default function Analytics() {
             type="button"
             onClick={() => setActiveTab('intelligence')}
             className={cn(
-              "py-2 sm:py-2.5 px-3 rounded-xl text-xs sm:text-sm font-black uppercase tracking-wider transition-all duration-200 cursor-pointer border-0 outline-none text-center select-none",
+              "py-1.5 sm:py-2 px-2 sm:px-3 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-bold uppercase tracking-wider transition-all duration-200 cursor-pointer border-0 outline-none text-center select-none whitespace-nowrap flex items-center justify-center",
               activeTab === 'intelligence'
-                ? "bg-[var(--color-primary)] text-[var(--color-on-primary,white)] shadow-md scale-[1.02]"
+                ? "bg-[var(--color-primary)] text-[var(--color-on-primary,white)] shadow-md"
                 : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)] bg-transparent"
             )}
           >
