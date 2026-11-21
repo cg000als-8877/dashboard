@@ -268,17 +268,17 @@ export default function ProductionLinesPage() {
               <div className="flex items-center justify-center sm:justify-end gap-1.5 flex-wrap">
                 {profitableCount > 0 && (
                   <span className="inline-flex items-center gap-1 text-[10px] sm:text-xs font-bold text-[var(--color-success-text)] bg-[var(--color-success-glow)] px-2.5 py-0.5 rounded-md border-0">
-                    <CheckCircle2 size={12} /> {profitableCount} Optimal
+                    <CheckCircle2 size={12} /> {profitableCount} {profitableCount === 1 ? 'Optimal Line' : 'Optimal Lines'}
                   </span>
                 )}
                 {criticalCount > 0 && (
                   <span className="inline-flex items-center gap-1 text-[10px] sm:text-xs font-bold text-rose-700 dark:text-rose-400 bg-rose-500/15 px-2.5 py-0.5 rounded-md border-0">
-                    <AlertTriangle size={12} /> {criticalCount} Critical
+                    <AlertTriangle size={12} /> {criticalCount} {criticalCount === 1 ? 'Critical Line' : 'Critical Lines'}
                   </span>
                 )}
                 {inactiveCount > 0 && (
                   <span className="inline-flex items-center gap-1 text-[10px] sm:text-xs font-bold text-zinc-700 dark:text-zinc-400 bg-zinc-500/15 px-2.5 py-0.5 rounded-md border-0">
-                    <Clock size={12} /> {inactiveCount} Inactive
+                    <Clock size={12} /> {inactiveCount} {inactiveCount === 1 ? 'Inactive Line' : 'Inactive Lines'}
                   </span>
                 )}
               </div>

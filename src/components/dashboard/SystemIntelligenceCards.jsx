@@ -240,8 +240,8 @@ export function SystemIntelligenceCards({ insights = [] }) {
           </div>
         </div>
 
-        {/* Category Tabs (Full-width responsive wrapping pills) */}
-        <div className="flex items-center gap-1.5 sm:gap-2 mb-3.5 sm:mb-5 overflow-x-auto no-scrollbar sm:flex-wrap select-none pb-0.5">
+        {/* Category Tabs: Compact pills wrapping side-by-side on mobile (justified across lines) */}
+        <div className="flex flex-wrap items-center justify-between gap-1 sm:gap-2 mb-3 sm:mb-5 w-full select-none">
           {CATEGORIES.map(cat => {
             const isSelected = activeTab === cat.id;
             const count = categoryCounts[cat.id] || 0;
@@ -252,16 +252,16 @@ export function SystemIntelligenceCards({ insights = [] }) {
                 type="button"
                 onClick={() => setActiveTab(cat.id)}
                 className={cn(
-                  "flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-xl text-[10px] sm:text-[12px] font-bold transition-all duration-200 cursor-pointer border-none outline-none select-none shrink-0",
+                  "flex-1 min-w-fit sm:min-w-0 flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg sm:rounded-xl text-[9.5px] sm:text-xs font-bold transition-all duration-200 cursor-pointer border-none outline-none select-none text-center whitespace-nowrap",
                   isSelected
                     ? "bg-[var(--color-primary)] text-[var(--color-on-primary)] shadow-sm font-extrabold active:scale-95"
                     : "bg-[var(--color-bg-card)] sm:bg-[var(--color-surface)] text-[var(--color-text-main)] hover:text-[var(--color-primary)] hover:bg-[var(--color-surface-hover)] shadow-sm sm:shadow-none"
                 )}
                 aria-selected={isSelected}
               >
-                <div className="flex items-center gap-1 min-w-0">
+                <div className="flex items-center gap-0.5 sm:gap-1 min-w-0">
                   <span className={cn(
-                    "font-black text-[11px] sm:text-xs shrink-0",
+                    "font-black text-[10px] sm:text-xs shrink-0",
                     isSelected ? "text-[var(--color-on-primary)]/85" : "text-[var(--color-primary)] font-black"
                   )}>
                     #
@@ -269,7 +269,7 @@ export function SystemIntelligenceCards({ insights = [] }) {
                   <span className="whitespace-nowrap">{cat.label}</span>
                 </div>
                 <span className={cn(
-                  "text-[9px] sm:text-[10px] px-1.5 py-0.2 rounded font-mono shrink-0 ml-1",
+                  "text-[8.5px] sm:text-[9.5px] px-1 sm:px-1.5 py-0.2 rounded font-mono shrink-0 ml-0.5 sm:ml-1",
                   isSelected 
                     ? "bg-[var(--color-on-primary)]/20 text-[var(--color-on-primary)] font-bold" 
                     : "bg-black/10 dark:bg-white/10 text-[var(--color-text-muted)] font-bold"

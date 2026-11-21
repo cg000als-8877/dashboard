@@ -11,6 +11,7 @@ export function CostRecoveryPie({
   totalCost = 0, 
   netProfit = 0, 
   compact = false, 
+  hideFooter = false,
   className = "" 
 }) {
   const [animated, setAnimated] = useState(false);
@@ -105,8 +106,8 @@ export function CostRecoveryPie({
             key={item.id} 
             className="flex flex-col items-center justify-center text-center min-w-0 px-0.5 w-full"
           >
-            {/* SVG Donut Ring: Pure, Solid Circular Tracks (Enlarged on mobile to fully spread & fulfill card) */}
-            <div className="relative w-[80px] h-[80px] min-[360px]:w-[90px] min-[360px]:h-[90px] min-[390px]:w-[96px] min-[390px]:h-[96px] sm:w-[104px] sm:h-[104px] md:w-16 md:h-16 lg:w-18 lg:h-18 xl:w-20 xl:h-20 flex items-center justify-center my-0 sm:my-0.5">
+            {/* SVG Donut Ring: Pure, Solid Circular Tracks (Scaled up on PC to generously fulfill the card) */}
+            <div className="relative w-[80px] h-[80px] min-[360px]:w-[90px] min-[360px]:h-[90px] min-[390px]:w-[96px] min-[390px]:h-[96px] sm:w-[104px] sm:h-[104px] md:w-22 md:h-22 lg:w-26 lg:h-26 xl:w-30 xl:h-30 2xl:w-34 2xl:h-34 flex items-center justify-center my-0 sm:my-0.5 md:my-1.5">
               <svg 
                 viewBox="0 0 80 80" 
                 className="w-full h-full transform -rotate-90 overflow-visible" 
@@ -140,24 +141,24 @@ export function CostRecoveryPie({
 
               {/* Center Animated Metric Percentage (Scales with Donut Size) */}
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <span className={cn("text-[17px] min-[360px]:text-[19px] min-[390px]:text-[21px] sm:text-2xl md:text-sm lg:text-base xl:text-lg font-black tracking-tight leading-none", item.textColor)}>
+                <span className={cn("text-[17px] min-[360px]:text-[19px] min-[390px]:text-[21px] sm:text-2xl md:text-lg lg:text-xl xl:text-2xl 2xl:text-3xl font-black tracking-tight leading-none", item.textColor)}>
                   <AnimatedNumber value={item.pct} suffix="%" />
                 </span>
               </div>
             </div>
 
             {/* Label, BDT Value, and Context Subtitle */}
-            <div className="flex flex-col items-center w-full mt-1 min-[360px]:mt-1.5">
-              <span className="text-[11px] min-[360px]:text-[12px] sm:text-xs font-black uppercase tracking-tight text-[var(--color-text-main)] truncate w-full leading-tight">
+            <div className="flex flex-col items-center w-full mt-1 min-[360px]:mt-1.5 md:mt-2">
+              <span className="text-[11px] min-[360px]:text-[12px] sm:text-xs md:text-[10.5px] lg:text-[11.5px] xl:text-xs font-black uppercase tracking-wider text-[var(--color-text-main)] whitespace-nowrap leading-tight text-center">
                 {item.title}
               </span>
               <span className={cn(
-                "text-[9.5px] min-[360px]:text-[10.5px] sm:text-[11.5px] font-extrabold truncate w-full leading-tight mt-0.5", 
+                "text-[9.5px] min-[360px]:text-[10.5px] sm:text-[11.5px] md:text-[11px] lg:text-xs xl:text-[13px] font-extrabold whitespace-nowrap leading-tight mt-0.5 md:mt-1 text-center", 
                 item.valueColor || item.textColor
               )}>
                 {item.valueStr}
               </span>
-              <span className="text-[8px] min-[360px]:text-[8.5px] sm:text-[9px] uppercase tracking-wide text-[var(--color-text-muted)] truncate w-full leading-tight mt-0.5">
+              <span className="text-[8px] min-[360px]:text-[8.5px] sm:text-[9px] md:text-[8.5px] lg:text-[9.5px] xl:text-[10.5px] uppercase tracking-wider font-bold text-[var(--color-text-muted)] whitespace-nowrap leading-tight mt-0.5 text-center">
                 {item.sublabel}
               </span>
             </div>
@@ -165,17 +166,19 @@ export function CostRecoveryPie({
         ))}
       </div>
 
-      {/* Card Footer: Hidden on mobile, visible on desktop */}
-      <div className="hidden md:flex flex-col items-center text-center w-full mt-2 sm:mt-2.5 pt-1.5 border-t border-[var(--color-border)]/40 shrink-0">
-        <h4 className="text-[11px] sm:text-xs font-bold uppercase tracking-widest text-[var(--color-text-secondary)] leading-none text-center">
-          Cost Recovery & Margin
-        </h4>
-        <span className="text-[8px] min-[360px]:text-[8.5px] sm:text-[9.5px] font-semibold text-[var(--color-text-muted)] truncate w-full mt-1">
-          {isCovered 
-            ? "Factory fully recovered production costs and achieved net profit." 
-            : `Recovered ${Math.round(recoveredPct)}% • ${Math.round(shortfallPct)}% more needed to reach break-even.`}
-        </span>
-      </div>
+      {/* Card Footer: Hidden on mobile, or when hideFooter is set on PC */}
+      {!hideFooter && (
+        <div className="hidden md:flex flex-col items-center text-center w-full mt-2 sm:mt-2.5 pt-1.5 border-t border-[var(--color-border)]/40 shrink-0">
+          <h4 className="text-[11px] sm:text-xs font-bold uppercase tracking-widest text-[var(--color-text-secondary)] leading-none text-center">
+            Cost Recovery & Margin
+          </h4>
+          <span className="text-[8px] min-[360px]:text-[8.5px] sm:text-[9.5px] font-semibold text-[var(--color-text-muted)] truncate w-full mt-1">
+            {isCovered 
+              ? "Factory fully recovered production costs and achieved net profit." 
+              : `Recovered ${Math.round(recoveredPct)}% • ${Math.round(shortfallPct)}% more needed to reach break-even.`}
+          </span>
+        </div>
+      )}
     </div>
   );
 }

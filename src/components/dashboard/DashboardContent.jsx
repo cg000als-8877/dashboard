@@ -681,6 +681,37 @@ export function DashboardContent({ month, isArchive = false }) {
 
   const totalLines = stats?.totalLinesCount || lines?.length || 4;
 
+  let activeDateInfo = formatDateRangeInfo(startDate, endDate);
+  let displayStats = stats;
+  let activeActiveLines = lines || [];
+  let activeComp = liveComparison;
+
+  if (!isArchive) {
+    if (selectedCardMonth === 'october' && (octoberPaced || octoberStats)) {
+      displayStats = octoberPaced?.stats || octoberStats;
+      activeDateInfo = octoberPaced?.dateInfo || formatDateRangeInfo(null, null, 'october', '2026');
+      activeActiveLines = octoberPaced?.lines || octoberLines || lines || [];
+      activeComp = octoberComparison;
+    } else if (selectedCardMonth === 'september' && (septemberPaced || septemberStats)) {
+      displayStats = septemberPaced?.stats || septemberStats;
+      activeDateInfo = septemberPaced?.dateInfo || formatDateRangeInfo(null, null, 'september', '2026');
+      activeActiveLines = septemberPaced?.lines || septemberLines || lines || [];
+      activeComp = septemberComparison;
+    } else if (selectedCardMonth === 'august' && (augustPaced || augustStats)) {
+      displayStats = augustPaced?.stats || augustStats;
+      activeDateInfo = augustPaced?.dateInfo || formatDateRangeInfo(null, null, 'august', '2026');
+      activeActiveLines = augustPaced?.lines || augustLines || lines || [];
+      activeComp = augustComparison;
+    } else if (selectedCardMonth === 'july' && (julyPaced || julyStats)) {
+      displayStats = julyPaced?.stats || julyStats;
+      activeDateInfo = julyPaced?.dateInfo || formatDateRangeInfo(null, null, 'july', '2026');
+      activeActiveLines = julyPaced?.lines || julyLines || lines || [];
+      activeComp = julyComparison;
+    }
+  }
+
+  const isPastMonth = !isArchive && selectedCardMonth !== 'current';
+
   return (
     <>
       <div className="space-y-6 animate-[fade-up_0.4s_ease-out_both] no-print">
@@ -756,7 +787,7 @@ export function DashboardContent({ month, isArchive = false }) {
         )}
 
         {/* FACTORY FINANCIALS HEADER */}
-        <div className="relative flex flex-col items-center justify-center mb-4 sm:mb-5 px-1 sm:px-0">
+        <div className="relative flex flex-col items-center justify-center mb-3 sm:mb-4 md:mb-5 px-1 sm:px-0">
           <h2 className="text-[20px] sm:text-[23px] md:text-[27px] font-bold tracking-normal uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] via-[var(--color-text-secondary)] to-[var(--color-text-muted)] text-center leading-tight">
             FACTORY FINANCIALS
           </h2>
@@ -766,43 +797,26 @@ export function DashboardContent({ month, isArchive = false }) {
             <span className="text-[var(--color-primary)] font-bold uppercase italic">Rofiqul Islam Zia</span>
             <span className="text-[var(--color-text-secondary)] font-semibold">(Merchandiser)</span>
           </p>
+
+          {/* PC View Month & Date Selector: Placed under Title & Analyst with kind space, out of the shape */}
+          <div className="hidden md:flex w-full justify-center mt-3.5 md:mt-4">
+            <MonthSelectorBar
+              selectedMonth={selectedCardMonth}
+              onSelectMonth={setSelectedCardMonth}
+              dateInfo={activeDateInfo}
+              workingDays={displayStats?.workingDays}
+              isPastMonth={isPastMonth}
+              isArchive={isArchive}
+            />
+          </div>
         </div>
 
-        {/* KPI Overview Section (Unboxed on mobile to expand cards, card on desktop) */}
-        <div className="relative rounded-none md:rounded-3xl border-0 bg-transparent md:bg-[var(--color-bg-card)] backdrop-blur-none p-0 md:p-6 shadow-none md:shadow-none overflow-visible md:overflow-hidden mb-6 -mx-2 sm:mx-0">
+        {/* KPI Overview Section */}
+        <div className="relative rounded-none border-0 bg-transparent backdrop-blur-none p-0 shadow-none overflow-visible mb-6 -mx-2 sm:mx-0">
           <div className="hidden md:block absolute top-0 left-1/2 -translate-x-1/2 w-96 h-28 bg-[var(--color-primary)]/5 rounded-full blur-3xl pointer-events-none" />
 
           {/* Dynamic Date Context & 6 KPI Metric Cards Grid (Pace-Matched) */}
           {(() => {
-            let activeDateInfo = formatDateRangeInfo(startDate, endDate);
-            let displayStats = stats;
-            let activeActiveLines = lines || [];
-            let activeComp = liveComparison;
-
-            if (!isArchive) {
-              if (selectedCardMonth === 'october' && (octoberPaced || octoberStats)) {
-                displayStats = octoberPaced?.stats || octoberStats;
-                activeDateInfo = octoberPaced?.dateInfo || formatDateRangeInfo(null, null, 'october', '2026');
-                activeActiveLines = octoberPaced?.lines || octoberLines || lines || [];
-                activeComp = octoberComparison;
-              } else if (selectedCardMonth === 'september' && (septemberPaced || septemberStats)) {
-                displayStats = septemberPaced?.stats || septemberStats;
-                activeDateInfo = septemberPaced?.dateInfo || formatDateRangeInfo(null, null, 'september', '2026');
-                activeActiveLines = septemberPaced?.lines || septemberLines || lines || [];
-                activeComp = septemberComparison;
-              } else if (selectedCardMonth === 'august' && (augustPaced || augustStats)) {
-                displayStats = augustPaced?.stats || augustStats;
-                activeDateInfo = augustPaced?.dateInfo || formatDateRangeInfo(null, null, 'august', '2026');
-                activeActiveLines = augustPaced?.lines || augustLines || lines || [];
-                activeComp = augustComparison;
-              } else if (selectedCardMonth === 'july' && (julyPaced || julyStats)) {
-                displayStats = julyPaced?.stats || julyStats;
-                activeDateInfo = julyPaced?.dateInfo || formatDateRangeInfo(null, null, 'july', '2026');
-                activeActiveLines = julyPaced?.lines || julyLines || lines || [];
-                activeComp = julyComparison;
-              }
-            }
-
             const costComp = isArchive ? null : activeComp.costComp;
             const incomeComp = isArchive ? null : activeComp.incomeComp;
             const netComp = isArchive ? null : activeComp.netComp;
@@ -819,7 +833,6 @@ export function DashboardContent({ month, isArchive = false }) {
               isPositive: true
             };
 
-            const isPastMonth = !isArchive && selectedCardMonth !== 'current';
             const daysComp = isArchive ? null : {
               highlight: `${displayStats?.workingDays || 0} Days`,
               label: isPastMonth ? `matching November pace (${displayStats?.workingDays} active days)` : `matching ${livePeriodLabel} pace`,
@@ -881,15 +894,17 @@ export function DashboardContent({ month, isArchive = false }) {
 
             return (
               <>
-                {/* Month & Date Selector Bar with Interactive Concept Switcher */}
-                <MonthSelectorBar
-                  selectedMonth={selectedCardMonth}
-                  onSelectMonth={setSelectedCardMonth}
-                  dateInfo={activeDateInfo}
-                  workingDays={displayStats?.workingDays}
-                  isPastMonth={isPastMonth}
-                  isArchive={isArchive}
-                />
+                {/* Mobile View Only: Month & Date Selector Bar kept inside mobile container */}
+                <div className="md:hidden">
+                  <MonthSelectorBar
+                    selectedMonth={selectedCardMonth}
+                    onSelectMonth={setSelectedCardMonth}
+                    dateInfo={activeDateInfo}
+                    workingDays={displayStats?.workingDays}
+                    isPastMonth={isPastMonth}
+                    isArchive={isArchive}
+                  />
+                </div>
                 {/* ── MOBILE VIEW ONLY: Wireframe-matched Redesign Layout ── */}
                 <div className="md:hidden flex flex-col gap-1.5 relative z-10 px-0.5">
                   
@@ -1181,7 +1196,7 @@ export function DashboardContent({ month, isArchive = false }) {
                     <Card 
                       hover 
                       data-color={isNetProfit ? 'success' : 'danger'}
-                      className="p-4 sm:p-5 xl:p-6 rounded-2xl transition-all flex flex-col justify-between shadow-sm md:shadow-[0_10px_25px_-4px_var(--shadow-color,rgba(0,0,0,0.12)),0_4px_10px_-2px_var(--shadow-color,rgba(0,0,0,0.06))] border-0 md:border-0 overflow-hidden"
+                      className="p-4 sm:p-5 xl:p-6 rounded-2xl transition-all flex flex-col justify-between shadow-sm md:shadow-[0_3px_10px_rgba(0,0,0,0.2),0_1px_3px_rgba(0,0,0,0.12)] md:hover:shadow-[0_6px_16px_rgba(0,0,0,0.25)] border-0 md:border-0 overflow-hidden"
                       style={{
                         backgroundColor: 'var(--color-bg-card)',
                         backgroundImage: isNetProfit 
@@ -1197,7 +1212,7 @@ export function DashboardContent({ month, isArchive = false }) {
                           </h3>
 
                           <p className={cn(
-                            "font-black tracking-tight text-2xl sm:text-3xl lg:text-3xl xl:text-4xl 2xl:text-[42px] leading-tight mt-1 mb-0.5 [filter:var(--shadow-text)] truncate",
+                            "font-black tracking-tight text-2xl sm:text-3xl lg:text-[32px] xl:text-[34px] leading-tight mt-1.5 mb-0.5 [filter:var(--shadow-text)] truncate",
                             isNetProfit ? "text-[var(--color-success)]" : "text-[var(--color-danger)]"
                           )}>
                             <span className="text-sm sm:text-base lg:text-lg font-bold opacity-80 mr-0.5">{isNetProfit ? "+BDT " : "BDT -"}</span>
@@ -1212,41 +1227,72 @@ export function DashboardContent({ month, isArchive = false }) {
                       </div>
 
                       {/* Divider Separator Line */}
-                      <div className="w-full h-px bg-transparent my-2 xl:my-2.5" />
+                      <div className="w-full h-px bg-[var(--color-border)]/20 my-2 xl:my-2.5" />
 
-                      {/* Bottom Row: Comparing Context (Left) + Average Daily Loss (Right) */}
-                      <div className="flex items-center justify-between gap-2 pt-0.5">
-                        {/* Left: Comparing Text */}
-                        <div className="min-w-0 flex-1 pr-1.5">
-                          {netComp && (
-                            <div className="flex flex-wrap items-baseline gap-x-1.5 gap-y-1 text-[11px] sm:text-xs xl:text-[13px] leading-snug italic">
-                              <span className={cn(
-                                "font-bold inline-flex items-center gap-0.5 shrink-0 whitespace-nowrap leading-normal",
-                                netComp.trend === 'neutral'
-                                  ? "text-[var(--color-primary)]"
-                                  : netComp.isPositive
-                                    ? "text-[var(--color-success-text)]"
-                                    : "text-[var(--color-danger-text)]"
-                              )}>
-                                {netComp.trend === 'up' && '▲ '}
-                                {netComp.trend === 'down' && '▼ '}
-                                {netComp.trend === 'neutral' && '• '}
-                                {netComp.highlight}
-                              </span>
-                              <span className="text-[var(--color-text-secondary)] font-medium break-words leading-normal">
-                                {netComp.label}
-                              </span>
-                            </div>
-                          )}
+                      {/* Bottom Row: Comparing Context (PC View Only - Average Daily Loss moved to Card below) */}
+                      {netComp && (
+                        <div className="flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5 text-[11px] xl:text-xs leading-snug italic pt-0.5">
+                          <span className={cn(
+                            "font-bold inline-flex items-center gap-0.5 shrink-0 whitespace-nowrap leading-normal",
+                            netComp.trend === 'neutral'
+                              ? "text-[var(--color-primary)]"
+                              : netComp.isPositive
+                                ? "text-[var(--color-success-text)]"
+                                : "text-[var(--color-danger-text)]"
+                          )}>
+                            {netComp.trend === 'up' && '▲ '}
+                            {netComp.trend === 'down' && '▼ '}
+                            {netComp.trend === 'neutral' && '• '}
+                            {netComp.highlight}
+                          </span>
+                          <span className="text-[var(--color-text-secondary)] font-medium leading-normal">
+                            {netComp.label}
+                          </span>
                         </div>
+                      )}
+                    </Card>
 
-                        {/* Right: Average Daily Loss Metric */}
-                        <div className="shrink-0 text-right flex flex-col items-end justify-center">
-                          <span className="text-[10px] sm:text-[11px] xl:text-xs font-bold uppercase tracking-wider text-[var(--color-text-secondary)] leading-none">
-                            {isAvgDailyProfit ? "Avg Daily Profit" : "Average Daily Loss"}
+                    {/* Combined Last Day Loss & Average Daily Loss Card (Desktop) */}
+                    <Card
+                      hover
+                      data-color={isLastDayProfit ? 'success' : 'danger'}
+                      className="p-3 px-3.5 xl:p-3.5 xl:px-4 rounded-2xl transition-all shadow-sm md:shadow-[0_3px_10px_rgba(0,0,0,0.2),0_1px_3px_rgba(0,0,0,0.12)] md:hover:shadow-[0_6px_16px_rgba(0,0,0,0.25)] border-0 overflow-hidden"
+                      style={{
+                        backgroundColor: 'var(--color-bg-card)',
+                        backgroundImage: isLastDayProfit 
+                          ? 'linear-gradient(135deg, var(--color-bg-card) 55%, rgba(16, 185, 129, 0.10) 100%)' 
+                          : 'linear-gradient(135deg, var(--color-bg-card) 55%, rgba(239, 68, 68, 0.10) 100%)'
+                      }}
+                    >
+                      <div className="flex flex-col gap-2 xl:gap-2.5 w-full">
+                        {/* Row 1: Last day loss with date & value */}
+                        {lastDayEntry && (
+                          <div className="flex items-center justify-between w-full gap-1.5">
+                            <span className="text-[11px] xl:text-xs font-semibold text-[var(--color-text-secondary)] whitespace-nowrap">
+                              {isLastDayProfit ? 'Last day profit' : 'Last day loss'}{' '}
+                              <span className="text-[var(--color-text-main)] font-bold">({lastDayDateFormatted})</span>
+                            </span>
+                            <p className={cn(
+                              "font-black tracking-tight text-xs xl:text-sm leading-none [filter:var(--shadow-text)] whitespace-nowrap",
+                              isLastDayProfit ? "text-[var(--color-success)]" : "text-[var(--color-danger)]"
+                            )}>
+                              <AnimatedNumber 
+                                value={Math.abs(Math.round(lastDayProfit))} 
+                                prefix={isLastDayProfit ? "+BDT " : "BDT -"} 
+                              />
+                            </p>
+                          </div>
+                        )}
+
+                        {lastDayEntry && <div className="w-full h-px bg-[var(--color-border)]/20" />}
+
+                        {/* Row 2: Average daily loss with average amount */}
+                        <div className="flex items-center justify-between w-full gap-1.5">
+                          <span className="text-[11px] xl:text-xs font-semibold text-[var(--color-text-secondary)] whitespace-nowrap">
+                            {isAvgDailyProfit ? "Avg daily profit" : "Average daily loss"}
                           </span>
                           <p className={cn(
-                            "font-extrabold text-sm sm:text-base xl:text-lg 2xl:text-xl tracking-tight mt-0.5 leading-none [filter:var(--shadow-text)] whitespace-nowrap",
+                            "font-black tracking-tight text-xs xl:text-sm leading-none [filter:var(--shadow-text)] whitespace-nowrap",
                             isAvgDailyProfit ? "text-[var(--color-success)]" : "text-[var(--color-danger)]"
                           )}>
                             <AnimatedNumber 
@@ -1259,67 +1305,29 @@ export function DashboardContent({ month, isArchive = false }) {
                       </div>
                     </Card>
 
-                    {/* Last Day Loss Card (Desktop) */}
-                    {lastDayEntry && (
-                      <Card
-                        hover
-                        data-color={isLastDayProfit ? 'success' : 'danger'}
-                        className="p-3 px-4 xl:px-5 rounded-2xl transition-all shadow-sm md:shadow-[0_10px_25px_-4px_var(--shadow-color,rgba(0,0,0,0.12)),0_4px_10px_-2px_var(--shadow-color,rgba(0,0,0,0.06))] border-0 overflow-hidden"
-                        style={{
-                          backgroundColor: 'var(--color-bg-card)',
-                          backgroundImage: isLastDayProfit 
-                            ? 'linear-gradient(135deg, var(--color-bg-card) 55%, rgba(16, 185, 129, 0.12) 100%)' 
-                            : 'linear-gradient(135deg, var(--color-bg-card) 55%, rgba(239, 68, 68, 0.12) 100%)'
-                        }}
-                      >
-                        <div className="flex items-center justify-between w-full gap-1.5">
-                          {/* Left: Last day loss (OCT 13th) */}
-                          <div className="flex items-center gap-1 min-w-0">
-                            <span className="text-[11px] xl:text-xs font-bold text-[var(--color-text-secondary)] truncate">
-                              {isLastDayProfit ? 'Last day profit' : 'Last day loss'}{' '}
-                              <span className="text-[var(--color-text-main)] font-extrabold">({lastDayDateFormatted})</span>
-                            </span>
-                          </div>
-
-                          {/* Right: Actual Loss/Profit with BDT prefix */}
-                          <div className="flex items-center gap-1 shrink-0">
-                            <p className={cn(
-                              "font-black tracking-tight text-sm xl:text-base leading-none [filter:var(--shadow-text)] whitespace-nowrap",
-                              isLastDayProfit ? "text-[var(--color-success)]" : "text-[var(--color-danger)]"
-                            )}>
-                              <AnimatedNumber 
-                                value={Math.abs(Math.round(lastDayProfit))} 
-                                prefix={isLastDayProfit ? "+BDT " : "BDT -"} 
-                              />
-                            </p>
-                          </div>
-                        </div>
-                      </Card>
-                    )}
-
                     {/* Bottom Row: 2 Separate Cards (Total Income & Total Cost) */}
                     <div className="grid grid-cols-2 gap-2 xl:gap-3 flex-1">
                       {/* Total Income Card */}
                       <Card
                         hover
                         data-color="primary"
-                        className="p-3 xl:p-3.5 rounded-2xl flex flex-col justify-between shadow-sm md:shadow-[0_10px_25px_-4px_var(--shadow-color,rgba(0,0,0,0.12)),0_4px_10px_-2px_var(--shadow-color,rgba(0,0,0,0.06))] border-0 md:border-0 transition-all"
+                        className="p-3 xl:p-4 rounded-2xl flex flex-col justify-between shadow-sm md:shadow-[0_3px_10px_rgba(0,0,0,0.2),0_1px_3px_rgba(0,0,0,0.12)] md:hover:shadow-[0_6px_16px_rgba(0,0,0,0.25)] border-0 md:border-0 transition-all"
                         style={{ backgroundColor: 'var(--color-bg-card)' }}
                       >
                         <div>
-                          <h4 className="text-[10px] xl:text-[11px] font-bold uppercase tracking-wider text-[var(--color-text-muted)] leading-tight truncate">
+                          <h4 className="text-[11px] xl:text-xs font-bold uppercase tracking-wider text-[var(--color-text-muted)] leading-tight truncate">
                             Total Income
                           </h4>
-                          <p className="font-black text-sm xl:text-base tracking-tight text-[var(--color-primary)] mt-1 mb-0.5 leading-tight [filter:var(--shadow-text)] truncate">
+                          <p className="font-black text-[13.5px] xl:text-base 2xl:text-lg tracking-tight text-[var(--color-primary)] mt-1 mb-0.5 leading-tight [filter:var(--shadow-text)] truncate">
                             <AnimatedNumber value={Math.round(displayStats.totalIncome)} prefix="BDT " />
                           </p>
                         </div>
                         {incomeComp && (
-                          <div className="flex flex-col items-start gap-y-0.5 text-[9.5px] xl:text-[10.5px] leading-snug italic pt-1 mt-1">
+                          <div className="flex flex-col items-start gap-y-0.5 text-[10px] xl:text-[11px] leading-snug italic pt-1 mt-1">
                             <span className={cn("font-bold shrink-0 leading-normal", incomeComp.isPositive ? "text-[var(--color-success-text)]" : "text-[var(--color-danger-text)]")}>
                               {incomeComp.highlight}
                             </span>
-                            <span className="text-[var(--color-text-muted)] text-[9px] xl:text-[9.5px] leading-normal truncate w-full">{incomeComp.label}</span>
+                            <span className="text-[var(--color-text-muted)] text-[9.5px] xl:text-[10px] leading-normal truncate w-full">{incomeComp.label}</span>
                           </div>
                         )}
                       </Card>
@@ -1327,23 +1335,23 @@ export function DashboardContent({ month, isArchive = false }) {
                       {/* Total Cost Card */}
                       <Card
                         hover
-                        className="p-3 xl:p-3.5 rounded-2xl flex flex-col justify-between shadow-sm md:shadow-[0_10px_25px_-4px_var(--shadow-color,rgba(0,0,0,0.12)),0_4px_10px_-2px_var(--shadow-color,rgba(0,0,0,0.06))] border-0 md:border-0 transition-all"
+                        className="p-3 xl:p-4 rounded-2xl flex flex-col justify-between shadow-sm md:shadow-[0_3px_10px_rgba(0,0,0,0.2),0_1px_3px_rgba(0,0,0,0.12)] md:hover:shadow-[0_6px_16px_rgba(0,0,0,0.25)] border-0 md:border-0 transition-all"
                         style={{ backgroundColor: 'var(--color-bg-card)' }}
                       >
                         <div>
-                          <h4 className="text-[10px] xl:text-[11px] font-bold uppercase tracking-wider text-[var(--color-text-muted)] leading-tight truncate">
+                          <h4 className="text-[11px] xl:text-xs font-bold uppercase tracking-wider text-[var(--color-text-muted)] leading-tight truncate">
                             Total Cost
                           </h4>
-                          <p className="font-black text-sm xl:text-base tracking-tight text-[var(--color-text-main)] mt-1 mb-0.5 leading-tight [filter:var(--shadow-text)] truncate">
+                          <p className="font-black text-[13.5px] xl:text-base 2xl:text-lg tracking-tight text-[var(--color-text-main)] mt-1 mb-0.5 leading-tight [filter:var(--shadow-text)] truncate">
                             <AnimatedNumber value={Math.round(displayStats.totalCost)} prefix="BDT " />
                           </p>
                         </div>
                         {costComp && (
-                          <div className="flex flex-col items-start gap-y-0.5 text-[9.5px] xl:text-[10.5px] leading-snug italic pt-1 mt-1">
+                          <div className="flex flex-col items-start gap-y-0.5 text-[10px] xl:text-[11px] leading-snug italic pt-1 mt-1">
                             <span className={cn("font-bold shrink-0 leading-normal", costComp.isPositive ? "text-[var(--color-success-text)]" : "text-[var(--color-danger-text)]")}>
                               {costComp.highlight}
                             </span>
-                            <span className="text-[var(--color-text-muted)] text-[9px] xl:text-[9.5px] leading-normal truncate w-full">{costComp.label}</span>
+                            <span className="text-[var(--color-text-muted)] text-[9.5px] xl:text-[10px] leading-normal truncate w-full">{costComp.label}</span>
                           </div>
                         )}
                       </Card>
@@ -1356,17 +1364,39 @@ export function DashboardContent({ month, isArchive = false }) {
                     <Card
                       hover
                       data-color={displayStats.totalIncome >= displayStats.totalCost ? "success" : "primary"}
-                      className="p-4 sm:p-5 xl:p-6 rounded-2xl flex flex-col justify-between items-center shadow-sm md:shadow-[0_10px_25px_-4px_var(--shadow-color,rgba(0,0,0,0.12)),0_4px_10px_-2px_var(--shadow-color,rgba(0,0,0,0.06))] border-0 md:border-0 relative overflow-hidden transition-all h-full"
+                      className="p-4 sm:p-5 xl:p-6 rounded-2xl flex flex-col justify-between shadow-sm md:shadow-[0_3px_10px_rgba(0,0,0,0.2),0_1px_3px_rgba(0,0,0,0.12)] md:hover:shadow-[0_6px_16px_rgba(0,0,0,0.25)] border-0 md:border-0 relative overflow-hidden transition-all h-full"
                       style={{ backgroundColor: 'var(--color-bg-card)' }}
                     >
-                      <CostRecoveryPie
-                        percentage={recoveryPercent}
-                        isProfitable={displayStats.totalIncome >= displayStats.totalCost}
-                        totalIncome={displayStats.totalIncome}
-                        totalCost={displayStats.totalCost}
-                        netProfit={displayStats.netProfit}
-                        className="h-full justify-between"
-                      />
+                      {/* 3 Large Donuts Fulfilling the Center of the Card */}
+                      <div className="w-full flex-1 flex flex-col justify-center items-center py-2 xl:py-3 my-auto">
+                        <CostRecoveryPie
+                          percentage={recoveryPercent}
+                          isProfitable={displayStats.totalIncome >= displayStats.totalCost}
+                          totalIncome={displayStats.totalIncome}
+                          totalCost={displayStats.totalCost}
+                          netProfit={displayStats.netProfit}
+                          hideFooter={true}
+                          className="w-full my-auto"
+                        />
+                      </div>
+
+                      {/* 1 Title & 1 Subtitle placed under the 3 Donuts (PC View Only) */}
+                      <div className="w-full text-center pt-2 sm:pt-2.5 mt-auto px-1">
+                        <h4 className="text-xs xl:text-[13px] font-bold uppercase tracking-widest text-[var(--color-text-secondary)] leading-none text-center">
+                          Cost Recovery & Margin
+                        </h4>
+                        <p className="text-[10px] min-[1150px]:text-[10.5px] xl:text-[11px] text-[var(--color-text-muted)] font-medium text-center mt-1 leading-tight">
+                          {displayStats.totalIncome >= displayStats.totalCost ? (
+                            <span className="text-[var(--color-success-text)] font-semibold">Target Met • Production costs fully recovered</span>
+                          ) : (
+                            <>
+                              <span className="text-[var(--color-primary)] font-bold">Recovered {Math.round(recoveryPercent)}%</span>
+                              <span className="mx-1.5 opacity-40">•</span>
+                              <span>BDT {Math.max(0, Math.round(displayStats.totalCost - displayStats.totalIncome)).toLocaleString()} needed to break-even</span>
+                            </>
+                          )}
+                        </p>
+                      </div>
                     </Card>
                   </div>
 
@@ -1374,24 +1404,24 @@ export function DashboardContent({ month, isArchive = false }) {
                   <div className="md:col-span-6 lg:col-span-4 xl:col-span-4 flex flex-col">
                     <Card
                       hover
-                      className="p-4 sm:p-5 xl:p-6 rounded-2xl shadow-sm md:shadow-[0_10px_25px_-4px_var(--shadow-color,rgba(0,0,0,0.12)),0_4px_10px_-2px_var(--shadow-color,rgba(0,0,0,0.06))] border-0 md:border-0 flex flex-col justify-between transition-all h-full"
+                      className="p-4 sm:p-5 xl:p-6 rounded-2xl shadow-sm md:shadow-[0_3px_10px_rgba(0,0,0,0.2),0_1px_3px_rgba(0,0,0,0.12)] md:hover:shadow-[0_6px_16px_rgba(0,0,0,0.25)] border-0 md:border-0 flex flex-col justify-between transition-all h-full"
                       style={{ backgroundColor: 'var(--color-bg-card)' }}
                     >
                       {/* Header Row: Title & Active Lines Counter */}
-                      <div>
+                      <div className="w-full text-left">
                         <h4 className="text-xs sm:text-sm font-bold uppercase tracking-widest text-[var(--color-text-secondary)] leading-none">
                           Production Lines
                         </h4>
-                        <p className="font-black text-2xl sm:text-3xl xl:text-[36px] text-[var(--color-text-main)] tracking-tight mt-1.5 leading-none [filter:var(--shadow-text)]">
+                        <p className="font-black text-2xl sm:text-3xl xl:text-[34px] text-[var(--color-text-main)] tracking-tight mt-1.5 leading-none [filter:var(--shadow-text)]">
                           <AnimatedNumber value={actLinesCount} /> of <AnimatedNumber value={totLinesCount} /> <span className="text-sm sm:text-base xl:text-lg font-bold text-[var(--color-primary)] uppercase ml-0.5">Active</span>
                         </p>
-                        <p className="text-[11px] sm:text-xs xl:text-[13px] text-[var(--color-text-muted)] font-medium mt-1">
+                        <p className="text-[11px] sm:text-xs xl:text-[13px] text-[var(--color-text-muted)] font-medium mt-1 truncate">
                           Details lines and items
                         </p>
                       </div>
 
-                      {/* Lines Badges List: Line & Item In Production (Only active lines with dynamic Red Heat Map) */}
-                      <div className="flex flex-col gap-2 xl:gap-2.5 pt-3.5 flex-1 justify-around">
+                      {/* Lines Badges List: Line & Item In Production (Spaced evenly to fulfill the card) */}
+                      <div className="flex flex-col gap-3 xl:gap-3.5 flex-1 justify-around my-auto py-2">
                         {renderedActiveLines.map((lineId) => {
                           const lineData = currentActiveLines?.find(l => l.id?.toUpperCase() === lineId);
                           const itemDesc = (lineData?.items && lineData.items.length > 0 ? lineData.items.join(', ') : null) || lineData?.item || lineData?.lastActiveDay?.item || lineData?.today?.item || DEFAULT_LINE_ITEMS[lineId] || 'Polo Shirt';
@@ -1405,7 +1435,7 @@ export function DashboardContent({ month, isArchive = false }) {
                           return (
                             <div
                               key={lineId}
-                              className="flex items-center justify-between gap-2.5 p-2 xl:p-2.5 rounded-[4px] transition-all relative overflow-hidden"
+                              className="flex items-center justify-between gap-3 p-2.5 xl:p-3 rounded-xl transition-all relative overflow-hidden"
                               style={{
                                 backgroundColor: 'var(--color-surface)',
                                 backgroundImage: lineLoss > 0
@@ -1419,22 +1449,22 @@ export function DashboardContent({ month, isArchive = false }) {
                                   ? `3.5px solid rgba(239, 68, 68, ${(0.35 + lossRatio * 0.50).toFixed(2)})`
                                   : '3.5px solid transparent',
                                 boxShadow: lineLoss > 0
-                                  ? `0 1px 3px rgba(0,0,0,0.2), inset -6px 0 12px rgba(239, 68, 68, ${(0.05 + lossRatio * 0.15).toFixed(3)})`
+                                  ? `inset -6px 0 12px rgba(239, 68, 68, ${(0.05 + lossRatio * 0.15).toFixed(3)})`
                                   : undefined
                               }}
                             >
                               <div className="flex items-center gap-2.5 min-w-0 flex-1">
                                 {/* Line Letter Pill */}
-                                <div className="w-7 h-7 xl:w-8 xl:h-8 rounded-[2px] flex items-center justify-center text-xs font-black shrink-0 tracking-tight bg-[var(--color-primary)] text-[var(--color-on-primary,white)] shadow-xs">
+                                <div className="w-8 h-8 xl:w-9 xl:h-9 rounded-lg flex items-center justify-center text-xs xl:text-sm font-black shrink-0 tracking-tight bg-[var(--color-primary)] text-[var(--color-on-primary,white)] shadow-xs md:shadow-none">
                                   {lineId}
                                 </div>
 
                                 {/* Line Info */}
                                 <div className="min-w-0 flex-1">
-                                  <span className="text-xs xl:text-[13px] font-bold text-[var(--color-text-main)] truncate block leading-tight">
+                                  <span className="text-xs xl:text-[13.5px] font-bold text-[var(--color-text-main)] truncate block leading-tight">
                                     Line {lineId}
                                   </span>
-                                  <p className="text-[9px] xl:text-[10px] font-medium text-[var(--color-text-muted)] truncate leading-tight mt-0.5">
+                                  <p className="text-[10px] xl:text-[11px] font-medium text-[var(--color-text-muted)] truncate leading-tight mt-0.5">
                                     {hasMultipleItems ? (
                                       activeBreakdown.map((ib, idx) => (
                                         <span key={ib.name}>
@@ -1452,7 +1482,7 @@ export function DashboardContent({ month, isArchive = false }) {
 
                               <div className="text-right shrink-0 pl-1.5">
                                 <span 
-                                  className="text-xs xl:text-[13px] font-bold text-[var(--color-text-main)] block leading-tight whitespace-nowrap"
+                                  className="text-xs xl:text-[14px] font-black text-[var(--color-text-main)] block leading-tight whitespace-nowrap"
                                   title={hasMultipleItems ? activeBreakdown.map(ib => `${ib.qty.toLocaleString()} ${toTitleCase(ib.name)}`).join(', ') + ` (Total: ${output.toLocaleString()} pcs)` : undefined}
                                 >
                                   {output > 0 ? (
@@ -1461,7 +1491,7 @@ export function DashboardContent({ month, isArchive = false }) {
                                     <><AnimatedNumber value={workers} /> w</>
                                   )}
                                 </span>
-                                <span className="text-[8.5px] xl:text-[9.5px] text-[var(--color-text-muted)] uppercase font-semibold block leading-none mt-0.5 whitespace-nowrap">
+                                <span className="text-[9px] xl:text-[10px] text-[var(--color-text-muted)] uppercase font-semibold block leading-none mt-0.5 whitespace-nowrap">
                                   {hasMultipleItems ? 'total pcs' : 'pcs'}
                                 </span>
                               </div>
@@ -1619,9 +1649,20 @@ export function DashboardContent({ month, isArchive = false }) {
 
                   return (
                     <Card className={cn(
-                      "relative overflow-hidden w-full p-0 flex flex-col transition-all duration-300",
+                      "relative overflow-hidden w-full p-0 flex flex-col transition-all duration-300 md:shadow-[0_3px_10px_rgba(0,0,0,0.2),0_1px_3px_rgba(0,0,0,0.12)] md:hover:shadow-[0_6px_16px_rgba(0,0,0,0.25)]",
                       isMobile ? "h-auto justify-start" : "h-full justify-between"
                     )}>
+                      {/* Top-Right Corner Ambient Red Breathing Glow (Mobile view only for critical lines) */}
+                      {isMobile && !isInactive && !isProfitable && (
+                        <div 
+                          aria-hidden="true"
+                          className="absolute -top-12 -right-12 w-48 sm:w-64 h-48 sm:h-64 rounded-full pointer-events-none z-0 animate-corner-breathe"
+                          style={{
+                            background: 'radial-gradient(circle at center, rgba(239, 68, 68, 0.45) 0%, rgba(239, 68, 68, 0.18) 45%, transparent 75%)',
+                            filter: 'blur(22px)'
+                          }}
+                        />
+                      )}
                       <div className="absolute inset-0 bg-gradient-to-b from-[var(--color-surface)] to-transparent pointer-events-none rounded-[inherit]"></div>
                       <div className={cn(
                         "flex flex-col relative z-10 flex-1",
@@ -1648,6 +1689,11 @@ export function DashboardContent({ month, isArchive = false }) {
                             ) : isProfitable ? (
                               <span className="inline-flex items-center px-2 py-0.5 rounded-[2px] text-[8.5px] md:text-[9px] font-bold uppercase tracking-widest bg-[var(--color-success-glow)] text-[var(--color-success-text)]">
                                 Optimal
+                              </span>
+                            ) : isMobile ? (
+                              <span className="inline-flex items-center gap-1.5 px-2 sm:px-2.5 py-0.5 rounded-[4px] text-[8.5px] md:text-[9.5px] font-black uppercase tracking-widest border border-rose-500/40 bg-rose-500/15 text-rose-300 transition-all animate-critical-badge-breathe cursor-default select-none">
+                                <Siren className="w-3 h-3 text-rose-400 shrink-0" />
+                                <span>Critical</span>
                               </span>
                             ) : (
                               <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[2px] text-[8.5px] md:text-[9.5px] font-black uppercase tracking-widest border md:border-0 transition-all animate-emergency-strobe cursor-default">

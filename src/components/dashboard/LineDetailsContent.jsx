@@ -155,9 +155,9 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false, hideEm
       
       {!isEmbed && (
         <header className="flex flex-col items-center text-center mb-6 md:mb-8 relative z-10 w-full">
-          {/* Top navigation: Breadcrumbs and List/Cards View over the title (Center Aligned) */}
-          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3.5 mb-2.5 sm:mb-3.5">
-            <div className="flex items-center gap-1.5">
+          {/* Top navigation: Breadcrumbs (left aligned) and View switcher icons (right aligned) */}
+          <div className="w-full flex items-center justify-between gap-2 sm:gap-3.5 mb-2.5 sm:mb-3.5 px-0.5 sm:px-0">
+            <div className="flex items-center gap-1.5 min-w-0">
               <Link 
                 href={backUrl || '/lines'} 
                 className="p-1 sm:p-1.5 rounded-lg bg-[var(--color-surface)] hover:bg-[var(--color-surface-hover)] border-0 text-[var(--color-text-main)] transition-all hover:scale-105 active:scale-95 shrink-0"
@@ -165,7 +165,7 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false, hideEm
               >
                 <ArrowLeft className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
               </Link>
-              <nav className="flex items-center gap-1 text-[9px] sm:text-[10px] md:text-[11px] font-medium tracking-normal text-[var(--color-text-muted)]">
+              <nav className="flex items-center gap-1 text-[9px] sm:text-[10px] md:text-[11px] font-medium tracking-normal text-[var(--color-text-muted)] whitespace-nowrap overflow-x-auto no-scrollbar">
                 <Link href="/" className="hover:text-[var(--color-primary)] transition-colors">Dashboard</Link>
                 <ChevronRight size={10} className="opacity-50 shrink-0" />
                 <Link href={backUrl || '/lines'} className="hover:text-[var(--color-primary)] transition-colors">Lines</Link>
@@ -235,29 +235,29 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false, hideEm
           <div className={`grid grid-cols-2 md:grid-cols-6 ${summaryGap} relative z-10`}>
             
             {/* 1. Date Range (Desktop Only - Mobile is centered above) */}
-            <div className={`hidden md:block col-span-1 bg-[var(--color-surface)]/80 backdrop-blur-sm ${summaryCellPadding} rounded-2xl border border-[var(--color-border)] shadow-inner transition-transform hover:-translate-y-0.5 duration-200`}>
-              <p className="text-[10px] text-[var(--color-text-muted)] font-medium uppercase tracking-widest mb-1">Date Range</p>
-              <p className="text-base font-bold text-[var(--color-text-main)] leading-tight">{dateRange}</p>
+            <div className={`hidden md:flex flex-col justify-between col-span-1 bg-[var(--color-surface)]/80 backdrop-blur-sm ${summaryCellPadding} rounded-2xl border border-[var(--color-border)] shadow-inner transition-transform hover:-translate-y-0.5 duration-200`}>
+              <p className="text-[9px] md:text-[10px] xl:text-[10.5px] text-[var(--color-text-muted)] font-bold uppercase tracking-wider mb-0.5 md:mb-1">Date Range</p>
+              <p className="text-sm md:text-[15px] xl:text-base font-bold text-[var(--color-text-main)] leading-tight">{dateRange}</p>
             </div>
 
             {/* 2. Net Profit / Net Loss (Bento Hero Tile on Mobile: spans 2 columns, order-first on mobile, order-last on desktop) */}
-            <div className={`col-span-2 md:col-span-1 order-first md:order-last bg-[var(--color-bg-card)]/80 backdrop-blur-md md:bg-[var(--color-surface)]/80 ${summaryCellPadding} rounded-xl md:rounded-2xl border shadow-sm md:shadow-inner transition-transform hover:-translate-y-0.5 duration-200 flex items-center justify-between md:block ${
+            <div className={`col-span-2 md:col-span-1 order-first md:order-last bg-[var(--color-bg-card)]/80 backdrop-blur-md md:bg-[var(--color-surface)]/80 ${summaryCellPadding} rounded-xl md:rounded-2xl border shadow-sm md:shadow-inner transition-transform hover:-translate-y-0.5 duration-200 flex items-center justify-between md:flex-col md:items-start md:justify-between ${
               parseFloat(totalNetProfitLoss) >= 0 
                 ? 'border-emerald-500/30 md:border-emerald-500/20 bg-gradient-to-r md:bg-gradient-to-b from-emerald-500/10 via-[var(--color-bg-card)]/80 to-transparent' 
                 : 'border-rose-500/30 md:border-rose-500/20 bg-gradient-to-r md:bg-gradient-to-b from-rose-500/10 via-[var(--color-bg-card)]/80 to-transparent'
             }`}>
-              <div>
+              <div className="w-full">
                 <div className="flex items-center gap-1.5 mb-0.5 md:mb-1">
                   {parseFloat(totalNetProfitLoss) >= 0 ? (
-                    <TrendingUp className="w-3.5 h-3.5 text-emerald-400" />
+                    <TrendingUp className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                   ) : (
-                    <TrendingDown className="w-3.5 h-3.5 text-rose-400" />
+                    <TrendingDown className="w-3.5 h-3.5 text-rose-400 shrink-0" />
                   )}
-                  <p className="text-[9px] md:text-[10px] text-[var(--color-text-muted)] font-medium uppercase tracking-widest">
+                  <p className="text-[9px] md:text-[10px] xl:text-[10.5px] text-[var(--color-text-muted)] font-bold uppercase tracking-wider">
                     {parseFloat(totalNetProfitLoss) >= 0 ? 'Net Profit' : 'Net Loss'}
                   </p>
                 </div>
-                <p className={`text-base md:${summaryValSize} font-bold leading-tight [filter:var(--shadow-text)] ${
+                <p className={`text-base md:text-[15px] xl:text-base font-bold leading-tight [filter:var(--shadow-text)] ${
                   parseFloat(totalNetProfitLoss) >= 0 ? 'text-[var(--color-success-text)]' : 'text-[var(--color-danger-text)]'
                 }`}>
                   {Math.round(parseFloat(totalNetProfitLoss)).toLocaleString()}
@@ -270,11 +270,11 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false, hideEm
 
             {/* 3. Item (1 Column on Mobile, 1 Column on Desktop) */}
             <div className={`col-span-1 bg-[var(--color-bg-card)]/80 backdrop-blur-md md:bg-[var(--color-surface)]/80 ${summaryCellPadding} rounded-xl md:rounded-2xl border border-[var(--color-border)] shadow-sm md:shadow-inner transition-transform hover:-translate-y-0.5 duration-200 flex flex-col justify-between`}>
-              <p className="text-[9px] md:text-[10px] text-[var(--color-text-muted)] font-medium uppercase tracking-widest mb-0.5 md:mb-1">
+              <p className="text-[9px] md:text-[10px] xl:text-[10.5px] text-[var(--color-text-muted)] font-bold uppercase tracking-wider mb-0.5 md:mb-1">
                 {uniqueItems.length > 1 ? 'Items' : 'Item'}
               </p>
               <p 
-                className="text-xs md:text-base font-semibold md:font-bold text-[var(--color-primary)] leading-tight break-words" 
+                className="text-xs md:text-[15px] xl:text-base font-semibold md:font-bold text-[var(--color-primary)] leading-tight break-words" 
                 title={itemName}
               >
                 {itemName}
@@ -283,20 +283,20 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false, hideEm
 
             {/* 4. Production */}
             <div className={`col-span-1 bg-[var(--color-bg-card)]/80 backdrop-blur-md md:bg-[var(--color-surface)]/80 ${summaryCellPadding} rounded-xl md:rounded-2xl border border-[var(--color-border)] shadow-sm md:shadow-inner transition-transform hover:-translate-y-0.5 duration-200 flex flex-col justify-between`}>
-              <p className="text-[9px] md:text-[10px] text-[var(--color-text-muted)] font-medium uppercase tracking-widest mb-0.5 md:mb-1">Production</p>
-              <p className={`${summaryValSize} font-semibold md:font-bold text-[var(--color-text-main)] leading-tight`}>{Math.round(parseFloat(totalProduction)).toLocaleString()}</p>
+              <p className="text-[9px] md:text-[10px] xl:text-[10.5px] text-[var(--color-text-muted)] font-bold uppercase tracking-wider mb-0.5 md:mb-1">Production</p>
+              <p className="text-sm md:text-[15px] xl:text-base font-semibold md:font-bold text-[var(--color-text-main)] leading-tight">{Math.round(parseFloat(totalProduction)).toLocaleString()}</p>
             </div>
 
             {/* 5. Total Cost */}
             <div className={`col-span-1 bg-[var(--color-bg-card)]/80 backdrop-blur-md md:bg-[var(--color-surface)]/80 ${summaryCellPadding} rounded-xl md:rounded-2xl border border-[var(--color-border)] shadow-sm md:shadow-inner transition-transform hover:-translate-y-0.5 duration-200 flex flex-col justify-between`}>
-              <p className="text-[9px] md:text-[10px] text-[var(--color-text-muted)] font-medium uppercase tracking-widest mb-0.5 md:mb-1">Total Cost</p>
-              <p className={`${summaryValSize} font-semibold md:font-bold text-[var(--color-text-main)] leading-tight`}>{Math.round(parseFloat(totalCost)).toLocaleString()}</p>
+              <p className="text-[9px] md:text-[10px] xl:text-[10.5px] text-[var(--color-text-muted)] font-bold uppercase tracking-wider mb-0.5 md:mb-1">Total Cost</p>
+              <p className="text-sm md:text-[15px] xl:text-base font-semibold md:font-bold text-[var(--color-text-main)] leading-tight">{Math.round(parseFloat(totalCost)).toLocaleString()}</p>
             </div>
 
             {/* 6. Total Income */}
             <div className={`col-span-1 bg-[var(--color-bg-card)]/80 backdrop-blur-md md:bg-[var(--color-surface)]/80 ${summaryCellPadding} rounded-xl md:rounded-2xl border border-[var(--color-border)] shadow-sm md:shadow-inner transition-transform hover:-translate-y-0.5 duration-200 flex flex-col justify-between`}>
-              <p className="text-[9px] md:text-[10px] text-[var(--color-text-muted)] font-medium uppercase tracking-widest mb-0.5 md:mb-1">Total Income</p>
-              <p className={`${summaryValSize} font-semibold md:font-bold text-[var(--color-primary)] leading-tight`}>{Math.round(parseFloat(totalIncome)).toLocaleString()}</p>
+              <p className="text-[9px] md:text-[10px] xl:text-[10.5px] text-[var(--color-text-muted)] font-bold uppercase tracking-wider mb-0.5 md:mb-1">Total Income</p>
+              <p className="text-sm md:text-[15px] xl:text-base font-semibold md:font-bold text-[var(--color-primary)] leading-tight">{Math.round(parseFloat(totalIncome)).toLocaleString()}</p>
             </div>
 
           </div>

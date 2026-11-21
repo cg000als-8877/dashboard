@@ -34,6 +34,7 @@ export const BG_EFFECTS = [
   { id: 'silk', name: 'Silk Waves', tag: 'Silk', desc: 'Flowing satin fabric drape' },
   { id: 'rays', name: 'Light Rays', tag: 'Rays', desc: 'Volumetric sunbeam caustics' },
   { id: 'starlight', name: 'Starlight', tag: 'Stars', desc: 'Subtle micro constellation' },
+  { id: 'st-blur', name: 'ST Blur', tag: 'Blur', desc: 'Soft blurred constellation mist' },
   { id: 'solid', name: 'Solid', tag: 'Solid', desc: 'Clean minimal background' },
 ];
 

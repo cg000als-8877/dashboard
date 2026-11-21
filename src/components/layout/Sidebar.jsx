@@ -53,6 +53,37 @@ const DEFAULT_LINE_ITEMS = {
   'D': "Fleece Hoodie"
 };
 
+const THEME_OPTIONS = [
+  { id: 'royal', label: 'Royal', full: 'Royal' },
+  { id: 'nordic-slate', label: 'Nordic', full: 'Nordic Slate' },
+  { id: 'ember-tide', label: 'Ember', full: 'Ember Tide' },
+  { id: 'abstract', label: 'Abstract', full: 'Abstract' },
+  { id: 'arcade-overdrive', label: 'Arcade', full: 'Arcade Overdrive' },
+  { id: 'verdant', label: 'Verdant', full: 'Verdant' },
+  { id: 'lime-ivory', label: 'Lime', full: 'Lime Ivory' },
+  { id: 'jungle-nebula', label: 'Jungle', full: 'Jungle Nebula' },
+  { id: 'ocean-dark', label: 'Ocean', full: 'Ocean Dark' },
+  { id: 'terminal', label: 'Terminal', full: 'Terminal (Night Shift)' },
+  { id: 'gen-z', label: 'Gen-Z', full: 'Gen-Z Pink' },
+];
+
+const BG_OPTIONS = [
+  { id: 'grain', label: 'Grain', full: 'Film Grain' },
+  { id: 'bokeh', label: 'Bokeh', full: 'Lens Bokeh' },
+  { id: 'aurora', label: 'Aurora', full: 'Atmospheric Aurora' },
+  { id: 'spotlight', label: 'Spotlight', full: 'Interactive Spotlight' },
+  { id: 'grid', label: 'Grid', full: 'Data Grid' },
+  { id: 'honeycomb', label: 'Honeycomb', full: 'Honeycomb Matrix' },
+  { id: 'textile', label: 'Textile', full: 'Textile Weave' },
+  { id: 'topography', label: 'Topo', full: 'Topography Contours' },
+  { id: 'dots', label: 'Dots', full: 'Matrix Dots' },
+  { id: 'silk', label: 'Silk', full: 'Silk Waves' },
+  { id: 'rays', label: 'Rays', full: 'Light Rays' },
+  { id: 'starlight', label: 'Starlight', full: 'Starlight Constellation' },
+  { id: 'st-blur', label: 'ST Blur', full: 'ST Blur Mist' },
+  { id: 'solid', label: 'Solid', full: 'Clean Solid' },
+];
+
 export default function Sidebar({ onClose }) {
   const pathname = usePathname();
   const { dailyTrends, lines } = useKpiData();
@@ -127,6 +158,38 @@ export default function Sidebar({ onClose }) {
               </>
             )}
           </Link>
+
+          {/* Mode Switcher: 2 stroke-free icons (PC View) */}
+          {!isCollapsed && (
+            <div className="flex items-center gap-1 border-0">
+              <button
+                type="button"
+                onClick={() => setMode('light')}
+                title="Light Mode"
+                className={cn(
+                  "p-1.5 rounded-lg transition-all cursor-pointer border-0 outline-none flex items-center justify-center",
+                  mode === 'light' 
+                    ? "bg-[var(--color-surface)] text-amber-400 shadow-xs" 
+                    : "text-[var(--color-text-muted)] hover:text-amber-400 hover:bg-[var(--color-surface-hover)]"
+                )}
+              >
+                <Sun size={15} />
+              </button>
+              <button
+                type="button"
+                onClick={() => setMode('dark')}
+                title="Dark Mode"
+                className={cn(
+                  "p-1.5 rounded-lg transition-all cursor-pointer border-0 outline-none flex items-center justify-center",
+                  mode === 'dark' 
+                    ? "bg-[var(--color-surface)] text-indigo-400 shadow-xs" 
+                    : "text-[var(--color-text-muted)] hover:text-indigo-400 hover:bg-[var(--color-surface-hover)]"
+                )}
+              >
+                <Moon size={15} />
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Navigation */}
@@ -325,175 +388,106 @@ export default function Sidebar({ onClose }) {
             </button>
           )}
 
-          {/* Expanded Theme & Style Section (Placed at bottom above status cards) */}
+          {/* Simplified Themes & Background Section (PC View Only - No Scroll, No Dots, No Strokes) */}
           {!isCollapsed && (
-            <div className="space-y-1.5">
-              {/* Expandable Theme Trigger */}
-              <button
-                onClick={() => setIsThemesExpanded(!isThemesExpanded)}
-                className={cn(
-                  "w-full flex items-center justify-between px-2 py-1.5 rounded-lg transition-all duration-200 group cursor-pointer",
-                  isThemesExpanded 
-                    ? "bg-[var(--color-surface)] border border-[var(--color-border)]" 
-                    : "hover:bg-[var(--color-surface-hover)] text-[var(--color-text-secondary)]"
-                )}
-              >
-                <div className="flex items-center gap-2">
-                  <Palette size={13} className="text-[var(--color-primary)] shrink-0" />
-                  <span className="text-[9.5px] font-bold uppercase tracking-wider text-[var(--color-text-muted)] group-hover:text-[var(--color-text-main)]">
-                    Theme &amp; Style
+            <div className="space-y-2 py-0.5 border-t border-[var(--color-border)]/40 pt-2">
+              {/* Mode Switcher: 2 stroke-free icons */}
+              <div className="flex items-center justify-between px-1">
+                <span className="text-[9px] font-bold uppercase tracking-wider text-[var(--color-text-muted)]">
+                  Mode
+                </span>
+                <div className="flex items-center gap-1">
+                  <button
+                    type="button"
+                    onClick={() => setMode('light')}
+                    title="Light Mode"
+                    className={cn(
+                      "p-1.5 rounded-md transition-all cursor-pointer border-0 outline-none flex items-center justify-center",
+                      mode === 'light' 
+                        ? "bg-[var(--color-surface)] text-amber-400 shadow-xs" 
+                        : "text-[var(--color-text-muted)] hover:text-amber-400 hover:bg-[var(--color-surface-hover)]"
+                    )}
+                  >
+                    <Sun size={14} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setMode('dark')}
+                    title="Dark Mode"
+                    className={cn(
+                      "p-1.5 rounded-md transition-all cursor-pointer border-0 outline-none flex items-center justify-center",
+                      mode === 'dark' 
+                        ? "bg-[var(--color-surface)] text-indigo-400 shadow-xs" 
+                        : "text-[var(--color-text-muted)] hover:text-indigo-400 hover:bg-[var(--color-surface-hover)]"
+                    )}
+                  >
+                    <Moon size={14} />
+                  </button>
+                </div>
+              </div>
+
+              {/* 1. THEMES (11 chips in 3 columns, no scroll, no dots, no strokes) */}
+              <div className="space-y-1">
+                <div className="flex items-center justify-between px-1">
+                  <span className="text-[8.5px] font-bold uppercase tracking-wider text-[var(--color-text-muted)]">
+                    Themes
+                  </span>
+                  <span className="text-[8.5px] font-extrabold text-[var(--color-primary)] truncate max-w-[100px]">
+                    {THEME_OPTIONS.find(t => t.id === visualTheme)?.label || 'Royal'}
                   </span>
                 </div>
 
-                <div className="flex items-center gap-1.5">
-                  <span 
-                    className="w-2 h-2 rounded-full shrink-0 shadow-sm" 
-                    style={{ backgroundColor: currentThemeObj.color, boxShadow: `0 0 6px ${currentThemeObj.color}88` }} 
-                  />
-                  <ChevronDown 
-                    size={12} 
-                    className={cn(
-                      "text-[var(--color-text-muted)] transition-transform duration-300",
-                      isThemesExpanded ? "rotate-180 text-[var(--color-primary)]" : ""
-                    )} 
-                  />
-                </div>
-              </button>
-
-              {/* Theme List & Appearance Modes */}
-              <div className={cn(
-                "overflow-hidden transition-all duration-300 ease-in-out space-y-1.5",
-                isThemesExpanded ? "max-h-[260px] opacity-100 pb-0.5" : "max-h-0 opacity-0"
-              )}>
-                {/* Segmented Tab Switch: Palettes vs Backgrounds */}
-                <div className="grid grid-cols-2 gap-1 p-0.5 bg-[var(--color-surface)] rounded-lg border border-[var(--color-border)]">
-                  <button
-                    onClick={() => setSidebarThemeTab('palette')}
-                    className={cn(
-                      "py-0.5 px-1 rounded text-[8.5px] font-bold uppercase tracking-wider flex items-center justify-center gap-1 transition-all cursor-pointer",
-                      sidebarThemeTab === 'palette'
-                        ? "bg-[var(--color-bg-card)] text-[var(--color-primary)] shadow-xs"
-                        : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)]"
-                    )}
-                  >
-                    <Palette size={10} />
-                    <span>Palettes</span>
-                  </button>
-                  <button
-                    onClick={() => setSidebarThemeTab('background')}
-                    className={cn(
-                      "py-0.5 px-1 rounded text-[8.5px] font-bold uppercase tracking-wider flex items-center justify-center gap-1 transition-all cursor-pointer",
-                      sidebarThemeTab === 'background'
-                        ? "bg-[var(--color-bg-card)] text-[var(--color-primary)] shadow-xs"
-                        : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)]"
-                    )}
-                  >
-                    <Sparkles size={10} />
-                    <span>Backdrop</span>
-                  </button>
-                </div>
-
-                {/* Tab 1: Visual Themes with Name in a Serial List */}
-                {sidebarThemeTab === 'palette' && (
-                  <div className="bg-[var(--color-surface)]/60 border border-[var(--color-border)] rounded-lg p-1.5 space-y-1">
-                    <div className="flex items-center justify-between px-1 text-[8.5px] font-bold uppercase tracking-wider">
-                      <span className="text-[var(--color-text-muted)]">Palettes ({VISUAL_THEMES.length})</span>
-                      <span className="text-[var(--color-primary)] font-extrabold truncate max-w-[90px]">{currentThemeObj.name}</span>
-                    </div>
-
-                    {/* Serial Theme List */}
-                    <div className="max-h-32 overflow-y-auto space-y-0.5 pr-0.5 hide-scrollbar">
-                      {VISUAL_THEMES.map((t, idx) => {
-                        const isSelected = visualTheme === t.id;
-                        return (
-                          <button
-                            key={t.id}
-                            onClick={() => setVisualTheme(t.id)}
-                            className={cn(
-                              "w-full flex items-center gap-1.5 px-1.5 py-1 rounded-md text-[9.5px] font-semibold transition-all cursor-pointer text-left",
-                              isSelected
-                                ? "bg-[var(--color-primary)]/15 text-[var(--color-primary)] font-bold shadow-sm"
-                                : "text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-main)]"
-                            )}
-                          >
-                            <span className="text-[8px] text-[var(--color-text-muted)] font-mono w-2.5 shrink-0">{idx + 1}.</span>
-                            <span 
-                              className="w-2 h-2 rounded-full shrink-0 shadow-sm" 
-                              style={{ backgroundColor: t.color, boxShadow: isSelected ? `0 0 6px ${t.color}` : undefined }} 
-                            />
-                            <span className="truncate flex-1">{t.name}</span>
-                            {isSelected && (
-                              <span className="text-[7.5px] font-black uppercase tracking-wider text-[var(--color-primary)] shrink-0">Active</span>
-                            )}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
-
-                {/* Tab 2: Background Effects List */}
-                {sidebarThemeTab === 'background' && (
-                  <div className="bg-[var(--color-surface)]/60 border border-[var(--color-border)] rounded-lg p-1.5 space-y-1">
-                    <div className="flex items-center justify-between px-1 text-[8.5px] font-bold uppercase tracking-wider">
-                      <span className="text-[var(--color-text-muted)]">Effects ({BG_EFFECTS.length})</span>
-                      <span className="text-[var(--color-primary)] font-extrabold truncate max-w-[90px]">
-                        {BG_EFFECTS.find(b => b.id === bgEffect)?.name}
-                      </span>
-                    </div>
-
-                    <div className="max-h-32 overflow-y-auto space-y-0.5 pr-0.5 hide-scrollbar">
-                      {BG_EFFECTS.map((b, idx) => {
-                        const isSelected = bgEffect === b.id;
-                        return (
-                          <button
-                            key={b.id}
-                            onClick={() => setBgEffect(b.id)}
-                            className={cn(
-                              "w-full flex flex-col gap-0.5 px-1.5 py-1 rounded-md text-[9px] font-medium transition-all cursor-pointer text-left",
-                              isSelected
-                                ? "bg-[var(--color-primary)]/15 text-[var(--color-primary)] font-bold shadow-sm border border-[var(--color-primary)]/30"
-                                : "text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-main)]"
-                            )}
-                          >
-                            <div className="flex items-center justify-between">
-                              <span className="font-bold truncate text-[9px]">{b.name}</span>
-                              {isSelected ? (
-                                <span className="text-[7.5px] font-black uppercase tracking-wider text-[var(--color-primary)]">Active</span>
-                              ) : (
-                                <span className="text-[7.5px] text-[var(--color-text-muted)] uppercase tracking-wider">{b.tag}</span>
-                              )}
-                            </div>
-                            <span className="text-[7.5px] text-[var(--color-text-muted)] truncate">{b.desc}</span>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
-
-                {/* Appearance Mode Radio Group */}
-                <div className="grid grid-cols-2 gap-1 p-0.5 bg-[var(--color-surface)] rounded-lg border border-[var(--color-border)]">
-                  {APPEARANCE_MODES.map((m) => {
-                    const isSelected = mode === m.id;
+                <div className="grid grid-cols-3 gap-1">
+                  {THEME_OPTIONS.map((t) => {
+                    const isSelected = visualTheme === t.id;
                     return (
                       <button
-                        key={m.id}
-                        onClick={() => setMode(m.id)}
+                        key={t.id}
+                        type="button"
+                        onClick={() => setVisualTheme(t.id)}
+                        title={t.full}
                         className={cn(
-                          "py-0.5 px-1.5 rounded text-[9.5px] font-bold flex items-center justify-center gap-1 transition-all cursor-pointer",
+                          "py-1 px-1 rounded text-[8.5px] font-bold text-center truncate transition-all cursor-pointer border-0 outline-none select-none",
                           isSelected
-                            ? "bg-[var(--color-bg-card)] text-[var(--color-primary)] border border-[var(--color-primary)]/30 shadow-sm"
-                            : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)]"
+                            ? "bg-[var(--color-primary)] text-[var(--color-on-primary,white)] font-extrabold shadow-xs"
+                            : "bg-[var(--color-surface)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)]"
                         )}
                       >
-                        <div className={cn(
-                          "w-1.5 h-1.5 rounded-full border flex items-center justify-center shrink-0",
-                          isSelected ? "border-[var(--color-primary)] bg-[var(--color-primary)]" : "border-[var(--color-border)]"
-                        )}>
-                          {isSelected && <div className="w-0.5 h-0.5 rounded-full bg-[var(--color-primary)]" />}
-                        </div>
-                        <span>{m.name}</span>
+                        {t.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* 2. BACKGROUND (14 chips in 3 columns, no scroll, no dots, no strokes) */}
+              <div className="space-y-1">
+                <div className="flex items-center justify-between px-1">
+                  <span className="text-[8.5px] font-bold uppercase tracking-wider text-[var(--color-text-muted)]">
+                    Background
+                  </span>
+                  <span className="text-[8.5px] font-extrabold text-[var(--color-primary)] truncate max-w-[100px]">
+                    {BG_OPTIONS.find(b => b.id === bgEffect)?.label || 'Grain'}
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-3 gap-1">
+                  {BG_OPTIONS.map((b) => {
+                    const isSelected = bgEffect === b.id;
+                    return (
+                      <button
+                        key={b.id}
+                        type="button"
+                        onClick={() => setBgEffect(b.id)}
+                        title={b.full}
+                        className={cn(
+                          "py-1 px-1 rounded text-[8.5px] font-bold text-center truncate transition-all cursor-pointer border-0 outline-none select-none",
+                          isSelected
+                            ? "bg-[var(--color-primary)] text-[var(--color-on-primary,white)] font-extrabold shadow-xs"
+                            : "bg-[var(--color-surface)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)]"
+                        )}
+                      >
+                        {b.label}
                       </button>
                     );
                   })}
