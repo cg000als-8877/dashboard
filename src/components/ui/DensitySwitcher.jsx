@@ -29,14 +29,14 @@ export function DensitySwitcher({ value, onChange, options: customOptions, class
             onClick={() => setDensity(opt.id)}
             title={`${opt.label} View Mode`}
             className={cn(
-              "flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg text-[9.5px] sm:text-xs uppercase tracking-wider font-bold transition-all duration-200 cursor-pointer select-none",
+              "flex items-center justify-center gap-1.5 p-1.5 sm:px-3.5 sm:py-1.5 rounded-lg text-[9.5px] sm:text-xs uppercase tracking-wider font-bold transition-all duration-200 cursor-pointer select-none",
               isActive
                 ? "bg-[var(--color-bg-card)] text-[var(--color-primary)] border border-[var(--color-border)] shadow-xs"
                 : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)] font-medium"
             )}
           >
-            <Icon size={13} className={cn("sm:w-[14px] sm:h-[14px]", isActive ? "text-[var(--color-primary)]" : "text-[var(--color-text-muted)]")} />
-            <span>{opt.label}</span>
+            <Icon size={14} className={cn("sm:w-[14px] sm:h-[14px]", isActive ? "text-[var(--color-primary)]" : "text-[var(--color-text-muted)]")} />
+            <span className="hidden sm:inline">{opt.label}</span>
           </button>
         );
       })}

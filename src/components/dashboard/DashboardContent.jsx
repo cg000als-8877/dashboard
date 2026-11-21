@@ -12,7 +12,7 @@ import { DashboardSkeleton } from '@/components/ui/Skeletons';
 import { cn } from '@/components/layout/Sidebar';
 import { CostRecoveryJar } from '@/components/dashboard/CostRecoveryJar';
 import { CostRecoveryPie } from '@/components/dashboard/CostRecoveryPie';
-import { SystemIntelligenceCards } from '@/components/dashboard/SystemIntelligenceCards';
+import { MonthSelectorBar } from '@/components/dashboard/MonthSelectorBar';
 
 const DEFAULT_LINE_ITEMS = {
   A: 'Sherpa Jacket, Boys Shirt',
@@ -772,45 +772,6 @@ export function DashboardContent({ month, isArchive = false }) {
         <div className="relative rounded-none md:rounded-3xl border-0 bg-transparent md:bg-[var(--color-bg-card)] backdrop-blur-none p-0 md:p-6 shadow-none md:shadow-none overflow-visible md:overflow-hidden mb-6 -mx-2 sm:mx-0">
           <div className="hidden md:block absolute top-0 left-1/2 -translate-x-1/2 w-96 h-28 bg-[var(--color-primary)]/5 rounded-full blur-3xl pointer-events-none" />
 
-          {/* Month Tab Switcher for 6 KPI Stat Cards (Live Dashboard Only) */}
-          {!isArchive && (
-            <div className="flex flex-col items-center justify-center w-full mb-2 sm:mb-2.5 relative z-10 gap-1.5 sm:gap-2">
-              <div className="inline-flex items-center gap-1.5 sm:gap-2 select-none shrink-0 py-2 px-2.5 max-w-full overflow-x-auto no-scrollbar">
-                {[
-                  { id: 'current', short: 'NOV', full: 'NOVEMBER', isLive: true },
-                  { id: 'october', short: 'OCT', full: 'OCTOBER', isLive: false },
-                  { id: 'september', short: 'SEP', full: 'SEPTEMBER', isLive: false },
-                  { id: 'august', short: 'AUG', full: 'AUGUST', isLive: false },
-                  { id: 'july', short: 'JUL', full: 'JULY', isLive: false },
-                ].map(m => {
-                  const isSelected = selectedCardMonth === m.id;
-                  return (
-                    <button
-                      key={m.id}
-                      type="button"
-                      onClick={() => setSelectedCardMonth(m.id)}
-                      className={cn(
-                        "rounded-full px-3 sm:px-4 py-1 sm:py-1.5 text-[10px] sm:text-xs uppercase tracking-wider transition-all duration-300 cursor-pointer select-none shrink-0 outline-none border flex items-center gap-1.5",
-                        isSelected
-                          ? "relative z-20 bg-white text-slate-950 font-black shadow-[0_2px_8px_rgba(0,0,0,0.1)] dark:shadow-[0_2px_8px_rgba(0,0,0,0.3)] border-slate-300/90 dark:border-white/20"
-                          : "relative z-10 bg-slate-100/90 hover:bg-slate-200/90 dark:bg-[var(--color-bg-card)]/90 dark:hover:bg-[var(--color-surface-hover)] text-slate-700 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white font-bold border-slate-300/80 dark:border-white/10 shadow-[0_1px_3px_rgba(15,23,42,0.08)]"
-                      )}
-                    >
-                      <span className="sm:hidden font-black">{m.short}</span>
-                      <span className="hidden sm:inline font-bold">{m.full}</span>
-                      {m.isLive && (
-                        <>
-                          <span className="hidden sm:inline text-[8px] sm:text-[10px] text-red-500 font-black tracking-wide">(LIVE)</span>
-                          <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-red-500 shadow-[0_0_6px_rgba(239,68,68,0.6)] animate-pulse shrink-0" />
-                        </>
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
           {/* Dynamic Date Context & 6 KPI Metric Cards Grid (Pace-Matched) */}
           {(() => {
             let activeDateInfo = formatDateRangeInfo(startDate, endDate);
@@ -920,15 +881,15 @@ export function DashboardContent({ month, isArchive = false }) {
 
             return (
               <>
-                {/* Dynamic Date Context (Inside Card under Month Tabs) */}
-                <div className="flex flex-col justify-center items-center w-full mt-0.5 mb-2.5 sm:mb-3.5 relative z-10 text-center">
-                  <DashboardDateRange dateInfo={activeDateInfo} workingDays={displayStats?.workingDays} />
-                  {isPastMonth && (
-                    <p className="text-[10px] sm:text-[11px] text-[var(--color-text-muted)] font-medium tracking-normal mt-0.5 select-none">
-                      Comparing {selectedCardMonth.slice(0, 3).toUpperCase()} (same days) with current month (NOV)
-                    </p>
-                  )}
-                </div>
+                {/* Month & Date Selector Bar with Interactive Concept Switcher */}
+                <MonthSelectorBar
+                  selectedMonth={selectedCardMonth}
+                  onSelectMonth={setSelectedCardMonth}
+                  dateInfo={activeDateInfo}
+                  workingDays={displayStats?.workingDays}
+                  isPastMonth={isPastMonth}
+                  isArchive={isArchive}
+                />
                 {/* ── MOBILE VIEW ONLY: Wireframe-matched Redesign Layout ── */}
                 <div className="md:hidden flex flex-col gap-1.5 relative z-10 px-0.5">
                   
@@ -1054,78 +1015,74 @@ export function DashboardContent({ month, isArchive = false }) {
                     </Card>
                   )}
 
-                  {/* 2. MIDDLE 2-COLUMN SECTION: Stacked Total Income/Cost (Left) + Cost Recovery Jar (Right) */}
-                  <div className="grid grid-cols-2 gap-1.5">
-                    {/* Left Column: 2 Stacked Financial Cards */}
-                    <div className="flex flex-col gap-1.5 justify-between">
-                      {/* 2a. Total Income Card */}
-                      <Card
-                        hover
-                        data-color="primary"
-                        className="p-3 sm:p-3.5 rounded-2xl flex flex-col justify-between flex-1 shadow-sm transition-all"
-                        style={{ backgroundColor: 'var(--color-bg-card)' }}
-                      >
-                        <div>
-                          <h4 className="text-[10px] sm:text-[10.5px] font-bold uppercase tracking-wider text-[var(--color-text-muted)] leading-tight">
-                            Total Income
-                          </h4>
-                          <p className="font-black text-[18px] sm:text-[20px] tracking-tight text-[var(--color-primary)] mt-1 mb-0.5 leading-tight [filter:var(--shadow-text)] truncate">
-                            <AnimatedNumber value={Math.round(displayStats.totalIncome)} prefix="BDT " />
-                          </p>
-                        </div>
-                        {incomeComp && (
-                          <div className="flex flex-col items-start gap-y-0.5 text-[9px] sm:text-[9.5px] leading-snug italic pt-1 mt-1">
-                            <span className={cn("font-bold shrink-0 leading-normal", incomeComp.isPositive ? "text-[var(--color-success-text)]" : "text-[var(--color-danger-text)]")}>
-                              {incomeComp.highlight}
-                            </span>
-                            <span className="text-[var(--color-text-muted)] text-[8.5px] sm:text-[9px] leading-normal truncate w-full">{incomeComp.label}</span>
-                          </div>
-                        )}
-                      </Card>
-
-                      {/* 2b. Total Cost Card */}
-                      <Card
-                        hover
-                        className="p-3 sm:p-3.5 rounded-2xl flex flex-col justify-between flex-1 shadow-sm transition-all"
-                        style={{ backgroundColor: 'var(--color-bg-card)' }}
-                      >
-                        <div>
-                          <h4 className="text-[10px] sm:text-[10.5px] font-bold uppercase tracking-wider text-[var(--color-text-muted)] leading-tight">
-                            Total Cost
-                          </h4>
-                          <p className="font-black text-[18px] sm:text-[20px] tracking-tight text-[var(--color-text-main)] mt-1 mb-0.5 leading-tight [filter:var(--shadow-text)] truncate">
-                            <AnimatedNumber value={Math.round(displayStats.totalCost)} prefix="BDT " />
-                          </p>
-                        </div>
-                        {costComp && (
-                          <div className="flex flex-col items-start gap-y-0.5 text-[9px] sm:text-[9.5px] leading-snug italic pt-1 mt-1">
-                            <span className={cn("font-bold shrink-0 leading-normal", costComp.isPositive ? "text-[var(--color-success-text)]" : "text-[var(--color-danger-text)]")}>
-                              {costComp.highlight}
-                            </span>
-                            <span className="text-[var(--color-text-muted)] text-[8.5px] sm:text-[9px] leading-normal truncate w-full">{costComp.label}</span>
-                          </div>
-                        )}
-                      </Card>
-                    </div>
-
-                    {/* Right Column: Donut Pie Cost Recovery Card (Mobile) */}
+                  {/* 2. TOTAL INCOME & TOTAL COST SIDE-BY-SIDE IN ONE ROW */}
+                  <div className="grid grid-cols-2 gap-1.5 sm:gap-2">
+                    {/* 2a. Total Income Card */}
                     <Card
                       hover
-                      data-color={displayStats.totalIncome >= displayStats.totalCost ? "success" : "primary"}
-                      className="p-3 sm:p-3.5 rounded-2xl flex flex-col justify-between items-center shadow-sm relative overflow-hidden transition-all h-full"
+                      data-color="primary"
+                      className="p-3 sm:p-3.5 rounded-2xl flex flex-col justify-between shadow-sm transition-all"
                       style={{ backgroundColor: 'var(--color-bg-card)' }}
                     >
-                      <CostRecoveryPie
-                        percentage={recoveryPercent}
-                        isProfitable={displayStats.totalIncome >= displayStats.totalCost}
-                        totalIncome={displayStats.totalIncome}
-                        totalCost={displayStats.totalCost}
-                        netProfit={displayStats.netProfit}
-                        compact
-                        className="h-full justify-between"
-                      />
+                      <div>
+                        <h4 className="text-[10px] sm:text-[10.5px] font-bold uppercase tracking-wider text-[var(--color-text-muted)] leading-tight">
+                          Total Income
+                        </h4>
+                        <p className="font-black text-[18px] sm:text-[20px] tracking-tight text-[var(--color-primary)] mt-1 mb-0.5 leading-tight [filter:var(--shadow-text)] truncate">
+                          <AnimatedNumber value={Math.round(displayStats.totalIncome)} prefix="BDT " />
+                        </p>
+                      </div>
+                      {incomeComp && (
+                        <div className="flex flex-col items-start gap-y-0.5 text-[9px] sm:text-[9.5px] leading-snug italic pt-1 mt-1">
+                          <span className={cn("font-bold shrink-0 leading-normal", incomeComp.isPositive ? "text-[var(--color-success-text)]" : "text-[var(--color-danger-text)]")}>
+                            {incomeComp.highlight}
+                          </span>
+                          <span className="text-[var(--color-text-muted)] text-[8.5px] sm:text-[9px] leading-normal truncate w-full">{incomeComp.label}</span>
+                        </div>
+                      )}
+                    </Card>
+
+                    {/* 2b. Total Cost Card */}
+                    <Card
+                      hover
+                      className="p-3 sm:p-3.5 rounded-2xl flex flex-col justify-between shadow-sm transition-all"
+                      style={{ backgroundColor: 'var(--color-bg-card)' }}
+                    >
+                      <div>
+                        <h4 className="text-[10px] sm:text-[10.5px] font-bold uppercase tracking-wider text-[var(--color-text-muted)] leading-tight">
+                          Total Cost
+                        </h4>
+                        <p className="font-black text-[18px] sm:text-[20px] tracking-tight text-[var(--color-text-main)] mt-1 mb-0.5 leading-tight [filter:var(--shadow-text)] truncate">
+                          <AnimatedNumber value={Math.round(displayStats.totalCost)} prefix="BDT " />
+                        </p>
+                      </div>
+                      {costComp && (
+                        <div className="flex flex-col items-start gap-y-0.5 text-[9px] sm:text-[9.5px] leading-snug italic pt-1 mt-1">
+                          <span className={cn("font-bold shrink-0 leading-normal", costComp.isPositive ? "text-[var(--color-success-text)]" : "text-[var(--color-danger-text)]")}>
+                            {costComp.highlight}
+                          </span>
+                          <span className="text-[var(--color-text-muted)] text-[8.5px] sm:text-[9px] leading-normal truncate w-full">{costComp.label}</span>
+                        </div>
+                      )}
                     </Card>
                   </div>
+
+                  {/* 2c. COST RECOVERY & PROFIT (3 DONUTS FULL-LENGTH FROM LEFT TO RIGHT) */}
+                  <Card
+                    hover
+                    data-color={displayStats.totalIncome >= displayStats.totalCost ? "success" : "primary"}
+                    className="px-3 py-2 sm:px-4 sm:py-3 rounded-2xl shadow-sm relative overflow-hidden transition-all w-full"
+                    style={{ backgroundColor: 'var(--color-bg-card)' }}
+                  >
+                    <CostRecoveryPie
+                      percentage={recoveryPercent}
+                      isProfitable={displayStats.totalIncome >= displayStats.totalCost}
+                      totalIncome={displayStats.totalIncome}
+                      totalCost={displayStats.totalCost}
+                      netProfit={displayStats.netProfit}
+                      className="w-full"
+                    />
+                  </Card>
 
                   {/* 3. BOTTOM FULL-WIDTH PRODUCTION LINES OVERVIEW CARD */}
                   <Card
@@ -1218,7 +1175,7 @@ export function DashboardContent({ month, isArchive = false }) {
                 <div className="hidden md:grid md:grid-cols-12 gap-3.5 lg:gap-4 xl:gap-5 relative z-10 px-0 items-stretch">
                   
                   {/* COLUMN 1 (LEFT): Net Loss Card (Top) + Stacked Income & Cost Cards (Bottom) */}
-                  <div className="md:col-span-12 lg:col-span-5 xl:col-span-5 flex flex-col gap-3 xl:gap-3.5 justify-between">
+                  <div className="md:col-span-12 lg:col-span-4 xl:col-span-4 flex flex-col gap-3 xl:gap-3.5 justify-between">
                     
                     {/* Top Combined Card: Net Loss & Average Daily Loss */}
                     <Card 
@@ -1315,19 +1272,19 @@ export function DashboardContent({ month, isArchive = false }) {
                             : 'linear-gradient(135deg, var(--color-bg-card) 55%, rgba(239, 68, 68, 0.12) 100%)'
                         }}
                       >
-                        <div className="flex items-center justify-between w-full gap-2">
+                        <div className="flex items-center justify-between w-full gap-1.5">
                           {/* Left: Last day loss (OCT 13th) */}
-                          <div className="flex items-center gap-1.5 min-w-0">
-                            <span className="text-xs xl:text-sm font-bold text-[var(--color-text-secondary)] whitespace-nowrap">
+                          <div className="flex items-center gap-1 min-w-0">
+                            <span className="text-[11px] xl:text-xs font-bold text-[var(--color-text-secondary)] truncate">
                               {isLastDayProfit ? 'Last day profit' : 'Last day loss'}{' '}
                               <span className="text-[var(--color-text-main)] font-extrabold">({lastDayDateFormatted})</span>
                             </span>
                           </div>
 
                           {/* Right: Actual Loss/Profit with BDT prefix */}
-                          <div className="flex items-center gap-2 shrink-0">
+                          <div className="flex items-center gap-1 shrink-0">
                             <p className={cn(
-                              "font-black tracking-tight text-base xl:text-lg leading-none [filter:var(--shadow-text)] whitespace-nowrap",
+                              "font-black tracking-tight text-sm xl:text-base leading-none [filter:var(--shadow-text)] whitespace-nowrap",
                               isLastDayProfit ? "text-[var(--color-success)]" : "text-[var(--color-danger)]"
                             )}>
                               <AnimatedNumber 
@@ -1341,29 +1298,28 @@ export function DashboardContent({ month, isArchive = false }) {
                     )}
 
                     {/* Bottom Row: 2 Separate Cards (Total Income & Total Cost) */}
-                    <div className="grid grid-cols-2 gap-3 xl:gap-4 flex-1">
+                    <div className="grid grid-cols-2 gap-2 xl:gap-3 flex-1">
                       {/* Total Income Card */}
                       <Card
                         hover
                         data-color="primary"
-                        className="p-3.5 sm:p-4 xl:p-5 rounded-2xl flex flex-col justify-between shadow-sm md:shadow-[0_10px_25px_-4px_var(--shadow-color,rgba(0,0,0,0.12)),0_4px_10px_-2px_var(--shadow-color,rgba(0,0,0,0.06))] border-0 md:border-0 transition-all"
+                        className="p-3 xl:p-3.5 rounded-2xl flex flex-col justify-between shadow-sm md:shadow-[0_10px_25px_-4px_var(--shadow-color,rgba(0,0,0,0.12)),0_4px_10px_-2px_var(--shadow-color,rgba(0,0,0,0.06))] border-0 md:border-0 transition-all"
                         style={{ backgroundColor: 'var(--color-bg-card)' }}
                       >
                         <div>
-                          <h4 className="text-[11px] sm:text-xs xl:text-sm font-bold uppercase tracking-wider text-[var(--color-text-muted)] leading-tight truncate">
+                          <h4 className="text-[10px] xl:text-[11px] font-bold uppercase tracking-wider text-[var(--color-text-muted)] leading-tight truncate">
                             Total Income
                           </h4>
-                          <p className="font-black text-lg sm:text-xl lg:text-xl xl:text-2xl 2xl:text-[32px] tracking-tight text-[var(--color-primary)] mt-1 mb-0.5 leading-tight [filter:var(--shadow-text)] truncate">
-                            <span className="text-xs sm:text-sm xl:text-base font-bold opacity-80 mr-0.5">BDT</span>
-                            <AnimatedNumber value={Math.round(displayStats.totalIncome)} />
+                          <p className="font-black text-sm xl:text-base tracking-tight text-[var(--color-primary)] mt-1 mb-0.5 leading-tight [filter:var(--shadow-text)] truncate">
+                            <AnimatedNumber value={Math.round(displayStats.totalIncome)} prefix="BDT " />
                           </p>
                         </div>
                         {incomeComp && (
-                          <div className="flex flex-col xl:flex-row xl:flex-wrap items-start xl:items-baseline gap-x-1.5 gap-y-0.5 text-[10px] xl:text-xs leading-snug italic pt-1.5 mt-1.5">
+                          <div className="flex flex-col items-start gap-y-0.5 text-[9.5px] xl:text-[10.5px] leading-snug italic pt-1 mt-1">
                             <span className={cn("font-bold shrink-0 leading-normal", incomeComp.isPositive ? "text-[var(--color-success-text)]" : "text-[var(--color-danger-text)]")}>
                               {incomeComp.highlight}
                             </span>
-                            <span className="text-[var(--color-text-muted)] text-[10px] xl:text-[11px] leading-normal">{incomeComp.label}</span>
+                            <span className="text-[var(--color-text-muted)] text-[9px] xl:text-[9.5px] leading-normal truncate w-full">{incomeComp.label}</span>
                           </div>
                         )}
                       </Card>
@@ -1371,24 +1327,23 @@ export function DashboardContent({ month, isArchive = false }) {
                       {/* Total Cost Card */}
                       <Card
                         hover
-                        className="p-3.5 sm:p-4 xl:p-5 rounded-2xl flex flex-col justify-between shadow-sm md:shadow-[0_10px_25px_-4px_var(--shadow-color,rgba(0,0,0,0.12)),0_4px_10px_-2px_var(--shadow-color,rgba(0,0,0,0.06))] border-0 md:border-0 transition-all"
+                        className="p-3 xl:p-3.5 rounded-2xl flex flex-col justify-between shadow-sm md:shadow-[0_10px_25px_-4px_var(--shadow-color,rgba(0,0,0,0.12)),0_4px_10px_-2px_var(--shadow-color,rgba(0,0,0,0.06))] border-0 md:border-0 transition-all"
                         style={{ backgroundColor: 'var(--color-bg-card)' }}
                       >
                         <div>
-                          <h4 className="text-[11px] sm:text-xs xl:text-sm font-bold uppercase tracking-wider text-[var(--color-text-muted)] leading-tight truncate">
+                          <h4 className="text-[10px] xl:text-[11px] font-bold uppercase tracking-wider text-[var(--color-text-muted)] leading-tight truncate">
                             Total Cost
                           </h4>
-                          <p className="font-black text-lg sm:text-xl lg:text-xl xl:text-2xl 2xl:text-[32px] tracking-tight text-[var(--color-text-main)] mt-1 mb-0.5 leading-tight [filter:var(--shadow-text)] truncate">
-                            <span className="text-xs sm:text-sm xl:text-base font-bold opacity-80 mr-0.5">BDT</span>
-                            <AnimatedNumber value={Math.round(displayStats.totalCost)} />
+                          <p className="font-black text-sm xl:text-base tracking-tight text-[var(--color-text-main)] mt-1 mb-0.5 leading-tight [filter:var(--shadow-text)] truncate">
+                            <AnimatedNumber value={Math.round(displayStats.totalCost)} prefix="BDT " />
                           </p>
                         </div>
                         {costComp && (
-                          <div className="flex flex-col xl:flex-row xl:flex-wrap items-start xl:items-baseline gap-x-1.5 gap-y-0.5 text-[10px] xl:text-xs leading-snug italic pt-1.5 mt-1.5">
+                          <div className="flex flex-col items-start gap-y-0.5 text-[9.5px] xl:text-[10.5px] leading-snug italic pt-1 mt-1">
                             <span className={cn("font-bold shrink-0 leading-normal", costComp.isPositive ? "text-[var(--color-success-text)]" : "text-[var(--color-danger-text)]")}>
                               {costComp.highlight}
                             </span>
-                            <span className="text-[var(--color-text-muted)] text-[10px] xl:text-[11px] leading-normal">{costComp.label}</span>
+                            <span className="text-[var(--color-text-muted)] text-[9px] xl:text-[9.5px] leading-normal truncate w-full">{costComp.label}</span>
                           </div>
                         )}
                       </Card>
@@ -1396,8 +1351,8 @@ export function DashboardContent({ month, isArchive = false }) {
 
                   </div>
 
-                  {/* COLUMN 2 (MIDDLE): Cost Recovery Pie Circle Card */}
-                  <div className="md:col-span-6 lg:col-span-3 xl:col-span-3 flex flex-col">
+                  {/* COLUMN 2 (MIDDLE): Cost Recovery 3-Donut Card */}
+                  <div className="md:col-span-6 lg:col-span-4 xl:col-span-4 flex flex-col">
                     <Card
                       hover
                       data-color={displayStats.totalIncome >= displayStats.totalCost ? "success" : "primary"}
@@ -1642,7 +1597,7 @@ export function DashboardContent({ month, isArchive = false }) {
                 <div className="mt-1 flex flex-col items-center justify-center text-center">
                   <DashboardDateRange dateInfo={activeDateInfo} workingDays={currentStatsForDate?.workingDays} />
                   {!isArchive && selectedCardMonth !== 'current' && (
-                    <p className="text-[10px] sm:text-[11px] text-[var(--color-text-muted)] font-medium tracking-normal mt-0.5 select-none">
+                    <p className="text-[9.5px] sm:text-[10.5px] text-[var(--color-text-muted)] font-medium tracking-normal mt-0.5 select-none">
                       Comparing {selectedCardMonth.slice(0, 3).toUpperCase()} (same days) with current month (NOV)
                     </p>
                   )}
@@ -1982,12 +1937,7 @@ export function DashboardContent({ month, isArchive = false }) {
           );
         })()}
 
-      {/* System Intelligence Panel (Live Dashboard Only) */}
-      {!isArchive && (
-        <div className="mt-8 mb-6 relative z-10">
-          <SystemIntelligenceCards insights={insights} />
-        </div>
-      )}
+
 
 
       

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { 
+  Home, 
   LayoutDashboard, 
   Factory, 
   BarChart3, 
@@ -33,7 +34,7 @@ export function cn(...inputs) {
 }
 
 const navItems = [
-  { name: 'Dashboard', key: 'navDashboard', href: '/', icon: LayoutDashboard },
+  { name: 'Home', key: 'navDashboard', href: '/', icon: Home },
   { name: 'Hourly', key: 'navHourly', href: '/hourly', icon: Clock },
   { name: 'Lines', key: 'navLines', href: '/lines', icon: Factory, isExpandable: true },
   { name: 'Compare', key: 'navCompare', href: '/compare', icon: GitCompare },

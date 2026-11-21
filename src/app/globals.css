@@ -2580,51 +2580,53 @@ svg:active {
 
 /* ═══════════════════════════════════════════
    MOBILE BOTTOM NAV ACTIVE MICRO-ANIMATION
+   (Replaces odd breathing/scaling with a crisp
+    spring entrance + gentle ambient glass sheen)
 ═══════════════════════════════════════════ */
-@keyframes navActivePulse {
-  0%, 100% {
-    transform: translateY(0) scale(1);
-    filter: drop-shadow(0 0 3px rgba(244, 244, 245, 0.45));
+@keyframes navPillIn {
+  0% {
+    transform: scale(0.93);
+    opacity: 0.7;
   }
-  50% {
-    transform: translateY(-1.5px) scale(1.08);
-    filter: drop-shadow(0 0 8px rgba(244, 244, 245, 0.85));
-  }
-}
-
-@keyframes navActivePulseLight {
-  0%, 100% {
-    transform: translateY(0) scale(1);
-    filter: drop-shadow(0 1px 3px var(--color-primary-glow));
-  }
-  50% {
-    transform: translateY(-1.5px) scale(1.08);
-    filter: drop-shadow(0 2px 8px var(--color-primary-glow-hover));
-  }
-}
-
-@keyframes navLabelPulse {
-  0%, 100% {
-    opacity: 0.92;
-    transform: scale(1);
-  }
-  50% {
+  60% {
+    transform: scale(1.02);
     opacity: 1;
-    transform: scale(1.04);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes navSheen {
+  0% {
+    transform: translateX(-150%) skewX(-20deg);
+  }
+  30% {
+    transform: translateX(250%) skewX(-20deg);
+  }
+  100% {
+    transform: translateX(250%) skewX(-20deg);
+  }
+}
+
+@keyframes navSoftGlow {
+  0%, 100% {
+    box-shadow: 0 0 8px var(--color-primary-glow), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    border-color: color-mix(in srgb, var(--color-primary) 35%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 16px var(--color-primary-glow-hover), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    border-color: color-mix(in srgb, var(--color-primary) 55%, transparent);
   }
 }
 
 .animate-nav-active {
-  animation: navActivePulse 2.4s ease-in-out infinite;
-  will-change: transform, filter;
+  animation: navPillIn 0.25s cubic-bezier(0.16, 1, 0.3, 1), navSoftGlow 3.6s ease-in-out infinite;
+  will-change: box-shadow, border-color;
 }
 
-html[data-mode="light"] .animate-nav-active,
-.light-mode .animate-nav-active {
-  animation: navActivePulseLight 2.4s ease-in-out infinite;
-}
-
-.animate-nav-label {
-  animation: navLabelPulse 2.4s ease-in-out infinite;
-  will-change: transform, opacity;
+.animate-nav-sheen {
+  animation: navSheen 4.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  will-change: transform;
 }

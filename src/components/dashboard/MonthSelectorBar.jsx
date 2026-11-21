@@ -1,0 +1,110 @@
+"use client";
+
+import React, { useRef, useEffect } from 'react';
+import { cn } from '@/components/layout/Sidebar';
+
+const MONTHS_LIST = [
+  { id: 'current', short: 'NOV', full: 'NOVEMBER', isLive: true, key: 'live' },
+  { id: 'october', short: 'OCT', full: 'OCTOBER', isLive: false, key: '2026-10' },
+  { id: 'september', short: 'SEP', full: 'SEPTEMBER', isLive: false, key: '2026-09' },
+  { id: 'august', short: 'AUG', full: 'AUGUST', isLive: false, key: '2026-08' },
+  { id: 'july', short: 'JUL', full: 'JULY', isLive: false, key: '2026-07' },
+];
+
+export function MonthSelectorBar({
+  selectedMonth = 'current',
+  onSelectMonth,
+  dateInfo,
+  workingDays = null,
+  isPastMonth = false,
+  isArchive = false,
+  className = ""
+}) {
+  const scrollTrackRef = useRef(null);
+
+  if (isArchive) return null;
+
+  const currentMonthIdx = MONTHS_LIST.findIndex(m => m.id === selectedMonth);
+  const selectedObj = MONTHS_LIST[currentMonthIdx] || MONTHS_LIST[0];
+
+  // Auto-scroll selected capsule into view when changed
+  useEffect(() => {
+    if (scrollTrackRef.current) {
+      const activeEl = scrollTrackRef.current.querySelector('[data-active="true"]');
+      if (activeEl) {
+        const container = scrollTrackRef.current;
+        const targetScrollLeft = activeEl.offsetLeft - container.offsetLeft - (container.clientWidth / 2) + (activeEl.clientWidth / 2);
+        container.scrollTo({ left: Math.max(0, targetScrollLeft), behavior: 'smooth' });
+      }
+    }
+  }, [selectedMonth]);
+
+  return (
+    <div className={cn("w-full relative z-20 flex flex-col items-center mb-2.5 sm:mb-3.5", className)}>
+      <div className="w-full bg-[var(--color-surface)]/70 backdrop-blur-md rounded-2xl p-2.5 sm:p-3 border border-[var(--color-border)] shadow-xs transition-all duration-300">
+        
+        {/* Row 1: Month Capsules (Left, 4 visible on mobile) + Date Range (Right, beside month) */}
+        <div className="flex items-center justify-between gap-2 w-full">
+          
+          {/* Left: Capsule System Track */}
+          <div 
+            ref={scrollTrackRef}
+            className="flex items-center gap-1 sm:gap-1.5 overflow-x-auto no-scrollbar scroll-smooth py-0.5 max-w-[195px] min-[390px]:max-w-[215px] sm:max-w-none shrink min-w-0"
+          >
+            {MONTHS_LIST.map((m) => {
+              const isSelected = selectedMonth === m.id;
+              return (
+                <button
+                  key={m.id}
+                  type="button"
+                  data-active={isSelected ? "true" : "false"}
+                  onClick={() => onSelectMonth(m.id)}
+                  className={cn(
+                    "px-2.5 py-1 sm:py-1.5 rounded-full text-[10px] sm:text-[11px] font-black uppercase tracking-wider transition-all duration-200 cursor-pointer flex items-center gap-1 shrink-0 select-none",
+                    isSelected
+                      ? "bg-white text-slate-900 dark:bg-white dark:text-slate-900 shadow-md scale-[1.02]"
+                      : "bg-slate-800/70 dark:bg-slate-800/70 text-slate-300 dark:text-slate-300 hover:text-white hover:bg-slate-700/80 border border-slate-700/50"
+                  )}
+                >
+                  <span>{m.short}</span>
+                  {m.isLive && (
+                    <span className="w-1.5 h-1.5 rounded-full bg-red-500 shadow-[0_0_6px_rgba(239,68,68,0.95)] animate-pulse shrink-0 ml-0.5" />
+                  )}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Right: Date Range Beside Months */}
+          {dateInfo && (
+            <div className="text-right shrink-0 select-none leading-tight pl-1.5">
+              <div className="text-[10px] sm:text-[11px] md:text-[12px] font-bold text-[var(--color-primary)] uppercase tracking-tight whitespace-nowrap">
+                {dateInfo.isRange ? (
+                  <span>{dateInfo.startDay} {dateInfo.startMonthShort} - {dateInfo.endDay} {dateInfo.endMonthShort}, {dateInfo.year}</span>
+                ) : (
+                  <span>{dateInfo.startDay} {dateInfo.endMonthShort}, {dateInfo.year}</span>
+                )}
+              </div>
+              {workingDays !== null && workingDays !== undefined && (
+                <div className="text-[8.5px] sm:text-[9.5px] font-extrabold text-[var(--color-text-muted)] tracking-wider">
+                  ({workingDays} {workingDays === 1 ? 'DAY' : 'DAYS'})
+                </div>
+              )}
+            </div>
+          )}
+
+        </div>
+
+        {/* Row 2: Underneath both, centered comparing subline in matching grey color */}
+        {isPastMonth && (
+          <div className="w-full text-center mt-1.5 sm:mt-2 pt-1 border-t border-[var(--color-border)]/40 select-none">
+            <p className="text-[9.5px] sm:text-[10.5px] text-[var(--color-text-muted)] font-medium leading-tight">
+              Comparing {selectedObj.short} (same days) with current month (NOV)
+            </p>
+          </div>
+        )}
+
+      </div>
+    </div>
+  );
+}

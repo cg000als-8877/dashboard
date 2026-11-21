@@ -221,27 +221,27 @@ export function SystemIntelligenceCards({ insights = [] }) {
 
   return (
     <div className="w-full">
-      {/* Outer Container with NO stroke, purely elevated with theme backdrop */}
-      <div className="bg-[var(--color-bg-card)] rounded-3xl p-4 sm:p-6 md:p-7 shadow-sm transition-all duration-300 border-none outline-none">
+      {/* Outer Container: borderless, flush on mobile to span full card width matching other Home page cards */}
+      <div className="bg-transparent sm:bg-[var(--color-bg-card)] rounded-none sm:rounded-3xl p-0 sm:p-6 md:p-7 shadow-none sm:shadow-sm transition-all duration-300 border-none outline-none">
         
         {/* Header Bar */}
-        <div className="flex flex-col sm:flex-row items-center sm:items-center justify-between gap-3 mb-5 sm:mb-6 text-center sm:text-left">
-          <div className="flex flex-col items-center sm:items-start text-center sm:text-left">
-            <h3 className="text-sm sm:text-base font-extrabold uppercase tracking-[0.16em] text-[var(--color-text-main)]">
+        <div className="flex items-center justify-between gap-3 mb-3.5 sm:mb-6 px-0.5">
+          <div className="flex flex-col items-start text-left">
+            <h3 className="text-[11px] sm:text-xs font-bold uppercase tracking-widest text-[var(--color-text-secondary)] leading-none">
               System Intelligence
             </h3>
-            <p className="text-[11px] sm:text-xs text-[var(--color-text-muted)] font-medium">
+            <p className="text-[10px] sm:text-xs text-[var(--color-text-muted)] font-medium mt-1">
               Autonomous diagnostic telemetry & tactical executive actions
             </p>
           </div>
 
-          <div className="self-center sm:self-auto px-2.5 py-1 rounded-full bg-[var(--color-surface)] text-[10.5px] font-extrabold text-[var(--color-text-main)] border-none">
+          <div className="px-2.5 py-1 rounded-full bg-[var(--color-bg-card)] sm:bg-[var(--color-surface)] text-[9.5px] sm:text-[10.5px] font-extrabold text-[var(--color-text-main)] shadow-sm sm:shadow-none border-none shrink-0">
             <span>{parsedItems.length} Live Insights</span>
           </div>
         </div>
 
-        {/* Category Tabs (No stroke, minimal small pill buttons stacking side by side with # sign on mobile) */}
-        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mb-5 sm:mb-6 select-none">
+        {/* Category Tabs (Full-width responsive wrapping pills) */}
+        <div className="flex items-center gap-1.5 sm:gap-2 mb-3.5 sm:mb-5 overflow-x-auto no-scrollbar sm:flex-wrap select-none pb-0.5">
           {CATEGORIES.map(cat => {
             const isSelected = activeTab === cat.id;
             const count = categoryCounts[cat.id] || 0;
@@ -252,10 +252,10 @@ export function SystemIntelligenceCards({ insights = [] }) {
                 type="button"
                 onClick={() => setActiveTab(cat.id)}
                 className={cn(
-                  "flex items-center justify-between sm:justify-start gap-1.5 px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg sm:rounded-xl text-[10.5px] sm:text-[12.5px] font-bold transition-all duration-200 cursor-pointer border-none outline-none select-none flex-1 sm:flex-initial min-w-[calc(50%-6px)] sm:min-w-0",
+                  "flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-xl text-[10px] sm:text-[12px] font-bold transition-all duration-200 cursor-pointer border-none outline-none select-none shrink-0",
                   isSelected
-                    ? "bg-[var(--color-primary)] text-[var(--color-on-primary)] shadow-md font-extrabold active:scale-95"
-                    : "bg-[var(--color-surface)] text-[var(--color-text-main)] hover:text-[var(--color-primary)] hover:bg-[var(--color-surface-hover)]"
+                    ? "bg-[var(--color-primary)] text-[var(--color-on-primary)] shadow-sm font-extrabold active:scale-95"
+                    : "bg-[var(--color-bg-card)] sm:bg-[var(--color-surface)] text-[var(--color-text-main)] hover:text-[var(--color-primary)] hover:bg-[var(--color-surface-hover)] shadow-sm sm:shadow-none"
                 )}
                 aria-selected={isSelected}
               >
@@ -266,13 +266,13 @@ export function SystemIntelligenceCards({ insights = [] }) {
                   )}>
                     #
                   </span>
-                  <span className="truncate">{cat.label}</span>
+                  <span className="whitespace-nowrap">{cat.label}</span>
                 </div>
                 <span className={cn(
-                  "text-[9px] sm:text-[10px] px-1.5 py-0.2 rounded font-mono shrink-0 ml-1.5",
+                  "text-[9px] sm:text-[10px] px-1.5 py-0.2 rounded font-mono shrink-0 ml-1",
                   isSelected 
                     ? "bg-[var(--color-on-primary)]/20 text-[var(--color-on-primary)] font-bold" 
-                    : "bg-black/10 dark:bg-white/10 text-[var(--color-text-main)] font-bold"
+                    : "bg-black/10 dark:bg-white/10 text-[var(--color-text-muted)] font-bold"
                 )}>
                   {count}
                 </span>
@@ -281,8 +281,8 @@ export function SystemIntelligenceCards({ insights = [] }) {
           })}
         </div>
 
-        {/* Stat Cards Grid (Every insight rendered inside an individual stroke-free Stat Card with NO icons) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-3.5">
+        {/* Stat Cards Grid: Cards take full length from left to right on mobile matching other Home page cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2.5 sm:gap-3.5 w-full">
           {filteredItems.map(item => {
             // Theme-adaptive badge styling
             const badgeClasses = {
@@ -296,7 +296,7 @@ export function SystemIntelligenceCards({ insights = [] }) {
             return (
               <div
                 key={item.id}
-                className="bg-[var(--color-surface)]/80 dark:bg-[var(--color-surface)]/40 hover:bg-[var(--color-surface)] rounded-2xl p-4 sm:p-4.5 flex flex-col justify-between transition-all duration-200 border-none outline-none shadow-none group"
+                className="bg-[var(--color-bg-card)] sm:bg-[var(--color-surface)]/80 dark:sm:bg-[var(--color-surface)]/40 hover:bg-[var(--color-bg-card-hover)] sm:hover:bg-[var(--color-surface)] rounded-2xl p-3.5 sm:p-4.5 flex flex-col justify-between transition-all duration-200 border-none outline-none shadow-sm sm:shadow-none w-full"
               >
                 {/* Top Metatag Row (No icon) */}
                 <div>

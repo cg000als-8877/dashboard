@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, ChevronRight, ChevronDown, ChevronUp, TrendingUp, TrendingDown, Layers } from 'lucide-react';
+import { ArrowLeft, ChevronRight, ChevronDown, ChevronUp, TrendingUp, TrendingDown, Layers, Clock } from 'lucide-react';
 import { useKpiData } from '@/utils/useKpiData';
 import { useDensity } from '@/components/providers/DensityProvider';
 import { DensitySwitcher } from '@/components/ui/DensitySwitcher';
@@ -11,7 +11,7 @@ function cn(...classes) {
 
 
 
-export function LineDetailsContent({ id, month, backUrl, isEmbed = false }) {
+export function LineDetailsContent({ id, month, backUrl, isEmbed = false, hideEmbedDivider = false }) {
   const { dailyTrends, lines, rawEngine, loading, error } = useKpiData(month);
   const { density: globalDensity } = useDensity();
   const [expandedRows, setExpandedRows] = useState({});
@@ -65,6 +65,17 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false }) {
   const lineData = dailyProd.filter(d => String(d?.line_id || '').toLowerCase() === lineIdStr);
 
   if (!lineData || lineData.length === 0) {
+    if (isEmbed) {
+      return (
+        <div className="p-8 text-center flex flex-col items-center justify-center bg-[var(--color-bg-card)] rounded-2xl border border-[var(--color-border)]/60 my-4 shadow-sm animate-[fade-up_0.3s_ease-out]">
+          <div className="w-12 h-12 rounded-full bg-zinc-500/10 flex items-center justify-center text-zinc-400 mb-3">
+            <Clock size={24} />
+          </div>
+          <h3 className="text-base sm:text-lg font-bold text-[var(--color-text-main)] uppercase tracking-tight">Line {safeId} is currently Standby / Inactive</h3>
+          <p className="text-xs sm:text-sm text-[var(--color-text-muted)] mt-1 max-w-md">No active production runs or operating telemetry recorded for Line {safeId} during this period.</p>
+        </div>
+      );
+    }
     return (
       <div className="p-8 text-center flex flex-col items-center justify-center min-h-[50vh]">
         <h1 className="text-2xl font-bold text-[var(--color-text-main)]">Line telemetry not found for Line {safeId}</h1>
@@ -138,7 +149,7 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false }) {
 
   return (
     <div 
-      className={`space-y-4 md:space-y-6 animate-[fade-up_0.4s_ease-out_both] ${isEmbed ? '' : 'p-2 md:p-0'}`} 
+      className={`space-y-4 md:space-y-6 animate-[fade-up_0.4s_ease-out_both] ${isEmbed ? '' : '-mx-1.5 sm:mx-0'}`} 
       id={`line-${safeId}`}
     >
       
@@ -181,11 +192,21 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false }) {
         </header>
       )}
 
-      {isEmbed && (
+      {isEmbed && !hideEmbedDivider && (
         <div className="flex items-center justify-between gap-3 mb-4 md:mb-6 mt-6 md:mt-12 pt-6 md:pt-12 border-t border-[var(--color-border)]">
           <div className="flex items-center gap-2 md:gap-3">
             <div className="h-4 md:h-6 w-1.5 md:w-2 bg-[var(--color-primary)] rounded-full shadow-[0_0_10px_var(--color-primary)]"></div>
-            <h2 className="text-base md:text-3xl font-bold tracking-normal uppercase text-[var(--color-text-main)]">Line {id.toUpperCase()} Telemetry Details</h2>
+            <h2 className="text-base md:text-3xl font-bold tracking-normal uppercase text-[var(--color-text-main)]">Line {safeId} Telemetry Details</h2>
+          </div>
+          <DensitySwitcher value={density} onChange={setDensity} />
+        </div>
+      )}
+
+      {isEmbed && hideEmbedDivider && (
+        <div className="flex items-center justify-between gap-3 mb-3 pt-1">
+          <div className="flex items-center gap-2">
+            <div className="h-3.5 w-1.5 bg-[var(--color-primary)] rounded-full shadow-[0_0_8px_var(--color-primary)]"></div>
+            <h2 className="text-xs sm:text-sm md:text-base font-black tracking-tight uppercase text-[var(--color-text-main)]">Line {safeId} Telemetry Details</h2>
           </div>
           <DensitySwitcher value={density} onChange={setDensity} />
         </div>
@@ -199,13 +220,15 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false }) {
           </h3>
         </div>
 
-        {/* Mobile Centered Date Range */}
-        <div className="md:hidden flex justify-center items-center mb-2.5">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--color-surface)] border border-[var(--color-border)] shadow-xs">
-            <span className="text-[9px] uppercase tracking-wider font-semibold text-[var(--color-text-muted)]">Period</span>
-            <span className="text-[10.5px] font-bold text-[var(--color-text-main)] tracking-wide">{dateRange}</span>
+        {/* Mobile Centered Date Range (Shown only on standalone page, hidden when embedded since header has date) */}
+        {!isEmbed && (
+          <div className="md:hidden flex justify-center items-center mb-2.5">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--color-surface)] border border-[var(--color-border)] shadow-xs">
+              <span className="text-[9px] uppercase tracking-wider font-semibold text-[var(--color-text-muted)]">Period</span>
+              <span className="text-[10.5px] font-bold text-[var(--color-text-main)] tracking-wide">{dateRange}</span>
+            </div>
           </div>
-        </div>
+        )}
         
         {/* Outer container: transparent on mobile, card on desktop */}
         <div className={`relative bg-transparent md:bg-[var(--color-bg-card)]/75 md:backdrop-blur-md md:${summaryPadding} md:rounded-3xl md:border md:border-[var(--color-border)] md:shadow-sm overflow-hidden`}>
@@ -246,25 +269,32 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false }) {
             </div>
 
             {/* 3. Item (1 Column on Mobile, 1 Column on Desktop) */}
-            <div className={`col-span-1 bg-[var(--color-bg-card)]/80 backdrop-blur-md md:bg-[var(--color-surface)]/80 ${summaryCellPadding} rounded-xl md:rounded-2xl border border-[var(--color-border)] shadow-sm md:shadow-inner transition-transform hover:-translate-y-0.5 duration-200`}>
-              <p className="text-[9px] md:text-[10px] text-[var(--color-text-muted)] font-medium uppercase tracking-widest mb-0.5 md:mb-1">Item</p>
-              <p className="text-xs md:text-base font-semibold md:font-bold text-[var(--color-primary)] leading-tight truncate">{itemName}</p>
+            <div className={`col-span-1 bg-[var(--color-bg-card)]/80 backdrop-blur-md md:bg-[var(--color-surface)]/80 ${summaryCellPadding} rounded-xl md:rounded-2xl border border-[var(--color-border)] shadow-sm md:shadow-inner transition-transform hover:-translate-y-0.5 duration-200 flex flex-col justify-between`}>
+              <p className="text-[9px] md:text-[10px] text-[var(--color-text-muted)] font-medium uppercase tracking-widest mb-0.5 md:mb-1">
+                {uniqueItems.length > 1 ? 'Items' : 'Item'}
+              </p>
+              <p 
+                className="text-xs md:text-base font-semibold md:font-bold text-[var(--color-primary)] leading-tight break-words" 
+                title={itemName}
+              >
+                {itemName}
+              </p>
             </div>
 
             {/* 4. Production */}
-            <div className={`col-span-1 bg-[var(--color-bg-card)]/80 backdrop-blur-md md:bg-[var(--color-surface)]/80 ${summaryCellPadding} rounded-xl md:rounded-2xl border border-[var(--color-border)] shadow-sm md:shadow-inner transition-transform hover:-translate-y-0.5 duration-200`}>
+            <div className={`col-span-1 bg-[var(--color-bg-card)]/80 backdrop-blur-md md:bg-[var(--color-surface)]/80 ${summaryCellPadding} rounded-xl md:rounded-2xl border border-[var(--color-border)] shadow-sm md:shadow-inner transition-transform hover:-translate-y-0.5 duration-200 flex flex-col justify-between`}>
               <p className="text-[9px] md:text-[10px] text-[var(--color-text-muted)] font-medium uppercase tracking-widest mb-0.5 md:mb-1">Production</p>
               <p className={`${summaryValSize} font-semibold md:font-bold text-[var(--color-text-main)] leading-tight`}>{Math.round(parseFloat(totalProduction)).toLocaleString()}</p>
             </div>
 
             {/* 5. Total Cost */}
-            <div className={`col-span-1 bg-[var(--color-bg-card)]/80 backdrop-blur-md md:bg-[var(--color-surface)]/80 ${summaryCellPadding} rounded-xl md:rounded-2xl border border-[var(--color-border)] shadow-sm md:shadow-inner transition-transform hover:-translate-y-0.5 duration-200`}>
+            <div className={`col-span-1 bg-[var(--color-bg-card)]/80 backdrop-blur-md md:bg-[var(--color-surface)]/80 ${summaryCellPadding} rounded-xl md:rounded-2xl border border-[var(--color-border)] shadow-sm md:shadow-inner transition-transform hover:-translate-y-0.5 duration-200 flex flex-col justify-between`}>
               <p className="text-[9px] md:text-[10px] text-[var(--color-text-muted)] font-medium uppercase tracking-widest mb-0.5 md:mb-1">Total Cost</p>
               <p className={`${summaryValSize} font-semibold md:font-bold text-[var(--color-text-main)] leading-tight`}>{Math.round(parseFloat(totalCost)).toLocaleString()}</p>
             </div>
 
             {/* 6. Total Income */}
-            <div className={`col-span-1 bg-[var(--color-bg-card)]/80 backdrop-blur-md md:bg-[var(--color-surface)]/80 ${summaryCellPadding} rounded-xl md:rounded-2xl border border-[var(--color-border)] shadow-sm md:shadow-inner transition-transform hover:-translate-y-0.5 duration-200`}>
+            <div className={`col-span-1 bg-[var(--color-bg-card)]/80 backdrop-blur-md md:bg-[var(--color-surface)]/80 ${summaryCellPadding} rounded-xl md:rounded-2xl border border-[var(--color-border)] shadow-sm md:shadow-inner transition-transform hover:-translate-y-0.5 duration-200 flex flex-col justify-between`}>
               <p className="text-[9px] md:text-[10px] text-[var(--color-text-muted)] font-medium uppercase tracking-widest mb-0.5 md:mb-1">Total Income</p>
               <p className={`${summaryValSize} font-semibold md:font-bold text-[var(--color-primary)] leading-tight`}>{Math.round(parseFloat(totalIncome)).toLocaleString()}</p>
             </div>
@@ -387,9 +417,9 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false }) {
                   </div>
 
                   {(row.item || row.style) && (
-                    <div className="p-1.5 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)]/30 flex items-center justify-between text-[10px]">
-                      <span className="text-[9px] text-[var(--color-text-muted)] uppercase tracking-wider font-medium">Item Name</span>
-                      <span className="font-semibold text-[var(--color-text-main)] truncate max-w-[200px]">
+                    <div className="p-1.5 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)]/30 flex items-center justify-between gap-2 text-[10px]">
+                      <span className="text-[9px] text-[var(--color-text-muted)] uppercase tracking-wider font-medium shrink-0">Item Name</span>
+                      <span className="font-semibold text-[var(--color-text-main)] text-right break-words" title={row.item || row.style}>
                         {row.item || row.style}
                       </span>
                     </div>

@@ -9,7 +9,7 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { useKpiData } from '@/utils/useKpiData';
 import { format, parseISO } from 'date-fns';
-import { Clock, LayoutDashboard, Factory, BarChart3, Ship, History, Palette, Sun, Moon, GitCompare, Coffee, Globe, ExternalLink, Check, Sparkles, Minus, Plus } from 'lucide-react';
+import { Clock, Home, LayoutDashboard, Factory, BarChart3, Ship, History, Palette, Sun, Moon, GitCompare, Coffee, Globe, ExternalLink, Check, Sparkles, Minus, Plus } from 'lucide-react';
 import { useMonth } from '@/components/providers/MonthProvider';
 import { useTheme } from '@/components/ThemeProvider';
 import { useZoom } from '@/components/providers/ZoomProvider';
@@ -18,7 +18,7 @@ import { MobileHourlyTicker } from '@/components/dashboard/MobileHourlyTicker';
 import { MobileBottomNav } from '@/components/layout/MobileBottomNav';
 
 const navItems = [
-  { name: 'Dashboard', key: 'navDashboard', href: '/', icon: LayoutDashboard },
+  { name: 'Home', key: 'navDashboard', href: '/', icon: Home },
   { name: 'Hourly', key: 'navHourly', href: '/hourly', icon: Clock },
   { name: 'Lines', key: 'navLines', href: '/lines', icon: Factory },
   { name: 'Compare', key: 'navCompare', href: '/compare', icon: GitCompare },
@@ -273,7 +273,7 @@ export default function DashboardLayout({ children }) {
         {isBurgerOpen && (
           <>
             <div className="fixed inset-0 z-[90] bg-black/40 backdrop-blur-[2px]" onClick={() => setIsBurgerOpen(false)}></div>
-            <div className="fixed bottom-[calc(62px+env(safe-area-inset-bottom))] right-3 sm:right-4 w-52 bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-2xl shadow-2xl flex flex-col p-2 animate-[fade-up_0.2s_ease-out_both] z-[100] origin-bottom-right">
+            <div className="fixed bottom-[calc(72px+env(safe-area-inset-bottom,0px))] right-3 sm:right-4 w-52 bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-2xl shadow-2xl flex flex-col p-2 animate-[fade-up_0.2s_ease-out_both] z-[100] origin-bottom-right">
               <p className="text-[9px] font-extrabold uppercase tracking-widest text-[var(--color-text-muted)] mb-2 px-2.5 pt-1.5">
                 Quick Navigation
               </p>
@@ -417,7 +417,7 @@ export default function DashboardLayout({ children }) {
         {/* Main Content */}
         <main 
           className={cn(
-            "flex-1 overflow-y-auto w-full px-3.5 sm:px-5 md:px-8 pb-[calc(70px+env(safe-area-inset-bottom))] md:pb-8 pt-[72px] md:pt-8 relative hide-scrollbar md:[scrollbar-width:auto]",
+            "flex-1 overflow-y-auto w-full px-3.5 sm:px-5 md:px-8 pb-[calc(76px+env(safe-area-inset-bottom,0px))] md:pb-8 pt-[72px] md:pt-8 relative hide-scrollbar md:[scrollbar-width:auto]",
             isDashboard ? "dashboard-stroke-free" : "non-dashboard-stroke-free"
           )}
         >
