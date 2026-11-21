@@ -1,8 +1,9 @@
-import { Inter, Space_Grotesk, JetBrains_Mono } from "next/font/google";
+import { Inter, Space_Grotesk, JetBrains_Mono, Noto_Serif_Bengali } from "next/font/google";
 import "./globals.css";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { MonthProvider } from "@/components/providers/MonthProvider";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { LanguageProvider } from "@/components/providers/LanguageProvider";
 import { DensityProvider } from "@/components/providers/DensityProvider";
 import { ZoomProvider } from "@/components/providers/ZoomProvider";
 import { ClientAutoRefresh } from "@/components/providers/ClientAutoRefresh";
@@ -27,6 +28,13 @@ const jetbrainsMono = JetBrains_Mono({
   weight: ["300", "400", "500", "600", "700", "800"],
   subsets: ["latin"],
   variable: "--font-jetbrains-mono"
+});
+
+const notoSerifBengali = Noto_Serif_Bengali({
+  weight: ["400", "500", "600", "700"],
+  subsets: ["bengali"],
+  variable: "--font-noto-serif-bengali",
+  display: "swap",
 });
 
 export const metadata = {
@@ -93,29 +101,36 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     document.documentElement.style.zoom = z + '%';
                     document.documentElement.style.setProperty('--app-screen-zoom', z + '%');
                   }
+                  var l = localStorage.getItem('bapl_lang');
+                  if (l === 'bn' || l === 'en') {
+                    document.documentElement.setAttribute('lang', l);
+                    document.documentElement.setAttribute('data-lang', l);
+                  }
                 } catch(e) {}
               })();
             `,
           }}
         />
       </head>
-      <body className={`${inter.className} ${spaceGrotesk.variable} ${jetbrainsMono.variable} bg-[var(--color-bg-main)] text-[var(--color-text-main)]`}>
+      <body className={`${inter.className} ${spaceGrotesk.variable} ${jetbrainsMono.variable} ${notoSerifBengali.variable} bg-[var(--color-bg-main)] text-[var(--color-text-main)]`}>
         <ThemeProvider>
           <BackgroundCanvas />
-          <MonthProvider>
-            <DensityProvider>
-              <ZoomProvider>
-                <ClientAutoRefresh />
-                <PushNotificationManager />
-                <PwaManager>
-                  <AppWelcomeSplash />
-                  <DashboardLayout>
-                    {children}
-                  </DashboardLayout>
-                </PwaManager>
-              </ZoomProvider>
-            </DensityProvider>
-          </MonthProvider>
+          <LanguageProvider>
+            <MonthProvider>
+              <DensityProvider>
+                <ZoomProvider>
+                  <ClientAutoRefresh />
+                  <PushNotificationManager />
+                  <PwaManager>
+                    <AppWelcomeSplash />
+                    <DashboardLayout>
+                      {children}
+                    </DashboardLayout>
+                  </PwaManager>
+                </ZoomProvider>
+              </DensityProvider>
+            </MonthProvider>
+          </LanguageProvider>
         </ThemeProvider>
       </body>
     </html>

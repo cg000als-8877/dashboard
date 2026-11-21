@@ -16,6 +16,8 @@ import { useZoom } from '@/components/providers/ZoomProvider';
 import { CanteenSecurityModal } from '@/components/ui/CanteenSecurityModal';
 import { MobileHourlyTicker } from '@/components/dashboard/MobileHourlyTicker';
 import { MobileBottomNav } from '@/components/layout/MobileBottomNav';
+import { useLanguage } from '@/components/providers/LanguageProvider';
+import { LanguageToggleSwitch } from '@/components/ui/LanguageToggleSwitch';
 
 const navItems = [
   { name: 'Home', key: 'navDashboard', href: '/', icon: Home },
@@ -44,6 +46,7 @@ export default function DashboardLayout({ children }) {
     APPEARANCE_MODES 
   } = useTheme();
   const { zoom, zoomIn, zoomOut, resetZoom } = useZoom();
+  const { t, isBangla, toDigits } = useLanguage();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isBurgerOpen, setIsBurgerOpen] = useState(false);
   const [showCanteenModal, setShowCanteenModal] = useState(false);
@@ -86,17 +89,20 @@ export default function DashboardLayout({ children }) {
             <Link href="/" className="flex items-center gap-2 relative z-10 cursor-pointer">
               <div className="flex flex-col">
                 <span className="font-extrabold text-[12px] sm:text-[13px] tracking-wider uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] to-[var(--color-text-muted)] leading-tight whitespace-nowrap [filter:var(--shadow-text)]">
-                  BYZID APPARELS PVT LTD
+                  {t('companyName', 'BYZID APPARELS PVT LTD')}
                 </span>
                 <span className="text-[9px] italic text-[var(--color-text-muted)] mt-0.5 flex items-center gap-1 leading-tight">
-                  <span>Last Updated :</span>
-                  <span className="text-[var(--color-primary)] font-medium">{datePart}</span>
+                  <span>{t('lastUpdated', 'Last Updated')} :</span>
+                  <span className="text-[var(--color-primary)] font-medium">{isBangla ? toDigits(datePart) : datePart}</span>
                 </span>
               </div>
             </Link>
             
             {/* Top Right Controls */}
             <div className="flex items-center gap-1.5 relative z-50">
+              {/* Language Switch [ EN | বাং ] */}
+              <LanguageToggleSwitch />
+
               {/* Visual Theme Palette Toggle */}
               <button 
                 onClick={() => {
