@@ -279,14 +279,9 @@ export default function DashboardLayout({ children }) {
               </p>
               <div className="space-y-0.5">
                 {[
-                  { name: 'Hourly', href: '/hourly', icon: Clock },
                   { name: 'Canteen', type: 'button', icon: Coffee },
                   { name: 'Simulator', href: '/simulator', icon: Ship },
                   { name: 'Compare', href: '/compare', icon: GitCompare },
-                  { name: 'Line A', href: '/lines/A', icon: Factory },
-                  { name: 'Line B', href: '/lines/B', icon: Factory },
-                  { name: 'Line C', href: '/lines/C', icon: Factory },
-                  { name: 'Line D', href: '/lines/D', icon: Factory },
                   { name: 'Byzid Profile', href: 'https://baplprofile.vercel.app/', icon: Globe, isExternal: true, color: '#38BDF8' },
                 ].map((item) => {
                   const Icon = item.icon;

@@ -75,9 +75,9 @@ function ArchiveMonthCard({ month }) {
         <div className="flex-shrink-0 w-full sm:w-auto mt-2 sm:mt-0 relative z-10">
           <div className={`
             flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all
-            ${!loading && !isProfit 
+            ${month.isRunning 
               ? 'bg-rose-600 text-[var(--color-on-danger)] shadow-[0_0_15px_rgba(244,63,94,0.35)] group-hover:shadow-[0_0_25px_rgba(244,63,94,0.5)] group-hover:bg-rose-500'
-              : 'bg-emerald-600 text-[var(--color-on-success)] shadow-[0_0_15px_rgba(16,185,129,0.35)] group-hover:shadow-[0_0_25px_rgba(16,185,129,0.5)] group-hover:bg-emerald-500'}
+              : 'bg-[var(--color-primary)] text-[var(--color-on-primary,white)] shadow-[0_0_15px_var(--color-primary-glow)] group-hover:shadow-[0_0_20px_var(--color-primary-glow-hover)] group-hover:brightness-110'}
           `}>
             <span>
               {month.isRunning ? (
@@ -142,7 +142,7 @@ export default function ArchiveDirectoryPage() {
       </header>
 
       {/* Months List */}
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-3.5 sm:gap-4 -mx-2.5 sm:mx-0">
         {loading ? (
           <>
             <ArchiveMonthSkeletonCard />
