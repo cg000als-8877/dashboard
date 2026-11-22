@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from 'react';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { cn } from '@/components/layout/Sidebar';
-import { useLanguage } from '@/components/providers/LanguageProvider';
 
 export function CostRecoveryPie({ 
   percentage = 0, 
@@ -16,7 +15,6 @@ export function CostRecoveryPie({
   className = "" 
 }) {
   const [animated, setAnimated] = useState(false);
-  const { isBangla, toDigits } = useLanguage();
 
   // Trigger smooth arc drawing animation when website loads / component mounts
   useEffect(() => {
@@ -47,51 +45,45 @@ export function CostRecoveryPie({
   const radius = 31;
   const circumference = 2 * Math.PI * radius; // ~194.78
 
-  // Helper formatter for compact BDT display (e.g. BDT 1.13M, BDT 650k, ৳ ১.১৩M)
+  // Helper formatter for compact BDT display (e.g. BDT 1.13M, BDT 650k)
   const formatCompactBdt = (val) => {
-    const symbol = isBangla ? '৳' : 'BDT';
-    if (!val || val === 0) return `${symbol} ${isBangla ? '০' : '0'}`;
+    if (!val || val === 0) return 'BDT 0';
     const absVal = Math.abs(val);
-    let numStr = '';
     if (absVal >= 1000000) {
-      const millions = (absVal / 1000000).toFixed(2);
-      numStr = `${isBangla ? toDigits(millions) : millions}M`;
-    } else if (absVal >= 1000) {
-      const thousands = (absVal / 1000).toFixed(0);
-      numStr = `${isBangla ? toDigits(thousands) : thousands}k`;
-    } else {
-      const formatted = Math.round(absVal).toLocaleString();
-      numStr = isBangla ? toDigits(formatted) : formatted;
+      return `BDT ${(absVal / 1000000).toFixed(2)}M`;
     }
-    return `${symbol} ${numStr}`;
+    if (absVal >= 1000) {
+      return `BDT ${(absVal / 1000).toFixed(0)}k`;
+    }
+    return `BDT ${Math.round(absVal).toLocaleString()}`;
   };
 
   const donuts = [
     {
-      id: 'recovered',
-      title: isBangla ? 'উঠেছে' : 'Recovered',
-      pct: Math.round(recoveredPct),
-      targetFill: recoveredPct,
-      offset: circumference - (recoveredPct / 100) * circumference,
-      strokeColor: 'var(--color-primary)',
-      textColor: 'text-[var(--color-primary)]',
-      valueStr: formatCompactBdt(totalIncome),
-      sublabel: isBangla ? 'আয়' : 'Income',
-    },
-    {
       id: 'shortfall',
-      title: isBangla ? 'বাকি আছে' : 'To Recover',
+      title: 'To Recover',
       pct: Math.round(shortfallPct),
       targetFill: shortfallPct,
       offset: circumference - (shortfallPct / 100) * circumference,
       strokeColor: 'var(--color-danger)',
       textColor: 'text-[var(--color-danger)]',
       valueStr: formatCompactBdt(shortfallBdt),
-      sublabel: isCovered ? (isBangla ? 'অর্জিত' : 'Target Met') : (isBangla ? 'ঘাটতি' : 'Shortfall'),
+      sublabel: isCovered ? 'Target Met' : 'Shortfall',
+    },
+    {
+      id: 'recovered',
+      title: 'Recovered',
+      pct: Math.round(recoveredPct),
+      targetFill: recoveredPct,
+      offset: circumference - (recoveredPct / 100) * circumference,
+      strokeColor: 'var(--color-primary)',
+      textColor: 'text-[var(--color-primary)]',
+      valueStr: formatCompactBdt(totalIncome),
+      sublabel: 'Income',
     },
     {
       id: 'profit',
-      title: isBangla ? 'লাভ' : 'Profit',
+      title: 'Profit',
       pct: Math.round(profitPct),
       targetFill: profitPct,
       offset: isCovered && profitPct > 0 
@@ -100,8 +92,8 @@ export function CostRecoveryPie({
       strokeColor: isCovered && profitPct > 0 ? 'var(--color-success)' : 'var(--color-border)',
       textColor: isCovered && profitPct > 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-[var(--color-text-muted)]',
       valueColor: 'text-emerald-600 dark:text-emerald-400',
-      valueStr: isCovered && profitBdt > 0 ? formatCompactBdt(profitBdt) : (isBangla ? '৳ ০' : 'BDT 0'),
-      sublabel: isCovered && profitPct > 0 ? (isBangla ? 'মার্জিন' : 'Net Margin') : (isBangla ? 'ঘাটতি' : 'Deficit'),
+      valueStr: isCovered && profitBdt > 0 ? formatCompactBdt(profitBdt) : 'BDT 0',
+      sublabel: isCovered && profitPct > 0 ? 'Net Margin' : 'Deficit',
     },
   ];
 
@@ -174,7 +166,6 @@ export function CostRecoveryPie({
         ))}
       </div>
 
-<<<<<<< Updated upstream
       {/* Card Footer: Hidden on mobile, or when hideFooter is set on PC */}
       {!hideFooter && (
         <div className="hidden md:flex flex-col items-center text-center w-full mt-2 sm:mt-2.5 pt-1.5 border-t border-[var(--color-border)]/40 shrink-0">
@@ -188,21 +179,6 @@ export function CostRecoveryPie({
           </span>
         </div>
       )}
-=======
-      {/* Card Footer: Hidden on mobile, visible on desktop */}
-      <div className="hidden md:flex flex-col items-center text-center w-full mt-2 sm:mt-2.5 pt-1.5 border-t border-[var(--color-border)]/40 shrink-0">
-        <h4 className="text-[11px] sm:text-xs font-bold uppercase tracking-widest text-[var(--color-text-secondary)] leading-none text-center">
-          {isBangla ? 'খরচ তোলা ও মার্জিন' : 'Cost Recovery & Margin'}
-        </h4>
-        <span className="text-[8px] min-[360px]:text-[8.5px] sm:text-[9.5px] font-semibold text-[var(--color-text-muted)] truncate w-full mt-1">
-          {isCovered 
-            ? (isBangla ? 'উৎপাদন খরচ সম্পূর্ণ উঠে নিট লাভ অর্জিত হয়েছে।' : 'Factory fully recovered production costs and achieved net profit.')
-            : (isBangla 
-                ? `খরচ উঠেছে ${toDigits(Math.round(recoveredPct))}% • সমতায় পৌঁছাতে আরও ${toDigits(Math.round(shortfallPct))}% বাকি।`
-                : `Recovered ${Math.round(recoveredPct)}% • ${Math.round(shortfallPct)}% more needed to reach break-even.`)}
-        </span>
-      </div>
->>>>>>> Stashed changes
     </div>
   );
 }

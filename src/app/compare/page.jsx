@@ -21,14 +21,14 @@ const LINE_META = {
 };
 
 // Shimmer block helper
-function ShimmerBlock({ className = "" }) {
-  return <div className={`shimmer rounded-md ${className}`} />;
+function ShimmerBlock({ className = "", style = {} }) {
+  return <div className={`shimmer rounded-md ${className}`} style={style} />;
 }
 
-// Custom Page Skeleton (Stroke-free)
+// Custom Page Skeleton (Solid opaque card prevents background canvas bleed-through)
 function CompareSkeleton() {
   return (
-    <div className="space-y-6 animate-pulse">
+    <div className="space-y-6 relative z-10 w-full animate-in fade-in duration-300">
       <div className="space-y-1.5 flex flex-col items-center sm:items-start text-center sm:text-left">
         <ShimmerBlock className="h-6 w-48 bg-[var(--color-text-muted)]/30 rounded-lg" />
         <ShimmerBlock className="h-3.5 w-64 bg-[var(--color-text-muted)]/15 rounded-lg" />
@@ -38,7 +38,27 @@ function CompareSkeleton() {
           <ShimmerBlock key={t} className="h-8 w-24 bg-[var(--color-text-muted)]/15 rounded-xl border-0" />
         ))}
       </div>
-      <div className="bg-[var(--color-bg-card)] border-0 rounded-2xl p-6 h-[400px] shimmer" />
+      <div 
+        className="relative z-10 rounded-2xl border border-[var(--color-border)]/40 shadow-sm md:shadow-[0_3px_10px_rgba(0,0,0,0.2),0_1px_3px_rgba(0,0,0,0.12)] p-6 h-[420px] flex flex-col justify-between overflow-hidden"
+        style={{ backgroundColor: 'var(--color-bg-card)' }}
+      >
+        <div className="flex justify-between items-center">
+          <ShimmerBlock className="h-5 w-36 bg-[var(--color-text-muted)]/25" />
+          <div className="flex gap-2">
+            <ShimmerBlock className="h-7 w-20 bg-[var(--color-text-muted)]/15 rounded-lg" />
+            <ShimmerBlock className="h-7 w-20 bg-[var(--color-text-muted)]/15 rounded-lg" />
+          </div>
+        </div>
+        <div className="flex-1 flex items-end gap-3 my-6">
+          {[...Array(8)].map((_, i) => (
+            <ShimmerBlock key={i} className="flex-1 bg-[var(--color-text-muted)]/20 rounded-t-lg" style={{ height: `${25 + (i % 5) * 15}%` }} />
+          ))}
+        </div>
+        <div className="flex justify-between items-center pt-3 border-t border-[var(--color-border)]/30">
+          <ShimmerBlock className="h-3.5 w-28 bg-[var(--color-text-muted)]/15" />
+          <ShimmerBlock className="h-3.5 w-32 bg-[var(--color-text-muted)]/15" />
+        </div>
+      </div>
     </div>
   );
 }

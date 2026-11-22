@@ -260,12 +260,32 @@
     {
       "date": "2026-11-18",
       "line_id": "A",
-      "status": "HOLIDAY"
+      "style": "",
+      "item": "DENIM SHORT",
+      "worker_count": 47,
+      "per_head_cost": 1830,
+      "total_cost": 86010,
+      "production_qty": 1000,
+      "production_dzn": 83.33333333,
+      "cm_per_dzn": 738,
+      "total_income": 61500,
+      "net_profit": -24510,
+      "status": "ACTIVE"
     },
     {
       "date": "2026-11-19",
       "line_id": "A",
-      "status": "HOLIDAY"
+      "style": "",
+      "item": "DENIM SHORT",
+      "worker_count": 47,
+      "per_head_cost": 1830,
+      "total_cost": 86010,
+      "production_qty": 1070,
+      "production_dzn": 89.16666667,
+      "cm_per_dzn": 738,
+      "total_income": 65805,
+      "net_profit": -20205,
+      "status": "ACTIVE"
     },
     {
       "date": "2026-11-20",
@@ -275,7 +295,17 @@
     {
       "date": "2026-11-21",
       "line_id": "A",
-      "status": "HOLIDAY"
+      "style": "",
+      "item": "DENIM SHORT",
+      "worker_count": 47,
+      "per_head_cost": 1281,
+      "total_cost": 60207,
+      "production_qty": 720,
+      "production_dzn": 60,
+      "cm_per_dzn": 738,
+      "total_income": 44280,
+      "net_profit": -15927,
+      "status": "ACTIVE"
     },
     {
       "date": "2026-11-22",
@@ -560,12 +590,32 @@
     {
       "date": "2026-11-18",
       "line_id": "B",
-      "status": "HOLIDAY"
+      "style": "",
+      "item": "DENIM PANT",
+      "worker_count": 47,
+      "per_head_cost": 1830,
+      "total_cost": 86010,
+      "production_qty": 800,
+      "production_dzn": 66.66666667,
+      "cm_per_dzn": 738,
+      "total_income": 49200,
+      "net_profit": -36810,
+      "status": "ACTIVE"
     },
     {
       "date": "2026-11-19",
       "line_id": "B",
-      "status": "HOLIDAY"
+      "style": "",
+      "item": "DENIM PANT",
+      "worker_count": 47,
+      "per_head_cost": 1830,
+      "total_cost": 86010,
+      "production_qty": 760,
+      "production_dzn": 63.33333333,
+      "cm_per_dzn": 738,
+      "total_income": 46740,
+      "net_profit": -39270,
+      "status": "ACTIVE"
     },
     {
       "date": "2026-11-20",
@@ -575,7 +625,17 @@
     {
       "date": "2026-11-21",
       "line_id": "B",
-      "status": "HOLIDAY"
+      "style": "",
+      "item": "DENIM PANT",
+      "worker_count": 47,
+      "per_head_cost": 1281,
+      "total_cost": 60207,
+      "production_qty": 720,
+      "production_dzn": 60,
+      "cm_per_dzn": 738,
+      "total_income": 44280,
+      "net_profit": -15927,
+      "status": "ACTIVE"
     },
     {
       "date": "2026-11-22",
@@ -860,12 +920,32 @@
     {
       "date": "2026-11-18",
       "line_id": "C",
-      "status": "HOLIDAY"
+      "style": "",
+      "item": "BOXER",
+      "worker_count": 15,
+      "per_head_cost": 1830,
+      "total_cost": 27450,
+      "production_qty": 800,
+      "production_dzn": 66.66666667,
+      "cm_per_dzn": 250,
+      "total_income": 16666.66667,
+      "net_profit": -10783.33333,
+      "status": "ACTIVE"
     },
     {
       "date": "2026-11-19",
       "line_id": "C",
-      "status": "HOLIDAY"
+      "style": "",
+      "item": "LADIES PYJAMA",
+      "worker_count": 18,
+      "per_head_cost": 1830,
+      "total_cost": 32940,
+      "production_qty": 0,
+      "production_dzn": 0,
+      "cm_per_dzn": 270,
+      "total_income": 0,
+      "net_profit": -32940,
+      "status": "ACTIVE"
     },
     {
       "date": "2026-11-20",
@@ -875,7 +955,17 @@
     {
       "date": "2026-11-21",
       "line_id": "C",
-      "status": "HOLIDAY"
+      "style": "",
+      "item": "LADIES PYJAMA",
+      "worker_count": 18,
+      "per_head_cost": 1830,
+      "total_cost": 32940,
+      "production_qty": 280,
+      "production_dzn": 23.33333333,
+      "cm_per_dzn": 270,
+      "total_income": 6300,
+      "net_profit": -26640,
+      "status": "ACTIVE"
     },
     {
       "date": "2026-11-22",

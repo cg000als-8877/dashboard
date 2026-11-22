@@ -101,40 +101,6 @@ h1, h2, h3, h4, h5, h6, .font-display {
   font-family: var(--font-display) !important;
 }
 
-/* ── Bengali Font Rules (Noto Serif Bengali) ── */
-html[lang="bn"],
-html[data-lang="bn"] {
-  --font-sans: var(--font-noto-serif-bengali), 'Inter', sans-serif;
-  --font-display: var(--font-noto-serif-bengali), serif;
-}
-
-html[lang="bn"] body,
-html[data-lang="bn"] body,
-html[lang="bn"] h1,
-html[lang="bn"] h2,
-html[lang="bn"] h3,
-html[lang="bn"] h4,
-html[lang="bn"] h5,
-html[lang="bn"] h6,
-html[lang="bn"] p,
-html[lang="bn"] span,
-html[lang="bn"] button,
-html[lang="bn"] a,
-html[lang="bn"] .font-display,
-html[data-lang="bn"] h1,
-html[data-lang="bn"] h2,
-html[data-lang="bn"] h3,
-html[data-lang="bn"] h4,
-html[data-lang="bn"] h5,
-html[data-lang="bn"] h6,
-html[data-lang="bn"] p,
-html[data-lang="bn"] span,
-html[data-lang="bn"] button,
-html[data-lang="bn"] a,
-html[data-lang="bn"] .font-display {
-  font-family: var(--font-noto-serif-bengali), serif !important;
-}
-
 select option {
   background-color: var(--color-bg-card) !important;
   color: var(--color-text-main) !important;

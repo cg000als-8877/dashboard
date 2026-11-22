@@ -1,9 +1,8 @@
-import { Inter, Space_Grotesk, JetBrains_Mono, Noto_Serif_Bengali } from "next/font/google";
+import { Inter, Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { MonthProvider } from "@/components/providers/MonthProvider";
 import { ThemeProvider } from "@/components/ThemeProvider";
-import { LanguageProvider } from "@/components/providers/LanguageProvider";
 import { DensityProvider } from "@/components/providers/DensityProvider";
 import { ZoomProvider } from "@/components/providers/ZoomProvider";
 import { ClientAutoRefresh } from "@/components/providers/ClientAutoRefresh";
@@ -30,13 +29,6 @@ const jetbrainsMono = JetBrains_Mono({
   variable: "--font-jetbrains-mono"
 });
 
-const notoSerifBengali = Noto_Serif_Bengali({
-  weight: ["400", "500", "600", "700"],
-  subsets: ["bengali"],
-  variable: "--font-noto-serif-bengali",
-  display: "swap",
-});
-
 export const metadata = {
   title: "Byzid Apparels (Pvt) Ltd",
   description: "Dashboard for Factory Operations",
@@ -54,26 +46,26 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" data-theme="royal" data-mode="dark" data-bg-effect="grain" suppressHydrationWarning>
+    <html lang="en" data-theme="jungle-nebula" data-mode="dark" data-bg-effect="starlight" suppressHydrationWarning>
       <head>
         <script
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
                 try {
-                  var migrated = localStorage.getItem('app-royal-grain-dark-v1');
+                  var migrated = localStorage.getItem('app-jungle-starlight-dark-v1');
                   var m = localStorage.getItem('app-mode');
                   var t = localStorage.getItem('app-visual-theme');
                   var b = localStorage.getItem('app-bg-effect');
                   if (!migrated) {
-                    localStorage.setItem('app-royal-grain-dark-v1', 'true');
-                    localStorage.setItem('app-visual-theme', 'royal');
+                    localStorage.setItem('app-jungle-starlight-dark-v1', 'true');
+                    localStorage.setItem('app-visual-theme', 'jungle-nebula');
                     localStorage.setItem('app-mode', 'dark');
                     localStorage.setItem('theme', 'dark');
-                    localStorage.setItem('app-bg-effect', 'grain');
+                    localStorage.setItem('app-bg-effect', 'starlight');
                     m = 'dark';
-                    t = 'royal';
-                    b = 'grain';
+                    t = 'jungle-nebula';
+                    b = 'starlight';
                   }
                   if (m) {
                     document.documentElement.setAttribute('data-mode', m);
@@ -89,48 +81,44 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   if (t) {
                     document.documentElement.setAttribute('data-theme', t);
                   } else {
-                    document.documentElement.setAttribute('data-theme', 'royal');
+                    document.documentElement.setAttribute('data-theme', 'jungle-nebula');
                   }
                   if (b && b !== 'ember-tide-aurora') {
                     document.documentElement.setAttribute('data-bg-effect', b);
                   } else {
-                    document.documentElement.setAttribute('data-bg-effect', 'grain');
+                    document.documentElement.setAttribute('data-bg-effect', 'starlight');
                   }
                   var z = localStorage.getItem('app_screen_zoom');
                   if (z) {
                     document.documentElement.style.zoom = z + '%';
                     document.documentElement.style.setProperty('--app-screen-zoom', z + '%');
                   }
-                  var l = localStorage.getItem('bapl_lang');
-                  if (l === 'bn' || l === 'en') {
-                    document.documentElement.setAttribute('lang', l);
-                    document.documentElement.setAttribute('data-lang', l);
-                  }
+                  localStorage.removeItem('bapl_lang');
+                  document.documentElement.setAttribute('lang', 'en');
+                  document.documentElement.removeAttribute('data-lang');
                 } catch(e) {}
               })();
             `,
           }}
         />
       </head>
-      <body className={`${inter.className} ${spaceGrotesk.variable} ${jetbrainsMono.variable} ${notoSerifBengali.variable} bg-[var(--color-bg-main)] text-[var(--color-text-main)]`}>
+      <body className={`${inter.className} ${spaceGrotesk.variable} ${jetbrainsMono.variable} bg-[var(--color-bg-main)] text-[var(--color-text-main)]`}>
         <ThemeProvider>
           <BackgroundCanvas />
-          <LanguageProvider>
-            <MonthProvider>
-              <DensityProvider>
-                <ZoomProvider>
-                  <ClientAutoRefresh />
-                  <PushNotificationManager />
-                  <PwaManager>
-                    <AppWelcomeSplash />
-                    <DashboardLayout>
-                      {children}
-                    </DashboardLayout>
-                  </PwaManager>
-                </ZoomProvider>
-              </DensityProvider>
-            </MonthProvider>
-          </LanguageProvider>
+          <MonthProvider>
+            <DensityProvider>
+              <ZoomProvider>
+                <ClientAutoRefresh />
+                <PushNotificationManager />
+                <PwaManager>
+                  <AppWelcomeSplash />
+                  <DashboardLayout>
+                    {children}
+                  </DashboardLayout>
+                </PwaManager>
+              </ZoomProvider>
+            </DensityProvider>
+          </MonthProvider>
         </ThemeProvider>
       </body>
     </html>

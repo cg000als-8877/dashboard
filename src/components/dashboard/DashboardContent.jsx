@@ -13,7 +13,6 @@ import { cn } from '@/components/layout/Sidebar';
 import { CostRecoveryJar } from '@/components/dashboard/CostRecoveryJar';
 import { CostRecoveryPie } from '@/components/dashboard/CostRecoveryPie';
 import { MonthSelectorBar } from '@/components/dashboard/MonthSelectorBar';
-import { useLanguage } from '@/components/providers/LanguageProvider';
 
 const DEFAULT_LINE_ITEMS = {
   A: 'Sherpa Jacket, Boys Shirt',
@@ -142,36 +141,19 @@ function formatDateRangeInfo(startDateStr, endDateStr, overrideMonth, overrideYe
 }
 
 function DashboardDateRange({ dateInfo, workingDays = null, className = "" }) {
-  const { isBangla, toDigits } = useLanguage();
   if (!dateInfo) return null;
   const { isRange, startDay, endDay, startMonthShort, endMonthShort, year } = dateInfo;
-
-  const getMonthShort = (monthStr) => {
-    if (!monthStr) return '';
-    const upper = monthStr.toUpperCase();
-    if (!isBangla) return upper;
-    if (upper.startsWith('NOV')) return 'নভে';
-    if (upper.startsWith('OCT')) return 'অক্টো';
-    if (upper.startsWith('SEP')) return 'সেপ্টে';
-    if (upper.startsWith('AUG')) return 'আগস্ট';
-    if (upper.startsWith('JUL')) return 'জুলাই';
-    return upper;
-  };
 
   return (
     <span className={cn("inline-flex items-center justify-center flex-wrap whitespace-nowrap text-[13px] sm:text-[14px] md:text-[17px] font-bold tracking-wide text-[var(--color-primary)] leading-tight uppercase select-none", className)}>
       {isRange ? (
-        <span>
-          {isBangla ? toDigits(startDay) : startDay} {getMonthShort(startMonthShort)} - {isBangla ? toDigits(endDay) : endDay} {getMonthShort(endMonthShort)}, {isBangla ? toDigits(year) : year}
-        </span>
+        <span>{startDay} {startMonthShort} - {endDay} {endMonthShort}, {year}</span>
       ) : (
-        <span>
-          {isBangla ? toDigits(startDay) : startDay} {getMonthShort(endMonthShort)}, {isBangla ? toDigits(year) : year}
-        </span>
+        <span>{startDay} {endMonthShort}, {year}</span>
       )}
       {workingDays !== null && workingDays !== undefined && (
         <span className="font-bold ml-1.5 tracking-wider">
-          ({isBangla ? toDigits(workingDays) : workingDays} {isBangla ? 'দিন' : (workingDays === 1 ? 'DAY' : 'DAYS')})
+          ({workingDays} {workingDays === 1 ? 'DAY' : 'DAYS'})
         </span>
       )}
     </span>

@@ -12,11 +12,9 @@ import {
   X 
 } from 'lucide-react';
 import { cn } from './Sidebar';
-import { useLanguage } from '@/components/providers/LanguageProvider';
 
 export function MobileBottomNav({ isOthersOpen, onToggleOthers, onOthersClose }) {
   const pathname = usePathname();
-  const { t } = useLanguage();
 
   const isHome = pathname === '/';
   const isLines = pathname === '/lines' || pathname.startsWith('/lines/');
@@ -27,7 +25,7 @@ export function MobileBottomNav({ isOthersOpen, onToggleOthers, onOthersClose })
   const navItems = [
     {
       id: 'home',
-      label: t('home', 'Home'),
+      label: 'Home',
       href: '/',
       icon: Home,
       isActive: isHome,
@@ -35,7 +33,7 @@ export function MobileBottomNav({ isOthersOpen, onToggleOthers, onOthersClose })
     },
     {
       id: 'lines',
-      label: t('lines', 'Lines'),
+      label: 'Lines',
       href: '/lines',
       icon: Factory,
       isActive: isLines,
@@ -43,7 +41,7 @@ export function MobileBottomNav({ isOthersOpen, onToggleOthers, onOthersClose })
     },
     {
       id: 'analytics',
-      label: t('analytics', 'Analytics'),
+      label: 'Analytics',
       href: '/analytics',
       icon: BarChart3,
       isActive: isAnalytics,
@@ -51,7 +49,7 @@ export function MobileBottomNav({ isOthersOpen, onToggleOthers, onOthersClose })
     },
     {
       id: 'archive',
-      label: t('archive', 'Archive'),
+      label: 'Archive',
       href: '/archive',
       icon: History,
       isActive: isArchive,
@@ -59,7 +57,7 @@ export function MobileBottomNav({ isOthersOpen, onToggleOthers, onOthersClose })
     },
     {
       id: 'others',
-      label: t('others', 'Others'),
+      label: 'Others',
       icon: isOthers ? X : MoreHorizontal,
       isButton: true,
       isActive: isOthers,

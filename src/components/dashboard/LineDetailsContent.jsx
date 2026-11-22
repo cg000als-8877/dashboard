@@ -4,6 +4,7 @@ import { ArrowLeft, ChevronRight, ChevronDown, ChevronUp, TrendingUp, TrendingDo
 import { useKpiData } from '@/utils/useKpiData';
 import { useDensity } from '@/components/providers/DensityProvider';
 import { DensitySwitcher } from '@/components/ui/DensitySwitcher';
+import { LineDetailsSkeleton } from '@/components/ui/Skeletons';
 
 function cn(...classes) {
   return classes.filter(Boolean).join(' ');
@@ -42,11 +43,7 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false, hideEm
   const safeId = String(id || 'A').toUpperCase();
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center h-96">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--color-primary)]"></div>
-      </div>
-    );
+    return <LineDetailsSkeleton isEmbed={isEmbed} />;
   }
 
   if (error) {

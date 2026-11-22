@@ -367,3 +367,58 @@ export function SimulatorSkeleton() {
     </div>
   );
 }
+
+// 6. Line Details / Telemetry Skeleton View
+export function LineDetailsSkeleton({ isEmbed = false }) {
+  return (
+    <div className={`space-y-4 md:space-y-6 relative z-10 w-full animate-in fade-in duration-300 ${isEmbed ? '' : '-mx-1.5 sm:mx-0'}`}>
+      {!isEmbed && (
+        <div className="flex flex-col items-center text-center mb-6 md:mb-8 relative z-10 w-full">
+          {/* Breadcrumb + Switcher */}
+          <div className="w-full flex items-center justify-between gap-2 mb-3 px-0.5">
+            <ShimmerBlock className="h-7 w-48 bg-[var(--color-text-muted)]/20 rounded-lg" />
+            <ShimmerBlock className="h-8 w-28 bg-[var(--color-text-muted)]/15 rounded-xl" />
+          </div>
+          {/* Title & Subtitle */}
+          <ShimmerBlock className="h-8 sm:h-9 w-64 bg-[var(--color-text-muted)]/30 rounded-lg" />
+          <ShimmerBlock className="h-4 w-80 bg-[var(--color-text-muted)]/15 rounded-md mt-2" />
+        </div>
+      )}
+
+      {/* Summary Bento / 6-Card Strip */}
+      <SkeletonCard className="p-4 sm:p-5">
+        <ShimmerBlock className="h-4 w-36 bg-[var(--color-text-muted)]/20 rounded mb-4 hidden md:block" />
+        <div className="grid grid-cols-2 md:grid-cols-6 gap-2.5 sm:gap-3.5">
+          {[1, 2, 3, 4, 5, 6].map(i => (
+            <div key={i} className="p-3.5 rounded-xl bg-[var(--color-surface)] border border-[var(--color-border)]/30 flex flex-col justify-between h-20">
+              <ShimmerBlock className="h-2.5 w-16 bg-[var(--color-text-muted)]/15 rounded" />
+              <ShimmerBlock className="h-5 w-20 bg-[var(--color-text-muted)]/25 rounded" />
+            </div>
+          ))}
+        </div>
+      </SkeletonCard>
+
+      {/* Main Telemetry Table / Chart Card */}
+      <SkeletonCard className="p-4 sm:p-6 h-[400px] flex flex-col justify-between">
+        <div className="flex justify-between items-center pb-3 border-b border-[var(--color-border)]/30">
+          <ShimmerBlock className="h-4 w-36 bg-[var(--color-text-muted)]/25 rounded" />
+          <ShimmerBlock className="h-7 w-24 bg-[var(--color-text-muted)]/15 rounded-lg" />
+        </div>
+        <div className="space-y-3 my-auto py-2">
+          {[1, 2, 3, 4, 5].map(r => (
+            <div key={r} className="flex justify-between items-center py-2 border-b border-[var(--color-border)]/20">
+              <ShimmerBlock className="h-3.5 w-24 bg-[var(--color-text-muted)]/15 rounded" />
+              <ShimmerBlock className="h-3.5 w-20 bg-[var(--color-text-muted)]/15 rounded" />
+              <ShimmerBlock className="h-3.5 w-16 bg-[var(--color-text-muted)]/15 rounded" />
+              <ShimmerBlock className="h-3.5 w-20 bg-[var(--color-text-muted)]/20 rounded" />
+            </div>
+          ))}
+        </div>
+        <div className="flex justify-between items-center pt-2">
+          <ShimmerBlock className="h-3 w-32 bg-[var(--color-text-muted)]/15 rounded" />
+          <ShimmerBlock className="h-3 w-20 bg-[var(--color-text-muted)]/15 rounded" />
+        </div>
+      </SkeletonCard>
+    </div>
+  );
+}

@@ -38,38 +38,38 @@ export const BG_EFFECTS = [
   { id: 'solid', name: 'Solid', tag: 'Solid', desc: 'Clean minimal background' },
 ];
 
-// Ember Tide is the full-time default theme
+// Jungle Nebula is the default theme
 export function getScheduledDefaultTheme() {
-  return 'royal';
+  return 'jungle-nebula';
 }
 
 export function getDefaultBgEffect() {
-  return 'grain';
+  return 'starlight';
 }
 
 const ThemeContext = createContext();
 
 export function ThemeProvider({ children }) {
-  const [visualTheme, setVisualThemeState] = useState('royal');
+  const [visualTheme, setVisualThemeState] = useState('jungle-nebula');
   const [mode, setModeState] = useState('dark');
-  const [bgEffect, setBgEffectState] = useState('grain');
+  const [bgEffect, setBgEffectState] = useState('starlight');
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
 
-    // Apply Royal + Dark Mode + Grain Background as default for any device
-    const isDefaultApplied = localStorage.getItem('app-royal-grain-dark-v1');
+    // Apply Jungle Nebula + Dark Mode + Starlight Background as default for any device
+    const isDefaultApplied = localStorage.getItem('app-jungle-starlight-dark-v1');
 
     if (!isDefaultApplied) {
-      localStorage.setItem('app-royal-grain-dark-v1', 'true');
-      localStorage.setItem('app-visual-theme', 'royal');
+      localStorage.setItem('app-jungle-starlight-dark-v1', 'true');
+      localStorage.setItem('app-visual-theme', 'jungle-nebula');
       localStorage.setItem('app-mode', 'dark');
       localStorage.setItem('theme', 'dark');
-      localStorage.setItem('app-bg-effect', 'grain');
-      setVisualThemeState('royal');
+      localStorage.setItem('app-bg-effect', 'starlight');
+      setVisualThemeState('jungle-nebula');
       setModeState('dark');
-      setBgEffectState('grain');
+      setBgEffectState('starlight');
       return;
     }
 
@@ -81,7 +81,7 @@ export function ThemeProvider({ children }) {
     if (storedVisualTheme && VISUAL_THEMES.some(t => t.id === storedVisualTheme)) {
       setVisualThemeState(storedVisualTheme);
     } else {
-      setVisualThemeState('royal');
+      setVisualThemeState('jungle-nebula');
     }
 
     if (storedMode) {
@@ -93,7 +93,7 @@ export function ThemeProvider({ children }) {
     if (storedBgEffect && BG_EFFECTS.some(b => b.id === storedBgEffect)) {
       setBgEffectState(storedBgEffect);
     } else {
-      setBgEffectState('grain');
+      setBgEffectState('starlight');
     }
   }, []);
 
@@ -118,10 +118,6 @@ export function ThemeProvider({ children }) {
       setVisualThemeState(id);
       localStorage.setItem('app-visual-theme', id);
       sessionStorage.setItem('app-night-theme-overridden', 'true');
-      if (id === 'royal') {
-        setBgEffectState('grain');
-        localStorage.setItem('app-bg-effect', 'grain');
-      }
     }
   };
 

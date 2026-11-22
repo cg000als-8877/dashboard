@@ -7,14 +7,17 @@ import { useKpiData } from '@/utils/useKpiData';
 
 function ArchiveMonthSkeletonCard() {
   return (
-    <div className="relative p-[1px] rounded-2xl overflow-hidden bg-[var(--color-bg-card)] h-[110px] w-full shimmer">
+    <div 
+      className="relative z-10 rounded-2xl border border-[var(--color-border)]/40 shadow-sm md:shadow-[0_3px_10px_rgba(0,0,0,0.2),0_1px_3px_rgba(0,0,0,0.12)] overflow-hidden h-[110px] w-full"
+      style={{ backgroundColor: 'var(--color-bg-card)' }}
+    >
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-5 h-full w-full">
-        <div className="flex-1 space-y-2">
-          <div className="h-4 w-1/3 bg-[var(--color-text-muted)]/15 rounded-md"></div>
-          <div className="h-3 w-2/3 bg-[var(--color-text-muted)]/10 rounded-md"></div>
-          <div className="h-3 w-1/2 bg-[var(--color-text-muted)]/10 rounded-md"></div>
+        <div className="flex-1 space-y-2.5">
+          <div className="h-4 w-1/3 bg-[var(--color-text-muted)]/20 rounded-md shimmer"></div>
+          <div className="h-3 w-2/3 bg-[var(--color-text-muted)]/15 rounded-md shimmer"></div>
+          <div className="h-3 w-1/2 bg-[var(--color-text-muted)]/15 rounded-md shimmer"></div>
         </div>
-        <div className="h-9 w-28 bg-[var(--color-text-muted)]/15 rounded-lg shrink-0"></div>
+        <div className="h-9 w-28 bg-[var(--color-text-muted)]/20 rounded-lg shrink-0 shimmer"></div>
       </div>
     </div>
   );
