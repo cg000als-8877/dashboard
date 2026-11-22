@@ -1700,8 +1700,8 @@ export function DashboardContent({ month, isArchive = false }) {
                                 Optimal
                               </span>
                             ) : isMobile ? (
-                              <span className="inline-flex items-center gap-1.5 px-2 sm:px-2.5 py-0.5 rounded-[4px] text-[8.5px] md:text-[9.5px] font-black uppercase tracking-widest border border-rose-500/40 bg-rose-500/15 text-rose-300 transition-all animate-critical-badge-breathe cursor-default select-none">
-                                <Siren className="w-3 h-3 text-rose-400 shrink-0" />
+                              <span className="inline-flex items-center gap-1.5 px-2 sm:px-2.5 py-0.5 rounded-[4px] text-[8.5px] md:text-[9.5px] font-black uppercase tracking-widest border border-rose-500/30 dark:border-rose-500/40 bg-rose-500/15 text-rose-600 dark:text-rose-300 transition-all animate-critical-badge-breathe cursor-default select-none">
+                                <Siren className="w-3 h-3 text-rose-600 dark:text-rose-400 shrink-0" />
                                 <span>Critical</span>
                               </span>
                             ) : (
