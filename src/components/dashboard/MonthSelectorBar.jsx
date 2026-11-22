@@ -41,15 +41,15 @@ export function MonthSelectorBar({
 
   return (
     <div className={cn("w-full relative z-20 flex flex-col items-center mb-2.5 sm:mb-3.5", className)}>
-      <div className="w-full bg-[var(--color-surface)]/70 md:bg-transparent backdrop-blur-md md:backdrop-blur-none rounded-2xl md:rounded-none p-2.5 sm:p-3 md:p-0 border border-[var(--color-border)] md:border-0 shadow-xs md:shadow-none transition-all duration-300">
+      <div className="w-full bg-transparent border-0 p-0 shadow-none transition-all duration-300">
         
-        {/* Row 1: Month Capsules + Date Range (Mobile: Justified between | PC: Side-by-side & Center aligned) */}
-        <div className="flex items-center justify-between md:justify-center gap-2 md:gap-5 lg:gap-6 xl:gap-7 w-full">
+        {/* Row 1: Month Buttons + Date Range (Mobile: Justified between | PC: Side-by-side & Center aligned) */}
+        <div className="flex items-center justify-between md:justify-center gap-2 md:gap-5 lg:gap-6 xl:gap-7 w-full px-0.5">
           
-          {/* Left: Capsule System Track (Mobile: 3 months visible, others scroll into view | PC: All visible) */}
+          {/* Left: Button System Track (Mobile: 3 months visible, others scroll into view | PC: All visible) */}
           <div 
             ref={scrollTrackRef}
-            className="flex items-center gap-0.5 sm:gap-1.5 md:gap-2 xl:gap-2.5 overflow-x-auto no-scrollbar scroll-smooth py-0.5 w-[153px] max-w-[153px] md:w-auto md:max-w-none shrink-0 min-w-0 touch-pan-x overscroll-x-contain"
+            className="flex items-center gap-1 sm:gap-1.5 md:gap-2 xl:gap-2.5 overflow-x-auto no-scrollbar scroll-smooth py-0.5 w-[156px] max-w-[156px] md:w-auto md:max-w-none shrink-0 min-w-0 touch-pan-x overscroll-x-contain"
           >
             {MONTHS_LIST.map((m) => {
               const isSelected = selectedMonth === m.id;
@@ -60,9 +60,9 @@ export function MonthSelectorBar({
                   data-active={isSelected ? "true" : "false"}
                   onClick={() => onSelectMonth(m.id)}
                   className={cn(
-                    "px-1.5 sm:px-2.5 py-1 sm:py-1.5 md:px-3.5 md:py-1.5 rounded-full text-[10px] sm:text-[11px] md:text-xs xl:text-[13px] font-black uppercase tracking-wider transition-all duration-200 cursor-pointer flex items-center gap-0.5 md:gap-1 shrink-0 select-none",
+                    "px-2 py-1 sm:px-2.5 sm:py-1 md:px-3.5 md:py-1.5 rounded-[2px] text-[10px] sm:text-[11px] md:text-xs xl:text-[13px] font-black uppercase tracking-wider transition-all duration-200 cursor-pointer flex items-center gap-0.5 md:gap-1 shrink-0 select-none",
                     isSelected
-                      ? "bg-white text-slate-900 dark:bg-white dark:text-slate-900 shadow-md scale-[1.02]"
+                      ? "bg-white text-slate-900 dark:bg-white dark:text-slate-900 shadow-sm"
                       : "bg-slate-800/70 dark:bg-slate-800/70 text-slate-300 dark:text-slate-300 hover:text-white hover:bg-slate-700/80 border border-slate-700/50"
                   )}
                 >

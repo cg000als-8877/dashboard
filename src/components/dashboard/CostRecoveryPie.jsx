@@ -159,11 +159,11 @@ export function CostRecoveryPie({
       id: 'shortfall',
       title: 'To Recover',
       pct: Math.round(shortfallPct),
-      liquidColor: '#EF4444',
-      liquidGradient: 'linear-gradient(180deg, rgba(239, 68, 68, 0.90) 0%, rgba(220, 38, 38, 0.95) 55%, rgba(153, 27, 27, 0.98) 100%)',
-      glowColor: 'rgba(239, 68, 68, 0.65)',
-      waveColor: '#EF4444',
-      waveColorDark: '#B91C1C',
+      liquidColor: 'var(--color-danger, #EF4444)',
+      liquidGradient: 'linear-gradient(180deg, color-mix(in srgb, var(--color-danger, #EF4444) 90%, white 10%) 0%, var(--color-danger, #EF4444) 55%, color-mix(in srgb, var(--color-danger, #EF4444) 80%, black 20%) 100%)',
+      glowColor: 'color-mix(in srgb, var(--color-danger, #EF4444) 45%, transparent)',
+      waveColor: 'var(--color-danger, #EF4444)',
+      waveColorDark: 'color-mix(in srgb, var(--color-danger, #EF4444) 80%, black 20%)',
       textColor: 'text-[var(--color-danger)]',
       valueStr: formatCompactBdt(shortfallBdt),
       sublabel: isCovered ? 'Target Met' : 'Shortfall',
@@ -173,10 +173,10 @@ export function CostRecoveryPie({
       title: 'Recovered',
       pct: Math.round(recoveredPct),
       liquidColor: 'var(--color-primary)',
-      liquidGradient: 'linear-gradient(180deg, rgba(87, 194, 122, 0.90) 0%, rgba(31, 151, 73, 0.95) 55%, rgba(20, 83, 45, 0.98) 100%)',
-      glowColor: 'rgba(87, 194, 122, 0.65)',
+      liquidGradient: 'linear-gradient(180deg, color-mix(in srgb, var(--color-primary) 88%, white 12%) 0%, var(--color-primary) 55%, color-mix(in srgb, var(--color-primary) 78%, black 22%) 100%)',
+      glowColor: 'color-mix(in srgb, var(--color-primary) 45%, transparent)',
       waveColor: 'var(--color-primary)',
-      waveColorDark: 'var(--color-success)',
+      waveColorDark: 'color-mix(in srgb, var(--color-primary) 80%, black 20%)',
       textColor: 'text-[var(--color-primary)]',
       valueStr: formatCompactBdt(totalIncome),
       sublabel: 'Income',
@@ -185,13 +185,13 @@ export function CostRecoveryPie({
       id: 'profit',
       title: 'Profit',
       pct: Math.round(profitPct),
-      liquidColor: '#10B981',
-      liquidGradient: 'linear-gradient(180deg, rgba(16, 185, 129, 0.90) 0%, rgba(5, 150, 105, 0.95) 55%, rgba(4, 120, 87, 0.98) 100%)',
-      glowColor: 'rgba(16, 185, 129, 0.65)',
-      waveColor: '#10B981',
-      waveColorDark: '#047857',
-      textColor: isCovered && profitPct > 0 ? 'text-emerald-400' : 'text-[var(--color-text-muted)]',
-      valueColor: isCovered && profitPct > 0 ? 'text-emerald-400' : 'text-[var(--color-text-muted)]',
+      liquidColor: 'var(--color-success, #10B981)',
+      liquidGradient: 'linear-gradient(180deg, color-mix(in srgb, var(--color-success, #10B981) 88%, white 12%) 0%, var(--color-success, #10B981) 55%, color-mix(in srgb, var(--color-success, #10B981) 78%, black 22%) 100%)',
+      glowColor: 'color-mix(in srgb, var(--color-success, #10B981) 45%, transparent)',
+      waveColor: 'var(--color-success, #10B981)',
+      waveColorDark: 'color-mix(in srgb, var(--color-success, #10B981) 80%, black 20%)',
+      textColor: isCovered && profitPct > 0 ? 'text-[var(--color-success)]' : 'text-[var(--color-text-muted)]',
+      valueColor: isCovered && profitPct > 0 ? 'text-[var(--color-success)]' : 'text-[var(--color-text-muted)]',
       valueStr: isCovered && profitBdt > 0 ? formatCompactBdt(profitBdt) : 'BDT 0',
       sublabel: isCovered && profitPct > 0 ? 'Net Margin' : 'Deficit',
     },
@@ -236,24 +236,24 @@ export function CostRecoveryPie({
             className="flex flex-col items-center justify-end text-center min-w-0 px-0.5 w-full group"
           >
             {/* The Glass Canister / Flask Container */}
-            <div className="relative w-full max-w-[76px] min-[360px]:max-w-[82px] min-[390px]:max-w-[88px] sm:max-w-[96px] md:max-w-[100px] flex flex-col items-center">
+            <div className="relative w-full max-w-[66px] min-[360px]:max-w-[72px] min-[390px]:max-w-[78px] sm:max-w-[88px] md:max-w-[100px] flex flex-col items-center">
               
               {/* Bottle Neck / Mouth Lip */}
-              <div className="w-8 min-[360px]:w-9 sm:w-10 h-1.5 rounded-full border border-white/20 dark:border-white/15 bg-white/10 dark:bg-white/5 mx-auto mb-0.5 shadow-xs shrink-0" />
+              <div className="w-7 min-[360px]:w-7.5 sm:w-10 h-1.5 rounded-full border border-slate-300/80 dark:border-white/15 bg-slate-200/60 dark:bg-white/5 mx-auto mb-0.5 shadow-xs shrink-0" />
 
               {/* Glass Canister Main Cylinder */}
-              <div className="relative w-full h-[104px] min-[360px]:h-[114px] min-[390px]:h-[120px] sm:h-[130px] md:h-[138px] rounded-t-lg rounded-b-2xl border border-white/20 dark:border-white/15 bg-slate-900/40 dark:bg-black/35 backdrop-blur-xs overflow-hidden shadow-[inset_0_2px_6px_rgba(255,255,255,0.06),0_4px_16px_rgba(0,0,0,0.3)]">
+              <div className="relative w-full h-[88px] min-[360px]:h-[96px] min-[390px]:h-[102px] sm:h-[120px] md:h-[138px] rounded-t-lg rounded-b-2xl border border-slate-300/90 dark:border-white/15 bg-slate-100/60 dark:bg-black/35 backdrop-blur-xs overflow-hidden shadow-[inset_0_2px_6px_rgba(0,0,0,0.04),0_2px_8px_rgba(0,0,0,0.05)] dark:shadow-[inset_0_2px_6px_rgba(255,255,255,0.06),0_4px_16px_rgba(0,0,0,0.3)]">
                 
                 {/* Measuring Tick Marks on Left Glass Wall */}
-                <div className="absolute left-1.5 top-[25%] w-1.5 h-[1px] bg-white/20 pointer-events-none z-20" />
-                <div className="absolute left-1.5 top-[50%] w-2.5 h-[1px] bg-white/30 pointer-events-none z-20" />
-                <div className="absolute left-1.5 top-[75%] w-1.5 h-[1px] bg-white/20 pointer-events-none z-20" />
+                <div className="absolute left-1.5 top-[25%] w-1.5 h-[1px] bg-slate-400/60 dark:bg-white/20 pointer-events-none z-20" />
+                <div className="absolute left-1.5 top-[50%] w-2.5 h-[1px] bg-slate-500/70 dark:bg-white/30 pointer-events-none z-20" />
+                <div className="absolute left-1.5 top-[75%] w-1.5 h-[1px] bg-slate-400/60 dark:bg-white/20 pointer-events-none z-20" />
 
                 {/* Left Specular Curved Glass Shine */}
-                <div className="absolute left-1 top-1.5 bottom-2 w-1.5 bg-gradient-to-r from-white/25 via-white/10 to-transparent rounded-full pointer-events-none z-20" />
+                <div className="absolute left-1 top-1.5 bottom-2 w-1.5 bg-gradient-to-r from-white/70 via-white/25 to-transparent dark:from-white/25 dark:via-white/10 dark:to-transparent rounded-full pointer-events-none z-20" />
                 
                 {/* Right Specular Subtle Highlight */}
-                <div className="absolute right-1 top-2 bottom-3 w-[1px] bg-white/10 pointer-events-none z-20" />
+                <div className="absolute right-1 top-2 bottom-3 w-[1px] bg-slate-300/60 dark:bg-white/10 pointer-events-none z-20" />
 
                 {/* Living Physics Liquid (Tilt & slosh driven by gyroscope and inertia) */}
                 <div 
@@ -337,12 +337,12 @@ export function CostRecoveryPie({
                   <div className={cn(
                     "px-1.5 py-0.5 rounded-md flex items-center justify-center select-none transition-all",
                     item.pct > 0 
-                      ? "bg-black/35 backdrop-blur-[2px] shadow-[0_2px_8px_rgba(0,0,0,0.5)] border border-white/10" 
+                      ? "bg-black/30 dark:bg-black/40 backdrop-blur-[2px] shadow-[0_2px_6px_rgba(0,0,0,0.3)] border border-white/20 dark:border-white/10" 
                       : "bg-transparent"
                   )}>
                     <span className={cn(
-                      "text-[18px] sm:text-[20px] md:text-[22px] font-black tracking-tight leading-none [filter:drop-shadow(0_1px_2px_rgba(0,0,0,0.85))]",
-                      item.pct > 0 ? "text-white" : "text-slate-400/80 dark:text-slate-500"
+                      "text-[15px] min-[360px]:text-[16px] sm:text-[19px] md:text-[22px] font-black tracking-tight leading-none [filter:drop-shadow(0_1px_2px_rgba(0,0,0,0.85))]",
+                      item.pct > 0 ? "text-white" : "text-slate-600 dark:text-slate-400"
                     )}>
                       <AnimatedNumber value={item.pct} suffix="%" />
                     </span>
@@ -351,8 +351,8 @@ export function CostRecoveryPie({
 
                 {/* Empty State Text Indicator (When 0% Liquid) */}
                 {item.pct === 0 && (
-                  <div className="absolute bottom-3 inset-x-0 flex items-center justify-center pointer-events-none z-20">
-                    <span className="text-[8px] font-bold uppercase tracking-widest text-slate-500/70 select-none">
+                  <div className="absolute bottom-2.5 inset-x-0 flex items-center justify-center pointer-events-none z-20">
+                    <span className="text-[7.5px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400/80 select-none">
                       Dry
                     </span>
                   </div>
@@ -361,17 +361,17 @@ export function CostRecoveryPie({
             </div>
 
             {/* Label, Value, and Sublabel Underneath */}
-            <div className="flex flex-col items-center w-full mt-2">
-              <span className="text-[10px] sm:text-xs md:text-[10.5px] lg:text-[11.5px] xl:text-xs font-bold uppercase tracking-wider text-[var(--color-text-main)] whitespace-nowrap leading-tight text-center">
+            <div className="flex flex-col items-center w-full mt-1.5 sm:mt-2">
+              <span className="text-[9.5px] min-[360px]:text-[10px] sm:text-xs md:text-[10.5px] lg:text-[11.5px] xl:text-xs font-bold uppercase tracking-wider text-[var(--color-text-main)] whitespace-nowrap leading-tight text-center">
                 {item.title}
               </span>
               <span className={cn(
-                "text-[12px] sm:text-[13px] md:text-[11px] lg:text-xs xl:text-[13px] font-bold whitespace-nowrap leading-tight mt-0.5 md:mt-1 text-center", 
+                "text-[11.5px] min-[360px]:text-[12px] sm:text-[13px] md:text-[11px] lg:text-xs xl:text-[13px] font-bold whitespace-nowrap leading-tight mt-0.5 md:mt-1 text-center", 
                 item.valueColor || item.textColor
               )}>
                 {item.valueStr}
               </span>
-              <span className="text-[9px] sm:text-[9.5px] md:text-[8.5px] lg:text-[9.5px] xl:text-[10.5px] uppercase tracking-wider font-semibold text-[var(--color-text-muted)] whitespace-nowrap leading-tight mt-0.5 text-center">
+              <span className="text-[8.5px] min-[360px]:text-[9px] sm:text-[9.5px] md:text-[8.5px] lg:text-[9.5px] xl:text-[10.5px] uppercase tracking-wider font-semibold text-[var(--color-text-muted)] whitespace-nowrap leading-tight mt-0.5 text-center">
                 {item.sublabel}
               </span>
             </div>
