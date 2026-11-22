@@ -139,26 +139,26 @@ export function CostRecoveryPie({
                 />
               </svg>
 
-              {/* Center Animated Metric Percentage (Scales with Donut Size) */}
+              {/* Center Animated Metric Percentage (Unified 18px on mobile, responsive on PC) */}
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <span className={cn("text-[17px] min-[360px]:text-[19px] min-[390px]:text-[21px] sm:text-2xl md:text-lg lg:text-xl xl:text-2xl 2xl:text-3xl font-black tracking-tight leading-none", item.textColor)}>
+                <span className={cn("text-[18px] sm:text-2xl md:text-lg lg:text-xl xl:text-2xl 2xl:text-3xl font-black tracking-tight leading-none", item.textColor)}>
                   <AnimatedNumber value={item.pct} suffix="%" />
                 </span>
               </div>
             </div>
 
-            {/* Label, BDT Value, and Context Subtitle */}
+            {/* Label, BDT Value, and Context Subtitle (Aligned to unified mobile typographic scale) */}
             <div className="flex flex-col items-center w-full mt-1 min-[360px]:mt-1.5 md:mt-2">
-              <span className="text-[11px] min-[360px]:text-[12px] sm:text-xs md:text-[10.5px] lg:text-[11.5px] xl:text-xs font-black uppercase tracking-wider text-[var(--color-text-main)] whitespace-nowrap leading-tight text-center">
+              <span className="text-[10px] sm:text-xs md:text-[10.5px] lg:text-[11.5px] xl:text-xs font-bold uppercase tracking-wider text-[var(--color-text-main)] whitespace-nowrap leading-tight text-center">
                 {item.title}
               </span>
               <span className={cn(
-                "text-[9.5px] min-[360px]:text-[10.5px] sm:text-[11.5px] md:text-[11px] lg:text-xs xl:text-[13px] font-extrabold whitespace-nowrap leading-tight mt-0.5 md:mt-1 text-center", 
+                "text-[12px] sm:text-[13px] md:text-[11px] lg:text-xs xl:text-[13px] font-bold whitespace-nowrap leading-tight mt-0.5 md:mt-1 text-center", 
                 item.valueColor || item.textColor
               )}>
                 {item.valueStr}
               </span>
-              <span className="text-[8px] min-[360px]:text-[8.5px] sm:text-[9px] md:text-[8.5px] lg:text-[9.5px] xl:text-[10.5px] uppercase tracking-wider font-bold text-[var(--color-text-muted)] whitespace-nowrap leading-tight mt-0.5 text-center">
+              <span className="text-[9px] sm:text-[9.5px] md:text-[8.5px] lg:text-[9.5px] xl:text-[10.5px] uppercase tracking-wider font-semibold text-[var(--color-text-muted)] whitespace-nowrap leading-tight mt-0.5 text-center">
                 {item.sublabel}
               </span>
             </div>

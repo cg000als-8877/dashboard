@@ -923,12 +923,12 @@ export function DashboardContent({ month, isArchive = false }) {
                     {/* Top Row: Net Loss Title & Value + Animated Trend Curve */}
                     <div className="flex items-center justify-between gap-3">
                       <div className="min-w-0 flex-1">
-                        <h3 className="text-[11px] sm:text-xs font-bold uppercase tracking-widest text-[var(--color-text-secondary)] leading-none">
+                        <h3 className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-text-secondary)] leading-none">
                           {isNetProfit ? "Net Profit" : "Net Loss"}
                         </h3>
 
                         <p className={cn(
-                          "font-black tracking-tight text-[28px] sm:text-[34px] leading-tight mt-1 mb-0.5 [filter:var(--shadow-text)] truncate",
+                          "font-black tracking-tight text-[28px] leading-tight mt-1 mb-0.5 [filter:var(--shadow-text)] truncate",
                           isNetProfit ? "text-[var(--color-success)]" : "text-[var(--color-danger)]"
                         )}>
                           <AnimatedNumber 
@@ -952,7 +952,7 @@ export function DashboardContent({ month, isArchive = false }) {
                       {/* Left: Comparing Text (Vertically centered / under divider) */}
                       <div className="min-w-0 flex-1 pr-1">
                         {netComp && (
-                          <div className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-[10.5px] leading-tight italic">
+                          <div className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-[9px] leading-tight">
                             <span className={cn(
                               "font-bold inline-flex items-center gap-0.5 shrink-0 whitespace-nowrap",
                               netComp.trend === 'neutral'
@@ -966,7 +966,7 @@ export function DashboardContent({ month, isArchive = false }) {
                               {netComp.trend === 'neutral' && '• '}
                               {netComp.highlight}
                             </span>
-                            <span className="text-[var(--color-text-secondary)] font-medium break-words">
+                            <span className="text-[var(--color-text-muted)] font-medium break-words">
                               {netComp.label}
                             </span>
                           </div>
@@ -975,11 +975,11 @@ export function DashboardContent({ month, isArchive = false }) {
 
                       {/* Right: Average Daily Loss Metric */}
                       <div className="shrink-0 text-right flex flex-col items-end justify-center">
-                        <span className="text-[9px] sm:text-[9.5px] font-bold uppercase tracking-wider text-[var(--color-text-secondary)] leading-none">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-text-secondary)] leading-none">
                           {isAvgDailyProfit ? "Avg Daily Profit" : "Average Daily Loss"}
                         </span>
                         <p className={cn(
-                          "font-extrabold text-[14.5px] sm:text-[16px] tracking-tight mt-1 leading-none [filter:var(--shadow-text)] whitespace-nowrap",
+                          "font-bold text-[13px] tracking-tight mt-1 leading-none [filter:var(--shadow-text)] whitespace-nowrap",
                           isAvgDailyProfit ? "text-[var(--color-success)]" : "text-[var(--color-danger)]"
                         )}>
                           <AnimatedNumber 
@@ -1006,10 +1006,10 @@ export function DashboardContent({ month, isArchive = false }) {
                       }}
                     >
                       <div className="flex items-center justify-between w-full gap-2">
-                        {/* Left: Last day loss (OCT 13th) */}
+                        {/* Left: Last Day Loss (NOV 21ST) */}
                         <div className="flex items-center gap-1.5 min-w-0">
-                          <span className="text-xs sm:text-[13px] font-bold text-[var(--color-text-secondary)] whitespace-nowrap">
-                            {isLastDayProfit ? 'Last day profit' : 'Last day loss'}{' '}
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-text-secondary)] whitespace-nowrap">
+                            {isLastDayProfit ? 'Last Day Profit' : 'Last Day Loss'}{' '}
                             <span className="text-[var(--color-text-main)] font-extrabold">({lastDayDateFormatted})</span>
                           </span>
                         </div>
@@ -1017,7 +1017,7 @@ export function DashboardContent({ month, isArchive = false }) {
                         {/* Right: Actual Loss/Profit with BDT prefix */}
                         <div className="flex items-center gap-1.5 shrink-0">
                           <p className={cn(
-                            "font-black tracking-tight text-[15px] sm:text-[16px] leading-none [filter:var(--shadow-text)] whitespace-nowrap",
+                            "font-bold tracking-tight text-[13px] leading-none [filter:var(--shadow-text)] whitespace-nowrap",
                             isLastDayProfit ? "text-[var(--color-success)]" : "text-[var(--color-danger)]"
                           )}>
                             <AnimatedNumber 
@@ -1040,19 +1040,19 @@ export function DashboardContent({ month, isArchive = false }) {
                       style={{ backgroundColor: 'var(--color-bg-card)' }}
                     >
                       <div>
-                        <h4 className="text-[10px] sm:text-[10.5px] font-bold uppercase tracking-wider text-[var(--color-text-muted)] leading-tight">
+                        <h4 className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-text-muted)] leading-tight">
                           Total Income
                         </h4>
-                        <p className="font-black text-[18px] sm:text-[20px] tracking-tight text-[var(--color-primary)] mt-1 mb-0.5 leading-tight [filter:var(--shadow-text)] truncate">
+                        <p className="font-black text-[18px] tracking-tight text-[var(--color-primary)] mt-1 mb-0.5 leading-tight [filter:var(--shadow-text)] truncate">
                           <AnimatedNumber value={Math.round(displayStats.totalIncome)} prefix="BDT " />
                         </p>
                       </div>
                       {incomeComp && (
-                        <div className="flex flex-col items-start gap-y-0.5 text-[9px] sm:text-[9.5px] leading-snug italic pt-1 mt-1">
+                        <div className="flex flex-col items-start gap-y-0.5 text-[9px] leading-snug pt-1 mt-1">
                           <span className={cn("font-bold shrink-0 leading-normal", incomeComp.isPositive ? "text-[var(--color-success-text)]" : "text-[var(--color-danger-text)]")}>
                             {incomeComp.highlight}
                           </span>
-                          <span className="text-[var(--color-text-muted)] text-[8.5px] sm:text-[9px] leading-normal truncate w-full">{incomeComp.label}</span>
+                          <span className="text-[var(--color-text-muted)] text-[9px] leading-normal truncate w-full">{incomeComp.label}</span>
                         </div>
                       )}
                     </Card>
@@ -1064,19 +1064,19 @@ export function DashboardContent({ month, isArchive = false }) {
                       style={{ backgroundColor: 'var(--color-bg-card)' }}
                     >
                       <div>
-                        <h4 className="text-[10px] sm:text-[10.5px] font-bold uppercase tracking-wider text-[var(--color-text-muted)] leading-tight">
+                        <h4 className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-text-muted)] leading-tight">
                           Total Cost
                         </h4>
-                        <p className="font-black text-[18px] sm:text-[20px] tracking-tight text-[var(--color-text-main)] mt-1 mb-0.5 leading-tight [filter:var(--shadow-text)] truncate">
+                        <p className="font-black text-[18px] tracking-tight text-[var(--color-text-main)] mt-1 mb-0.5 leading-tight [filter:var(--shadow-text)] truncate">
                           <AnimatedNumber value={Math.round(displayStats.totalCost)} prefix="BDT " />
                         </p>
                       </div>
                       {costComp && (
-                        <div className="flex flex-col items-start gap-y-0.5 text-[9px] sm:text-[9.5px] leading-snug italic pt-1 mt-1">
+                        <div className="flex flex-col items-start gap-y-0.5 text-[9px] leading-snug pt-1 mt-1">
                           <span className={cn("font-bold shrink-0 leading-normal", costComp.isPositive ? "text-[var(--color-success-text)]" : "text-[var(--color-danger-text)]")}>
                             {costComp.highlight}
                           </span>
-                          <span className="text-[var(--color-text-muted)] text-[8.5px] sm:text-[9px] leading-normal truncate w-full">{costComp.label}</span>
+                          <span className="text-[var(--color-text-muted)] text-[9px] leading-normal truncate w-full">{costComp.label}</span>
                         </div>
                       )}
                     </Card>
@@ -1107,11 +1107,11 @@ export function DashboardContent({ month, isArchive = false }) {
                   >
                     {/* Header Row: Title & Active Lines Counter (One line on mobile from left to right) */}
                     <div className="flex items-center justify-between w-full">
-                      <h4 className="text-[11px] sm:text-xs font-bold uppercase tracking-widest text-[var(--color-text-secondary)] leading-none">
+                      <h4 className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-text-secondary)] leading-none">
                         Production Lines
                       </h4>
-                      <p className="font-black text-[14px] sm:text-[16px] text-[var(--color-text-main)] tracking-tight leading-none [filter:var(--shadow-text)] flex items-center gap-1">
-                        <AnimatedNumber value={actLinesCount} /> of <AnimatedNumber value={totLinesCount} /> <span className="text-[11px] sm:text-[12px] font-bold text-[var(--color-primary)] uppercase ml-0.5">Active</span>
+                      <p className="font-bold text-[13px] text-[var(--color-text-main)] tracking-tight leading-none [filter:var(--shadow-text)] flex items-center gap-1">
+                        <AnimatedNumber value={actLinesCount} /> of <AnimatedNumber value={totLinesCount} /> <span className="text-[10px] font-bold text-[var(--color-primary)] uppercase ml-0.5">Active</span>
                       </p>
                     </div>
 
@@ -1154,10 +1154,10 @@ export function DashboardContent({ month, isArchive = false }) {
                           >
                             {/* Line Info: Line Name & Item Breakdown */}
                             <div className="min-w-0 flex-1 pr-1">
-                              <span className="font-bold text-[var(--color-text-main)] truncate block leading-tight text-[10.5px] sm:text-xs">
+                              <span className="font-bold text-[var(--color-text-main)] truncate block leading-tight text-[11px]">
                                 Line {lineId}
                               </span>
-                              <p className="font-medium text-[var(--color-text-muted)] truncate mt-0.5 leading-tight text-[8.5px] sm:text-[9.5px]">
+                              <p className="font-medium text-[var(--color-text-muted)] truncate mt-0.5 leading-tight text-[9px]">
                                 {hasMultipleItems ? (
                                   activeBreakdown.map((ib, idx) => (
                                     <span key={ib.name}>
@@ -1175,12 +1175,12 @@ export function DashboardContent({ month, isArchive = false }) {
                             {/* Total Production Output */}
                             <div className="text-right shrink-0 pl-1.5">
                               <span 
-                                className="font-bold text-[var(--color-text-main)] block leading-tight text-[10.5px] sm:text-xs whitespace-nowrap"
+                                className="font-bold text-[var(--color-text-main)] block leading-tight text-[13px] whitespace-nowrap"
                                 title={hasMultipleItems ? activeBreakdown.map(ib => `${ib.qty.toLocaleString()} ${toTitleCase(ib.name)}`).join(', ') + ` (Total: ${totalProd.toLocaleString()} pcs)` : undefined}
                               >
                                 <AnimatedNumber value={totalProd} />
                               </span>
-                              <span className="font-semibold uppercase text-[var(--color-text-muted)] block leading-none text-[7.5px] sm:text-[8px] mt-0.5">
+                              <span className="font-semibold uppercase tracking-wider text-[var(--color-text-muted)] block leading-none text-[9px] mt-0.5">
                                 {hasMultipleItems ? 'total pcs' : 'pcs'}
                               </span>
                             </div>
