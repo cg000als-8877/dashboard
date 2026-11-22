@@ -202,10 +202,10 @@ export function CostRecoveryJar({ percentage = 0, isProfitable = false, classNam
 
         {/* Central Floating Percentage Display - High Legibility across all Themes */}
         <div className="absolute inset-0 flex flex-col items-center justify-center pt-5 pointer-events-none">
-          <span className="font-black text-2xl sm:text-3xl md:text-4xl xl:text-[42px] tracking-tight text-[var(--color-text-main)] [filter:var(--shadow-text)] leading-none drop-shadow-sm">
+          <span className="font-black text-2xl sm:text-3xl md:text-4xl xl:text-[42px] tracking-tight text-[var(--color-text-main)] [filter:var(--shadow-text)] leading-none dark:drop-shadow-sm">
             <AnimatedNumber value={Math.round(clamped)} suffix="%" />
           </span>
-          <span className="text-[8px] sm:text-[9.5px] md:text-[11px] font-black uppercase tracking-widest text-[var(--color-text-main)] [filter:var(--shadow-text)] mt-1 drop-shadow-sm">
+          <span className="text-[8px] sm:text-[9.5px] md:text-[11px] font-black uppercase tracking-widest text-[var(--color-text-main)] [filter:var(--shadow-text)] mt-1 dark:drop-shadow-sm">
             {isProfitable ? 'Recovered' : 'Progress'}
           </span>
         </div>

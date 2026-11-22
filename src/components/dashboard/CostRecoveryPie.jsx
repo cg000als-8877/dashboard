@@ -341,8 +341,10 @@ export function CostRecoveryPie({
                       : "bg-transparent"
                   )}>
                     <span className={cn(
-                      "text-[15px] min-[360px]:text-[16px] sm:text-[19px] md:text-[22px] font-black tracking-tight leading-none [filter:drop-shadow(0_1px_2px_rgba(0,0,0,0.85))]",
-                      item.pct > 0 ? "text-white" : "text-slate-600 dark:text-slate-400"
+                      "text-[15px] min-[360px]:text-[16px] sm:text-[19px] md:text-[22px] font-black tracking-tight leading-none",
+                      item.pct > 0 
+                        ? "text-white dark:[filter:drop-shadow(0_1px_2px_rgba(0,0,0,0.85))]" 
+                        : "text-slate-600 dark:text-slate-400"
                     )}>
                       <AnimatedNumber value={item.pct} suffix="%" />
                     </span>

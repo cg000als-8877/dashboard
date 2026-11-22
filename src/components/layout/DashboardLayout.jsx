@@ -138,7 +138,7 @@ export default function DashboardLayout({ children }) {
             {isMobileMenuOpen && (
               <>
                 <div className="fixed inset-0 z-[90] bg-black/50" onClick={() => setIsMobileMenuOpen(false)}></div>
-                <div className="absolute top-11 right-2 w-[264px] sm:w-[276px] bg-[var(--color-bg-card)] border-0 rounded-2xl shadow-2xl flex flex-col p-2 animate-[fade-down_0.15s_ease-out_both] z-[100] origin-top-right">
+                <div className="absolute top-11 right-2 w-[190px] min-[360px]:w-[195px] bg-[var(--color-bg-card)] border-0 rounded-2xl shadow-2xl flex flex-col p-2 animate-[fade-down_0.15s_ease-out_both] z-[100] origin-top-right">
                   
                   {/* Header with Title and Close Button (Stroke-free) */}
                   <div className="flex items-center justify-between pb-1.5 border-0 mb-1 px-0.5">
@@ -189,9 +189,9 @@ export default function DashboardLayout({ children }) {
                     </button>
                   </div>
 
-                  {/* Tab 1: Palette List - All Visible Together (Stroke-free) */}
+                  {/* Tab 1: Palette (Theme) List - Single Column List */}
                   {mobileThemeTab === 'palette' && (
-                    <div className="grid grid-cols-2 gap-1">
+                    <div className="flex flex-col gap-1 max-h-[280px] overflow-y-auto no-scrollbar pr-0.5">
                       {VISUAL_THEMES.map((t) => {
                         const isSelected = visualTheme === t.id;
                         return (
@@ -200,21 +200,21 @@ export default function DashboardLayout({ children }) {
                             type="button"
                             onClick={() => { setVisualTheme(t.id); }}
                             className={cn(
-                              "flex items-center justify-between px-2 py-1 rounded-md border-0 text-[9px] font-semibold transition-all cursor-pointer text-left leading-tight outline-none",
+                              "w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg border-0 text-[10px] sm:text-[11px] font-semibold transition-all cursor-pointer text-left leading-tight outline-none select-none",
                               isSelected
-                                ? "bg-[var(--color-primary)]/20 text-[var(--color-primary)] shadow-xs font-bold"
+                                ? "bg-[var(--color-primary)]/15 text-[var(--color-primary)] shadow-xs font-bold"
                                 : "bg-[var(--color-surface)]/60 text-[var(--color-text-secondary)] hover:bg-[var(--color-surface)] hover:text-[var(--color-text-main)]"
                             )}
                           >
-                            <div className="flex items-center gap-1.5 min-w-0">
+                            <div className="flex items-center gap-2 min-w-0">
                               <span 
-                                className="w-2 h-2 rounded-full shrink-0 shadow-xs" 
+                                className="w-2.5 h-2.5 rounded-full shrink-0 shadow-xs ring-1 ring-black/10 dark:ring-white/20" 
                                 style={{ backgroundColor: t.color }} 
                               />
                               <span className="truncate">{t.name}</span>
                             </div>
                             {isSelected && (
-                              <Check size={9} className="text-[var(--color-primary)] shrink-0 ml-1" />
+                              <Check size={12} className="text-[var(--color-primary)] shrink-0 ml-1.5" />
                             )}
                           </button>
                         );
@@ -222,9 +222,9 @@ export default function DashboardLayout({ children }) {
                     </div>
                   )}
 
-                  {/* Tab 2: Background Effects List - Clean Compact List (Stroke-free) */}
+                  {/* Tab 2: Background Effects List - Single Column List */}
                   {mobileThemeTab === 'background' && (
-                    <div className="grid grid-cols-2 gap-1 max-h-[250px] overflow-y-auto no-scrollbar pr-0.5">
+                    <div className="flex flex-col gap-1 max-h-[280px] overflow-y-auto no-scrollbar pr-0.5">
                       {BG_EFFECTS.map((b) => {
                         const isSelected = bgEffect === b.id;
                         return (
@@ -233,15 +233,15 @@ export default function DashboardLayout({ children }) {
                             type="button"
                             onClick={() => { setBgEffect(b.id); }}
                             className={cn(
-                              "flex items-center justify-between px-2 py-1.5 rounded-md border-0 text-[9.5px] font-semibold transition-all cursor-pointer text-left leading-tight outline-none",
+                              "w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg border-0 text-[10px] sm:text-[11px] font-semibold transition-all cursor-pointer text-left leading-tight outline-none select-none",
                               isSelected
-                                ? "bg-[var(--color-primary)]/20 text-[var(--color-primary)] shadow-xs font-bold"
+                                ? "bg-[var(--color-primary)]/15 text-[var(--color-primary)] shadow-xs font-bold"
                                 : "bg-[var(--color-surface)]/60 text-[var(--color-text-secondary)] hover:bg-[var(--color-surface)] hover:text-[var(--color-text-main)]"
                             )}
                           >
                             <span className="truncate">{b.name}</span>
                             {isSelected && (
-                              <Check size={10} className="text-[var(--color-primary)] shrink-0 ml-1" />
+                              <Check size={12} className="text-[var(--color-primary)] shrink-0 ml-1.5" />
                             )}
                           </button>
                         );
