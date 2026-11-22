@@ -157,7 +157,7 @@ export function CostRecoveryPie({
   const jars = [
     {
       id: 'shortfall',
-      title: 'To Recover',
+      title: 'Current Loss',
       pct: Math.round(shortfallPct),
       liquidColor: 'var(--color-danger, #EF4444)',
       liquidGradient: 'linear-gradient(180deg, color-mix(in srgb, var(--color-danger, #EF4444) 90%, white 10%) 0%, var(--color-danger, #EF4444) 55%, color-mix(in srgb, var(--color-danger, #EF4444) 80%, black 20%) 100%)',
