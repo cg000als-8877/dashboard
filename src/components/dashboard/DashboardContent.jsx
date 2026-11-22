@@ -1126,6 +1126,16 @@ export function DashboardContent({ month, isArchive = false }) {
                         const activeBreakdown = lineData?.itemBreakdown?.filter(ib => (ib.qty || 0) > 0) || [];
                         const hasMultipleItems = activeBreakdown.length > 1;
 
+                        // Loss heat effect scaled to loss amount: starts at right edge and smoothly fades across to zero on the left
+                        const peakAlpha = 0.08 + Math.pow(lossRatio, 1.2) * 0.42;
+                        const a0 = peakAlpha.toFixed(3);
+                        const a20 = (peakAlpha * 0.65).toFixed(3);
+                        const a45 = (peakAlpha * 0.35).toFixed(3);
+                        const a70 = (peakAlpha * 0.12).toFixed(3);
+                        const a90 = (peakAlpha * 0.03).toFixed(3);
+                        const borderAlpha = (0.45 + lossRatio * 0.55).toFixed(2);
+                        const borderWidth = (2.5 + lossRatio * 2.0).toFixed(1) + 'px';
+
                         return (
                           <div
                             key={lineId}
@@ -1133,18 +1143,13 @@ export function DashboardContent({ month, isArchive = false }) {
                             style={{
                               backgroundColor: 'var(--color-surface)',
                               backgroundImage: lineLoss > 0
-                                ? `linear-gradient(270deg, rgba(239, 68, 68, ${(0.06 + lossRatio * 0.14).toFixed(3)}) 0%, rgba(239, 68, 68, ${(0.015 + lossRatio * 0.04).toFixed(3)}) 45%, transparent 85%)`
+                                ? `linear-gradient(270deg, rgba(239, 68, 68, ${a0}) 0%, rgba(239, 68, 68, ${a20}) 20%, rgba(239, 68, 68, ${a45}) 45%, rgba(239, 68, 68, ${a70}) 70%, rgba(239, 68, 68, ${a90}) 90%, rgba(239, 68, 68, 0) 100%)`
                                 : undefined,
-                              border: '1px solid',
-                              borderColor: lineLoss > 0
-                                ? `rgba(239, 68, 68, ${(0.12 + lossRatio * 0.20).toFixed(2)})`
-                                : 'var(--color-border)',
+                              border: '1px solid var(--color-border)',
                               borderRight: lineLoss > 0
-                                ? `3.5px solid rgba(239, 68, 68, ${(0.35 + lossRatio * 0.50).toFixed(2)})`
-                                : '3.5px solid transparent',
-                              boxShadow: lineLoss > 0
-                                ? `0 1px 3px rgba(0,0,0,0.2), inset -6px 0 12px rgba(239, 68, 68, ${(0.05 + lossRatio * 0.15).toFixed(3)})`
-                                : undefined
+                                ? `${borderWidth} solid rgba(239, 68, 68, ${borderAlpha})`
+                                : '1px solid var(--color-border)',
+                              boxShadow: '0 1px 3px rgba(0,0,0,0.2)'
                             }}
                           >
                             {/* Line Info: Line Name & Item Breakdown */}
@@ -1432,6 +1437,16 @@ export function DashboardContent({ month, isArchive = false }) {
                           const activeBreakdown = lineData?.itemBreakdown?.filter(ib => (ib.qty || 0) > 0) || [];
                           const hasMultipleItems = activeBreakdown.length > 1;
 
+                          // Loss heat effect scaled to loss amount: starts at right edge and smoothly fades across to zero on the left
+                          const peakAlpha = 0.08 + Math.pow(lossRatio, 1.2) * 0.42;
+                          const a0 = peakAlpha.toFixed(3);
+                          const a20 = (peakAlpha * 0.65).toFixed(3);
+                          const a45 = (peakAlpha * 0.35).toFixed(3);
+                          const a70 = (peakAlpha * 0.12).toFixed(3);
+                          const a90 = (peakAlpha * 0.03).toFixed(3);
+                          const borderAlpha = (0.45 + lossRatio * 0.55).toFixed(2);
+                          const borderWidth = (2.5 + lossRatio * 2.0).toFixed(1) + 'px';
+
                           return (
                             <div
                               key={lineId}
@@ -1439,18 +1454,12 @@ export function DashboardContent({ month, isArchive = false }) {
                               style={{
                                 backgroundColor: 'var(--color-surface)',
                                 backgroundImage: lineLoss > 0
-                                  ? `linear-gradient(270deg, rgba(239, 68, 68, ${(0.06 + lossRatio * 0.14).toFixed(3)}) 0%, rgba(239, 68, 68, ${(0.015 + lossRatio * 0.04).toFixed(3)}) 45%, transparent 85%)`
+                                  ? `linear-gradient(270deg, rgba(239, 68, 68, ${a0}) 0%, rgba(239, 68, 68, ${a20}) 20%, rgba(239, 68, 68, ${a45}) 45%, rgba(239, 68, 68, ${a70}) 70%, rgba(239, 68, 68, ${a90}) 90%, rgba(239, 68, 68, 0) 100%)`
                                   : undefined,
-                                border: '1px solid',
-                                borderColor: lineLoss > 0
-                                  ? `rgba(239, 68, 68, ${(0.12 + lossRatio * 0.20).toFixed(2)})`
-                                  : 'var(--color-border)',
+                                border: '1px solid var(--color-border)',
                                 borderRight: lineLoss > 0
-                                  ? `3.5px solid rgba(239, 68, 68, ${(0.35 + lossRatio * 0.50).toFixed(2)})`
-                                  : '3.5px solid transparent',
-                                boxShadow: lineLoss > 0
-                                  ? `inset -6px 0 12px rgba(239, 68, 68, ${(0.05 + lossRatio * 0.15).toFixed(3)})`
-                                  : undefined
+                                  ? `${borderWidth} solid rgba(239, 68, 68, ${borderAlpha})`
+                                  : '1px solid var(--color-border)'
                               }}
                             >
                               <div className="flex items-center gap-2.5 min-w-0 flex-1">

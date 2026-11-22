@@ -46,10 +46,10 @@ export function MonthSelectorBar({
         {/* Row 1: Month Capsules + Date Range (Mobile: Justified between | PC: Side-by-side & Center aligned) */}
         <div className="flex items-center justify-between md:justify-center gap-2 md:gap-5 lg:gap-6 xl:gap-7 w-full">
           
-          {/* Left: Capsule System Track */}
+          {/* Left: Capsule System Track (Mobile: 3 months visible, others scroll into view | PC: All visible) */}
           <div 
             ref={scrollTrackRef}
-            className="flex items-center gap-1 sm:gap-1.5 md:gap-2 xl:gap-2.5 overflow-x-auto no-scrollbar scroll-smooth py-0.5 max-w-[215px] min-[390px]:max-w-[230px] md:max-w-none shrink md:shrink-0 min-w-0"
+            className="flex items-center gap-0.5 sm:gap-1.5 md:gap-2 xl:gap-2.5 overflow-x-auto no-scrollbar scroll-smooth py-0.5 w-[153px] max-w-[153px] md:w-auto md:max-w-none shrink-0 min-w-0 touch-pan-x overscroll-x-contain"
           >
             {MONTHS_LIST.map((m) => {
               const isSelected = selectedMonth === m.id;
@@ -60,7 +60,7 @@ export function MonthSelectorBar({
                   data-active={isSelected ? "true" : "false"}
                   onClick={() => onSelectMonth(m.id)}
                   className={cn(
-                    "px-2 sm:px-2.5 py-1 sm:py-1.5 md:px-3.5 md:py-1.5 rounded-full text-[10px] sm:text-[11px] md:text-xs xl:text-[13px] font-black uppercase tracking-wider transition-all duration-200 cursor-pointer flex items-center gap-0.5 md:gap-1 shrink-0 select-none",
+                    "px-1.5 sm:px-2.5 py-1 sm:py-1.5 md:px-3.5 md:py-1.5 rounded-full text-[10px] sm:text-[11px] md:text-xs xl:text-[13px] font-black uppercase tracking-wider transition-all duration-200 cursor-pointer flex items-center gap-0.5 md:gap-1 shrink-0 select-none",
                     isSelected
                       ? "bg-white text-slate-900 dark:bg-white dark:text-slate-900 shadow-md scale-[1.02]"
                       : "bg-slate-800/70 dark:bg-slate-800/70 text-slate-300 dark:text-slate-300 hover:text-white hover:bg-slate-700/80 border border-slate-700/50"
@@ -82,9 +82,9 @@ export function MonthSelectorBar({
             })}
           </div>
 
-          {/* Date Range: Right-aligned on mobile, beside capsules and left-aligned on PC (side-by-side with days count) */}
+          {/* Date Range: Right-aligned & single-line on mobile with | partition, beside capsules on PC */}
           {dateInfo && (
-            <div className="text-right md:text-left shrink-0 select-none leading-tight pl-1.5 md:pl-0 flex flex-col md:flex-row md:items-center md:gap-2">
+            <div className="flex items-center justify-end md:justify-start gap-1 sm:gap-1.5 md:gap-2 shrink-0 select-none leading-tight whitespace-nowrap pl-1 md:pl-0">
               <div className="text-[10px] sm:text-[11px] md:text-[13.5px] xl:text-[14.5px] font-extrabold text-[var(--color-primary)] uppercase tracking-tight whitespace-nowrap">
                 {dateInfo.isRange ? (
                   <span>
@@ -97,9 +97,16 @@ export function MonthSelectorBar({
                 )}
               </div>
               {workingDays !== null && workingDays !== undefined && (
-                <div className="text-[8.5px] sm:text-[9.5px] md:text-[12px] xl:text-[13px] font-extrabold text-[var(--color-text-muted)] tracking-wider whitespace-nowrap">
-                  ({workingDays} {workingDays === 1 ? 'DAY' : 'DAYS'})
-                </div>
+                <>
+                  {/* Mobile partition between 2026 and (XX DAYS) */}
+                  <span className="md:hidden text-[var(--color-border-strong)] text-[10px] font-bold select-none px-0.5 opacity-80">
+                    |
+                  </span>
+                  {/* Days count: high visibility in mobile, standard muted on PC */}
+                  <div className="text-[9.5px] sm:text-[10.5px] md:text-[12px] xl:text-[13px] font-black text-slate-100 dark:text-slate-200 md:text-[var(--color-text-muted)] tracking-wider whitespace-nowrap">
+                    ({workingDays} {workingDays === 1 ? 'DAY' : 'DAYS'})
+                  </div>
+                </>
               )}
             </div>
           )}
