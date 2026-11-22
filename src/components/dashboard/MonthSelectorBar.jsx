@@ -54,7 +54,7 @@ export function MonthSelectorBar({
       if (activeEl) {
         const container = scrollTrackRef.current;
         const targetScrollLeft = activeEl.offsetLeft - container.offsetLeft - (container.clientWidth / 2) + (activeEl.clientWidth / 2);
-        container.scrollTo({ left: Math.max(0, targetScrollLeft), behavior: 'smooth' });
+        container.scrollTo({ left: Math.max(0, targetScrollLeft) });
       }
     }
   }, [selectedMonth]);
@@ -71,7 +71,7 @@ export function MonthSelectorBar({
             <div 
               ref={scrollTrackRef}
               onScroll={handleTrackScroll}
-              className="flex items-center gap-1 sm:gap-1.5 md:gap-2 xl:gap-2.5 overflow-x-auto no-scrollbar scroll-smooth py-0.5 w-[152px] max-w-[152px] md:w-auto md:max-w-none shrink-0 min-w-0 touch-pan-x overscroll-x-contain"
+              className="flex items-center gap-1 sm:gap-1.5 md:gap-2 xl:gap-2.5 overflow-x-auto no-scrollbar scroll-smooth py-0.5 w-[149px] max-w-[149px] md:w-auto md:max-w-none shrink-0 min-w-0 touch-pan-x overscroll-x-contain"
             >
               {MONTHS_LIST.map((m) => {
                 const isSelected = selectedMonth === m.id;
@@ -84,15 +84,15 @@ export function MonthSelectorBar({
                     className={cn(
                       "px-1.5 py-1 sm:px-2 sm:py-1 md:px-3.5 md:py-1.5 rounded-[2px] text-[9.5px] sm:text-[10.5px] md:text-xs xl:text-[13px] font-black uppercase tracking-wide md:tracking-wider transition-all duration-200 cursor-pointer flex items-center gap-0.5 md:gap-1 shrink-0 select-none",
                       isSelected
-                        ? "bg-white text-slate-900 dark:bg-white dark:text-slate-900 shadow-sm"
-                        : "bg-slate-800/70 dark:bg-slate-800/70 text-slate-300 dark:text-slate-300 hover:text-white hover:bg-slate-700/80 border border-slate-700/50"
+                        ? "bg-white text-slate-900 shadow-sm border border-slate-300/80 dark:border-transparent dark:bg-white dark:text-slate-900"
+                        : "bg-slate-200/80 hover:bg-slate-300/70 text-slate-700 hover:text-slate-950 border border-slate-300/80 dark:bg-slate-800/70 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-700/80 dark:border-slate-700/50"
                     )}
                   >
                     <span>{m.short}</span>
                     {m.isLive && (
                       <span className={cn(
                         "inline-flex items-center gap-0.5 ml-0.5 text-[8px] sm:text-[9px] md:text-[10px] xl:text-[11px] font-black tracking-tight",
-                        isSelected ? "text-red-600" : "text-red-400"
+                        isSelected ? "text-red-600" : "text-red-600 dark:text-red-400"
                       )}>
                         <span>(LIVE</span>
                         <span className="w-1.5 h-1.5 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.95)] animate-pulse shrink-0 mx-0.5" />
@@ -111,13 +111,13 @@ export function MonthSelectorBar({
                 if (scrollTrackRef.current) {
                   const container = scrollTrackRef.current;
                   if (isAtEnd) {
-                    container.scrollTo({ left: 0, behavior: 'smooth' });
+                    container.scrollTo({ left: 0 });
                   } else {
-                    container.scrollBy({ left: 48, behavior: 'smooth' });
+                    container.scrollBy({ left: 48 });
                   }
                 }
               }}
-              className="md:hidden flex items-center justify-center w-3.5 h-5 text-slate-400 dark:text-slate-400 hover:text-white transition-colors cursor-pointer shrink-0 select-none -ml-0.5"
+              className="md:hidden flex items-center justify-center w-3.5 h-5 text-slate-400 hover:text-slate-700 dark:text-slate-400 dark:hover:text-white transition-colors cursor-pointer shrink-0 select-none -ml-0.5"
               aria-label={isAtEnd ? "Scroll back to latest months" : "Scroll more months"}
             >
               <svg 
@@ -136,12 +136,12 @@ export function MonthSelectorBar({
             <>
               {/* Mobile View: Frosted Glass / Half-transparent Shape */}
               <div className="md:hidden flex items-center justify-center shrink-0 select-none">
-                <div className="inline-flex items-center px-1.5 py-0.5 min-[360px]:px-2 min-[360px]:py-0.5 sm:px-2.5 sm:py-1 rounded-[2px] bg-slate-900/40 dark:bg-white/[0.07] backdrop-blur-md border border-slate-700/50 dark:border-white/10 shadow-xs">
+                <div className="inline-flex items-center px-1.5 py-0.5 min-[360px]:px-2 min-[360px]:py-0.5 sm:px-2.5 sm:py-1 rounded-[2px] bg-white/80 dark:bg-white/[0.07] backdrop-blur-md border border-slate-300/80 dark:border-white/10 shadow-xs">
                   <span className="text-[9px] min-[360px]:text-[9.5px] font-bold text-[var(--color-primary)] uppercase tracking-tight whitespace-nowrap">
                     {formattedMobileDateRange}
                   </span>
                   {workingDays !== null && workingDays !== undefined && (
-                    <span className="text-[8.5px] min-[360px]:text-[9px] font-bold text-slate-700 dark:text-slate-300 ml-1 whitespace-nowrap tracking-tight">
+                    <span className="text-[8.5px] min-[360px]:text-[9px] font-bold text-slate-600 dark:text-slate-300 ml-1 whitespace-nowrap tracking-tight">
                       ({workingDays} {workingDays === 1 ? 'DAY' : 'DAYS'})
                     </span>
                   )}
