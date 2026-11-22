@@ -1082,11 +1082,11 @@ export function DashboardContent({ month, isArchive = false }) {
                     </Card>
                   </div>
 
-                  {/* 2c. COST RECOVERY & PROFIT (3 DONUTS FULL-LENGTH FROM LEFT TO RIGHT) */}
+                  {/* 2c. COST RECOVERY & PROFIT (3 ANIMATED LIQUID JARS) */}
                   <Card
                     hover
                     data-color={displayStats.totalIncome >= displayStats.totalCost ? "success" : "primary"}
-                    className="px-3 py-2 sm:px-4 sm:py-3 rounded-2xl shadow-sm relative overflow-hidden transition-all w-full"
+                    className="px-3 pt-3.5 pb-3 sm:px-4 sm:pt-4 sm:pb-3.5 rounded-2xl shadow-sm relative overflow-hidden transition-all w-full"
                     style={{ backgroundColor: 'var(--color-bg-card)' }}
                   >
                     <CostRecoveryPie

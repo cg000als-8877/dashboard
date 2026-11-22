@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { cn } from '@/components/layout/Sidebar';
 
@@ -15,17 +15,117 @@ export function CostRecoveryPie({
   className = "" 
 }) {
   const [animated, setAnimated] = useState(false);
+  const liquidRefs = useRef({});
+  const targetTiltRef = useRef(0);
+  const currentTiltRef = useRef(0);
+  const velocityRef = useRef(0);
+  const hasOrientationSensor = useRef(false);
 
-  // Trigger smooth arc drawing animation when website loads / component mounts
+  // Trigger fluid rising animation when component mounts
   useEffect(() => {
     const frame = requestAnimationFrame(() => {
       const timer = setTimeout(() => {
         setAnimated(true);
-      }, 80);
+      }, 100);
       return () => clearTimeout(timer);
     });
     return () => cancelAnimationFrame(frame);
   }, []);
+
+  // Real-time Gyroscope / DeviceOrientation & Fluid Physics Loop
+  useEffect(() => {
+    // 1. DeviceOrientation event handler (detects device tilt & screen rotation)
+    const handleOrientation = (e) => {
+      const gamma = e.gamma;
+      const beta = e.beta;
+      if (gamma === null && beta === null) return;
+      hasOrientationSensor.current = true;
+
+      // Handle screen orientation (portrait vs landscape modes)
+      const orientationAngle = 
+        (typeof screen !== 'undefined' && screen.orientation && screen.orientation.angle) || 
+        (typeof window !== 'undefined' && window.orientation) || 
+        0;
+
+      let lateralTilt = 0;
+      if (orientationAngle === 90) {
+        lateralTilt = beta || 0; // Landscape rotated right
+      } else if (orientationAngle === -90 || orientationAngle === 270) {
+        lateralTilt = -(beta || 0); // Landscape rotated left
+      } else {
+        lateralTilt = gamma || 0; // Standard portrait mode
+      }
+
+      // Clamp lateral tilt to [-45, 45] degrees for realistic jar bounds
+      const clamped = Math.max(-45, Math.min(45, lateralTilt));
+      // Tilted right (+gamma): liquid sloshes right, so surface tilts counter-clockwise relative to jar (-tilt)
+      targetTiltRef.current = -(clamped / 45) * 26;
+    };
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('deviceorientation', handleOrientation, true);
+    }
+
+    // 2. GPU 60fps spring-damping fluid inertia physics loop
+    let animId;
+    const updatePhysics = () => {
+      const spring = 0.085;
+      const damping = 0.82;
+      const force = (targetTiltRef.current - currentTiltRef.current) * spring;
+      velocityRef.current = (velocityRef.current + force) * damping;
+      currentTiltRef.current += velocityRef.current;
+
+      const tilt = currentTiltRef.current;
+
+      // Apply tilt & lateral slosh directly to each jar's liquid surface for maximum performance
+      Object.values(liquidRefs.current).forEach((el) => {
+        if (el) {
+          el.style.transform = `rotate(${tilt.toFixed(2)}deg) translateX(${(tilt * 0.18).toFixed(1)}px)`;
+        }
+      });
+
+      animId = requestAnimationFrame(updatePhysics);
+    };
+
+    animId = requestAnimationFrame(updatePhysics);
+
+    return () => {
+      cancelAnimationFrame(animId);
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('deviceorientation', handleOrientation, true);
+      }
+    };
+  }, []);
+
+  // Request iOS permission if needed on tap
+  const handleContainerClick = () => {
+    if (
+      typeof DeviceOrientationEvent !== 'undefined' &&
+      typeof DeviceOrientationEvent.requestPermission === 'function'
+    ) {
+      DeviceOrientationEvent.requestPermission()
+        .then((state) => {
+          if (state === 'granted') {
+            hasOrientationSensor.current = true;
+          }
+        })
+        .catch(() => {});
+    }
+  };
+
+  // Interactive touch & pointer gesture fallback (allows sloshing by dragging finger or cursor)
+  const handlePointerMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const normalizedX = (x / rect.width) * 2 - 1; // [-1, 1]
+    targetTiltRef.current = -normalizedX * 22;
+  };
+
+  const handlePointerLeave = () => {
+    if (!hasOrientationSensor.current) {
+      targetTiltRef.current = 0;
+    }
+  };
 
   const rawPct = Number(percentage) || 0;
   const isCovered = isProfitable || rawPct >= 100;
@@ -41,11 +141,7 @@ export function CostRecoveryPie({
   const profitPct = isCovered ? Math.max(rawPct - 100, 0) : 0;
   const profitBdt = (netProfit || 0) > 0 ? netProfit : 0;
 
-  // Geometry: Clean circle, radius 31 in 80x80 viewBox
-  const radius = 31;
-  const circumference = 2 * Math.PI * radius; // ~194.78
-
-  // Helper formatter for compact BDT display (e.g. BDT 1.13M, BDT 650k)
+  // Helper formatter for compact BDT display (e.g. BDT 1.47M, BDT 650k)
   const formatCompactBdt = (val) => {
     if (!val || val === 0) return 'BDT 0';
     const absVal = Math.abs(val);
@@ -58,14 +154,16 @@ export function CostRecoveryPie({
     return `BDT ${Math.round(absVal).toLocaleString()}`;
   };
 
-  const donuts = [
+  const jars = [
     {
       id: 'shortfall',
       title: 'To Recover',
       pct: Math.round(shortfallPct),
-      targetFill: shortfallPct,
-      offset: circumference - (shortfallPct / 100) * circumference,
-      strokeColor: 'var(--color-danger)',
+      liquidColor: '#EF4444',
+      liquidGradient: 'linear-gradient(180deg, rgba(239, 68, 68, 0.90) 0%, rgba(220, 38, 38, 0.95) 55%, rgba(153, 27, 27, 0.98) 100%)',
+      glowColor: 'rgba(239, 68, 68, 0.65)',
+      waveColor: '#EF4444',
+      waveColorDark: '#B91C1C',
       textColor: 'text-[var(--color-danger)]',
       valueStr: formatCompactBdt(shortfallBdt),
       sublabel: isCovered ? 'Target Met' : 'Shortfall',
@@ -74,9 +172,11 @@ export function CostRecoveryPie({
       id: 'recovered',
       title: 'Recovered',
       pct: Math.round(recoveredPct),
-      targetFill: recoveredPct,
-      offset: circumference - (recoveredPct / 100) * circumference,
-      strokeColor: 'var(--color-primary)',
+      liquidColor: 'var(--color-primary)',
+      liquidGradient: 'linear-gradient(180deg, rgba(87, 194, 122, 0.90) 0%, rgba(31, 151, 73, 0.95) 55%, rgba(20, 83, 45, 0.98) 100%)',
+      glowColor: 'rgba(87, 194, 122, 0.65)',
+      waveColor: 'var(--color-primary)',
+      waveColorDark: 'var(--color-success)',
       textColor: 'text-[var(--color-primary)]',
       valueStr: formatCompactBdt(totalIncome),
       sublabel: 'Income',
@@ -85,70 +185,164 @@ export function CostRecoveryPie({
       id: 'profit',
       title: 'Profit',
       pct: Math.round(profitPct),
-      targetFill: profitPct,
-      offset: isCovered && profitPct > 0 
-        ? circumference - (Math.min(profitPct, 100) / 100) * circumference 
-        : circumference,
-      strokeColor: isCovered && profitPct > 0 ? 'var(--color-success)' : 'var(--color-border)',
-      textColor: isCovered && profitPct > 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-[var(--color-text-muted)]',
-      valueColor: 'text-emerald-600 dark:text-emerald-400',
+      liquidColor: '#10B981',
+      liquidGradient: 'linear-gradient(180deg, rgba(16, 185, 129, 0.90) 0%, rgba(5, 150, 105, 0.95) 55%, rgba(4, 120, 87, 0.98) 100%)',
+      glowColor: 'rgba(16, 185, 129, 0.65)',
+      waveColor: '#10B981',
+      waveColorDark: '#047857',
+      textColor: isCovered && profitPct > 0 ? 'text-emerald-400' : 'text-[var(--color-text-muted)]',
+      valueColor: isCovered && profitPct > 0 ? 'text-emerald-400' : 'text-[var(--color-text-muted)]',
       valueStr: isCovered && profitBdt > 0 ? formatCompactBdt(profitBdt) : 'BDT 0',
       sublabel: isCovered && profitPct > 0 ? 'Net Margin' : 'Deficit',
     },
   ];
 
   return (
-    <div className={cn("flex flex-col justify-center w-full h-full relative select-none py-0.5 sm:py-1", className)}>
-      {/* 3 Donut Columns Grid (Spanning full length from left to right, generously filling the card) */}
-      <div className="grid grid-cols-3 gap-1 min-[360px]:gap-2 sm:gap-3 w-full items-center">
-        {donuts.map((item) => (
+    <div 
+      className={cn("flex flex-col justify-center w-full h-full relative select-none py-1 sm:py-1.5 touch-none cursor-grab active:cursor-grabbing", className)}
+      onClick={handleContainerClick}
+      onPointerMove={handlePointerMove}
+      onPointerLeave={handlePointerLeave}
+    >
+      {/* Inline styles for butter-smooth 60fps GPU fluid wave and bubble animations */}
+      <style dangerouslySetInnerHTML={{ __html: `
+        @keyframes jarWaveA {
+          0% { transform: translateX(0); }
+          50% { transform: translateX(-40px); }
+          100% { transform: translateX(0); }
+        }
+        @keyframes jarWaveB {
+          0% { transform: translateX(-40px); }
+          50% { transform: translateX(0); }
+          100% { transform: translateX(-40px); }
+        }
+        @keyframes jarBubbleA {
+          0% { transform: translateY(0) scale(0.6); opacity: 0; }
+          40% { opacity: 0.7; }
+          80% { opacity: 0.4; }
+          100% { transform: translateY(-40px) scale(1); opacity: 0; }
+        }
+        @keyframes jarBubbleB {
+          0% { transform: translateY(0) scale(0.5); opacity: 0; }
+          45% { opacity: 0.8; }
+          85% { opacity: 0.3; }
+          100% { transform: translateY(-55px) scale(1.1); opacity: 0; }
+        }
+      `}} />
+
+      {/* 3 Animated Glass Liquid Jars Grid */}
+      <div className="grid grid-cols-3 gap-2 min-[360px]:gap-3 sm:gap-4 w-full items-end justify-center">
+        {jars.map((item) => (
           <div 
             key={item.id} 
-            className="flex flex-col items-center justify-center text-center min-w-0 px-0.5 w-full"
+            className="flex flex-col items-center justify-end text-center min-w-0 px-0.5 w-full group"
           >
-            {/* SVG Donut Ring: Pure, Solid Circular Tracks (Scaled up on PC to generously fulfill the card) */}
-            <div className="relative w-[80px] h-[80px] min-[360px]:w-[90px] min-[360px]:h-[90px] min-[390px]:w-[96px] min-[390px]:h-[96px] sm:w-[104px] sm:h-[104px] md:w-22 md:h-22 lg:w-26 lg:h-26 xl:w-30 xl:h-30 2xl:w-34 2xl:h-34 flex items-center justify-center my-0 sm:my-0.5 md:my-1.5">
-              <svg 
-                viewBox="0 0 80 80" 
-                className="w-full h-full transform -rotate-90 overflow-visible" 
-                fill="none"
-              >
-                {/* Clean Background Circular Track */}
-                <circle
-                  cx="40"
-                  cy="40"
-                  r={radius}
-                  stroke="var(--color-border)"
-                  strokeWidth="6.5"
-                  className="opacity-30"
-                />
+            {/* The Glass Canister / Flask Container */}
+            <div className="relative w-full max-w-[76px] min-[360px]:max-w-[82px] min-[390px]:max-w-[88px] sm:max-w-[96px] md:max-w-[100px] flex flex-col items-center">
+              
+              {/* Bottle Neck / Mouth Lip */}
+              <div className="w-8 min-[360px]:w-9 sm:w-10 h-1.5 rounded-full border border-white/20 dark:border-white/15 bg-white/10 dark:bg-white/5 mx-auto mb-0.5 shadow-xs shrink-0" />
 
-                {/* Solid Animated Progress Arc with Smooth Easing (No Tip Dots, No Border Outlines) */}
-                <circle
-                  cx="40"
-                  cy="40"
-                  r={radius}
-                  stroke={item.strokeColor}
-                  strokeWidth="7"
-                  strokeDasharray={circumference}
-                  strokeDashoffset={animated ? item.offset : circumference}
-                  strokeLinecap="round"
-                  style={{
-                    transition: 'stroke-dashoffset 1.4s cubic-bezier(0.16, 1, 0.3, 1)'
+              {/* Glass Canister Main Cylinder */}
+              <div className="relative w-full h-[104px] min-[360px]:h-[114px] min-[390px]:h-[120px] sm:h-[130px] md:h-[138px] rounded-t-lg rounded-b-2xl border border-white/20 dark:border-white/15 bg-slate-900/40 dark:bg-black/35 backdrop-blur-xs overflow-hidden shadow-[inset_0_2px_6px_rgba(255,255,255,0.06),0_4px_16px_rgba(0,0,0,0.3)]">
+                
+                {/* Measuring Tick Marks on Left Glass Wall */}
+                <div className="absolute left-1.5 top-[25%] w-1.5 h-[1px] bg-white/20 pointer-events-none z-20" />
+                <div className="absolute left-1.5 top-[50%] w-2.5 h-[1px] bg-white/30 pointer-events-none z-20" />
+                <div className="absolute left-1.5 top-[75%] w-1.5 h-[1px] bg-white/20 pointer-events-none z-20" />
+
+                {/* Left Specular Curved Glass Shine */}
+                <div className="absolute left-1 top-1.5 bottom-2 w-1.5 bg-gradient-to-r from-white/25 via-white/10 to-transparent rounded-full pointer-events-none z-20" />
+                
+                {/* Right Specular Subtle Highlight */}
+                <div className="absolute right-1 top-2 bottom-3 w-[1px] bg-white/10 pointer-events-none z-20" />
+
+                {/* Living Physics Liquid (Tilt & slosh driven by gyroscope and inertia) */}
+                <div 
+                  ref={(el) => {
+                    if (el) {
+                      liquidRefs.current[item.id] = el;
+                    }
                   }}
-                />
-              </svg>
+                  className="absolute overflow-hidden transition-[height] duration-1000 ease-out pointer-events-none"
+                  style={{
+                    left: '-32px',
+                    right: '-32px',
+                    bottom: '-35px',
+                    width: 'calc(100% + 64px)',
+                    height: animated ? `calc(${Math.min(item.pct, 100)}% + 35px)` : '0%',
+                    transformOrigin: '50% 0px',
+                    backgroundColor: item.pct > 0 ? item.liquidColor : 'transparent',
+                    backgroundImage: item.pct > 0 ? item.liquidGradient : 'none',
+                    boxShadow: item.pct > 0 ? `0 -2px 14px ${item.glowColor}, inset 0 2px 4px rgba(255,255,255,0.35)` : 'none'
+                  }}
+                >
+                  {/* Surface Animated Waves (Only rendered when there is liquid) */}
+                  {item.pct > 0 && (
+                    <>
+                      {/* Back Wave: Parallax Secondary Fluid Movement */}
+                      <div 
+                        className="absolute -top-2 left-0 w-[240%] h-3.5 opacity-45 pointer-events-none"
+                        style={{ animation: 'jarWaveB 2.8s ease-in-out infinite' }}
+                      >
+                        <svg viewBox="0 0 240 20" preserveAspectRatio="none" className="w-full h-full fill-current" style={{ color: item.waveColorDark }}>
+                          <path d="M 0 10 Q 30 0 60 10 T 120 10 T 180 10 T 240 10 V 20 H 0 Z" />
+                        </svg>
+                      </div>
 
-              {/* Center Animated Metric Percentage (Unified 18px on mobile, responsive on PC) */}
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <span className={cn("text-[18px] sm:text-2xl md:text-lg lg:text-xl xl:text-2xl 2xl:text-3xl font-black tracking-tight leading-none", item.textColor)}>
-                  <AnimatedNumber value={item.pct} suffix="%" />
-                </span>
+                      {/* Front Wave: Main Surface Sloshing Motion */}
+                      <div 
+                        className="absolute -top-2 left-0 w-[240%] h-3 pointer-events-none"
+                        style={{ animation: 'jarWaveA 3.6s ease-in-out infinite' }}
+                      >
+                        <svg viewBox="0 0 240 20" preserveAspectRatio="none" className="w-full h-full fill-current" style={{ color: item.waveColor }}>
+                          <path d="M 0 10 Q 30 18 60 10 T 120 10 T 180 10 T 240 10 V 20 H 0 Z" />
+                        </svg>
+                      </div>
+
+                      {/* Rising Micro Bubbles */}
+                      <span 
+                        className="absolute bottom-10 left-[28%] w-1.5 h-1.5 rounded-full bg-white/45 pointer-events-none" 
+                        style={{ animation: 'jarBubbleA 3.2s ease-in infinite' }} 
+                      />
+                      <span 
+                        className="absolute bottom-11 right-[32%] w-1 h-1 rounded-full bg-white/55 pointer-events-none" 
+                        style={{ animation: 'jarBubbleB 2.6s ease-in infinite 0.9s' }} 
+                      />
+                    </>
+                  )}
+                </div>
+
+                {/* Percentage Floating Prominently Over the Jar */}
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-30">
+                  <div className={cn(
+                    "px-1.5 py-0.5 rounded-md flex items-center justify-center select-none transition-all",
+                    item.pct > 0 
+                      ? "bg-black/35 backdrop-blur-[2px] shadow-[0_2px_8px_rgba(0,0,0,0.5)] border border-white/10" 
+                      : "bg-transparent"
+                  )}>
+                    <span className={cn(
+                      "text-[18px] sm:text-[20px] md:text-[22px] font-black tracking-tight leading-none [filter:drop-shadow(0_1px_2px_rgba(0,0,0,0.85))]",
+                      item.pct > 0 ? "text-white" : "text-slate-400/80 dark:text-slate-500"
+                    )}>
+                      <AnimatedNumber value={item.pct} suffix="%" />
+                    </span>
+                  </div>
+                </div>
+
+                {/* Empty State Text Indicator (When 0% Liquid) */}
+                {item.pct === 0 && (
+                  <div className="absolute bottom-3 inset-x-0 flex items-center justify-center pointer-events-none z-20">
+                    <span className="text-[8px] font-bold uppercase tracking-widest text-slate-500/70 select-none">
+                      Dry
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
 
-            {/* Label, BDT Value, and Context Subtitle (Aligned to unified mobile typographic scale) */}
-            <div className="flex flex-col items-center w-full mt-1 min-[360px]:mt-1.5 md:mt-2">
+            {/* Label, Value, and Sublabel Underneath */}
+            <div className="flex flex-col items-center w-full mt-2">
               <span className="text-[10px] sm:text-xs md:text-[10.5px] lg:text-[11.5px] xl:text-xs font-bold uppercase tracking-wider text-[var(--color-text-main)] whitespace-nowrap leading-tight text-center">
                 {item.title}
               </span>
@@ -168,7 +362,7 @@ export function CostRecoveryPie({
 
       {/* Card Footer: Hidden on mobile, or when hideFooter is set on PC */}
       {!hideFooter && (
-        <div className="hidden md:flex flex-col items-center text-center w-full mt-2 sm:mt-2.5 pt-1.5 border-t border-[var(--color-border)]/40 shrink-0">
+        <div className="hidden md:flex flex-col items-center text-center w-full mt-3 pt-2 border-t border-[var(--color-border)]/40 shrink-0">
           <h4 className="text-[11px] sm:text-xs font-bold uppercase tracking-widest text-[var(--color-text-secondary)] leading-none text-center">
             Cost Recovery & Margin
           </h4>
