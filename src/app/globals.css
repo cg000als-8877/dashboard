@@ -512,7 +512,7 @@ html[data-theme="ember-tide"][data-mode="light"] {
    Secondary: #5f5490 (Dusty Grape)
    Success:   #1f9749 (Medium Jungle)
    Warning:   #febf03 (Amber Gold)
-   Danger:    #f7a095 (Sweet Salmon)
+   Danger:    #EF4444 (Blood Red)
    Bg Dark:   #0e0b1c (Deep Space Indigo)
 ═══════════════════════════════════════════ */
 html[data-theme="jungle-nebula"] {
@@ -530,9 +530,9 @@ html[data-theme="jungle-nebula"] {
   --color-success-text: #57c27a;
   --color-success-glow: rgba(31, 151, 73, 0.25);
 
-  --color-danger: #f7a095;
-  --color-danger-text: #ffb4ab;
-  --color-danger-glow: rgba(247, 160, 149, 0.25);
+  --color-danger: #EF4444;
+  --color-danger-text: #FF5252;
+  --color-danger-glow: rgba(239, 68, 68, 0.35);
 
   --color-warning: #febf03;
   --color-warning-text: #febf03;
@@ -570,8 +570,9 @@ html[data-theme="jungle-nebula"][data-mode="dark"] {
   --color-success: #1f9749;
   --color-success-text: #57c27a;
 
-  --color-danger: #f7a095;
-  --color-danger-text: #ffb4ab;
+  --color-danger: #EF4444;
+  --color-danger-text: #FF5252;
+  --color-danger-glow: rgba(239, 68, 68, 0.35);
 
   --color-warning: #febf03;
   --color-warning-text: #febf03;
