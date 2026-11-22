@@ -206,15 +206,13 @@ export function CostRecoveryPie({
     >
       {/* Inline styles for butter-smooth 60fps GPU fluid wave and bubble animations */}
       <style dangerouslySetInnerHTML={{ __html: `
-        @keyframes jarWaveA {
-          0% { transform: translateX(0); }
-          50% { transform: translateX(-40px); }
-          100% { transform: translateX(0); }
+        @keyframes liquidWaveFront {
+          0% { transform: translate3d(0, 0, 0); }
+          100% { transform: translate3d(-50%, 0, 0); }
         }
-        @keyframes jarWaveB {
-          0% { transform: translateX(-40px); }
-          50% { transform: translateX(0); }
-          100% { transform: translateX(-40px); }
+        @keyframes liquidWaveBack {
+          0% { transform: translate3d(-50%, 0, 0); }
+          100% { transform: translate3d(0, 0, 0); }
         }
         @keyframes jarBubbleA {
           0% { transform: translateY(0) scale(0.6); opacity: 0; }
@@ -264,7 +262,7 @@ export function CostRecoveryPie({
                       liquidRefs.current[item.id] = el;
                     }
                   }}
-                  className="absolute overflow-hidden transition-[height] duration-1000 ease-out pointer-events-none"
+                  className="absolute pointer-events-none transition-[height] duration-1000 ease-out"
                   style={{
                     left: '-32px',
                     right: '-32px',
@@ -272,43 +270,64 @@ export function CostRecoveryPie({
                     width: 'calc(100% + 64px)',
                     height: animated ? `calc(${Math.min(item.pct, 100)}% + 35px)` : '0%',
                     transformOrigin: '50% 0px',
-                    backgroundColor: item.pct > 0 ? item.liquidColor : 'transparent',
-                    backgroundImage: item.pct > 0 ? item.liquidGradient : 'none',
-                    boxShadow: item.pct > 0 ? `0 -2px 14px ${item.glowColor}, inset 0 2px 4px rgba(255,255,255,0.35)` : 'none'
                   }}
                 >
-                  {/* Surface Animated Waves (Only rendered when there is liquid) */}
+                  {/* Surface Animated Waves & Liquid Body (Only rendered when there is liquid) */}
                   {item.pct > 0 && (
                     <>
-                      {/* Back Wave: Parallax Secondary Fluid Movement */}
+                      {/* Secondary Back Wave (Gentle, slow, subtle 3D depth) */}
                       <div 
-                        className="absolute -top-2 left-0 w-[240%] h-3.5 opacity-45 pointer-events-none"
-                        style={{ animation: 'jarWaveB 2.8s ease-in-out infinite' }}
+                        className="absolute -top-[6px] left-0 w-[200%] h-[9px] pointer-events-none"
+                        style={{
+                          animation: 'liquidWaveBack 7.5s linear infinite',
+                          willChange: 'transform'
+                        }}
                       >
-                        <svg viewBox="0 0 240 20" preserveAspectRatio="none" className="w-full h-full fill-current" style={{ color: item.waveColorDark }}>
-                          <path d="M 0 10 Q 30 0 60 10 T 120 10 T 180 10 T 240 10 V 20 H 0 Z" />
+                        <svg viewBox="0 0 200 10" preserveAspectRatio="none" className="w-full h-full fill-current" style={{ color: item.waveColorDark || item.liquidColor, opacity: 0.35 }}>
+                          <path d="M 0 5 C 12 8, 38 8, 50 5 C 62 2, 88 2, 100 5 C 112 8, 138 8, 150 5 C 162 2, 188 2, 200 5 V 10 H 0 Z" />
                         </svg>
                       </div>
 
-                      {/* Front Wave: Main Surface Sloshing Motion */}
+                      {/* Primary Front Wave (Gentle standard surface swell with delicate highlight) */}
                       <div 
-                        className="absolute -top-2 left-0 w-[240%] h-3 pointer-events-none"
-                        style={{ animation: 'jarWaveA 3.6s ease-in-out infinite' }}
+                        className="absolute -top-[6px] left-0 w-[200%] h-[9px] pointer-events-none z-10"
+                        style={{
+                          animation: 'liquidWaveFront 5.5s linear infinite',
+                          willChange: 'transform'
+                        }}
                       >
-                        <svg viewBox="0 0 240 20" preserveAspectRatio="none" className="w-full h-full fill-current" style={{ color: item.waveColor }}>
-                          <path d="M 0 10 Q 30 18 60 10 T 120 10 T 180 10 T 240 10 V 20 H 0 Z" />
+                        <svg viewBox="0 0 200 10" preserveAspectRatio="none" className="w-full h-full fill-current" style={{ color: item.liquidColor }}>
+                          {/* Delicate specular highlight tracing the calm wave swell */}
+                          <path 
+                            d="M 0 5 C 12 2, 38 2, 50 5 C 62 8, 88 8, 100 5 C 112 2, 138 2, 150 5 C 162 8, 188 8, 200 5" 
+                            fill="none" 
+                            stroke="rgba(255, 255, 255, 0.45)" 
+                            strokeWidth="1" 
+                            strokeLinecap="round"
+                          />
+                          <path d="M 0 5 C 12 2, 38 2, 50 5 C 62 8, 88 8, 100 5 C 112 2, 138 2, 150 5 C 162 8, 188 8, 200 5 V 10 H 0 Z" />
                         </svg>
                       </div>
 
-                      {/* Rising Micro Bubbles */}
-                      <span 
-                        className="absolute bottom-10 left-[28%] w-1.5 h-1.5 rounded-full bg-white/45 pointer-events-none" 
-                        style={{ animation: 'jarBubbleA 3.2s ease-in infinite' }} 
-                      />
-                      <span 
-                        className="absolute bottom-11 right-[32%] w-1 h-1 rounded-full bg-white/55 pointer-events-none" 
-                        style={{ animation: 'jarBubbleB 2.6s ease-in infinite 0.9s' }} 
-                      />
+                      {/* Liquid Body (Starts right where wave trough meets, fills down into the jar bottom) */}
+                      <div 
+                        className="absolute top-[1px] inset-x-0 bottom-0 pointer-events-none"
+                        style={{
+                          backgroundColor: item.liquidColor,
+                          backgroundImage: item.liquidGradient,
+                          boxShadow: `0 0 22px ${item.glowColor}, inset 0 2px 4px rgba(255,255,255,0.3)`
+                        }}
+                      >
+                        {/* Rising Micro Bubbles */}
+                        <span 
+                          className="absolute bottom-10 left-[28%] w-1.5 h-1.5 rounded-full bg-white/50 pointer-events-none" 
+                          style={{ animation: 'jarBubbleA 3.2s ease-in infinite' }} 
+                        />
+                        <span 
+                          className="absolute bottom-12 right-[32%] w-1 h-1 rounded-full bg-white/60 pointer-events-none" 
+                          style={{ animation: 'jarBubbleB 2.6s ease-in infinite 0.9s' }} 
+                        />
+                      </div>
                     </>
                   )}
                 </div>

@@ -660,7 +660,7 @@ export const BackgroundCanvas = memo(function BackgroundCanvas() {
         </div>
       )}
 
-      {/* 13. Starlight Micro-Constellation Drift */}
+      {/* 13. Starlight Cosmic Aura Glow */}
       {showStarlight && (
         <div className="absolute inset-0 overflow-hidden animate-in fade-in duration-700 pointer-events-none">
           {/* Deep Cosmic Aura Glow */}
@@ -673,49 +673,6 @@ export const BackgroundCanvas = memo(function BackgroundCanvas() {
               opacity: 0.8,
             }}
           />
-
-          {/* Twinkling Star Points */}
-          {[
-            { top: '12%', left: '18%', size: '3px', delay: '0s', dur: '2.8s' },
-            { top: '22%', left: '72%', size: '2px', delay: '1.2s', dur: '3.4s' },
-            { top: '38%', left: '35%', size: '2.5px', delay: '0.6s', dur: '2.5s' },
-            { top: '48%', left: '84%', size: '3px', delay: '1.8s', dur: '3.8s' },
-            { top: '65%', left: '14%', size: '2px', delay: '0.4s', dur: '3.1s' },
-            { top: '78%', left: '60%', size: '3px', delay: '1.5s', dur: '2.7s' },
-            { top: '15%', left: '88%', size: '2px', delay: '2.1s', dur: '3.6s' },
-            { top: '85%', left: '28%', size: '2.5px', delay: '0.9s', dur: '3.2s' },
-            { top: '32%', left: '52%', size: '3px', delay: '1.7s', dur: '2.9s' },
-            { top: '58%', left: '42%', size: '2px', delay: '2.4s', dur: '3.5s' },
-            { top: '72%', left: '80%', size: '2.5px', delay: '0.8s', dur: '3.0s' },
-            { top: '28%', left: '10%', size: '2px', delay: '1.9s', dur: '3.3s' },
-          ].map((star, i) => (
-            <div
-              key={i}
-              className="absolute rounded-full pointer-events-none animate-twinkle-star"
-              style={{
-                top: star.top,
-                left: star.left,
-                width: star.size,
-                height: star.size,
-                backgroundColor: isDark ? '#FFFFFF' : 'var(--color-primary)',
-                boxShadow: isDark 
-                  ? `0 0 6px 1px ${i % 2 === 0 ? 'var(--color-primary)' : '#60A5FA'}` 
-                  : `0 0 4px 1px var(--color-primary)`,
-                animationDelay: star.delay,
-                animationDuration: star.dur,
-              }}
-            />
-          ))}
-
-          {/* Micro Constellation Connecting Lines SVG */}
-          <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-25 dark:opacity-35" xmlns="http://www.w3.org/2000/svg">
-            <line x1="18%" y1="12%" x2="35%" y2="38%" stroke="var(--color-primary)" strokeWidth="0.75" strokeDasharray="3 3" />
-            <line x1="35%" y1="38%" x2="52%" y2="32%" stroke="var(--color-primary)" strokeWidth="0.75" strokeDasharray="3 3" />
-            <line x1="52%" y1="32%" x2="72%" y2="22%" stroke="var(--color-primary)" strokeWidth="0.75" strokeDasharray="3 3" />
-            <line x1="72%" y1="22%" x2="84%" y2="48%" stroke="var(--color-primary)" strokeWidth="0.75" strokeDasharray="3 3" />
-            <line x1="14%" y1="65%" x2="28%" y2="85%" stroke="var(--color-primary)" strokeWidth="0.75" strokeDasharray="3 3" />
-            <line x1="42%" y1="58%" x2="60%" y2="78%" stroke="var(--color-primary)" strokeWidth="0.75" strokeDasharray="3 3" />
-          </svg>
         </div>
       )}
 
@@ -735,49 +692,6 @@ export const BackgroundCanvas = memo(function BackgroundCanvas() {
               opacity: 0.85,
             }}
           />
-
-          {/* Twinkling Star Points (enlarged so they bloom softly through blur) */}
-          {[
-            { top: '12%', left: '18%', size: '7px', delay: '0s', dur: '2.8s' },
-            { top: '22%', left: '72%', size: '5px', delay: '1.2s', dur: '3.4s' },
-            { top: '38%', left: '35%', size: '6px', delay: '0.6s', dur: '2.5s' },
-            { top: '48%', left: '84%', size: '7px', delay: '1.8s', dur: '3.8s' },
-            { top: '65%', left: '14%', size: '5px', delay: '0.4s', dur: '3.1s' },
-            { top: '78%', left: '60%', size: '7px', delay: '1.5s', dur: '2.7s' },
-            { top: '15%', left: '88%', size: '5px', delay: '2.1s', dur: '3.6s' },
-            { top: '85%', left: '28%', size: '6px', delay: '0.9s', dur: '3.2s' },
-            { top: '32%', left: '52%', size: '7px', delay: '1.7s', dur: '2.9s' },
-            { top: '58%', left: '42%', size: '5px', delay: '2.4s', dur: '3.5s' },
-            { top: '72%', left: '80%', size: '6px', delay: '0.8s', dur: '3.0s' },
-            { top: '28%', left: '10%', size: '5px', delay: '1.9s', dur: '3.3s' },
-          ].map((star, i) => (
-            <div
-              key={i}
-              className="absolute rounded-full pointer-events-none animate-twinkle-star"
-              style={{
-                top: star.top,
-                left: star.left,
-                width: star.size,
-                height: star.size,
-                backgroundColor: isDark ? '#FFFFFF' : 'var(--color-primary)',
-                boxShadow: isDark 
-                  ? `0 0 14px 4px ${i % 2 === 0 ? 'var(--color-primary)' : '#60A5FA'}` 
-                  : `0 0 10px 3px var(--color-primary)`,
-                animationDelay: star.delay,
-                animationDuration: star.dur,
-              }}
-            />
-          ))}
-
-          {/* Micro Constellation Connecting Lines SVG */}
-          <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-40 dark:opacity-55" xmlns="http://www.w3.org/2000/svg">
-            <line x1="18%" y1="12%" x2="35%" y2="38%" stroke="var(--color-primary)" strokeWidth="2.5" strokeDasharray="3 3" />
-            <line x1="35%" y1="38%" x2="52%" y2="32%" stroke="var(--color-primary)" strokeWidth="2.5" strokeDasharray="3 3" />
-            <line x1="52%" y1="32%" x2="72%" y2="22%" stroke="var(--color-primary)" strokeWidth="2.5" strokeDasharray="3 3" />
-            <line x1="72%" y1="22%" x2="84%" y2="48%" stroke="var(--color-primary)" strokeWidth="2.5" strokeDasharray="3 3" />
-            <line x1="14%" y1="65%" x2="28%" y2="85%" stroke="var(--color-primary)" strokeWidth="2.5" strokeDasharray="3 3" />
-            <line x1="42%" y1="58%" x2="60%" y2="78%" stroke="var(--color-primary)" strokeWidth="2.5" strokeDasharray="3 3" />
-          </svg>
         </div>
       )}
 
