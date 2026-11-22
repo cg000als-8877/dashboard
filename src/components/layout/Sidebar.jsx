@@ -142,7 +142,7 @@ export default function Sidebar({ onClose }) {
         
         {/* Brand Header (Stroke-free) */}
         <div className={cn(
-          "py-4 px-3 flex items-center justify-between shrink-0 mb-1 select-none", 
+          "py-3.5 px-3 flex items-center justify-between shrink-0 mb-1 select-none", 
           isCollapsed ? "justify-center px-1" : ""
         )}>
           <Link href="/" className="flex items-center gap-2.5 group cursor-pointer">
@@ -160,6 +160,38 @@ export default function Sidebar({ onClose }) {
               </div>
             )}
           </Link>
+
+          {/* Light / Dark Mode Switcher (Clean, stroke-free top-right positioning) */}
+          {!isCollapsed && (
+            <div className="flex items-center p-0.5 bg-[var(--color-surface)]/70 rounded-lg gap-0.5">
+              <button
+                type="button"
+                onClick={() => setMode('light')}
+                title="Light Mode"
+                className={cn(
+                  "p-1.5 rounded-md transition-all cursor-pointer border-0 outline-none flex items-center justify-center",
+                  mode === 'light' 
+                    ? "bg-[var(--color-bg-card)] text-amber-500 shadow-xs" 
+                    : "text-[var(--color-text-muted)] hover:text-amber-500 hover:bg-[var(--color-surface-hover)]"
+                )}
+              >
+                <Sun size={14} />
+              </button>
+              <button
+                type="button"
+                onClick={() => setMode('dark')}
+                title="Dark Mode"
+                className={cn(
+                  "p-1.5 rounded-md transition-all cursor-pointer border-0 outline-none flex items-center justify-center",
+                  mode === 'dark' 
+                    ? "bg-[var(--color-bg-card)] text-indigo-400 shadow-xs" 
+                    : "text-[var(--color-text-muted)] hover:text-indigo-400 hover:bg-[var(--color-surface-hover)]"
+                )}
+              >
+                <Moon size={14} />
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Navigation Section */}
@@ -339,67 +371,35 @@ export default function Sidebar({ onClose }) {
           {/* Expanded Appearance & Styles (Click to switch Themes vs Backgrounds) */}
           {!isCollapsed && (
             <div className="space-y-2 py-0.5">
-              {/* Segmented Switcher: Themes vs Backgrounds + Mode Toggle */}
-              <div className="flex items-center justify-between gap-1 bg-[var(--color-surface)]/70 p-1 rounded-xl">
-                <div className="flex items-center gap-1 flex-1">
-                  <button
-                    type="button"
-                    onClick={() => setAppearanceTab('themes')}
-                    className={cn(
-                      "flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all cursor-pointer border-0 outline-none select-none",
-                      appearanceTab === 'themes'
-                        ? "bg-[var(--color-bg-card)] text-[var(--color-primary)] shadow-sm font-extrabold"
-                        : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)]"
-                    )}
-                  >
-                    <Palette size={12} />
-                    <span>Themes</span>
-                  </button>
+              {/* Segmented Switcher: Themes vs Backgrounds */}
+              <div className="flex items-center gap-1 bg-[var(--color-surface)]/70 p-1 rounded-xl w-full">
+                <button
+                  type="button"
+                  onClick={() => setAppearanceTab('themes')}
+                  className={cn(
+                    "flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all cursor-pointer border-0 outline-none select-none",
+                    appearanceTab === 'themes'
+                      ? "bg-[var(--color-bg-card)] text-[var(--color-primary)] shadow-sm font-extrabold"
+                      : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)]"
+                  )}
+                >
+                  <Palette size={12} />
+                  <span>Themes</span>
+                </button>
 
-                  <button
-                    type="button"
-                    onClick={() => setAppearanceTab('backgrounds')}
-                    className={cn(
-                      "flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all cursor-pointer border-0 outline-none select-none",
-                      appearanceTab === 'backgrounds'
-                        ? "bg-[var(--color-bg-card)] text-[var(--color-primary)] shadow-sm font-extrabold"
-                        : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)]"
-                    )}
-                  >
-                    <Sparkles size={12} />
-                    <span>Backgrounds</span>
-                  </button>
-                </div>
-
-                {/* Day / Night Mode Switcher (Stroke-free) */}
-                <div className="flex items-center gap-0.5 shrink-0 pl-1">
-                  <button
-                    type="button"
-                    onClick={() => setMode('light')}
-                    title="Light Mode"
-                    className={cn(
-                      "p-1.5 rounded-lg transition-all cursor-pointer border-0 outline-none flex items-center justify-center",
-                      mode === 'light' 
-                        ? "bg-[var(--color-bg-card)] text-amber-500 shadow-sm" 
-                        : "text-[var(--color-text-muted)] hover:text-amber-500 hover:bg-[var(--color-surface-hover)]"
-                    )}
-                  >
-                    <Sun size={13} />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setMode('dark')}
-                    title="Dark Mode"
-                    className={cn(
-                      "p-1.5 rounded-lg transition-all cursor-pointer border-0 outline-none flex items-center justify-center",
-                      mode === 'dark' 
-                        ? "bg-[var(--color-bg-card)] text-indigo-400 shadow-sm" 
-                        : "text-[var(--color-text-muted)] hover:text-indigo-400 hover:bg-[var(--color-surface-hover)]"
-                    )}
-                  >
-                    <Moon size={13} />
-                  </button>
-                </div>
+                <button
+                  type="button"
+                  onClick={() => setAppearanceTab('backgrounds')}
+                  className={cn(
+                    "flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all cursor-pointer border-0 outline-none select-none",
+                    appearanceTab === 'backgrounds'
+                      ? "bg-[var(--color-bg-card)] text-[var(--color-primary)] shadow-sm font-extrabold"
+                      : "text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] hover:bg-[var(--color-surface-hover)]"
+                  )}
+                >
+                  <Sparkles size={12} />
+                  <span>Backgrounds</span>
+                </button>
               </div>
 
               {/* Sub-label showing current active choice */}
