@@ -329,17 +329,12 @@ export function CostRecoveryPie({
 
                 {/* Percentage Floating Prominently Over the Jar */}
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-30">
-                  <div className={cn(
-                    "px-1.5 py-0.5 rounded-md flex items-center justify-center select-none transition-all",
-                    item.pct > 0 
-                      ? "bg-black/30 dark:bg-black/40 backdrop-blur-[2px] shadow-[0_2px_6px_rgba(0,0,0,0.3)] border border-white/20 dark:border-white/10" 
-                      : "bg-transparent"
-                  )}>
+                  <div className="flex items-center justify-center select-none bg-transparent p-0 border-0 shadow-none">
                     <span className={cn(
                       "text-[15px] min-[360px]:text-[16px] sm:text-[19px] md:text-[22px] font-black tracking-tight leading-none",
                       item.pct > 0 
-                        ? "text-white dark:[filter:drop-shadow(0_1px_2px_rgba(0,0,0,0.85))]" 
-                        : "text-slate-600 dark:text-slate-400"
+                        ? "text-white [filter:drop-shadow(0_1px_2px_rgba(0,0,0,0.5))]" 
+                        : "text-slate-600 dark:text-slate-300"
                     )}>
                       <AnimatedNumber value={item.pct} suffix="%" />
                     </span>
