@@ -1,70 +1,73 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect, useRef, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { usePathname } from 'next/navigation';
 
 const IdleContext = createContext({
   isIdle: false,
-  resetIdle: () => {},
-  setIsIdle: () => {}
+  isBarsHidden: false,
+  toggleBars: () => {},
+  showBars: () => {},
+  hideBars: () => {},
+  resetIdle: () => {}
 });
 
 export function IdleProvider({ children }) {
-  const [isIdle, setIsIdle] = useState(false);
-  const idleTimerRef = useRef(null);
+  const [isBarsHidden, setIsBarsHidden] = useState(false);
   const pathname = usePathname();
 
-  const resetIdle = useCallback(() => {
-    setIsIdle(false);
-    if (idleTimerRef.current) {
-      clearTimeout(idleTimerRef.current);
-    }
-    idleTimerRef.current = setTimeout(() => {
-      setIsIdle(true);
-    }, 5000);
+  // Reset bars to visible whenever user navigates to a new page
+  useEffect(() => {
+    setIsBarsHidden(false);
+  }, [pathname]);
+
+  const toggleBars = useCallback(() => {
+    setIsBarsHidden((prev) => !prev);
   }, []);
 
-  // Reset idle state on route change
-  useEffect(() => {
-    resetIdle();
-  }, [pathname, resetIdle]);
+  const showBars = useCallback(() => {
+    setIsBarsHidden(false);
+  }, []);
 
-  // Global user activity tracking across mouse, touch, scroll, keyboard
-  useEffect(() => {
-    idleTimerRef.current = setTimeout(() => {
-      setIsIdle(true);
-    }, 5000);
+  const hideBars = useCallback(() => {
+    setIsBarsHidden(true);
+  }, []);
 
-    const handleUserActivity = () => {
-      setIsIdle(false);
-      if (idleTimerRef.current) {
-        clearTimeout(idleTimerRef.current);
+  // Click anywhere on the screen to toggle bars (click once -> hides, click again -> appears)
+  useEffect(() => {
+    const handleDocumentClick = (e) => {
+      // 1. Ignore clicks inside the top bar header or bottom navigation bar
+      if (e.target && e.target.closest && e.target.closest('header, nav, [data-no-bars-toggle]')) {
+        return;
       }
-      idleTimerRef.current = setTimeout(() => {
-        setIsIdle(true);
-      }, 5000);
+
+      // 2. Toggle bars on click anywhere on the screen
+      setIsBarsHidden((prev) => {
+        // If bars are currently visible and click is on an interactive button/link/input, let the action run without hiding bars
+        if (!prev && e.target && e.target.closest && e.target.closest('button, a, input, select, textarea, [role="button"]')) {
+          return prev;
+        }
+        // Otherwise, toggle (if hidden -> show, if visible -> hide)
+        return !prev;
+      });
     };
 
-    const events = [
-      'mousedown', 'mousemove', 'pointerdown', 'pointermove', 
-      'touchstart', 'touchmove', 'scroll', 'keydown', 'wheel', 'click'
-    ];
-    events.forEach((evt) => {
-      window.addEventListener(evt, handleUserActivity, { passive: true, capture: true });
-      document.addEventListener(evt, handleUserActivity, { passive: true, capture: true });
-    });
+    document.addEventListener('click', handleDocumentClick, { capture: true });
 
     return () => {
-      if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
-      events.forEach((evt) => {
-        window.removeEventListener(evt, handleUserActivity, { capture: true });
-        document.removeEventListener(evt, handleUserActivity, { capture: true });
-      });
+      document.removeEventListener('click', handleDocumentClick, { capture: true });
     };
   }, []);
 
   return (
-    <IdleContext.Provider value={{ isIdle, resetIdle, setIsIdle }}>
+    <IdleContext.Provider value={{
+      isIdle: isBarsHidden,
+      isBarsHidden,
+      toggleBars,
+      showBars,
+      hideBars,
+      resetIdle: showBars
+    }}>
       {children}
     </IdleContext.Provider>
   );
