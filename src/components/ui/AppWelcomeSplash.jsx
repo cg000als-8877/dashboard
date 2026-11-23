@@ -6,9 +6,6 @@ import { usePathname } from 'next/navigation';
 export function AppWelcomeSplash() {
   const pathname = usePathname();
 
-  // Never mount or render splash on the login screen
-  if (pathname === '/login') return null;
-
   const [visible, setVisible] = useState(true);
   const [fading, setFading] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -54,7 +51,8 @@ export function AppWelcomeSplash() {
     };
   }, []);
 
-  if (!mounted || !visible) return null;
+  // Never render splash on the login screen or if unmounted / dismissed
+  if (pathname === '/login' || !mounted || !visible) return null;
 
   return (
     <div 

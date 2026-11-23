@@ -3,6 +3,12 @@
 import React, { useMemo, useState, useEffect } from "react";
 import { useTheme } from '@/components/ThemeProvider';
 
+// Deterministic pseudo-random helper for pure component rendering
+const seededRandom = (seed) => {
+  const x = Math.sin(seed * 12.9898 + 78.233) * 43758.5453;
+  return x - Math.floor(x);
+};
+
 export function TitanicAnimation({ 
   netProfit, 
   recoveryPercentage, 
@@ -142,12 +148,12 @@ export function TitanicAnimation({
 
   const stars = useMemo(() => {
     return Array.from({ length: 60 }).map((_, i) => ({
-      cx: Math.random() * 8000 - 4000,
-      cy: Math.random() * 700, 
-      r: Math.random() * 1.5 + 0.5,
-      opacity: Math.random() * 0.8 + 0.2,
-      delay: Math.random() * 3,
-      duration: 2 + Math.random() * 4
+      cx: seededRandom(i * 6 + 1) * 8000 - 4000,
+      cy: seededRandom(i * 6 + 2) * 700, 
+      r: seededRandom(i * 6 + 3) * 1.5 + 0.5,
+      opacity: seededRandom(i * 6 + 4) * 0.8 + 0.2,
+      delay: seededRandom(i * 6 + 5) * 3,
+      duration: 2 + seededRandom(i * 6 + 6) * 4
     }));
   }, []);
 
@@ -177,13 +183,13 @@ export function TitanicAnimation({
       {Array.from({length: 15}).map((_, i) => (
         <path 
           key={`shoot1-${i}`}
-          d={`M ${Math.random() * 8000 - 4000} ${Math.random() * 200} l -150 150`}
+          d={`M ${seededRandom(i * 4 + 1) * 8000 - 4000} ${seededRandom(i * 4 + 2) * 200} l -150 150`}
           stroke="url(#shooting-grad)"
           strokeWidth="2"
           strokeLinecap="round"
           opacity="0"
           style={{
-            animation: `shooting-star ${3 + Math.random() * 5}s infinite ease-in ${Math.random() * 15}s`
+            animation: `shooting-star ${3 + seededRandom(i * 4 + 3) * 5}s infinite ease-in ${seededRandom(i * 4 + 4) * 15}s`
           }}
         />
       ))}
@@ -327,9 +333,9 @@ export function TitanicAnimation({
                 key={`hbl-${i}`} 
                 cx={(i % 4) * 6 - 9} 
                 cy={(i % 3) * 4 - 4} 
-                r={Math.random() * 2.5 + 1} 
+                r={seededRandom(i * 3 + 1) * 2.5 + 1} 
                 fill="rgba(255,255,255,0.7)"
-                style={{ animation: `hole-bubble ${1 + Math.random()}s infinite linear ${Math.random() * 2}s` }}
+                style={{ animation: `hole-bubble ${1 + seededRandom(i * 3 + 2)}s infinite linear ${seededRandom(i * 3 + 3) * 2}s` }}
               />
             ))}
           </g>
@@ -619,21 +625,24 @@ export function TitanicAnimation({
                 
                 return (
                   <g key={`smoke-plume-${funnelIdx}`} transform={`translate(${cx}, 30)`}>
-                    {Array.from({length: particleCount}).map((_, i) => (
-                      <circle 
-                        key={`sm-${i}`}
-                        cx={(Math.random() - 0.5) * 10} 
-                        cy={(Math.random() - 0.5) * 10} 
-                        r={Math.random() * 4 + 6}
-                        fill={`rgba(${180 + Math.random()*75}, ${180 + Math.random()*75}, ${180 + Math.random()*75}, ${baseOpacity})`}
-                        style={{ 
-                          '--drift-x': `${driftX - Math.random() * 30}px`,
-                          '--drift-y': `${driftY - Math.random() * 20}px`,
-                          '--scale-to': scaleTo + Math.random() * 1.5,
-                          animation: `funnel-smoke ${durationBase + Math.random() * 1.5}s infinite ease-out ${Math.random() * -4}s` 
-                        }} 
-                      />
-                    ))}
+                    {Array.from({length: particleCount}).map((_, i) => {
+                      const seedBase = funnelIdx * 50 + i * 8;
+                      return (
+                        <circle 
+                          key={`sm-${i}`}
+                          cx={(seededRandom(seedBase + 1) - 0.5) * 10} 
+                          cy={(seededRandom(seedBase + 2) - 0.5) * 10} 
+                          r={seededRandom(seedBase + 3) * 4 + 6}
+                          fill={`rgba(${180 + seededRandom(seedBase + 4)*75}, ${180 + seededRandom(seedBase + 5)*75}, ${180 + seededRandom(seedBase + 6)*75}, ${baseOpacity})`}
+                          style={{ 
+                            '--drift-x': `${driftX - seededRandom(seedBase + 7) * 30}px`,
+                            '--drift-y': `${driftY - seededRandom(seedBase + 8) * 20}px`,
+                            '--scale-to': scaleTo + seededRandom(seedBase + 9) * 1.5,
+                            animation: `funnel-smoke ${durationBase + seededRandom(seedBase + 10) * 1.5}s infinite ease-out ${seededRandom(seedBase + 11) * -4}s` 
+                          }} 
+                        />
+                      );
+                    })}
                   </g>
                 );
               })}
@@ -656,11 +665,11 @@ export function TitanicAnimation({
                    {Array.from({length: 40}).map((_, i) => (
                      <circle 
                        key={`fb-${i}`} 
-                       cx={(Math.random() - 0.5) * 200} 
-                       cy={(Math.random() - 0.5) * 60} 
-                       r={Math.random() * 6 + 2} 
+                       cx={(seededRandom(i * 5 + 1) - 0.5) * 200} 
+                       cy={(seededRandom(i * 5 + 2) - 0.5) * 60} 
+                       r={seededRandom(i * 5 + 3) * 6 + 2} 
                        fill="rgba(255, 255, 255, 0.7)"
-                       style={{ animation: `hole-bubble ${1 + Math.random()}s infinite linear ${Math.random() * 2}s` }}
+                       style={{ animation: `hole-bubble ${1 + seededRandom(i * 5 + 4)}s infinite linear ${seededRandom(i * 5 + 5) * 2}s` }}
                      />
                    ))}
                  </g>
@@ -669,11 +678,11 @@ export function TitanicAnimation({
                    {Array.from({length: 30}).map((_, i) => (
                      <circle 
                        key={`bb-${i}`} 
-                       cx={(Math.random() - 0.5) * 150} 
-                       cy={(Math.random() - 0.5) * 60} 
-                       r={Math.random() * 5 + 2} 
+                       cx={(seededRandom(i * 5 + 10) - 0.5) * 150} 
+                       cy={(seededRandom(i * 5 + 11) - 0.5) * 60} 
+                       r={seededRandom(i * 5 + 12) * 5 + 2} 
                        fill="rgba(255, 255, 255, 0.6)"
-                       style={{ animation: `hole-bubble ${1.5 + Math.random()}s infinite linear ${Math.random() * 2}s` }}
+                       style={{ animation: `hole-bubble ${1.5 + seededRandom(i * 5 + 13)}s infinite linear ${seededRandom(i * 5 + 14) * 2}s` }}
                      />
                    ))}
                  </g>
@@ -688,15 +697,15 @@ export function TitanicAnimation({
             
             {/* Seaweed / Grass */}
             {Array.from({length: 45}).map((_, i) => {
-              const xPos = -400 + Math.random() * 2000;
-              const yPos = 770 + Math.random() * 50;
+              const xPos = -400 + seededRandom(i * 3 + 1) * 2000;
+              const yPos = 770 + seededRandom(i * 3 + 2) * 50;
               return (
                 <g key={`weed-${i}`}>
                   <path 
                     d={`M ${xPos} ${yPos} Q ${xPos + 15} ${yPos - 40} ${xPos - 5} ${yPos - 80} T ${xPos + 10} ${yPos - 120}`} 
                     fill="none" 
                     stroke={isDay ? "#4caf50" : "#1e2e18"} 
-                    strokeWidth={Math.random() * 3 + 2} 
+                    strokeWidth={seededRandom(i * 3 + 3) * 3 + 2} 
                     strokeLinecap="round"
                   />
                 </g>
@@ -705,12 +714,12 @@ export function TitanicAnimation({
 
             {/* Glowing Jellyfish (Night Only) */}
             {!isDay && Array.from({length: 12}).map((_, i) => {
-              const x = (Math.random() * 8000) - 4000;
-              const y = 900 + Math.random() * 400;
-              const delay = Math.random() * -20;
-              const duration = 15 + Math.random() * 10;
-              const scale = Math.random() * 0.5 + 0.5;
-              const colorBase = Math.random() > 0.5 ? "0, 255, 255" : "255, 0, 255";
+              const x = (seededRandom(i * 8 + 1) * 8000) - 4000;
+              const y = 900 + seededRandom(i * 8 + 2) * 400;
+              const delay = seededRandom(i * 8 + 3) * -20;
+              const duration = 15 + seededRandom(i * 8 + 4) * 10;
+              const scale = seededRandom(i * 8 + 5) * 0.5 + 0.5;
+              const colorBase = seededRandom(i * 8 + 6) > 0.5 ? "0, 255, 255" : "255, 0, 255";
               
               return (
                 <g key={`jelly-${i}`} transform={`translate(${x}, ${y}) scale(${scale})`}>
@@ -721,7 +730,7 @@ export function TitanicAnimation({
                       <path d="M -20 0 Q -10 5 0 0 Q 10 5 20 0" fill={`rgba(${colorBase}, 0.8)`} />
                       {/* Tentacles */}
                       {Array.from({length: 6}).map((_, j) => (
-                        <path key={`tent-${j}`} d={`M ${-15 + j*6} 0 Q ${-12 + j*6} 20 ${-18 + j*6} 40 T ${-15 + j*6} 80`} fill="none" stroke={`rgba(${colorBase}, 0.6)`} strokeWidth="1.5" style={{ animation: `seaweed-sway ${2 + Math.random()}s infinite alternate ease-in-out ${Math.random()}s` }} />
+                        <path key={`tent-${j}`} d={`M ${-15 + j*6} 0 Q ${-12 + j*6} 20 ${-18 + j*6} 40 T ${-15 + j*6} 80`} fill="none" stroke={`rgba(${colorBase}, 0.6)`} strokeWidth="1.5" style={{ animation: `seaweed-sway ${2 + seededRandom(i * 8 + j + 7)}s infinite alternate ease-in-out ${seededRandom(i * 8 + j + 8)}s` }} />
                       ))}
                     </g>
                   </g>
@@ -736,11 +745,11 @@ export function TitanicAnimation({
               {Array.from({length: isSurplus ? 45 : 30}).map((_, i) => (
                 <circle 
                   key={`sw-${i}`} 
-                  cx={(Math.random() - 0.5) * (isSurplus ? 55 : 40)} 
-                  cy={(Math.random() - 0.5) * 20} 
-                  r={Math.random() * (isSurplus ? 8 : 6) + 3} 
+                  cx={(seededRandom(i * 5 + 1) - 0.5) * (isSurplus ? 55 : 40)} 
+                  cy={(seededRandom(i * 5 + 2) - 0.5) * 20} 
+                  r={seededRandom(i * 5 + 3) * (isSurplus ? 8 : 6) + 3} 
                   fill={isSurplus ? "rgba(255, 230, 160, 0.9)" : "rgba(255, 255, 255, 0.8)"}
-                  style={{ animation: `water-splash ${isSurplus ? '0.7s' : '1s'} infinite linear ${Math.random() * 1.5}s` }}
+                  style={{ animation: `water-splash ${isSurplus ? '0.7s' : '1s'} infinite linear ${seededRandom(i * 5 + 4) * 1.5}s` }}
                 />
               ))}
             </g>

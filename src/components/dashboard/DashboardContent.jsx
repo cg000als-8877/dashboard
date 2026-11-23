@@ -661,16 +661,18 @@ export function DashboardContent({ month, isArchive = false }) {
   );
 
   // Contextual labels - benchmark directly against October (replacing September)
-  let livePeriodLabel = "October";
-  if (!isArchive) {
-    if (octoberPaced?.dateInfo?.startDay && octoberPaced?.dateInfo?.endDay) {
-      const sD = parseInt(octoberPaced.dateInfo.startDay, 10);
-      const eD = parseInt(octoberPaced.dateInfo.endDay, 10);
-      livePeriodLabel = `October (${sD}${getOrdinal(sD)}–${eD}${getOrdinal(eD)})`;
-    } else if (dateComponents?.startDay && dateComponents?.endDay) {
-      livePeriodLabel = `October (${dateComponents.startDay}–${dateComponents.endDay})`;
+  const livePeriodLabel = (() => {
+    if (!isArchive) {
+      if (octoberPaced?.dateInfo?.startDay && octoberPaced?.dateInfo?.endDay) {
+        const sD = parseInt(octoberPaced.dateInfo.startDay, 10);
+        const eD = parseInt(octoberPaced.dateInfo.endDay, 10);
+        return `October (${sD}${getOrdinal(sD)}–${eD}${getOrdinal(eD)})`;
+      } else if (dateComponents?.startDay && dateComponents?.endDay) {
+        return `October (${dateComponents.startDay}–${dateComponents.endDay})`;
+      }
     }
-  }
+    return "October";
+  })();
 
   const livePaceLabel = dateComponents?.startDay && dateComponents?.endDay
     ? `November (${dateComponents.startDay}–${dateComponents.endDay})`

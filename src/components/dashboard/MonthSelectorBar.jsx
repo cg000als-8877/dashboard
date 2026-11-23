@@ -30,7 +30,17 @@ export function MonthSelectorBar({
     }
   };
 
-  if (isArchive) return null;
+  // Auto-scroll selected capsule into view when changed
+  useEffect(() => {
+    if (scrollTrackRef.current) {
+      const activeEl = scrollTrackRef.current.querySelector('[data-active="true"]');
+      if (activeEl) {
+        const container = scrollTrackRef.current;
+        const targetScrollLeft = activeEl.offsetLeft - container.offsetLeft - (container.clientWidth / 2) + (activeEl.clientWidth / 2);
+        container.scrollTo({ left: Math.max(0, targetScrollLeft) });
+      }
+    }
+  }, [selectedMonth]);
 
   const currentMonthIdx = MONTHS_LIST.findIndex(m => m.id === selectedMonth);
   const selectedObj = MONTHS_LIST[currentMonthIdx] || MONTHS_LIST[0];
@@ -47,17 +57,7 @@ export function MonthSelectorBar({
     return `${dateInfo.startDay} ${dateInfo.endMonthShort}, ${dateInfo.year}`;
   })();
 
-  // Auto-scroll selected capsule into view when changed
-  useEffect(() => {
-    if (scrollTrackRef.current) {
-      const activeEl = scrollTrackRef.current.querySelector('[data-active="true"]');
-      if (activeEl) {
-        const container = scrollTrackRef.current;
-        const targetScrollLeft = activeEl.offsetLeft - container.offsetLeft - (container.clientWidth / 2) + (activeEl.clientWidth / 2);
-        container.scrollTo({ left: Math.max(0, targetScrollLeft) });
-      }
-    }
-  }, [selectedMonth]);
+  if (isArchive) return null;
 
   return (
     <div className={cn("w-full relative z-20 flex flex-col items-center mb-2.5 sm:mb-3.5", className)}>
