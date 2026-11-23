@@ -9,11 +9,10 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { useKpiData } from '@/utils/useKpiData';
 import { format, parseISO } from 'date-fns';
-import { Clock, Home, LayoutDashboard, Factory, BarChart3, Ship, History, Palette, Sun, Moon, GitCompare, Coffee, Globe, ExternalLink, Check, Sparkles, Minus, Plus } from 'lucide-react';
+import { Clock, Home, LayoutDashboard, Factory, BarChart3, Ship, History, Palette, Sun, Moon, GitCompare, Globe, ExternalLink, Check, Sparkles, Minus, Plus } from 'lucide-react';
 import { useMonth } from '@/components/providers/MonthProvider';
 import { useTheme } from '@/components/ThemeProvider';
 import { useZoom } from '@/components/providers/ZoomProvider';
-import { CanteenSecurityModal } from '@/components/ui/CanteenSecurityModal';
 import { MobileHourlyTicker } from '@/components/dashboard/MobileHourlyTicker';
 import { MobileBottomNav } from '@/components/layout/MobileBottomNav';
 
@@ -46,7 +45,6 @@ export default function DashboardLayout({ children }) {
   const { zoom, zoomIn, zoomOut, resetZoom } = useZoom();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isBurgerOpen, setIsBurgerOpen] = useState(false);
-  const [showCanteenModal, setShowCanteenModal] = useState(false);
   const [mobileThemeTab, setMobileThemeTab] = useState('palette'); // 'palette' | 'background'
 
   let datePart = 'November 1st, 2026';
@@ -279,14 +277,12 @@ export default function DashboardLayout({ children }) {
               </p>
               <div className="space-y-0.5">
                 {[
-                  { name: 'Canteen', type: 'button', icon: Coffee },
                   { name: 'Simulator', href: '/simulator', icon: Ship },
                   { name: 'Compare', href: '/compare', icon: GitCompare },
                   { name: 'Byzid Profile', href: 'https://baplprofile.vercel.app/', icon: Globe, isExternal: true, color: '#38BDF8' },
                 ].map((item) => {
                   const Icon = item.icon;
-                  const isButton = item.type === 'button';
-                  const isActive = !isButton && !item.isExternal && pathname === item.href;
+                  const isActive = !item.isExternal && pathname === item.href;
                   
                   const content = (
                     <>
@@ -304,21 +300,6 @@ export default function DashboardLayout({ children }) {
                       ? "bg-[var(--color-primary)]/15 text-[var(--color-primary)] font-bold shadow-sm"
                       : "text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-main)]"
                   );
-                  
-                  if (isButton) {
-                    return (
-                      <button
-                        key={item.name}
-                        onClick={() => {
-                          setIsBurgerOpen(false);
-                          setShowCanteenModal(true);
-                        }}
-                        className={commonClass}
-                      >
-                        {content}
-                      </button>
-                    );
-                  }
 
                   if (item.isExternal) {
                     return (
@@ -421,16 +402,6 @@ export default function DashboardLayout({ children }) {
           </div>
         </main>
 
-        {/* Canteen Security & Verification Modal */}
-        <CanteenSecurityModal 
-          isOpen={showCanteenModal} 
-          onClose={() => setShowCanteenModal(false)} 
-          onRedirectHome={() => {
-            if (pathname !== '/') {
-              window.location.href = "/";
-            }
-          }}
-        />
       </div>
     </div>
   );
