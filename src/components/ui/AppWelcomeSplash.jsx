@@ -13,26 +13,40 @@ export function AppWelcomeSplash() {
   const [fading, setFading] = useState(false);
   const [mounted, setMounted] = useState(false);
 
+  const dismissSplash = () => {
+    setFading(true);
+    setTimeout(() => {
+      setVisible(false);
+      try {
+        sessionStorage.setItem('bapl_splash_shown', 'true');
+      } catch (e) {}
+    }, 250);
+  };
+
   useEffect(() => {
     setMounted(true);
 
     // Check if splash was already shown in this specific active session
-    const hasSeenSplash = sessionStorage.getItem('bapl_splash_shown');
-    if (hasSeenSplash) {
-      setVisible(false);
-      return;
-    }
+    try {
+      const hasSeenSplash = sessionStorage.getItem('bapl_splash_shown');
+      if (hasSeenSplash) {
+        setVisible(false);
+        return;
+      }
+    } catch (e) {}
 
-    // Start fade-out sequence after 1.3s
+    // Start fade-out sequence after 600ms (fast, snappy load)
     const fadeTimer = setTimeout(() => {
       setFading(true);
-    }, 1300);
+    }, 600);
 
-    // Completely unmount after fade transition completes (1.3s + 0.7s = 2.0s)
+    // Completely unmount after fade transition completes (600ms + 350ms = 950ms)
     const removeTimer = setTimeout(() => {
       setVisible(false);
-      sessionStorage.setItem('bapl_splash_shown', 'true');
-    }, 2000);
+      try {
+        sessionStorage.setItem('bapl_splash_shown', 'true');
+      } catch (e) {}
+    }, 950);
 
     return () => {
       clearTimeout(fadeTimer);
@@ -44,7 +58,8 @@ export function AppWelcomeSplash() {
 
   return (
     <div 
-      className={`fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[var(--color-bg-main)] select-none transition-all duration-700 ease-out ${
+      onClick={dismissSplash}
+      className={`fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[var(--color-bg-main)] select-none transition-all duration-400 ease-out cursor-pointer ${
         fading ? 'opacity-0 scale-105 pointer-events-none' : 'opacity-100 scale-100'
       }`}
       style={{

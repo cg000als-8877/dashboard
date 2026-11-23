@@ -20,20 +20,63 @@ export function CostRecoveryPie({
   const currentTiltRef = useRef(0);
   const velocityRef = useRef(0);
   const hasOrientationSensor = useRef(false);
+  const startPhysicsRef = useRef(null);
 
   // Trigger fluid rising animation when component mounts
   useEffect(() => {
+    let timer = null;
     const frame = requestAnimationFrame(() => {
-      const timer = setTimeout(() => {
+      timer = setTimeout(() => {
         setAnimated(true);
       }, 100);
-      return () => clearTimeout(timer);
     });
-    return () => cancelAnimationFrame(frame);
+    return () => {
+      cancelAnimationFrame(frame);
+      if (timer) clearTimeout(timer);
+    };
   }, []);
 
   // Real-time Gyroscope / DeviceOrientation & Fluid Physics Loop
   useEffect(() => {
+    let animId = null;
+    let isRunning = false;
+
+    const startPhysics = () => {
+      if (isRunning) return;
+      isRunning = true;
+      updatePhysics();
+    };
+    startPhysicsRef.current = startPhysics;
+
+    // 2. GPU spring-damping fluid inertia physics loop (sleeps when at rest)
+    const updatePhysics = () => {
+      const spring = 0.085;
+      const damping = 0.82;
+      const force = (targetTiltRef.current - currentTiltRef.current) * spring;
+      velocityRef.current = (velocityRef.current + force) * damping;
+      currentTiltRef.current += velocityRef.current;
+
+      const tilt = currentTiltRef.current;
+
+      // Apply tilt & lateral slosh directly to each jar's liquid surface for maximum performance
+      Object.values(liquidRefs.current).forEach((el) => {
+        if (el) {
+          el.style.transform = `rotate(${tilt.toFixed(2)}deg) translateX(${(tilt * 0.18).toFixed(1)}px)`;
+        }
+      });
+
+      // If at rest, put physics loop to sleep to preserve CPU/GPU cycles and battery
+      if (Math.abs(velocityRef.current) < 0.005 && Math.abs(targetTiltRef.current - currentTiltRef.current) < 0.05) {
+        currentTiltRef.current = targetTiltRef.current;
+        velocityRef.current = 0;
+        isRunning = false;
+        animId = null;
+        return;
+      }
+
+      animId = requestAnimationFrame(updatePhysics);
+    };
+
     // 1. DeviceOrientation event handler (detects device tilt & screen rotation)
     const handleOrientation = (e) => {
       const gamma = e.gamma;
@@ -58,41 +101,23 @@ export function CostRecoveryPie({
 
       // Clamp lateral tilt to [-45, 45] degrees for realistic jar bounds
       const clamped = Math.max(-45, Math.min(45, lateralTilt));
-      // Tilted right (+gamma): liquid sloshes right, so surface tilts counter-clockwise relative to jar (-tilt)
-      targetTiltRef.current = -(clamped / 45) * 26;
+      const nextTarget = -(clamped / 45) * 26;
+      if (Math.abs(nextTarget - targetTiltRef.current) > 0.5) {
+        targetTiltRef.current = nextTarget;
+        startPhysics();
+      }
     };
 
     if (typeof window !== 'undefined') {
-      window.addEventListener('deviceorientation', handleOrientation, true);
+      window.addEventListener('deviceorientation', handleOrientation, { passive: true });
     }
 
-    // 2. GPU 60fps spring-damping fluid inertia physics loop
-    let animId;
-    const updatePhysics = () => {
-      const spring = 0.085;
-      const damping = 0.82;
-      const force = (targetTiltRef.current - currentTiltRef.current) * spring;
-      velocityRef.current = (velocityRef.current + force) * damping;
-      currentTiltRef.current += velocityRef.current;
-
-      const tilt = currentTiltRef.current;
-
-      // Apply tilt & lateral slosh directly to each jar's liquid surface for maximum performance
-      Object.values(liquidRefs.current).forEach((el) => {
-        if (el) {
-          el.style.transform = `rotate(${tilt.toFixed(2)}deg) translateX(${(tilt * 0.18).toFixed(1)}px)`;
-        }
-      });
-
-      animId = requestAnimationFrame(updatePhysics);
-    };
-
-    animId = requestAnimationFrame(updatePhysics);
+    startPhysics();
 
     return () => {
-      cancelAnimationFrame(animId);
+      if (animId) cancelAnimationFrame(animId);
       if (typeof window !== 'undefined') {
-        window.removeEventListener('deviceorientation', handleOrientation, true);
+        window.removeEventListener('deviceorientation', handleOrientation);
       }
     };
   }, []);
@@ -119,11 +144,13 @@ export function CostRecoveryPie({
     const x = e.clientX - rect.left;
     const normalizedX = (x / rect.width) * 2 - 1; // [-1, 1]
     targetTiltRef.current = -normalizedX * 22;
+    startPhysicsRef.current?.();
   };
 
   const handlePointerLeave = () => {
     if (!hasOrientationSensor.current) {
       targetTiltRef.current = 0;
+      startPhysicsRef.current?.();
     }
   };
 
@@ -199,7 +226,7 @@ export function CostRecoveryPie({
 
   return (
     <div 
-      className={cn("flex flex-col justify-center w-full h-full relative select-none py-1 sm:py-1.5 touch-none cursor-grab active:cursor-grabbing", className)}
+      className={cn("flex flex-col justify-center w-full h-full relative select-none py-1 sm:py-1.5 touch-pan-y cursor-default", className)}
       onClick={handleContainerClick}
       onPointerMove={handlePointerMove}
       onPointerLeave={handlePointerLeave}

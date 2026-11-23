@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import Sidebar from './Sidebar';
 import { Menu, X } from 'lucide-react';
 import { cn } from './Sidebar';
@@ -15,6 +15,7 @@ import { useTheme } from '@/components/ThemeProvider';
 import { useZoom } from '@/components/providers/ZoomProvider';
 import { MobileHourlyTicker } from '@/components/dashboard/MobileHourlyTicker';
 import { MobileBottomNav } from '@/components/layout/MobileBottomNav';
+import { useIdle } from '@/components/providers/IdleProvider';
 
 const navItems = [
   { name: 'Home', key: 'navDashboard', href: '/', icon: Home },
@@ -46,6 +47,8 @@ export default function DashboardLayout({ children }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isBurgerOpen, setIsBurgerOpen] = useState(false);
   const [mobileThemeTab, setMobileThemeTab] = useState('palette'); // 'palette' | 'background'
+  const { isIdle: globalIdle, resetIdle } = useIdle();
+  const isIdle = globalIdle && !isMobileMenuOpen && !isBurgerOpen;
 
   let datePart = 'November 1st, 2026';
   if (dailyTrends && dailyTrends.length > 0) {
@@ -74,8 +77,13 @@ export default function DashboardLayout({ children }) {
       </div>
 
       <div className="flex flex-col flex-1 overflow-hidden relative w-full z-10">
-        {/* Mobile Top Header (Hidden on Desktop) */}
-        <header className="md:hidden fixed top-0 left-0 right-0 bg-[var(--color-bg-card)]/90 backdrop-blur-md z-50 flex flex-col border-none shadow-none">
+        {/* Mobile Top Header (Hidden on Desktop, Auto-hides on Idle) */}
+        <header 
+          className={cn(
+            "md:hidden fixed top-0 left-0 right-0 bg-[var(--color-bg-card)]/90 backdrop-blur-md z-50 flex flex-col border-none shadow-none transition-all duration-500 ease-in-out",
+            isIdle ? "-translate-y-full opacity-0 pointer-events-none" : "translate-y-0 opacity-100 pointer-events-auto"
+          )}
+        >
           {/* Marquee Ticker hidden for now per user request */}
           {/* {isDashboard && <MobileHourlyTicker />} */}
 
@@ -380,14 +388,16 @@ export default function DashboardLayout({ children }) {
           </>
         )}
 
-        {/* Scooped Floating Mobile Bottom Navigation Bar */}
+        {/* Scooped Floating Mobile Bottom Navigation Bar (Auto-hides on Idle) */}
         <MobileBottomNav 
           isOthersOpen={isBurgerOpen}
           onToggleOthers={() => {
             setIsBurgerOpen(!isBurgerOpen);
             setIsMobileMenuOpen(false);
+            resetIdle();
           }}
           onOthersClose={() => setIsBurgerOpen(false)}
+          isIdle={isIdle}
         />
 
         {/* Main Content */}

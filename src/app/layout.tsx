@@ -5,6 +5,7 @@ import { MonthProvider } from "@/components/providers/MonthProvider";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { DensityProvider } from "@/components/providers/DensityProvider";
 import { ZoomProvider } from "@/components/providers/ZoomProvider";
+import { IdleProvider } from "@/components/providers/IdleProvider";
 import { ClientAutoRefresh } from "@/components/providers/ClientAutoRefresh";
 import { PwaManager } from "@/components/providers/PwaManager";
 import { PushNotificationManager } from "@/components/providers/PushNotificationManager";
@@ -112,9 +113,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <PushNotificationManager />
                 <PwaManager>
                   <AppWelcomeSplash />
-                  <DashboardLayout>
-                    {children}
-                  </DashboardLayout>
+                  <IdleProvider>
+                    <DashboardLayout>
+                      {children}
+                    </DashboardLayout>
+                  </IdleProvider>
                 </PwaManager>
               </ZoomProvider>
             </DensityProvider>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { format, parseISO, subMonths } from 'date-fns';
 import { useKpiData } from '@/utils/useKpiData';
 import { MetricCard, Card } from '@/components/ui/Card';
@@ -13,6 +13,7 @@ import { cn } from '@/components/layout/Sidebar';
 import { CostRecoveryJar } from '@/components/dashboard/CostRecoveryJar';
 import { CostRecoveryPie } from '@/components/dashboard/CostRecoveryPie';
 import { MonthSelectorBar } from '@/components/dashboard/MonthSelectorBar';
+import { useIdle } from '@/components/providers/IdleProvider';
 
 const DEFAULT_LINE_ITEMS = {
   A: 'Sherpa Jacket, Boys Shirt',
@@ -535,6 +536,7 @@ export function DashboardContent({ month, isArchive = false }) {
   const [interactiveDay, setInteractiveDay] = useState(null);
   const [showAnimation, setShowAnimation] = useState(false);
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
+  const { isIdle } = useIdle();
   const pdfRef = useRef(null);
   const touchStartXRef = useRef(null);
   const touchStartYRef = useRef(null);
@@ -589,14 +591,6 @@ export function DashboardContent({ month, isArchive = false }) {
     setInteractiveDay(null);
   }, [month]);
 
-  if (loading) {
-    return <DashboardSkeleton />;
-  }
-
-  if (error) {
-    return <div className="text-red-500 text-center mt-20 font-medium bg-[rgba(255,0,0,0.1)] p-4 rounded-xl">Error loading data: {error}</div>;
-  }
-
   const startDate = dailyTrends?.length > 0 ? dailyTrends[0].date : null;
   const endDate = dailyTrends?.length > 0 ? dailyTrends[dailyTrends.length - 1].date : null;
   
@@ -647,14 +641,24 @@ export function DashboardContent({ month, isArchive = false }) {
   const displayDay = interactiveDay !== null ? interactiveDay : currentCalendarDay;
   const currentDayData = dailyTrends && dailyTrends.length >= displayDay ? dailyTrends[displayDay - 1] : null;
 
-  // ── LIKE-FOR-LIKE / PACE-MATCHED SLICES FOR PAST MONTHS ──
+  // ── LIKE-FOR-LIKE / PACE-MATCHED SLICES FOR PAST MONTHS (MEMOIZED FOR ZERO JANK) ──
   const currentWorkingDays = stats?.workingDays > 0 ? stats.workingDays : (dailyTrends?.length || 1);
-  const octoberPaced = getPacedMonthData(octoberDailyTrends, octoberLines, octoberEngine, currentWorkingDays);
-  const septemberPaced = getPacedMonthData(septemberDailyTrends, septemberLines, septemberEngine, currentWorkingDays);
-  const augustPaced = getPacedMonthData(augustDailyTrends, augustLines, augustEngine, currentWorkingDays);
-  const julyPaced = getPacedMonthData(julyDailyTrends, julyLines, julyEngine, currentWorkingDays);
-
-  if (!stats) return <DashboardSkeleton />;
+  const octoberPaced = useMemo(
+    () => getPacedMonthData(octoberDailyTrends, octoberLines, octoberEngine, currentWorkingDays),
+    [octoberDailyTrends, octoberLines, octoberEngine, currentWorkingDays]
+  );
+  const septemberPaced = useMemo(
+    () => getPacedMonthData(septemberDailyTrends, septemberLines, septemberEngine, currentWorkingDays),
+    [septemberDailyTrends, septemberLines, septemberEngine, currentWorkingDays]
+  );
+  const augustPaced = useMemo(
+    () => getPacedMonthData(augustDailyTrends, augustLines, augustEngine, currentWorkingDays),
+    [augustDailyTrends, augustLines, augustEngine, currentWorkingDays]
+  );
+  const julyPaced = useMemo(
+    () => getPacedMonthData(julyDailyTrends, julyLines, julyEngine, currentWorkingDays),
+    [julyDailyTrends, julyLines, julyEngine, currentWorkingDays]
+  );
 
   // Contextual labels - benchmark directly against October (replacing September)
   let livePeriodLabel = "October";
@@ -672,12 +676,37 @@ export function DashboardContent({ month, isArchive = false }) {
     ? `November (${dateComponents.startDay}–${dateComponents.endDay})`
     : `November (Current Pace)`;
 
-  // Bidirectional comparisons
-  const liveComparison = computeMetricComparison(stats, octoberPaced?.stats || octoberStats, livePeriodLabel);
-  const octoberComparison = computeMetricComparison(octoberPaced?.stats || octoberStats, stats, livePaceLabel);
-  const septemberComparison = computeMetricComparison(septemberPaced?.stats || septemberStats, stats, livePaceLabel);
-  const augustComparison = computeMetricComparison(augustPaced?.stats || augustStats, stats, livePaceLabel);
-  const julyComparison = computeMetricComparison(julyPaced?.stats || julyStats, stats, livePaceLabel);
+  // Bidirectional comparisons (Memoized)
+  const liveComparison = useMemo(
+    () => computeMetricComparison(stats, octoberPaced?.stats || octoberStats, livePeriodLabel),
+    [stats, octoberPaced, octoberStats, livePeriodLabel]
+  );
+  const octoberComparison = useMemo(
+    () => computeMetricComparison(octoberPaced?.stats || octoberStats, stats, livePaceLabel),
+    [octoberPaced, octoberStats, stats, livePaceLabel]
+  );
+  const septemberComparison = useMemo(
+    () => computeMetricComparison(septemberPaced?.stats || septemberStats, stats, livePaceLabel),
+    [septemberPaced, septemberStats, stats, livePaceLabel]
+  );
+  const augustComparison = useMemo(
+    () => computeMetricComparison(augustPaced?.stats || augustStats, stats, livePaceLabel),
+    [augustPaced, augustStats, stats, livePaceLabel]
+  );
+  const julyComparison = useMemo(
+    () => computeMetricComparison(julyPaced?.stats || julyStats, stats, livePaceLabel),
+    [julyPaced, julyStats, stats, livePaceLabel]
+  );
+
+  if (loading) {
+    return <DashboardSkeleton />;
+  }
+
+  if (error) {
+    return <div className="text-red-500 text-center mt-20 font-medium bg-[rgba(255,0,0,0.1)] p-4 rounded-xl">Error loading data: {error}</div>;
+  }
+
+  if (!stats) return <DashboardSkeleton />;
 
   const totalLines = stats?.totalLinesCount || lines?.length || 4;
 
@@ -715,9 +744,16 @@ export function DashboardContent({ month, isArchive = false }) {
   return (
     <>
       <div className="space-y-6 animate-[fade-up_0.4s_ease-out_both] no-print">
-        {/* Mobile Attached Visual Condition Trigger (Attached directly to top nav bar) */}
+        {/* Mobile Attached Visual Condition Trigger (Attached directly to top nav bar, hides on idle with top bar) */}
         {!isArchive && (
-          <div className="md:hidden -mx-3.5 sm:-mx-5 -mt-3.5 sm:-mt-5 mb-2 relative overflow-hidden">
+          <div 
+            className={cn(
+              "md:hidden -mx-3.5 sm:-mx-5 relative overflow-hidden transition-all duration-500 ease-in-out origin-top",
+              isIdle 
+                ? "-translate-y-full opacity-0 pointer-events-none max-h-0 mb-0 -mt-6" 
+                : "translate-y-0 opacity-100 pointer-events-auto max-h-12 -mt-3.5 sm:-mt-5 mb-2"
+            )}
+          >
             <button
               type="button"
               onClick={() => setShowAnimation(!showAnimation)}

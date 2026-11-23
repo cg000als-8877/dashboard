@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 import { cn } from './Sidebar';
 
-export function MobileBottomNav({ isOthersOpen, onToggleOthers, onOthersClose }) {
+export function MobileBottomNav({ isOthersOpen, onToggleOthers, onOthersClose, isIdle = false }) {
   const pathname = usePathname();
 
   const isHome = pathname === '/';
@@ -70,7 +70,10 @@ export function MobileBottomNav({ isOthersOpen, onToggleOthers, onOthersClose })
       {/* Progressive blur shield: makes website content totally blurred under the floating nav bar */}
       <div 
         aria-hidden="true"
-        className="md:hidden fixed bottom-0 inset-x-0 h-24 pointer-events-none select-none z-40 backdrop-blur-xl"
+        className={cn(
+          "md:hidden fixed bottom-0 inset-x-0 h-24 pointer-events-none select-none z-40 backdrop-blur-xl transition-all duration-500 ease-in-out",
+          isIdle ? "opacity-0 translate-y-8" : "opacity-100 translate-y-0"
+        )}
         style={{
           WebkitMaskImage: 'linear-gradient(to top, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 100%)',
           maskImage: 'linear-gradient(to top, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 100%)',
@@ -79,7 +82,12 @@ export function MobileBottomNav({ isOthersOpen, onToggleOthers, onOthersClose })
       />
 
       {/* Floating Frosted Glass Mobile Navigation Bar */}
-      <div className="md:hidden fixed bottom-[calc(10px+env(safe-area-inset-bottom,0px))] inset-x-3.5 sm:inset-x-6 max-w-[430px] mx-auto z-50 pointer-events-auto select-none font-sans">
+      <div 
+        className={cn(
+          "md:hidden fixed bottom-[calc(10px+env(safe-area-inset-bottom,0px))] inset-x-3.5 sm:inset-x-6 max-w-[430px] mx-auto z-50 select-none font-sans transition-all duration-500 ease-in-out",
+          isIdle ? "translate-y-[calc(100%+30px)] opacity-0 pointer-events-none" : "translate-y-0 opacity-100 pointer-events-auto"
+        )}
+      >
         <nav 
           className="flex items-center justify-between w-full h-[52px] px-2 rounded-full border shadow-xl transition-all"
           style={{
