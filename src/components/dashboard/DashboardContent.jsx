@@ -1766,25 +1766,21 @@ export function DashboardContent({ month, isArchive = false }) {
                 <div className="relative inline-block mb-3" ref={datePickerRef}>
                   <button
                     type="button"
-                    data-preserve-stroke="true"
                     onClick={() => setIsDatePickerOpen(prev => !prev)}
                     className={cn(
                       "group inline-flex items-center gap-2 px-5 py-2.5 rounded-full",
-                      "bg-gradient-to-r from-rose-500/25 via-pink-500/20 to-rose-500/25",
-                      "hover:from-rose-500/35 hover:via-pink-500/30 hover:to-rose-500/35",
-                      "ring-1 ring-rose-500/50 hover:ring-rose-500/80",
-                      "shadow-[0_0_20px_rgba(244,63,94,0.25)] hover:shadow-[0_0_28px_rgba(244,63,94,0.45)]",
-                      "text-xs font-bold text-white tracking-wide transition-all duration-200 cursor-pointer select-none active:scale-[0.98]"
+                      "bg-slate-900 hover:bg-slate-800 text-white",
+                      "dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-white",
+                      "text-xs font-semibold tracking-wide",
+                      "shadow-md shadow-slate-900/10 dark:shadow-black/30",
+                      "transition-all duration-200 cursor-pointer select-none active:scale-[0.98]",
+                      "border-0 ring-0 outline-none"
                     )}
-                    style={{
-                      border: '1px solid rgba(244, 63, 94, 0.5)',
-                      boxShadow: '0 0 0 1px rgba(244, 63, 94, 0.4), 0 0 20px rgba(244, 63, 94, 0.25)'
-                    }}
                     title="Download Daily Report"
                     aria-expanded={isDatePickerOpen}
                   >
                     <span className="leading-none">Download Daily Report</span>
-                    <div className="flex items-center gap-1.5 text-rose-300 group-hover:text-white transition-colors">
+                    <div className="flex items-center gap-1.5 text-slate-300 dark:text-slate-300 group-hover:text-white transition-colors">
                       <FileText className="w-3.5 h-3.5 shrink-0" />
                       <ChevronDown className={cn("w-3.5 h-3.5 shrink-0 transition-transform duration-200", isDatePickerOpen && "rotate-180")} />
                     </div>
@@ -1793,10 +1789,10 @@ export function DashboardContent({ month, isArchive = false }) {
                   {/* Minimal Calendar Popover */}
                   {isDatePickerOpen && (
                     <div 
-                      className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-72 max-w-[94vw] bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl shadow-2xl p-3 z-50 text-left"
+                      className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-72 max-w-[94vw] bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-xl shadow-2xl p-3 z-50 text-left"
                     >
                       {/* Solid backdrop shield */}
-                      <div className="absolute inset-0 bg-[#0c1017] rounded-xl -z-10" />
+                      <div className="absolute inset-0 bg-[var(--color-bg-card)] rounded-xl -z-10" />
 
                       {/* Minimal Month Header */}
                       <div className="flex items-center justify-between pb-2 mb-2 border-b border-[var(--color-border)]/60">
