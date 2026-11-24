@@ -1,4 +1,4 @@
-import { Inter, Space_Grotesk, JetBrains_Mono } from "next/font/google";
+import { Inter, Space_Grotesk, JetBrains_Mono, Noto_Serif_Bengali } from "next/font/google";
 import "./globals.css";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { MonthProvider } from "@/components/providers/MonthProvider";
@@ -28,6 +28,13 @@ const jetbrainsMono = JetBrains_Mono({
   weight: ["300", "400", "500", "600", "700", "800"],
   subsets: ["latin"],
   variable: "--font-jetbrains-mono"
+});
+
+const notoSerifBengali = Noto_Serif_Bengali({
+  weight: ["400", "500", "600", "700"],
+  subsets: ["bengali"],
+  variable: "--font-noto-serif-bengali",
+  display: "swap"
 });
 
 export const metadata = {
@@ -103,7 +110,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
       </head>
-      <body className={`${inter.className} ${spaceGrotesk.variable} ${jetbrainsMono.variable} bg-[var(--color-bg-main)] text-[var(--color-text-main)]`}>
+      <body className={`${inter.className} ${spaceGrotesk.variable} ${jetbrainsMono.variable} ${notoSerifBengali.variable} bg-[var(--color-bg-main)] text-[var(--color-text-main)]`}>
         <ThemeProvider>
           <BackgroundCanvas />
           <MonthProvider>
