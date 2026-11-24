@@ -80,6 +80,8 @@ export function PrintableBanglaDailyReport({
   stats,
   dailyTrends = [],
   lines = [],
+  targetDate = null,
+  rawDailyProduction = [],
   activeMonthName = 'November',
   activeMonthYear = '2026'
 }) {
@@ -91,54 +93,133 @@ export function PrintableBanglaDailyReport({
 
   if (!isMounted) return null;
 
-  // ── 1. DATE COMPUTATIONS (ALL IN BENGALI) ──────────────────────────────────
-  const lastTrend = dailyTrends && dailyTrends.length > 0 ? dailyTrends[dailyTrends.length - 1] : null;
-  const lastDateStr = lastTrend?.date || `${activeMonthYear}-11-23`;
-  const lastDateObj = parseISO(lastDateStr);
-  const lastDayNum = lastDateObj.getDate();
-  const lastDayOfWeek = getDay(lastDateObj);
-  const lastDayBangla = BENGALI_DAYS[lastDayOfWeek] || '';
+  // ── 1. DATE COMPUTATIONS (TARGET DATE OR LATEST DATE) ───────────────────────
+  const latestTrend = dailyTrends && dailyTrends.length > 0 ? dailyTrends[dailyTrends.length - 1] : null;
+  const effectiveDateStr = targetDate || latestTrend?.date || `${activeMonthYear}-11-23`;
+  
+  let dateObj;
+  try {
+    dateObj = parseISO(effectiveDateStr);
+  } catch (e) {
+    dateObj = new Date(2026, 10, 23);
+  }
+
+  const selectedDayNum = dateObj.getDate();
+  const selectedDayOfWeek = getDay(dateObj);
+  const selectedDayBangla = BENGALI_DAYS[selectedDayOfWeek] || '';
   const monthKey = activeMonthName.toLowerCase();
   const banglaMonth = BENGALI_MONTHS[monthKey] || activeMonthName;
 
   // Total calendar days in the active month
-  const totalMonthDays = getDaysInMonth(lastDateObj);
-  const calendarDaysLeft = Math.max(0, totalMonthDays - lastDayNum);
+  const totalMonthDays = getDaysInMonth(dateObj);
+  const calendarDaysLeft = Math.max(0, totalMonthDays - selectedDayNum);
 
-  // Remaining working days calculation (excluding Fridays)
+  // Remaining working days calculation from selected date forward (excluding Fridays)
   let remainingWorkingDays = 0;
-  for (let d = lastDayNum + 1; d <= totalMonthDays; d++) {
-    const checkDate = new Date(lastDateObj.getFullYear(), lastDateObj.getMonth(), d);
+  for (let d = selectedDayNum + 1; d <= totalMonthDays; d++) {
+    const checkDate = new Date(dateObj.getFullYear(), dateObj.getMonth(), d);
     if (checkDate.getDay() !== 5) { // 5 = Friday
       remainingWorkingDays++;
     }
   }
 
-  // ── 2. METRIC VALUES (CONVERTED TO BENGALI) ─────────────────────────────────
-  const totalCost = Math.round(stats?.totalCost || 0);
-  const totalIncome = Math.round(stats?.totalIncome || 0);
-  const netProfit = Math.round(stats?.netProfit || 0);
-  const passedWorkingDays = stats?.workingDays || 20;
-  const avgDailyProfit = Math.round(stats?.averageDailyProfit || (passedWorkingDays > 0 ? netProfit / passedWorkingDays : 0));
+  // ── 2. CUMULATIVE & DAY METRICS (SLICED EXACTLY TO TARGET DATE) ─────────────
+  // Filter trends up to selected date
+  const trendsUpToDate = (dailyTrends || []).filter(t => t.date && t.date <= effectiveDateStr);
+  const passedWorkingDays = trendsUpToDate.length > 0 ? trendsUpToDate.length : 1;
+
+  let totalCost = 0;
+  let totalIncome = 0;
+  let netProfit = 0;
+
+  if (trendsUpToDate.length > 0) {
+    totalCost = Math.round(trendsUpToDate.reduce((acc, t) => acc + (t.cost || 0), 0));
+    totalIncome = Math.round(trendsUpToDate.reduce((acc, t) => acc + (t.income || 0), 0));
+    netProfit = totalIncome - totalCost;
+  } else {
+    totalCost = Math.round(stats?.totalCost || 0);
+    totalIncome = Math.round(stats?.totalIncome || 0);
+    netProfit = Math.round(stats?.netProfit || (totalIncome - totalCost));
+  }
+
   const overallRecovery = totalCost > 0 ? ((totalIncome / totalCost) * 100).toFixed(1) : '0.0';
+  const avgDailyProfit = passedWorkingDays > 0 ? Math.round(netProfit / passedWorkingDays) : 0;
 
-  // Last Day Totals
-  const lastDayCost = lastTrend ? Math.round(lastTrend.cost || 0) : 0;
-  const lastDayIncome = lastTrend ? Math.round(lastTrend.income || 0) : 0;
-  const lastDayProfit = lastTrend ? Math.round(lastTrend.netProfit || (lastDayIncome - lastDayCost)) : 0;
-  const lastDayRecovery = lastDayCost > 0 ? ((lastDayIncome / lastDayCost) * 100).toFixed(1) : '0.0';
+  // Selected Day's Trend Metrics
+  const selectedDayTrend = (dailyTrends || []).find(t => t.date === effectiveDateStr);
+  let selectedDayCost = selectedDayTrend ? Math.round(selectedDayTrend.cost || 0) : 0;
+  let selectedDayIncome = selectedDayTrend ? Math.round(selectedDayTrend.income || 0) : 0;
+  let selectedDayProfit = selectedDayTrend ? Math.round(selectedDayTrend.netProfit || (selectedDayIncome - selectedDayCost)) : 0;
 
-  // ── 3. RECOVERY TARGETS ───────────────────────────────────────────────────
+  // ── 3. LINE-BY-LINE BREAKDOWN FOR SELECTED DATE ────────────────────────────
+  // Filter raw daily production for selected date and calculate line stats
+  let activeLines = [];
+  const targetEntries = (rawDailyProduction || []).filter(d => d.date === effectiveDateStr && d.status === 'ACTIVE');
+
+  if (targetEntries.length > 0) {
+    // If we didn't get selectedDayCost from trends, derive it from active entries
+    if (!selectedDayTrend || (selectedDayCost === 0 && targetEntries.length > 0)) {
+      selectedDayCost = Math.round(targetEntries.reduce((acc, d) => acc + (d.total_cost || 0), 0));
+      selectedDayIncome = Math.round(targetEntries.reduce((acc, d) => acc + (d.total_income || 0), 0));
+      selectedDayProfit = selectedDayIncome - selectedDayCost;
+    }
+
+    const lineIds = ['A', 'B', 'C', 'D'];
+    activeLines = lineIds
+      .map(id => {
+        const entry = targetEntries.find(d => d.line_id?.toUpperCase() === id);
+        if (!entry) return null;
+
+        const dayProd = entry.production_qty || 0;
+        const dayCost = entry.total_cost || 0;
+        const dayIncome = entry.total_income || 0;
+        const dayProfit = entry.net_profit !== undefined ? entry.net_profit : (dayIncome - dayCost);
+        const dayRecovery = dayCost > 0 ? ((dayIncome / dayCost) * 100).toFixed(1) : '0.0';
+        const item = entry.item || entry.style || 'সাধারণ পোশাক';
+
+        // Monthly cumulative profit for this line up to selected date
+        const lineHistory = (rawDailyProduction || []).filter(
+          d => d.line_id?.toUpperCase() === id && d.status === 'ACTIVE' && d.date <= effectiveDateStr
+        );
+        const monthProfit = lineHistory.reduce((acc, d) => acc + (d.net_profit || 0), 0);
+
+        return {
+          id,
+          item,
+          dayProd,
+          dayCost,
+          dayIncome,
+          dayProfit,
+          dayRecovery,
+          monthLoss: monthProfit
+        };
+      })
+      .filter(Boolean);
+  } else {
+    // Fallback: If rawDailyProduction is not available, use passed lines prop
+    activeLines = (lines || []).map(l => ({
+      id: l.id,
+      item: l.item || 'সাধারণ পোশাক',
+      dayProd: l.lastDayOutput || 0,
+      dayCost: l.lastDayCost || 0,
+      dayIncome: l.lastDayIncome || 0,
+      dayProfit: l.lastDayProfit || ((l.lastDayIncome || 0) - (l.lastDayCost || 0)),
+      dayRecovery: l.lastDayCostRecovery || '0.0',
+      monthLoss: l.netProfit || 0
+    }));
+  }
+
+  // "if a line has no details, dont add it in report"
+  activeLines = activeLines.filter(l => (l.dayProd || 0) > 0 || (l.dayCost || 0) > 0 || (l.dayIncome || 0) > 0);
+  activeLines.sort((a, b) => a.id.localeCompare(b.id));
+
+  const selectedDayRecovery = selectedDayCost > 0 ? ((selectedDayIncome / selectedDayCost) * 100).toFixed(1) : '0.0';
+
+  // ── 4. RECOVERY TARGETS ───────────────────────────────────────────────────
   const totalAmountToRecover = netProfit < 0 ? Math.abs(netProfit) : 0;
   const dailyTargetToRecover = remainingWorkingDays > 0 && totalAmountToRecover > 0
     ? Math.round(totalAmountToRecover / remainingWorkingDays)
     : 0;
-
-  // ── 4. FILTER LINES: ONLY ADD LINES WITH DETAILS / PRODUCTION ───────────────
-  // "if a line has no details, dont add it in report"
-  const activeLines = (lines || [])
-    .filter(l => (l.lastDayOutput || 0) > 0 || (l.lastDayCost || 0) > 0 || (l.totalProduction || 0) > 0)
-    .sort((a, b) => a.id.localeCompare(b.id));
 
   return createPortal(
     <div id="bangla-daily-printable-portal">
@@ -234,10 +315,10 @@ export function PrintableBanglaDailyReport({
               <div className="border border-black bg-white rounded-xs p-2 text-right shrink-0">
                 <p className="text-[9px] font-bold text-gray-800 tracking-wider">প্রতিবেদনের তারিখ</p>
                 <p className="text-xs font-black text-black mt-0.5">
-                  {toBn(lastDayNum)} {banglaMonth}, {toBn(activeMonthYear)} ({lastDayBangla})
+                  {toBn(selectedDayNum)} {banglaMonth}, {toBn(activeMonthYear)} ({selectedDayBangla})
                 </p>
                 <p className="text-[10px] text-gray-800 font-semibold mt-0.5">
-                  সময়কাল: ০১ - {toBn(lastDayNum)} {banglaMonth} ({toBn(passedWorkingDays)} কার্যদিবস)
+                  সময়কাল: ০১ - {toBn(selectedDayNum)} {banglaMonth} ({toBn(passedWorkingDays)} কার্যদিবস)
                 </p>
               </div>
             </div>
@@ -285,11 +366,11 @@ export function PrintableBanglaDailyReport({
                 <p className="text-[8px] text-gray-600 mt-0.5">দৈনিক ঘাটতির হার</p>
               </div>
 
-              {/* Card 5: Last Day Loss */}
+              {/* Card 5: Selected Day Loss */}
               <div className="p-2">
-                <p className="text-[8.5px] font-bold text-gray-700">সর্বশেষ দিনের লোকসান ({toBn(lastDayNum)} নভে)</p>
-                <p className="text-sm font-black text-black mt-0.5">{formatBnCurrency(lastDayProfit)}</p>
-                <p className="text-[8px] text-gray-600 mt-0.5">দিনের রিকভারি: {formatBnPercent(lastDayRecovery)}</p>
+                <p className="text-[8.5px] font-bold text-gray-700">দিনের লোকসান ({toBn(selectedDayNum)} {banglaMonth.slice(0, 4)})</p>
+                <p className="text-sm font-black text-black mt-0.5">{formatBnCurrency(selectedDayProfit)}</p>
+                <p className="text-[8px] text-gray-600 mt-0.5">দিনের রিকভারি: {formatBnPercent(selectedDayRecovery)}</p>
               </div>
 
               {/* Card 6: Daily Recovery Target */}
@@ -303,24 +384,24 @@ export function PrintableBanglaDailyReport({
           </div>
 
           {/* ── 3. SEPARATE LINE DETAILS (SEPARATE LINES A, B, C...) ── */}
-          {/* Only lines with details are included; inactive lines (e.g. Line D) excluded */}
+          {/* Only lines with details on this day are included; inactive lines excluded */}
           <div className="mb-3 space-y-2">
             <div className="flex items-center justify-between pb-1 border-b border-black">
               <h2 className="text-[11px] font-black text-black uppercase tracking-wider">
                 ২. লাইনভিত্তিক পারফরম্যান্স ও লোকসান (পৃথক বিবরণী)
               </h2>
               <span className="text-[9.5px] font-bold text-gray-800">
-                কার্যদিবস: {toBn(lastDayNum)} {banglaMonth}, {toBn(activeMonthYear)} • সক্রিয় লাইন: {toBn(activeLines.length)}টি
+                কার্যদিবস: {toBn(selectedDayNum)} {banglaMonth}, {toBn(activeMonthYear)} • সক্রিয় লাইন: {toBn(activeLines.length)}টি
               </span>
             </div>
 
             {/* Individual Separate Section for Each Active Line */}
             {activeLines.map((line) => {
-              const dayProd = line.lastDayOutput || 0;
-              const dayCost = line.lastDayCost || 0;
-              const dayIncome = line.lastDayIncome || 0;
-              const dayProfit = line.lastDayProfit || (dayIncome - dayCost);
-              const monthLoss = line.netProfit || 0;
+              const dayProd = line.dayProd || 0;
+              const dayCost = line.dayCost || 0;
+              const dayIncome = line.dayIncome || 0;
+              const dayProfit = line.dayProfit !== undefined ? line.dayProfit : (dayIncome - dayCost);
+              const monthLoss = line.monthLoss || 0;
 
               return (
                 <div key={line.id} className="border border-black rounded-xs overflow-hidden">
@@ -356,7 +437,7 @@ export function PrintableBanglaDailyReport({
                     </div>
                     <div className="p-1.5">
                       <p className="text-[8.5px] font-bold text-gray-700">কস্ট রিকভারি</p>
-                      <p className="font-black text-black text-xs mt-0.5">{formatBnPercent(line.lastDayCostRecovery)}</p>
+                      <p className="font-black text-black text-xs mt-0.5">{formatBnPercent(line.dayRecovery)}</p>
                     </div>
                     <div className="p-1.5">
                       <p className="text-[8.5px] font-bold text-gray-700">মাসিক পুঞ্জীভূত লোকসান</p>
@@ -373,24 +454,24 @@ export function PrintableBanglaDailyReport({
                 <div className="p-1">
                   <p className="text-[8.5px] font-black text-black">সর্বমোট উৎপাদন</p>
                   <p className="font-black text-black text-xs mt-0.5">
-                    {formatBnNum(activeLines.reduce((acc, l) => acc + (l.lastDayOutput || 0), 0))} পিস
+                    {formatBnNum(activeLines.reduce((acc, l) => acc + (l.dayProd || 0), 0))} পিস
                   </p>
                 </div>
                 <div className="p-1">
                   <p className="text-[8.5px] font-black text-black">মোট দিনের খরচ</p>
-                  <p className="font-black text-black text-xs mt-0.5">{formatBnCurrency(lastDayCost)}</p>
+                  <p className="font-black text-black text-xs mt-0.5">{formatBnCurrency(selectedDayCost)}</p>
                 </div>
                 <div className="p-1">
                   <p className="text-[8.5px] font-black text-black">মোট দিনের আয়</p>
-                  <p className="font-black text-black text-xs mt-0.5">{formatBnCurrency(lastDayIncome)}</p>
+                  <p className="font-black text-black text-xs mt-0.5">{formatBnCurrency(selectedDayIncome)}</p>
                 </div>
                 <div className="p-1">
                   <p className="text-[8.5px] font-black text-black">দিনের নিট লোকসান</p>
-                  <p className="font-black text-black text-xs mt-0.5">{formatBnCurrency(lastDayProfit, true)}</p>
+                  <p className="font-black text-black text-xs mt-0.5">{formatBnCurrency(selectedDayProfit, true)}</p>
                 </div>
                 <div className="p-1">
                   <p className="text-[8.5px] font-black text-black">দিনের গড় রিকভারি</p>
-                  <p className="font-black text-black text-xs mt-0.5">{formatBnPercent(lastDayRecovery)}</p>
+                  <p className="font-black text-black text-xs mt-0.5">{formatBnPercent(selectedDayRecovery)}</p>
                 </div>
                 <div className="p-1">
                   <p className="text-[8.5px] font-black text-black">মোট পুঞ্জীভূত লোকসান</p>
