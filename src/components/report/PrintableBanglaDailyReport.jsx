@@ -372,49 +372,55 @@ export function PrintableBanglaDailyReport({
               </span>
             </div>
 
-            {/* 6 High-Contrast Black & White Metric Boxes */}
-            <div className="grid grid-cols-6 border border-black divide-x divide-black text-center">
+            {/* 2 Rows x 3 Columns High-Contrast Black & White Metric Boxes */}
+            <div className="border border-black text-center overflow-hidden rounded-xs">
               
-              {/* Card 1: Total Cost */}
-              <div className="p-2">
-                <p className="text-[8.5px] font-bold text-gray-700">তারিখ পর্যন্ত মোট খরচ</p>
-                <p className="text-sm font-black text-black mt-0.5">{formatBnCurrency(totalCost)}</p>
-                <p className="text-[8px] text-gray-600 mt-0.5">{toBn(passedWorkingDays)} দিনের মোট ব্যয়</p>
+              {/* Row 1: 3 Columns (Total Cost, Total Income, Net Loss) */}
+              <div className="grid grid-cols-3 divide-x divide-black border-b border-black">
+                {/* Card 1: Total Cost */}
+                <div className="p-2">
+                  <p className="text-[8.5px] font-bold text-gray-700">তারিখ পর্যন্ত মোট খরচ</p>
+                  <p className="text-sm font-black text-black mt-0.5">{formatBnCurrency(totalCost)}</p>
+                  <p className="text-[8px] text-gray-600 mt-0.5">{toBn(passedWorkingDays)} দিনের মোট ব্যয়</p>
+                </div>
+
+                {/* Card 2: Total Income */}
+                <div className="p-2">
+                  <p className="text-[8.5px] font-bold text-gray-700">তারিখ পর্যন্ত মোট আয়</p>
+                  <p className="text-sm font-black text-black mt-0.5">{formatBnCurrency(totalIncome)}</p>
+                  <p className="text-[8px] text-gray-600 mt-0.5">উপার্জিত উৎপাদন মূল্য</p>
+                </div>
+
+                {/* Card 3: Total Net Loss */}
+                <div className="p-2 bg-gray-50">
+                  <p className="text-[8.5px] font-black text-black">মোট পুঞ্জীভূত লোকসান</p>
+                  <p className="text-sm font-black text-black mt-0.5">{formatBnCurrency(netProfit)}</p>
+                  <p className="text-[8px] font-bold text-black mt-0.5">কস্ট রিকভারি: {formatBnPercent(overallRecovery)}</p>
+                </div>
               </div>
 
-              {/* Card 2: Total Income */}
-              <div className="p-2">
-                <p className="text-[8.5px] font-bold text-gray-700">তারিখ পর্যন্ত মোট আয়</p>
-                <p className="text-sm font-black text-black mt-0.5">{formatBnCurrency(totalIncome)}</p>
-                <p className="text-[8px] text-gray-600 mt-0.5">উপার্জিত উৎপাদন মূল্য</p>
-              </div>
+              {/* Row 2: 3 Columns (Avg Daily Loss, Selected Day Loss, Daily Recovery Target) */}
+              <div className="grid grid-cols-3 divide-x divide-black">
+                {/* Card 4: Average Daily Loss */}
+                <div className="p-2">
+                  <p className="text-[8.5px] font-bold text-gray-700">প্রতিদিনের গড় লোকসান</p>
+                  <p className="text-sm font-black text-black mt-0.5">{formatBnCurrency(avgDailyProfit)}</p>
+                  <p className="text-[8px] text-gray-600 mt-0.5">দৈনিক ঘাটতির হার</p>
+                </div>
 
-              {/* Card 3: Total Net Loss */}
-              <div className="p-2 bg-gray-50">
-                <p className="text-[8.5px] font-black text-black">মোট পুঞ্জীভূত লোকসান</p>
-                <p className="text-sm font-black text-black mt-0.5">{formatBnCurrency(netProfit)}</p>
-                <p className="text-[8px] font-bold text-black mt-0.5">কস্ট রিকভারি: {formatBnPercent(overallRecovery)}</p>
-              </div>
+                {/* Card 5: Selected Day Loss */}
+                <div className="p-2">
+                  <p className="text-[8.5px] font-bold text-gray-700">সর্বশেষ দিনের লোকসান ({toBn(selectedDayNum)} {banglaMonth.slice(0, 4)})</p>
+                  <p className="text-sm font-black text-black mt-0.5">{formatBnCurrency(selectedDayProfit)}</p>
+                  <p className="text-[8px] text-gray-600 mt-0.5">দিনের রিকভারি: {formatBnPercent(selectedDayRecovery)}</p>
+                </div>
 
-              {/* Card 4: Average Daily Loss */}
-              <div className="p-2">
-                <p className="text-[8.5px] font-bold text-gray-700">প্রতিদিনের গড় লোকসান</p>
-                <p className="text-sm font-black text-black mt-0.5">{formatBnCurrency(avgDailyProfit)}</p>
-                <p className="text-[8px] text-gray-600 mt-0.5">দৈনিক ঘাটতির হার</p>
-              </div>
-
-              {/* Card 5: Selected Day Loss */}
-              <div className="p-2">
-                <p className="text-[8.5px] font-bold text-gray-700">দিনের লোকসান ({toBn(selectedDayNum)} {banglaMonth.slice(0, 4)})</p>
-                <p className="text-sm font-black text-black mt-0.5">{formatBnCurrency(selectedDayProfit)}</p>
-                <p className="text-[8px] text-gray-600 mt-0.5">দিনের রিকভারি: {formatBnPercent(selectedDayRecovery)}</p>
-              </div>
-
-              {/* Card 6: Daily Recovery Target */}
-              <div className="p-2 bg-gray-100">
-                <p className="text-[8.5px] font-black text-black">দৈনিক রিকভারি লক্ষ্য</p>
-                <p className="text-sm font-black text-black mt-0.5">{formatBnCurrency(dailyTargetToRecover)} / দিন</p>
-                <p className="text-[8px] font-bold text-black mt-0.5">ব্রেক-ইভেনের জন্য</p>
+                {/* Card 6: Daily Recovery Target */}
+                <div className="p-2 bg-gray-100">
+                  <p className="text-[8.5px] font-black text-black">দৈনিক রিকভারি লক্ষ্য</p>
+                  <p className="text-sm font-black text-black mt-0.5">{formatBnCurrency(dailyTargetToRecover)} / দিন</p>
+                  <p className="text-[8px] font-bold text-black mt-0.5">ব্রেক-ইভেনের জন্য</p>
+                </div>
               </div>
 
             </div>
