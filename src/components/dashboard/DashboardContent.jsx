@@ -1766,12 +1766,28 @@ export function DashboardContent({ month, isArchive = false }) {
                 <div className="relative inline-block mb-3" ref={datePickerRef}>
                   <button
                     type="button"
+                    data-preserve-stroke="true"
                     onClick={() => setIsDatePickerOpen(prev => !prev)}
-                    className="px-4 py-1.5 rounded-full bg-[var(--color-surface)] hover:bg-[var(--color-surface-hover)] border border-[var(--color-border)] text-xs font-semibold text-[var(--color-text-main)] transition-colors cursor-pointer select-none"
+                    className={cn(
+                      "group inline-flex items-center gap-2 px-5 py-2.5 rounded-full",
+                      "bg-gradient-to-r from-rose-500/25 via-pink-500/20 to-rose-500/25",
+                      "hover:from-rose-500/35 hover:via-pink-500/30 hover:to-rose-500/35",
+                      "ring-1 ring-rose-500/50 hover:ring-rose-500/80",
+                      "shadow-[0_0_20px_rgba(244,63,94,0.25)] hover:shadow-[0_0_28px_rgba(244,63,94,0.45)]",
+                      "text-xs font-bold text-white tracking-wide transition-all duration-200 cursor-pointer select-none active:scale-[0.98]"
+                    )}
+                    style={{
+                      border: '1px solid rgba(244, 63, 94, 0.5)',
+                      boxShadow: '0 0 0 1px rgba(244, 63, 94, 0.4), 0 0 20px rgba(244, 63, 94, 0.25)'
+                    }}
                     title="Download Daily Report"
                     aria-expanded={isDatePickerOpen}
                   >
-                    Download Daily Report
+                    <span className="leading-none">Download Daily Report</span>
+                    <div className="flex items-center gap-1.5 text-rose-300 group-hover:text-white transition-colors">
+                      <FileText className="w-3.5 h-3.5 shrink-0" />
+                      <ChevronDown className={cn("w-3.5 h-3.5 shrink-0 transition-transform duration-200", isDatePickerOpen && "rotate-180")} />
+                    </div>
                   </button>
 
                   {/* Minimal Calendar Popover */}
