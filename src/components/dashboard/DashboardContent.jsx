@@ -570,13 +570,23 @@ export function DashboardContent({ month, isArchive = false }) {
     };
   }, [isDatePickerOpen]);
 
-  // Handle selecting a date: updates state and triggers window.print()
-  const handleSelectReportDate = (targetDate) => {
+  // Handle selecting a date: updates state, preloads Noto Serif Bengali, and triggers window.print()
+  const handleSelectReportDate = async (targetDate) => {
     setSelectedReportDate(targetDate);
     setIsDatePickerOpen(false);
+    try {
+      if (typeof document !== 'undefined' && document.fonts) {
+        await document.fonts.load('bold 24px "Noto Serif Bengali"', 'বায়েজিদ অ্যাপারেলস');
+        await document.fonts.load('bold 14px "Noto Serif Bengali"', 'নভেম্বর ১ থেকে ২৩, ২০২৬');
+        await document.fonts.load('normal 12px "Noto Serif Bengali"', 'মেশিনের সংখ্যা');
+        await document.fonts.ready;
+      }
+    } catch (e) {
+      // ignore font loading error and proceed
+    }
     setTimeout(() => {
       window.print();
-    }, 120);
+    }, 150);
   };
 
   // Build calendar month data dynamically for the date picker popover

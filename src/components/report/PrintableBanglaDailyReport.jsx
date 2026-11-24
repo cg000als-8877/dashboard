@@ -70,6 +70,15 @@ export function PrintableBanglaDailyReport({
     () => false
   );
 
+  // Preload Noto Serif Bengali for instant print engine availability
+  React.useEffect(() => {
+    if (typeof document !== 'undefined' && document.fonts) {
+      document.fonts.load('bold 24px "Noto Serif Bengali"', 'বায়েজিদ অ্যাপারেলস');
+      document.fonts.load('bold 14px "Noto Serif Bengali"', 'নভেম্বর ১ থেকে ২৩, ২০২৬');
+      document.fonts.load('normal 12px "Noto Serif Bengali"', 'মেশিনের সংখ্যা');
+    }
+  }, []);
+
   if (!isMounted) return null;
 
   // ── 1. DATE COMPUTATIONS (TARGET DATE OR LATEST DATE) ───────────────────────
@@ -193,6 +202,25 @@ export function PrintableBanglaDailyReport({
     <div id="bangla-daily-printable-portal">
       {/* ── STRICT 1-PAGE BLACK & WHITE A4 LANDSCAPE PRINT STYLES ── */}
       <style dangerouslySetInnerHTML={{ __html: `
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+Bengali:wght@400;500;600;700;800;900&display=swap');
+
+        @font-face {
+          font-family: 'Noto Serif Bengali';
+          font-style: normal;
+          font-weight: 400;
+          font-stretch: normal;
+          font-display: swap;
+          src: url(https://fonts.gstatic.com/s/notoserifbengali/v31/hYkuPvggTvnzO14VSXltirUdnnkt1pwmWrprmO7RjE0a5BtdATYU1crFaM_5JfcAHnqn.ttf) format('truetype');
+        }
+        @font-face {
+          font-family: 'Noto Serif Bengali';
+          font-style: normal;
+          font-weight: 700;
+          font-stretch: normal;
+          font-display: swap;
+          src: url(https://fonts.gstatic.com/s/notoserifbengali/v31/hYkuPvggTvnzO14VSXltirUdnnkt1pwmWrprmO7RjE0a5BtdATYU1crFaM_5JffnGXqn.ttf) format('truetype');
+        }
+
         @media screen {
           #bangla-daily-printable-portal {
             display: none !important;
@@ -212,7 +240,7 @@ export function PrintableBanglaDailyReport({
             background-color: transparent !important;
             box-shadow: none !important;
             text-shadow: none !important;
-            font-family: var(--font-noto-serif-bengali), 'Noto Serif Bengali', serif !important;
+            font-family: 'Noto Serif Bengali', 'Noto Serif', serif !important;
           }
           html, body {
             width: 297mm !important;
@@ -221,6 +249,7 @@ export function PrintableBanglaDailyReport({
             padding: 0 !important;
             overflow: hidden !important;
             background: #ffffff !important;
+            font-family: 'Noto Serif Bengali', 'Noto Serif', serif !important;
           }
           #bangla-daily-printable-portal {
             display: block !important;
@@ -232,6 +261,7 @@ export function PrintableBanglaDailyReport({
             padding: 0 !important;
             z-index: 999999 !important;
             background: #ffffff !important;
+            font-family: 'Noto Serif Bengali', 'Noto Serif', serif !important;
           }
           #bangla-daily-printable-report {
             display: flex !important;
@@ -247,9 +277,20 @@ export function PrintableBanglaDailyReport({
             border: none !important;
             page-break-after: avoid !important;
             page-break-inside: avoid !important;
+            font-family: 'Noto Serif Bengali', 'Noto Serif', serif !important;
           }
-          #bangla-daily-printable-report * {
-            font-family: var(--font-noto-serif-bengali), 'Noto Serif Bengali', serif !important;
+          #bangla-daily-printable-report,
+          #bangla-daily-printable-report *,
+          #bangla-daily-printable-report table,
+          #bangla-daily-printable-report th,
+          #bangla-daily-printable-report td,
+          #bangla-daily-printable-report h1,
+          #bangla-daily-printable-report h2,
+          #bangla-daily-printable-report h3,
+          #bangla-daily-printable-report p,
+          #bangla-daily-printable-report span,
+          #bangla-daily-printable-report div {
+            font-family: 'Noto Serif Bengali', 'Noto Serif', serif !important;
             page-break-inside: avoid !important;
           }
         }
@@ -258,8 +299,8 @@ export function PrintableBanglaDailyReport({
       {/* ── ACTUAL PHYSICAL A4 SINGLE-PAGE BLACK & WHITE LANDSCAPE SHEET ── */}
       <div 
         id="bangla-daily-printable-report"
-        className="w-[297mm] max-h-[194mm] bg-white text-black p-4 select-text font-bengali flex flex-col justify-between border-0"
-        style={{ fontFamily: "var(--font-noto-serif-bengali), 'Noto Serif Bengali', serif" }}
+        className="w-[297mm] max-h-[194mm] bg-white text-black p-4 select-text flex flex-col justify-between border-0"
+        style={{ fontFamily: "'Noto Serif Bengali', 'Noto Serif', serif" }}
       >
         <div>
           {/* ── 1. CORPORATE HEADER (CENTERED, BLACK & WHITE) ── */}
