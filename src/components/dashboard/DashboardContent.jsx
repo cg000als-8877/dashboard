@@ -3,11 +3,11 @@ import { format, parseISO, subMonths } from 'date-fns';
 import { useKpiData } from '@/utils/useKpiData';
 import { MetricCard, Card } from '@/components/ui/Card';
 import { TitanicAnimation } from '@/components/ui/TitanicAnimation';
-import { Sparkles, ArrowRight, Download, FileText, Ship, Siren, ChevronDown, ChevronLeft, ChevronRight, TrendingDown, TrendingUp, Check } from 'lucide-react';
+import { Sparkles, ArrowRight, Download, FileText, Printer, Ship, Siren, ChevronDown, ChevronLeft, ChevronRight, TrendingDown, TrendingUp, Check } from 'lucide-react';
 import Link from 'next/link';
 import { RealTimeClock } from '@/components/ui/RealTimeClock';
 import { PrintableArchiveReport } from '@/components/report/PrintableArchiveReport';
-import { BanglaDailyReportModal } from '@/components/report/BanglaDailyReportModal';
+import { PrintableBanglaDailyReport } from '@/components/report/PrintableBanglaDailyReport';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { DashboardSkeleton } from '@/components/ui/Skeletons';
 import { cn } from '@/components/layout/Sidebar';
@@ -537,7 +537,6 @@ export function DashboardContent({ month, isArchive = false }) {
   const [interactiveDay, setInteractiveDay] = useState(null);
   const [showAnimation, setShowAnimation] = useState(false);
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
-  const [isBanglaReportOpen, setIsBanglaReportOpen] = useState(false);
   const { isIdle } = useIdle();
   const pdfRef = useRef(null);
   const touchStartXRef = useRef(null);
@@ -1670,18 +1669,18 @@ export function DashboardContent({ month, isArchive = false }) {
             <div className="mt-8 md:mt-12 mb-0 md:mb-8 relative z-10">
               {/* Header Title & Date Subtitle */}
               <div className="flex flex-col items-center justify-center mb-5 sm:mb-6 text-center">
-                {/* Bangla Daily Report Pill CTA Button */}
+                {/* Bangla Daily Report Pill CTA Button - Direct Print */}
                 <button
                   type="button"
-                  onClick={() => setIsBanglaReportOpen(true)}
+                  onClick={() => window.print()}
                   className="group inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[var(--color-surface)] hover:bg-[var(--color-surface-hover)] border border-[var(--color-border)] shadow-xs hover:border-rose-500/50 hover:shadow-[0_0_15px_rgba(244,63,94,0.15)] transition-all duration-200 cursor-pointer mb-3 select-none text-[11px] sm:text-xs font-semibold text-[var(--color-text-main)] active:scale-[0.98]"
-                  title="বাংলা দৈনিক পর্যবেক্ষণ ও লোকসান রিপোর্ট (PDF)"
+                  title="বাংলা দৈনিক পর্যবেক্ষণ ও লোকসান রিপোর্ট সরাসরি প্রিন্ট বা PDF সেভ করুন"
                 >
                   <span className="flex h-2 w-2 relative shrink-0">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
                   </span>
-                  <FileText className="w-3.5 h-3.5 text-rose-500 shrink-0" />
+                  <Printer className="w-3.5 h-3.5 text-rose-500 shrink-0" />
                   <span className="font-bengali font-bold tracking-wide">বাংলা দৈনিক রিপোর্ট (PDF)</span>
                   <ArrowRight className="w-3 h-3 text-[var(--color-text-muted)] group-hover:text-[var(--color-text-main)] group-hover:translate-x-0.5 transition-all shrink-0" />
                 </button>
@@ -2061,16 +2060,16 @@ export function DashboardContent({ month, isArchive = false }) {
         <PrintableArchiveReport month={month} />
       )}
 
-      {/* Bangla Daily Report Modal (PDF & Print) */}
-      <BanglaDailyReportModal
-        isOpen={isBanglaReportOpen}
-        onClose={() => setIsBanglaReportOpen(false)}
-        stats={stats}
-        dailyTrends={dailyTrends}
-        lines={lines}
-        activeMonthName={dateComponents?.month || 'November'}
-        activeMonthYear={dateComponents?.year || '2026'}
-      />
+      {/* Hidden Printable Bangla Daily Report (Home / Live Only - Direct Print) */}
+      {!isArchive && (
+        <PrintableBanglaDailyReport
+          stats={stats}
+          dailyTrends={dailyTrends}
+          lines={lines}
+          activeMonthName={dateComponents?.month || 'November'}
+          activeMonthYear={dateComponents?.year || '2026'}
+        />
+      )}
     </>
   );
 }
