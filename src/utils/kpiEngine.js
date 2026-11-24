@@ -129,6 +129,10 @@ export function createKpiEngine(rawData) {
         const lastDayCost = lastDay ? Math.round(lastDay.total_cost || 0) : 0;
         const lastDayProfit = lastDay ? Math.round(lastDay.net_profit !== undefined ? lastDay.net_profit : (lastDayIncome - lastDayCost)) : 0;
         const lastDayCostRecovery = lastDayCost > 0 ? ((lastDayIncome / lastDayCost) * 100).toFixed(1) : '0.0';
+        const lastDayWorkers = lastDay ? Math.round(lastDay.worker_count || 0) : (line.daysActive > 0 ? Math.round(line.totalWorkers / line.daysActive) : 0);
+        const lastDayCmPerDzn = lastDay ? Math.round(lastDay.cm_per_dzn || 0) : (line.daysActive > 0 ? Math.round(line.totalCm / line.daysActive) : 0);
+        const lastDayProdDzn = lastDay ? (lastDay.production_dzn !== undefined && lastDay.production_dzn !== null ? Number(lastDay.production_dzn) : (lastDayOutput > 0 ? (lastDayOutput / 12) : 0)) : 0;
+        const lastDayPerHeadCost = lastDay ? Math.round(lastDay.per_head_cost || (lastDayWorkers > 0 ? lastDayCost / lastDayWorkers : 0)) : 0;
         const monthCostRecovery = line.totalCost > 0 ? ((line.totalIncome / line.totalCost) * 100).toFixed(1) : '0.0';
 
         return {
@@ -152,7 +156,11 @@ export function createKpiEngine(rawData) {
           lastDayIncome,
           lastDayCost,
           lastDayProfit,
-          lastDayCostRecovery
+          lastDayCostRecovery,
+          lastDayWorkers,
+          lastDayCmPerDzn,
+          lastDayProdDzn,
+          lastDayPerHeadCost
         };
       });
     },

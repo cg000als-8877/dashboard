@@ -151,8 +151,7 @@ export function PrintableBanglaDailyReport({
   let selectedDayIncome = selectedDayTrend ? Math.round(selectedDayTrend.income || 0) : 0;
   let selectedDayProfit = selectedDayTrend ? Math.round(selectedDayTrend.netProfit || (selectedDayIncome - selectedDayCost)) : 0;
 
-  // ── 3. LINE-BY-LINE BREAKDOWN FOR SELECTED DATE ────────────────────────────
-  // Filter raw daily production for selected date and calculate line stats
+  // ── 3. DETAILED LINE-BY-LINE BREAKDOWN (WORKERS, CM/DZN, FLOOR DETAILS) ─────
   let activeLines = [];
   const targetEntries = (rawDailyProduction || []).filter(d => d.date === effectiveDateStr && d.status === 'ACTIVE');
 
@@ -176,6 +175,14 @@ export function PrintableBanglaDailyReport({
         const dayProfit = entry.net_profit !== undefined ? entry.net_profit : (dayIncome - dayCost);
         const dayRecovery = dayCost > 0 ? ((dayIncome / dayCost) * 100).toFixed(1) : '0.0';
         const item = entry.item || entry.style || 'সাধারণ পোশাক';
+        
+        // Garment Floor Detailed Metrics
+        const workers = entry.worker_count || 0;
+        const perHeadCost = entry.per_head_cost || (workers > 0 ? Math.round(dayCost / workers) : 0);
+        const cmPerDzn = entry.cm_per_dzn || 0;
+        const prodDzn = entry.production_dzn !== undefined && entry.production_dzn !== null
+          ? Number(entry.production_dzn)
+          : (dayProd > 0 ? (dayProd / 12) : 0);
 
         // Monthly cumulative profit for this line up to selected date
         const lineHistory = (rawDailyProduction || []).filter(
@@ -186,6 +193,10 @@ export function PrintableBanglaDailyReport({
         return {
           id,
           item,
+          workers,
+          perHeadCost,
+          cmPerDzn,
+          prodDzn,
           dayProd,
           dayCost,
           dayIncome,
@@ -197,16 +208,31 @@ export function PrintableBanglaDailyReport({
       .filter(Boolean);
   } else {
     // Fallback: If rawDailyProduction is not available, use passed lines prop
-    activeLines = (lines || []).map(l => ({
-      id: l.id,
-      item: l.item || 'সাধারণ পোশাক',
-      dayProd: l.lastDayOutput || 0,
-      dayCost: l.lastDayCost || 0,
-      dayIncome: l.lastDayIncome || 0,
-      dayProfit: l.lastDayProfit || ((l.lastDayIncome || 0) - (l.lastDayCost || 0)),
-      dayRecovery: l.lastDayCostRecovery || '0.0',
-      monthLoss: l.netProfit || 0
-    }));
+    activeLines = (lines || []).map(l => {
+      const dayProd = l.lastDayOutput || 0;
+      const dayCost = l.lastDayCost || 0;
+      const dayIncome = l.lastDayIncome || 0;
+      const dayProfit = l.lastDayProfit || (dayIncome - dayCost);
+      const workers = l.lastDayWorkers || l.lastDay?.worker_count || l.averageWorkers || 0;
+      const perHeadCost = l.lastDayPerHeadCost || (workers > 0 ? Math.round(dayCost / workers) : 0);
+      const cmPerDzn = l.lastDayCmPerDzn || l.lastDay?.cm_per_dzn || 0;
+      const prodDzn = l.lastDayProdDzn || (dayProd > 0 ? (dayProd / 12) : 0);
+
+      return {
+        id: l.id,
+        item: l.item || 'সাধারণ পোশাক',
+        workers,
+        perHeadCost,
+        cmPerDzn,
+        prodDzn,
+        dayProd,
+        dayCost,
+        dayIncome,
+        dayProfit,
+        dayRecovery: l.lastDayCostRecovery || (dayCost > 0 ? ((dayIncome / dayCost) * 100).toFixed(1) : '0.0'),
+        monthLoss: l.netProfit || 0
+      };
+    });
   }
 
   // "if a line has no details, dont add it in report"
@@ -214,6 +240,17 @@ export function PrintableBanglaDailyReport({
   activeLines.sort((a, b) => a.id.localeCompare(b.id));
 
   const selectedDayRecovery = selectedDayCost > 0 ? ((selectedDayIncome / selectedDayCost) * 100).toFixed(1) : '0.0';
+
+  // ── Totals for Line Summary Row ──
+  const totalActiveWorkers = activeLines.reduce((acc, l) => acc + (l.workers || 0), 0);
+  const totalActiveProdQty = activeLines.reduce((acc, l) => acc + (l.dayProd || 0), 0);
+  const totalActiveProdDzn = activeLines.reduce((acc, l) => acc + (l.prodDzn || 0), 0);
+  const avgCmPerDzn = totalActiveProdDzn > 0
+    ? Math.round(activeLines.reduce((acc, l) => acc + ((l.cmPerDzn || 0) * (l.prodDzn || 0)), 0) / totalActiveProdDzn)
+    : 0;
+  const avgPerHeadCost = totalActiveWorkers > 0
+    ? Math.round(selectedDayCost / totalActiveWorkers)
+    : 0;
 
   // ── 4. RECOVERY TARGETS ───────────────────────────────────────────────────
   const totalAmountToRecover = netProfit < 0 ? Math.abs(netProfit) : 0;
@@ -383,19 +420,19 @@ export function PrintableBanglaDailyReport({
             </div>
           </div>
 
-          {/* ── 3. SEPARATE LINE DETAILS (SEPARATE LINES A, B, C...) ── */}
+          {/* ── 3. SEPARATE DETAILED LINE PERFORMANCE (WORKERS, CM/DZN, PRODUCTION DZN) ── */}
           {/* Only lines with details on this day are included; inactive lines excluded */}
           <div className="mb-3 space-y-2">
             <div className="flex items-center justify-between pb-1 border-b border-black">
               <h2 className="text-[11px] font-black text-black uppercase tracking-wider">
-                ২. লাইনভিত্তিক পারফরম্যান্স ও লোকসান (পৃথক বিবরণী)
+                ২. লাইনভিত্তিক পারফরম্যান্স, শ্রমিক ও সিএম বিবরণী (পৃথক লাইন)
               </h2>
               <span className="text-[9.5px] font-bold text-gray-800">
                 কার্যদিবস: {toBn(selectedDayNum)} {banglaMonth}, {toBn(activeMonthYear)} • সক্রিয় লাইন: {toBn(activeLines.length)}টি
               </span>
             </div>
 
-            {/* Individual Separate Section for Each Active Line */}
+            {/* Individual Separate Section for Each Active Line with Rich Details */}
             {activeLines.map((line) => {
               const dayProd = line.dayProd || 0;
               const dayCost = line.dayCost || 0;
@@ -407,75 +444,115 @@ export function PrintableBanglaDailyReport({
                 <div key={line.id} className="border border-black rounded-xs overflow-hidden">
                   {/* Distinct Line Header Bar */}
                   <div className="bg-gray-100 px-3 py-1 border-b border-black flex items-center justify-between text-black">
-                    <span className="text-[11px] font-black uppercase tracking-wide">
-                      {BENGALI_LINE_NAMES[line.id] || `লাইন ${toBn(line.id)}`}
-                    </span>
-                    <span className="text-[10px] font-bold text-black">
-                      চলতি আইটেম / স্টাইল: {line.item || 'সাধারণ পোশাক'}
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[11px] font-black uppercase tracking-wide">
+                        {BENGALI_LINE_NAMES[line.id] || `লাইন ${toBn(line.id)}`}
+                      </span>
+                      <span className="text-[10px] font-bold text-gray-800">
+                        • চলতি আইটেম: {line.item || 'সাধারণ পোশাক'}
+                      </span>
+                    </div>
+                    <div className="text-[9.5px] font-bold text-black">
+                      মাসিক পুঞ্জীভূত লোকসান: <span className="font-black">{formatBnCurrency(monthLoss)}</span>
+                    </div>
                   </div>
 
-                  {/* Line Detail Financial Breakdown Grid (No Colors, Pure Black & White) */}
-                  <div className="grid grid-cols-6 divide-x divide-black text-center text-[10px] bg-white">
+                  {/* 7-Column Comprehensive Garment Floor & Financial Breakdown Grid */}
+                  <div className="grid grid-cols-7 divide-x divide-black text-center text-[10px] bg-white">
+                    {/* 1. Total Workers */}
                     <div className="p-1.5">
-                      <p className="text-[8.5px] font-bold text-gray-700">দিনের উৎপাদন</p>
+                      <p className="text-[8px] font-bold text-gray-700">মোট শ্রমিক</p>
+                      <p className="font-black text-black text-xs mt-0.5">{toBn(line.workers)} জন</p>
+                      <p className="text-[7.5px] text-gray-600 mt-0.5">জনপ্রতি {formatBnCurrency(line.perHeadCost)}</p>
+                    </div>
+
+                    {/* 2. CM per Dozen */}
+                    <div className="p-1.5">
+                      <p className="text-[8px] font-bold text-gray-700">সিএম / ডজন</p>
+                      <p className="font-black text-black text-xs mt-0.5">{formatBnCurrency(line.cmPerDzn)}</p>
+                      <p className="text-[7.5px] text-gray-600 mt-0.5">প্রতি ডজন রেট</p>
+                    </div>
+
+                    {/* 3. Production Pcs + Dzn */}
+                    <div className="p-1.5">
+                      <p className="text-[8px] font-bold text-gray-700">দিনের উৎপাদন</p>
                       <p className="font-black text-black text-xs mt-0.5">{formatBnNum(dayProd)} পিস</p>
+                      <p className="text-[7.5px] text-gray-600 mt-0.5">({toBn(line.prodDzn.toFixed(1))} ডজন)</p>
                     </div>
+
+                    {/* 4. Total Cost */}
                     <div className="p-1.5">
-                      <p className="text-[8.5px] font-bold text-gray-700">দিনের খরচ</p>
+                      <p className="text-[8px] font-bold text-gray-700">দিনের মোট খরচ</p>
                       <p className="font-black text-black text-xs mt-0.5">{formatBnCurrency(dayCost)}</p>
+                      <p className="text-[7.5px] text-gray-600 mt-0.5">মজুরি ও ফ্লোর ব্যয়</p>
                     </div>
+
+                    {/* 5. Total Income */}
                     <div className="p-1.5">
-                      <p className="text-[8.5px] font-bold text-gray-700">দিনের আয়</p>
+                      <p className="text-[8px] font-bold text-gray-700">দিনের অর্জিত আয়</p>
                       <p className="font-black text-black text-xs mt-0.5">{formatBnCurrency(dayIncome)}</p>
+                      <p className="text-[7.5px] text-gray-600 mt-0.5">সিএম উপার্জিত মূল্য</p>
                     </div>
+
+                    {/* 6. Net Profit / Loss */}
                     <div className="p-1.5 bg-gray-50">
-                      <p className="text-[8.5px] font-black text-black">দিনের নিট ফলাফল</p>
+                      <p className="text-[8px] font-black text-black">দিনের নিট ফলাফল</p>
                       <p className="font-black text-black text-xs mt-0.5">
-                        {formatBnCurrency(dayProfit, true)} {dayProfit >= 0 ? '(লাভ)' : '(ঘাটতি)'}
+                        {formatBnCurrency(dayProfit, true)}
+                      </p>
+                      <p className="text-[7.5px] font-bold text-black mt-0.5">
+                        {dayProfit >= 0 ? '(লাভ)' : '(ঘাটতি)'}
                       </p>
                     </div>
+
+                    {/* 7. Cost Recovery */}
                     <div className="p-1.5">
-                      <p className="text-[8.5px] font-bold text-gray-700">কস্ট রিকভারি</p>
+                      <p className="text-[8px] font-bold text-gray-700">কস্ট রিকভারি</p>
                       <p className="font-black text-black text-xs mt-0.5">{formatBnPercent(line.dayRecovery)}</p>
-                    </div>
-                    <div className="p-1.5">
-                      <p className="text-[8.5px] font-bold text-gray-700">মাসিক পুঞ্জীভূত লোকসান</p>
-                      <p className="font-black text-black text-xs mt-0.5">{formatBnCurrency(monthLoss)}</p>
+                      <p className="text-[7.5px] text-gray-600 mt-0.5">ব্যয় সমন্বয় হার</p>
                     </div>
                   </div>
                 </div>
               );
             })}
 
-            {/* Combined Total Summary Row for Active Lines */}
+            {/* Combined Total Summary Row for Active Lines (7 Matching Columns) */}
             <div className="border border-black bg-gray-100 rounded-xs p-1.5">
-              <div className="grid grid-cols-6 divide-x divide-black text-center text-[10px]">
+              <div className="grid grid-cols-7 divide-x divide-black text-center text-[10px]">
                 <div className="p-1">
-                  <p className="text-[8.5px] font-black text-black">সর্বমোট উৎপাদন</p>
-                  <p className="font-black text-black text-xs mt-0.5">
-                    {formatBnNum(activeLines.reduce((acc, l) => acc + (l.dayProd || 0), 0))} পিস
-                  </p>
+                  <p className="text-[8px] font-black text-black">সর্বমোট শ্রমিক</p>
+                  <p className="font-black text-black text-xs mt-0.5">{toBn(totalActiveWorkers)} জন</p>
+                  <p className="text-[7.5px] text-gray-700 mt-0.5">গড় {formatBnCurrency(avgPerHeadCost)}</p>
                 </div>
                 <div className="p-1">
-                  <p className="text-[8.5px] font-black text-black">মোট দিনের খরচ</p>
+                  <p className="text-[8px] font-black text-black">গড় সিএম / ডজন</p>
+                  <p className="font-black text-black text-xs mt-0.5">{formatBnCurrency(avgCmPerDzn)}</p>
+                  <p className="text-[7.5px] text-gray-700 mt-0.5">ভারযুক্ত গড়</p>
+                </div>
+                <div className="p-1">
+                  <p className="text-[8px] font-black text-black">সর্বমোট উৎপাদন</p>
+                  <p className="font-black text-black text-xs mt-0.5">{formatBnNum(totalActiveProdQty)} পিস</p>
+                  <p className="text-[7.5px] text-gray-700 mt-0.5">({toBn(totalActiveProdDzn.toFixed(1))} ডজন)</p>
+                </div>
+                <div className="p-1">
+                  <p className="text-[8px] font-black text-black">মোট দিনের খরচ</p>
                   <p className="font-black text-black text-xs mt-0.5">{formatBnCurrency(selectedDayCost)}</p>
+                  <p className="text-[7.5px] text-gray-700 mt-0.5">ফ্যাক্টরি ব্যয়</p>
                 </div>
                 <div className="p-1">
-                  <p className="text-[8.5px] font-black text-black">মোট দিনের আয়</p>
+                  <p className="text-[8px] font-black text-black">মোট দিনের আয়</p>
                   <p className="font-black text-black text-xs mt-0.5">{formatBnCurrency(selectedDayIncome)}</p>
+                  <p className="text-[7.5px] text-gray-700 mt-0.5">ফ্যাক্টরি আয়</p>
                 </div>
                 <div className="p-1">
-                  <p className="text-[8.5px] font-black text-black">দিনের নিট লোকসান</p>
+                  <p className="text-[8px] font-black text-black">দিনের নিট লোকসান</p>
                   <p className="font-black text-black text-xs mt-0.5">{formatBnCurrency(selectedDayProfit, true)}</p>
+                  <p className="text-[7.5px] font-black text-black mt-0.5">সামগ্রিক দিন</p>
                 </div>
                 <div className="p-1">
-                  <p className="text-[8.5px] font-black text-black">দিনের গড় রিকভারি</p>
+                  <p className="text-[8px] font-black text-black">দিনের গড় রিকভারি</p>
                   <p className="font-black text-black text-xs mt-0.5">{formatBnPercent(selectedDayRecovery)}</p>
-                </div>
-                <div className="p-1">
-                  <p className="text-[8.5px] font-black text-black">মোট পুঞ্জীভূত লোকসান</p>
-                  <p className="font-black text-black text-xs mt-0.5">{formatBnCurrency(netProfit)}</p>
+                  <p className="text-[7.5px] text-gray-700 mt-0.5">সার্বিক রিকভারি</p>
                 </div>
               </div>
             </div>

@@ -334,6 +334,10 @@ function getPacedMonthData(dailyTrends, lines, rawEngine, targetDays) {
       const lastDayCost = lastDayEntry ? Math.round(lastDayEntry.total_cost || 0) : 0;
       const lastDayProfit = lastDayEntry ? Math.round(lastDayEntry.net_profit !== undefined ? lastDayEntry.net_profit : (lastDayIncome - lastDayCost)) : 0;
       const lastDayCostRecovery = lastDayCost > 0 ? ((lastDayIncome / lastDayCost) * 100).toFixed(1) : '0.0';
+      const lastDayWorkers = lastDayEntry ? Math.round(lastDayEntry.worker_count || 0) : avgWorkers;
+      const lastDayCmPerDzn = lastDayEntry ? Math.round(lastDayEntry.cm_per_dzn || 0) : 0;
+      const lastDayProdDzn = lastDayEntry ? (lastDayEntry.production_dzn !== undefined && lastDayEntry.production_dzn !== null ? Number(lastDayEntry.production_dzn) : (lastDayOutput > 0 ? (lastDayOutput / 12) : 0)) : 0;
+      const lastDayPerHeadCost = lastDayEntry ? Math.round(lastDayEntry.per_head_cost || (lastDayWorkers > 0 ? lastDayCost / lastDayWorkers : 0)) : 0;
 
       return {
         ...l,
@@ -354,7 +358,11 @@ function getPacedMonthData(dailyTrends, lines, rawEngine, targetDays) {
         lastDayIncome,
         lastDayCost,
         lastDayProfit,
-        lastDayCostRecovery
+        lastDayCostRecovery,
+        lastDayWorkers,
+        lastDayCmPerDzn,
+        lastDayProdDzn,
+        lastDayPerHeadCost
       };
     });
   }
@@ -2106,14 +2114,47 @@ export function DashboardContent({ month, isArchive = false }) {
                             </span>
                           </div>
 
-                          <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
+                          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-1.5 sm:gap-2">
+                            {/* 1. Total Workers */}
+                            <div className={cn("bg-[var(--color-bg-card)] text-center min-w-0 flex flex-col justify-center", isMobile ? "p-1 rounded-md" : "p-1.5 sm:p-2 rounded-lg")}>
+                              <p className="text-[8px] sm:text-[9px] text-[var(--color-text-muted)] font-medium uppercase truncate">Workers</p>
+                              <p className="text-[11px] sm:text-xs md:text-sm font-bold text-[var(--color-text-main)] truncate">
+                                <AnimatedNumber value={line.lastDayWorkers || 0} /> <span className="text-[8.5px] sm:text-[9px] text-[var(--color-text-muted)]">PERS</span>
+                              </p>
+                            </div>
+
+                            {/* 2. CM per Dozen */}
+                            <div className={cn("bg-[var(--color-bg-card)] text-center min-w-0 flex flex-col justify-center", isMobile ? "p-1 rounded-md" : "p-1.5 sm:p-2 rounded-lg")}>
+                              <p className="text-[8px] sm:text-[9px] text-[var(--color-text-muted)] font-medium uppercase truncate">CM / Dozen</p>
+                              <p className="text-[11px] sm:text-xs md:text-sm font-bold text-[var(--color-text-main)] truncate flex items-center justify-center">
+                                <span className="text-[8.5px] sm:text-[9.5px] font-semibold opacity-75 mr-0.5">BDT</span>
+                                <AnimatedNumber value={line.lastDayCmPerDzn || 0} />
+                              </p>
+                            </div>
+
+                            {/* 3. Day Output (PCS + DZN) */}
                             <div className={cn("bg-[var(--color-bg-card)] text-center min-w-0 flex flex-col justify-center", isMobile ? "p-1 rounded-md" : "p-1.5 sm:p-2 rounded-lg")}>
                               <p className="text-[8px] sm:text-[9px] text-[var(--color-text-muted)] font-medium uppercase truncate">Day Output</p>
                               <p className="text-[11px] sm:text-xs md:text-sm font-bold text-[var(--color-text-main)] truncate">
                                 <AnimatedNumber value={line.lastDayOutput || 0} /> <span className="text-[8.5px] sm:text-[9px] text-[var(--color-text-muted)]">PCS</span>
                               </p>
+                              {line.lastDayProdDzn > 0 && (
+                                <p className="text-[7.5px] sm:text-[8px] text-[var(--color-text-muted)] font-mono -mt-0.5 truncate">
+                                  ({Number(line.lastDayProdDzn).toFixed(1)} DZN)
+                                </p>
+                              )}
                             </div>
 
+                            {/* 4. Day Cost */}
+                            <div className={cn("bg-[var(--color-bg-card)] text-center min-w-0 flex flex-col justify-center", isMobile ? "p-1 rounded-md" : "p-1.5 sm:p-2 rounded-lg")}>
+                              <p className="text-[8px] sm:text-[9px] text-[var(--color-text-muted)] font-medium uppercase truncate">Day Cost</p>
+                              <p className="text-[11px] sm:text-xs md:text-sm font-bold text-[var(--color-text-main)] truncate flex items-center justify-center">
+                                <span className="text-[8.5px] sm:text-[9.5px] font-semibold opacity-75 mr-0.5">BDT</span>
+                                <AnimatedNumber value={Math.round(line.lastDayCost || 0)} />
+                              </p>
+                            </div>
+
+                            {/* 5. Day Income */}
                             <div className={cn("bg-[var(--color-bg-card)] text-center min-w-0 flex flex-col justify-center", isMobile ? "p-1 rounded-md" : "p-1.5 sm:p-2 rounded-lg")}>
                               <p className="text-[8px] sm:text-[9px] text-[var(--color-text-muted)] font-medium uppercase truncate">Day Income</p>
                               <p className="text-[11px] sm:text-xs md:text-sm font-bold text-[var(--color-primary)] truncate flex items-center justify-center">
@@ -2122,6 +2163,7 @@ export function DashboardContent({ month, isArchive = false }) {
                               </p>
                             </div>
 
+                            {/* 6. Day Net */}
                             <div className={cn("bg-[var(--color-bg-card)] text-center min-w-0 flex flex-col justify-center", isMobile ? "p-1 rounded-md" : "p-1.5 sm:p-2 rounded-lg")}>
                               <p className="text-[8px] sm:text-[9px] text-[var(--color-text-muted)] font-medium uppercase truncate">
                                 Day Net {isInactive ? 'Bal' : (line.lastDayProfit >= 0 ? 'Profit' : 'Loss')}
