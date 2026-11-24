@@ -390,7 +390,12 @@ export function LineDetailsSkeleton({ isEmbed = false }) {
         <ShimmerBlock className="h-4 w-36 bg-[var(--color-text-muted)]/20 rounded mb-4 hidden md:block" />
         <div className="grid grid-cols-2 md:grid-cols-6 gap-2.5 sm:gap-3.5">
           {[1, 2, 3, 4, 5, 6].map(i => (
-            <div key={i} className="p-3.5 rounded-xl bg-[var(--color-surface)] border border-[var(--color-border)]/30 flex flex-col justify-between h-20">
+            <div 
+              key={i} 
+              className={`p-3.5 rounded-xl bg-[var(--color-surface)] border border-[var(--color-border)]/30 flex flex-col justify-between h-20 ${
+                i === 1 ? 'hidden md:flex' : ''
+              } ${i === 6 ? 'col-span-2 md:col-span-1' : 'col-span-1'}`}
+            >
               <ShimmerBlock className="h-2.5 w-16 bg-[var(--color-text-muted)]/15 rounded" />
               <ShimmerBlock className="h-5 w-20 bg-[var(--color-text-muted)]/25 rounded" />
             </div>
