@@ -467,14 +467,32 @@ export function PrintableBanglaDailyReport({
           </div>
         </div>
 
-        {/* ── 5. OFFICIAL SIGNATURES (EXACTLY TWO ACROSS THE BOTTOM) ── */}
-        <div className="pt-6 pb-2 flex justify-between items-end px-16">
-          <div className="text-center">
-            <div className="w-56 border-t border-black mb-1.5 mx-auto"></div>
-            <p className="text-xs font-bold text-black">প্রোডাকশন ম্যানেজার (স্বাক্ষর)</p>
+        {/* ── 5. OFFICIAL SIGNATURES (TWO PRODUCTION MANAGERS WITH PARTITION + OPERATION DIRECTOR) ── */}
+        <div className="pt-6 pb-2 flex justify-between items-end px-12">
+          {/* Two Production Managers with partition in the middle */}
+          <div className="flex items-end gap-5">
+            {/* Production Manager 1 */}
+            <div className="text-center">
+              <span className="text-xs font-bold text-black block mb-1">১.</span>
+              <div className="w-36 sm:w-40 border-t border-black mb-1.5 mx-auto"></div>
+              <p className="text-xs font-bold text-black">১. প্রোডাকশন ম্যানেজার (স্বাক্ষর)</p>
+            </div>
+
+            {/* Partition in the middle */}
+            <div className="h-10 w-[1px] bg-black self-center mb-1"></div>
+
+            {/* Production Manager 2 */}
+            <div className="text-center">
+              <span className="text-xs font-bold text-black block mb-1">২.</span>
+              <div className="w-36 sm:w-40 border-t border-black mb-1.5 mx-auto"></div>
+              <p className="text-xs font-bold text-black">২. প্রোডাকশন ম্যানেজার (স্বাক্ষর)</p>
+            </div>
           </div>
+
+          {/* Operation Director */}
           <div className="text-center">
-            <div className="w-56 border-t border-black mb-1.5 mx-auto"></div>
+            <span className="text-xs font-bold text-transparent block mb-1 select-none pointer-events-none">&nbsp;</span>
+            <div className="w-52 border-t border-black mb-1.5 mx-auto"></div>
             <p className="text-xs font-bold text-black">অপারেশন ডিরেক্টর (স্বাক্ষর)</p>
           </div>
         </div>
