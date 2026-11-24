@@ -418,15 +418,15 @@ export function PrintableBanglaDailyReport({
                 {/* Card 6: Daily Recovery Target */}
                 <div className="p-2 bg-gray-100">
                   <p className="text-[8.5px] font-black text-black">দৈনিক রিকভারি লক্ষ্য</p>
-                  <p className="text-sm font-black text-black mt-0.5">{formatBnCurrency(dailyTargetToRecover)} / দিন</p>
-                  <p className="text-[8px] font-bold text-black mt-0.5">ব্রেক-ইভেনের জন্য</p>
+                  <p className="text-sm font-black text-black mt-0.5">{formatBnCurrency(dailyTargetToRecover)}</p>
+                  <p className="text-[8px] font-bold text-black mt-0.5">প্রতিদিনের লক্ষ্যমাত্রা</p>
                 </div>
               </div>
 
             </div>
           </div>
 
-          {/* ── 3. SEPARATE DETAILED LINE PERFORMANCE (WORKERS, CM/DZN, PRODUCTION DZN) ── */}
+          {/* ── 3. SEPARATE DETAILED LINE PERFORMANCE (WORKERS, CM DZN, PRODUCTION DZN) ── */}
           {/* Only lines with details on this day are included; inactive lines excluded */}
           <div className="mb-3 space-y-2">
             <div className="flex items-center justify-between pb-1 border-b border-black">
@@ -434,7 +434,7 @@ export function PrintableBanglaDailyReport({
                 ২. লাইনভিত্তিক পারফরম্যান্স, শ্রমিক ও সিএম বিবরণী (পৃথক লাইন)
               </h2>
               <span className="text-[9.5px] font-bold text-gray-800">
-                কার্যদিবস: {toBn(selectedDayNum)} {banglaMonth}, {toBn(activeMonthYear)} • সক্রিয় লাইন: {toBn(activeLines.length)}টি
+                কার্যদিবস: {toBn(selectedDayNum)} {banglaMonth}, {toBn(activeMonthYear)}, সক্রিয় লাইন: {toBn(activeLines.length)}টি
               </span>
             </div>
 
@@ -455,7 +455,7 @@ export function PrintableBanglaDailyReport({
                         {BENGALI_LINE_NAMES[line.id] || `লাইন ${toBn(line.id)}`}
                       </span>
                       <span className="text-[10px] font-bold text-gray-800">
-                        • চলতি আইটেম: {line.item || 'সাধারণ পোশাক'}
+                        চলতি আইটেম: {line.item || 'সাধারণ পোশাক'}
                       </span>
                     </div>
                     <div className="text-[9.5px] font-bold text-black">
@@ -474,9 +474,9 @@ export function PrintableBanglaDailyReport({
 
                     {/* 2. CM per Dozen */}
                     <div className="p-1.5">
-                      <p className="text-[8px] font-bold text-gray-700">সিএম / ডজন</p>
+                      <p className="text-[8px] font-bold text-gray-700">সিএম (প্রতি ডজন)</p>
                       <p className="font-black text-black text-xs mt-0.5">{formatBnCurrency(line.cmPerDzn)}</p>
-                      <p className="text-[7.5px] text-gray-600 mt-0.5">প্রতি ডজন রেট</p>
+                      <p className="text-[7.5px] text-gray-600 mt-0.5">ডজন চুক্তি রেট</p>
                     </div>
 
                     {/* 3. Production Pcs + Dzn */}
@@ -531,7 +531,7 @@ export function PrintableBanglaDailyReport({
                   <p className="text-[7.5px] text-gray-700 mt-0.5">গড় {formatBnCurrency(avgPerHeadCost)}</p>
                 </div>
                 <div className="p-1">
-                  <p className="text-[8px] font-black text-black">গড় সিএম / ডজন</p>
+                  <p className="text-[8px] font-black text-black">গড় সিএম (প্রতি ডজন)</p>
                   <p className="font-black text-black text-xs mt-0.5">{formatBnCurrency(avgCmPerDzn)}</p>
                   <p className="text-[7.5px] text-gray-700 mt-0.5">ভারযুক্ত গড়</p>
                 </div>
@@ -572,7 +572,7 @@ export function PrintableBanglaDailyReport({
             <div className="flex flex-col items-center">
               <div className="w-full border-t border-black pt-1 mt-6">
                 <p className="text-[10px] font-bold text-black">প্রস্তুতকারক</p>
-                <p className="text-[8px] text-gray-700 font-semibold">ডাটা অ্যানালিস্ট / এমআইএস</p>
+                <p className="text-[8px] text-gray-700 font-semibold">ডাটা অ্যানালিস্ট, এমআইএস</p>
               </div>
             </div>
 
@@ -592,14 +592,14 @@ export function PrintableBanglaDailyReport({
 
             <div className="flex flex-col items-center">
               <div className="w-full border-t border-black pt-1 mt-6">
-                <p className="text-[10px] font-bold text-black">কারখানা পরিচালক / জিএম</p>
+                <p className="text-[10px] font-bold text-black">কারখানা পরিচালক ও জিএম</p>
                 <p className="text-[8px] text-gray-700 font-semibold">বাইজিদ অ্যাপারেলস (প্রাঃ) লিঃ</p>
               </div>
             </div>
           </div>
 
           <div className="mt-2 flex items-center justify-between text-[8px] text-gray-700 font-bengali">
-            <span>বাইজিদ অ্যাপারেলস (প্রাঃ) লিঃ • ফ্যাক্টরি অপারেশনস ম্যানেজমেন্ট সিস্টেম</span>
+            <span>বাইজিদ অ্যাপারেলস (প্রাঃ) লিঃ, ফ্যাক্টরি অপারেশনস ম্যানেজমেন্ট সিস্টেম</span>
             <span>প্রতিবেদন তৈরির সময়: {toBn(format(new Date(), 'yyyy-MM-dd HH:mm:ss'))}</span>
           </div>
         </div>

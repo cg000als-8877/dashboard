@@ -1762,10 +1762,6 @@ export function DashboardContent({ month, isArchive = false }) {
                     aria-expanded={isDatePickerOpen}
                     aria-haspopup="dialog"
                   >
-                    <span className="flex h-2 w-2 relative shrink-0">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
-                    </span>
                     <Calendar className="w-3.5 h-3.5 text-rose-500 shrink-0" />
                     <span className="font-semibold tracking-wide">Download Daily Report</span>
                     <ChevronDown className={cn("w-3.5 h-3.5 text-[var(--color-text-muted)] group-hover:text-[var(--color-text-main)] transition-transform duration-200 shrink-0", isDatePickerOpen && "rotate-180")} />
@@ -1815,7 +1811,6 @@ export function DashboardContent({ month, isArchive = false }) {
                             className="flex-1 py-1 px-2 rounded-lg text-[11px] font-semibold bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 hover:border-rose-500/50 transition-all flex items-center justify-center gap-1.5"
                             title="Download Latest Day Report"
                           >
-                            <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></span>
                             <span>Latest ({format(parseISO(calendarMonthInfo.latestDate), 'd MMM')})</span>
                           </button>
                         )}
@@ -1895,9 +1890,6 @@ export function DashboardContent({ month, isArchive = false }) {
                               {isFriday && !isAvailable && (
                                 <span className="text-[7px] -mt-1 leading-none text-amber-500/60 font-mono">off</span>
                               )}
-                              {isAvailable && !isSelected && (
-                                <span className="w-1 h-1 rounded-full bg-rose-500/60 -mt-0.5"></span>
-                              )}
                             </button>
                           );
                         })}
@@ -1905,15 +1897,9 @@ export function DashboardContent({ month, isArchive = false }) {
 
                       {/* Calendar Legend / Footer */}
                       <div className="mt-3 pt-2.5 border-t border-[var(--color-border)] flex items-center justify-between text-[10px] text-[var(--color-text-muted)]">
-                        <div className="flex items-center gap-3">
-                          <div className="flex items-center gap-1">
-                            <span className="w-2 h-2 rounded-full bg-rose-500"></span>
-                            <span>Available</span>
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <span className="w-2 h-2 rounded-full bg-amber-500/50"></span>
-                            <span>Holiday</span>
-                          </div>
+                        <div className="flex items-center gap-1.5">
+                          <span className="px-1.5 py-0.5 rounded text-[9px] font-semibold bg-rose-500/15 text-rose-400 border border-rose-500/30">Available</span>
+                          <span className="px-1.5 py-0.5 rounded text-[9px] font-semibold bg-amber-500/10 text-amber-500/60 border border-amber-500/20">Holiday</span>
                         </div>
                         <div className="text-[10px] font-semibold text-rose-400 flex items-center gap-1">
                           <Printer className="w-3 h-3" />
