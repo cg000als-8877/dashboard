@@ -19,7 +19,7 @@ export function formatBnNum(num) {
   return toBn(rounded);
 }
 
-// Formats difference in Bengali Taka (e.g. -210 -> -২১০ টাকা, 83040 -> ৮৩০৪০ টাকা)
+// Formats difference in Bengali Taka (string version)
 export function formatDifference(val) {
   if (val === null || val === undefined || isNaN(Number(val))) return '০ টাকা';
   const rounded = Math.round(Number(val));
@@ -29,6 +29,22 @@ export function formatDifference(val) {
     return `${toBn(rounded)} টাকা`;
   }
   return `০ টাকা`;
+}
+
+// Renders difference in Bengali Taka with red styling for negative values matching the sheet
+export function renderDifference(val) {
+  if (val === null || val === undefined || isNaN(Number(val))) return <span>০ টাকা</span>;
+  const rounded = Math.round(Number(val));
+  if (rounded < 0) {
+    return (
+      <span className="text-red-600 font-bold" style={{ color: '#dc2626' }}>
+        -{toBn(Math.abs(rounded))} টাকা
+      </span>
+    );
+  } else if (rounded > 0) {
+    return <span>{toBn(rounded)} টাকা</span>;
+  }
+  return <span>০ টাকা</span>;
 }
 
 // Bengali Months map
@@ -98,6 +114,7 @@ export function PrintableBanglaDailyReport({
 
   // ── 2. CUMULATIVE & DAY METRICS (SLICED EXACTLY TO TARGET DATE) ─────────────
   const trendsUpToDate = (dailyTrends || []).filter(t => t.date && t.date <= effectiveDateStr);
+  const passedWorkingDays = trendsUpToDate.length > 0 ? trendsUpToDate.length : 1;
 
   let totalCost = 0;
   let totalIncome = 0;
@@ -229,18 +246,19 @@ export function PrintableBanglaDailyReport({
         @media print {
           @page {
             size: A4 landscape;
-            margin: 8mm 12mm;
+            margin: 12mm 15mm 10mm 15mm;
           }
           body > *:not(#bangla-daily-printable-portal) {
             display: none !important;
           }
           *, *::before, *::after {
-            color: #000000 !important;
             border-color: #000000 !important;
-            background-color: transparent !important;
             box-shadow: none !important;
             text-shadow: none !important;
             font-family: 'Noto Serif Bengali', 'Noto Serif', serif !important;
+          }
+          .text-red-600, .text-red-600 * {
+            color: #dc2626 !important;
           }
           html, body {
             width: 297mm !important;
@@ -272,7 +290,7 @@ export function PrintableBanglaDailyReport({
             max-height: 194mm !important;
             background: #ffffff !important;
             color: #000000 !important;
-            padding: 4mm 6mm !important;
+            padding: 6mm 8mm !important;
             box-sizing: border-box !important;
             border: none !important;
             page-break-after: avoid !important;
@@ -296,15 +314,15 @@ export function PrintableBanglaDailyReport({
         }
       `}} />
 
-      {/* ── ACTUAL PHYSICAL A4 SINGLE-PAGE BLACK & WHITE LANDSCAPE SHEET ── */}
+      {/* ── ACTUAL PHYSICAL A4 SINGLE-PAGE LANDSCAPE SHEET WITH STANDARD TOP GAP ── */}
       <div 
         id="bangla-daily-printable-report"
-        className="w-[297mm] max-h-[194mm] bg-white text-black p-4 select-text flex flex-col justify-between border-0"
+        className="w-[297mm] max-h-[194mm] bg-white text-black px-6 pt-6 pb-4 select-text flex flex-col justify-between border-0"
         style={{ fontFamily: "'Noto Serif Bengali', 'Noto Serif', serif" }}
       >
         <div>
-          {/* ── 1. CORPORATE HEADER (CENTERED, BLACK & WHITE) ── */}
-          <div className="text-center mb-1">
+          {/* ── 1. CORPORATE HEADER (CENTERED, WITH STANDARD TOP MARGIN GAP) ── */}
+          <div className="text-center mb-1 pt-3">
             <h1 className="text-2xl font-black text-black tracking-tight leading-tight">
               বায়েজিদ অ্যাপারেলস (প্রা.) লিমিটেড
             </h1>
@@ -327,16 +345,16 @@ export function PrintableBanglaDailyReport({
             </div>
           </div>
 
-          {/* ── 2. MAIN LINE-BY-LINE SPREADSHEET TABLE (8 COLUMNS) ── */}
+          {/* ── 2. MAIN LINE-BY-LINE SPREADSHEET TABLE (8 COLUMNS: মোট খরচ IN COL 4, সিএম IN COL 6) ── */}
           <table className="w-full border-collapse border border-black text-xs text-black mb-3">
             <thead>
               <tr className="border-b border-black">
                 <th className="border border-black px-2 py-1.5 text-center font-bold">লাইন</th>
                 <th className="border border-black px-2 py-1.5 text-center font-bold">স্টাইল</th>
                 <th className="border border-black px-2 py-1.5 text-center font-bold">মেশিনের সংখ্যা</th>
-                <th className="border border-black px-2 py-1.5 text-center font-bold">সিএম (CM)</th>
-                <th className="border border-black px-2 py-1.5 text-center font-bold">দৈনিক উৎপাদন</th>
                 <th className="border border-black px-2 py-1.5 text-center font-bold">মোট খরচ</th>
+                <th className="border border-black px-2 py-1.5 text-center font-bold">দৈনিক উৎপাদন</th>
+                <th className="border border-black px-2 py-1.5 text-center font-bold">সিএম (CM)</th>
                 <th className="border border-black px-2 py-1.5 text-center font-bold">মোট আয়</th>
                 <th className="border border-black px-2 py-1.5 text-center font-bold">পার্থক্য</th>
               </tr>
@@ -354,19 +372,19 @@ export function PrintableBanglaDailyReport({
                     {toBn(line.workers)}
                   </td>
                   <td className="border border-black px-2 py-1 text-center font-bold">
-                    {formatBnNum(line.cmPerDzn)} টাকা
+                    {formatBnNum(line.dayCost)} টাকা
                   </td>
                   <td className="border border-black px-2 py-1 text-center font-bold">
                     {formatBnNum(line.dayProd)} পিস
                   </td>
                   <td className="border border-black px-2 py-1 text-center font-bold">
-                    {formatBnNum(line.dayCost)} টাকা
+                    {formatBnNum(line.cmPerDzn)} টাকা
                   </td>
                   <td className="border border-black px-2 py-1 text-center font-bold">
                     {formatBnNum(line.dayIncome)} টাকা
                   </td>
                   <td className="border border-black px-2 py-1 text-center font-bold">
-                    {formatDifference(line.dayProfit)}
+                    {renderDifference(line.dayProfit)}
                   </td>
                 </tr>
               ))}
@@ -376,18 +394,18 @@ export function PrintableBanglaDailyReport({
                 <td className="border border-black px-2 py-1 text-center font-bold">মোট</td>
                 <td className="border border-black px-2 py-1"></td>
                 <td className="border border-black px-2 py-1"></td>
-                <td className="border border-black px-2 py-1"></td>
-                <td className="border border-black px-2 py-1 text-center font-bold">
-                  {formatBnNum(totalActiveProdQty)} পিস
-                </td>
                 <td className="border border-black px-2 py-1 text-center font-bold">
                   {formatBnNum(selectedDayCost)} টাকা
                 </td>
                 <td className="border border-black px-2 py-1 text-center font-bold">
+                  {formatBnNum(totalActiveProdQty)} পিস
+                </td>
+                <td className="border border-black px-2 py-1"></td>
+                <td className="border border-black px-2 py-1 text-center font-bold">
                   {formatBnNum(selectedDayIncome)} টাকা
                 </td>
                 <td className="border border-black px-2 py-1 text-center font-bold">
-                  {formatDifference(selectedDayProfit)}
+                  {renderDifference(selectedDayProfit)}
                 </td>
               </tr>
             </tbody>
@@ -412,17 +430,17 @@ export function PrintableBanglaDailyReport({
                 <tr>
                   <td className="border border-black px-3 py-1 font-bold text-center w-1/2">মোট লাভ/ক্ষতি</td>
                   <td className="border border-black px-3 py-1 font-bold text-center w-1/2">
-                    {formatDifference(selectedDayProfit)}
+                    {renderDifference(selectedDayProfit)}
                   </td>
                 </tr>
               </tbody>
             </table>
           </div>
 
-          {/* ── 4. CUMULATIVE PERIOD SUMMARY (CENTERED MINI TABLE) ── */}
+          {/* ── 4. CUMULATIVE PERIOD SUMMARY (CENTERED MINI TABLE WITH (২০ দিন) WORKING DAYS COUNT) ── */}
           <div className="flex flex-col items-center mb-4">
             <h3 className="text-sm font-black text-black mb-1">
-              {banglaMonth} ১ থেকে {toBn(selectedDayNum)}, {toBn(activeMonthYear)}
+              {banglaMonth} ১ থেকে {toBn(selectedDayNum)}, {toBn(activeMonthYear)} ({toBn(passedWorkingDays)} দিন)
             </h3>
             <table className="border-collapse border border-black text-xs text-black w-80">
               <tbody>
@@ -441,7 +459,7 @@ export function PrintableBanglaDailyReport({
                 <tr>
                   <td className="border border-black px-3 py-1 font-bold text-center w-1/2">মোট লাভ/ক্ষতি</td>
                   <td className="border border-black px-3 py-1 font-bold text-center w-1/2">
-                    {formatDifference(netProfit)}
+                    {renderDifference(netProfit)}
                   </td>
                 </tr>
               </tbody>
