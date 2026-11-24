@@ -1762,98 +1762,49 @@ export function DashboardContent({ month, isArchive = false }) {
             <div className="mt-8 md:mt-12 mb-0 md:mb-8 relative z-10">
               {/* Header Title & Date Subtitle */}
               <div className="flex flex-col items-center justify-center mb-5 sm:mb-6 text-center">
-                {/* Download Daily Report CTA Button with Calendar Popover */}
+                {/* Download Daily Report CTA Button with Minimal Calendar Popover */}
                 <div className="relative inline-block mb-3" ref={datePickerRef}>
                   <button
                     type="button"
                     onClick={() => setIsDatePickerOpen(prev => !prev)}
-                    className="group inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--color-surface)] hover:bg-[var(--color-surface-hover)] border border-[var(--color-border)] shadow-xs hover:border-rose-500/50 hover:shadow-[0_0_18px_rgba(244,63,94,0.18)] transition-all duration-200 cursor-pointer select-none text-[12px] sm:text-xs font-semibold text-[var(--color-text-main)] active:scale-[0.98]"
-                    title="Select a date to download or print that day's Bengali report"
+                    className="px-4 py-1.5 rounded-full bg-[var(--color-surface)] hover:bg-[var(--color-surface-hover)] border border-[var(--color-border)] text-xs font-semibold text-[var(--color-text-main)] transition-colors cursor-pointer select-none"
+                    title="Download Daily Report"
                     aria-expanded={isDatePickerOpen}
-                    aria-haspopup="dialog"
                   >
-                    <Calendar className="w-3.5 h-3.5 text-rose-500 shrink-0" />
-                    <span className="font-semibold tracking-wide">Download Daily Report</span>
-                    <ChevronDown className={cn("w-3.5 h-3.5 text-[var(--color-text-muted)] group-hover:text-[var(--color-text-main)] transition-transform duration-200 shrink-0", isDatePickerOpen && "rotate-180")} />
+                    Download Daily Report
                   </button>
 
-                  {/* Calendar Popover */}
+                  {/* Minimal Calendar Popover */}
                   {isDatePickerOpen && (
                     <div 
-                      className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[330px] sm:w-[360px] max-w-[94vw] bg-[var(--color-surface)] border border-[var(--color-border)] rounded-2xl shadow-2xl p-4 z-50 animate-in fade-in zoom-in-95 duration-150 text-left overflow-hidden"
-                      style={{
-                        boxShadow: '0 20px 40px -15px rgba(0,0,0,0.7), 0 0 25px rgba(244,63,94,0.15)'
-                      }}
+                      className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-72 max-w-[94vw] bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl shadow-2xl p-3 z-50 text-left"
                     >
-                      {/* Solid backdrop shield to prevent text bleed-through */}
-                      <div className="absolute inset-0 bg-[#0c1017] -z-10" />
+                      {/* Solid backdrop shield */}
+                      <div className="absolute inset-0 bg-[#0c1017] rounded-xl -z-10" />
 
-                      {/* Popover Header */}
-                      <div className="flex items-center justify-between pb-2.5 border-b border-[var(--color-border)]">
-                        <div>
-                          <h3 className="text-xs sm:text-sm font-bold text-[var(--color-text-main)] flex items-center gap-2">
-                            <Calendar className="w-4 h-4 text-rose-500 shrink-0" />
-                            <span>Select Report Date</span>
-                          </h3>
-                          <p className="text-[10px] sm:text-[11px] text-[var(--color-text-muted)] mt-0.5">
-                            Pick any day to print / download PDF
-                          </p>
-                        </div>
+                      {/* Minimal Month Header */}
+                      <div className="flex items-center justify-between pb-2 mb-2 border-b border-[var(--color-border)]/60">
+                        <span className="text-xs font-bold text-[var(--color-text-main)]">
+                          {calendarMonthInfo.monthName} {calendarMonthInfo.year}
+                        </span>
                         <button
                           type="button"
                           onClick={() => setIsDatePickerOpen(false)}
-                          className="p-1 rounded-lg hover:bg-[var(--color-surface-hover)] text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] transition-colors"
+                          className="text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] px-1 cursor-pointer leading-none"
                           title="Close"
                         >
-                          <X className="w-4 h-4" />
+                          ✕
                         </button>
                       </div>
 
-                      {/* Quick Shortcuts */}
-                      <div className="py-2.5 flex items-center gap-2">
-                        <span className="text-[10px] font-semibold text-[var(--color-text-muted)] uppercase tracking-wider shrink-0">
-                          Quick:
-                        </span>
-                        {calendarMonthInfo.latestDate && (
-                          <button
-                            type="button"
-                            onClick={() => handleSelectReportDate(calendarMonthInfo.latestDate)}
-                            className="flex-1 py-1 px-2 rounded-lg text-[11px] font-semibold bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 hover:border-rose-500/50 transition-all flex items-center justify-center gap-1.5"
-                            title="Download Latest Day Report"
-                          >
-                            <span>Latest ({format(parseISO(calendarMonthInfo.latestDate), 'd MMM')})</span>
-                          </button>
-                        )}
-                        {calendarMonthInfo.yesterdayDate && (
-                          <button
-                            type="button"
-                            onClick={() => handleSelectReportDate(calendarMonthInfo.yesterdayDate)}
-                            className="flex-1 py-1 px-2 rounded-lg text-[11px] font-semibold bg-[var(--color-surface-hover)] hover:bg-[var(--color-border)] text-[var(--color-text-secondary)] border border-[var(--color-border)] transition-all flex items-center justify-center gap-1"
-                            title="Download Yesterday's Report"
-                          >
-                            <span>Yesterday ({format(parseISO(calendarMonthInfo.yesterdayDate), 'd MMM')})</span>
-                          </button>
-                        )}
-                      </div>
-
-                      {/* Month Name & Working Days Banner */}
-                      <div className="bg-[var(--color-background)] rounded-lg py-1 px-3 mb-2 flex items-center justify-between border border-[var(--color-border)]/50">
-                        <span className="text-xs font-bold text-[var(--color-text-main)] tracking-wide">
-                          {calendarMonthInfo.monthName} {calendarMonthInfo.year}
-                        </span>
-                        <span className="text-[10px] text-[var(--color-text-muted)]">
-                          {calendarMonthInfo.days.filter(d => d.hasData).length} Working Days
-                        </span>
-                      </div>
-
                       {/* Days of Week Header */}
-                      <div className="grid grid-cols-7 gap-1 text-center mb-1">
+                      <div className="grid grid-cols-7 gap-1 text-center mb-1.5">
                         {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map((day, idx) => (
                           <div
                             key={day}
                             className={cn(
-                              "text-[10px] font-bold py-0.5",
-                              idx === 5 ? "text-amber-500/80" : "text-[var(--color-text-muted)]"
+                              "text-[10px] font-semibold py-0.5",
+                              idx === 5 ? "text-amber-500" : "text-[var(--color-text-muted)]"
                             )}
                           >
                             {day}
@@ -1865,56 +1816,37 @@ export function DashboardContent({ month, isArchive = false }) {
                       <div className="grid grid-cols-7 gap-1 text-center">
                         {calendarMonthInfo.days.map((item, idx) => {
                           if (!item.dayNum) {
-                            return <div key={`empty-${idx}`} className="h-8" />;
+                            return <div key={`empty-${idx}`} className="h-7" />;
                           }
 
                           const isSelected = (selectedReportDate || calendarMonthInfo.latestDate) === item.dateStr;
-                          const isAvailable = item.hasData;
-                          const isFriday = item.isFriday;
+                          // If Friday OR data is missing, consider that day as holiday (orange and disabled)
+                          const isHoliday = item.isFriday || !item.hasData;
 
                           return (
                             <button
                               key={item.dateStr}
                               type="button"
-                              disabled={!isAvailable}
-                              onClick={() => isAvailable && handleSelectReportDate(item.dateStr)}
+                              disabled={isHoliday}
+                              onClick={() => !isHoliday && handleSelectReportDate(item.dateStr)}
                               className={cn(
-                                "h-8 rounded-lg text-xs font-medium flex flex-col items-center justify-center relative transition-all duration-150 select-none",
-                                isAvailable
-                                  ? isSelected
-                                    ? "bg-rose-500 text-white font-bold shadow-md shadow-rose-500/40 ring-2 ring-rose-400 scale-105 z-10"
-                                    : "bg-[var(--color-background)] text-[var(--color-text-main)] hover:bg-rose-500/20 hover:text-rose-400 hover:border-rose-500/40 border border-[var(--color-border)]/40 cursor-pointer active:scale-95"
-                                  : isFriday
-                                    ? "bg-amber-500/5 text-amber-500/40 border border-amber-500/10 cursor-not-allowed opacity-40"
-                                    : "text-[var(--color-text-muted)]/30 border border-transparent cursor-not-allowed opacity-25"
+                                "h-7 rounded text-xs font-medium flex items-center justify-center transition-all select-none",
+                                isHoliday
+                                  ? "text-amber-500/70 bg-amber-500/10 cursor-not-allowed"
+                                  : isSelected
+                                    ? "bg-rose-500 text-white font-bold"
+                                    : "text-[var(--color-text-main)] hover:bg-rose-500/20 hover:text-rose-400 cursor-pointer"
                               )}
                               title={
-                                isAvailable
-                                  ? `Print Daily Report for ${format(parseISO(item.dateStr), 'dd MMMM, yyyy')}`
-                                  : isFriday
-                                    ? 'Friday: Factory Weekly Holiday'
-                                    : 'No production data'
+                                isHoliday
+                                  ? (item.isFriday ? 'Friday (Holiday)' : 'Missing Data (Holiday)')
+                                  : `${item.dayNum} ${calendarMonthInfo.monthName}`
                               }
                             >
-                              <span>{item.dayNum}</span>
-                              {isFriday && !isAvailable && (
-                                <span className="text-[7px] -mt-1 leading-none text-amber-500/60 font-mono">off</span>
-                              )}
+                              {item.dayNum}
                             </button>
                           );
                         })}
-                      </div>
-
-                      {/* Calendar Legend / Footer */}
-                      <div className="mt-3 pt-2.5 border-t border-[var(--color-border)] flex items-center justify-between text-[10px] text-[var(--color-text-muted)]">
-                        <div className="flex items-center gap-1.5">
-                          <span className="px-1.5 py-0.5 rounded text-[9px] font-semibold bg-rose-500/15 text-rose-400 border border-rose-500/30">Available</span>
-                          <span className="px-1.5 py-0.5 rounded text-[9px] font-semibold bg-amber-500/10 text-amber-500/60 border border-amber-500/20">Holiday</span>
-                        </div>
-                        <div className="text-[10px] font-semibold text-rose-400 flex items-center gap-1">
-                          <Printer className="w-3 h-3" />
-                          <span>Click to print</span>
-                        </div>
                       </div>
                     </div>
                   )}
