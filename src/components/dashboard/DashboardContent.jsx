@@ -1882,8 +1882,8 @@ export function DashboardContent({ month, isArchive = false }) {
               {/* Header Title & Date Subtitle */}
               <div className="flex flex-col items-center justify-center mb-5 sm:mb-6 text-center">
                 {/* Download Daily Report & Copy WhatsApp Report CTA Buttons with Minimal Calendar Popover */}
-                <div className="relative inline-flex items-center justify-center gap-2 sm:gap-3 flex-nowrap mb-3" ref={datePickerRef}>
-                  {/* Button 1: Daily Report (PDF) - Neutral Theme-Matched Fill */}
+                <div className="relative inline-flex items-center justify-center gap-1.5 xs:gap-2 sm:gap-3 flex-nowrap mb-3 max-w-full" ref={datePickerRef}>
+                  {/* Button 1: Print Daily Report (PDF) - Neutral Theme-Matched Fill */}
                   <button
                     type="button"
                     onClick={() => {
@@ -1896,24 +1896,24 @@ export function DashboardContent({ month, isArchive = false }) {
                       }
                     }}
                     className={cn(
-                      "group inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl",
+                      "group inline-flex items-center justify-center gap-1 xs:gap-1.5 px-2.5 xs:px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl",
                       "bg-[var(--color-bg-card)] hover:bg-[var(--color-bg-card-hover)]",
                       "text-[var(--color-text-main)]",
                       "border border-[var(--color-border)] hover:border-[var(--color-border)]/80",
                       "hover:opacity-95 active:scale-[0.98]",
-                      "text-xs font-semibold tracking-wide whitespace-nowrap",
+                      "text-[11px] xs:text-xs font-semibold tracking-tight sm:tracking-wide whitespace-nowrap shrink-0",
                       "shadow-sm md:shadow-[0_2px_8px_rgba(0,0,0,0.18)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.25)]",
                       "transition-all duration-200 cursor-pointer select-none",
                       "outline-none ring-0 focus-visible:ring-1 focus-visible:ring-[var(--color-primary)]"
                     )}
-                    title="Download Daily Report PDF"
+                    title="Print Daily Report PDF"
                     aria-expanded={isDatePickerOpen && datePickerMode === 'download'}
                   >
-                    <span className="leading-none">Daily Report</span>
-                    <ChevronDown className={cn("w-3.5 h-3.5 shrink-0 text-[var(--color-text-secondary)] group-hover:text-[var(--color-text-main)] transition-transform duration-200 opacity-80 group-hover:opacity-100", isDatePickerOpen && datePickerMode === 'download' && "rotate-180")} />
+                    <span className="leading-none">Print Daily Report</span>
+                    <ChevronDown className={cn("w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0 text-[var(--color-text-secondary)] group-hover:text-[var(--color-text-main)] transition-transform duration-200 opacity-80 group-hover:opacity-100", isDatePickerOpen && datePickerMode === 'download' && "rotate-180")} />
                   </button>
 
-                  {/* Button 2: WhatsApp Report - Neutral Theme-Matched Fill */}
+                  {/* Button 2: 1 Click Copy Report - Neutral Theme-Matched Fill */}
                   <button
                     type="button"
                     onClick={() => {
@@ -1926,21 +1926,21 @@ export function DashboardContent({ month, isArchive = false }) {
                       }
                     }}
                     className={cn(
-                      "group inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl",
+                      "group inline-flex items-center justify-center gap-1 xs:gap-1.5 px-2.5 xs:px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl",
                       "bg-[var(--color-bg-card)] hover:bg-[var(--color-bg-card-hover)]",
                       "text-[var(--color-text-main)]",
                       "border border-[var(--color-border)] hover:border-[var(--color-border)]/80",
                       "hover:opacity-95 active:scale-[0.98]",
-                      "text-xs font-semibold tracking-wide whitespace-nowrap",
+                      "text-[11px] xs:text-xs font-semibold tracking-tight sm:tracking-wide whitespace-nowrap shrink-0",
                       "shadow-sm md:shadow-[0_2px_8px_rgba(0,0,0,0.18)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.25)]",
                       "transition-all duration-200 cursor-pointer select-none",
                       "outline-none ring-0 focus-visible:ring-1 focus-visible:ring-[var(--color-primary)]"
                     )}
-                    title="Copy Text Report for WhatsApp / Social Media"
+                    title="1 Click Copy Report for WhatsApp / Social Media"
                     aria-expanded={isDatePickerOpen && datePickerMode === 'whatsapp'}
                   >
-                    <span className="leading-none">{isCopied ? "Copied!" : "WhatsApp Report"}</span>
-                    <ChevronDown className={cn("w-3.5 h-3.5 shrink-0 text-[var(--color-text-secondary)] group-hover:text-[var(--color-text-main)] transition-transform duration-200 opacity-80 group-hover:opacity-100", isDatePickerOpen && datePickerMode === 'whatsapp' && "rotate-180")} />
+                    <span className="leading-none">{isCopied ? "Copied!" : "1 Click Copy Report"}</span>
+                    <ChevronDown className={cn("w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0 text-[var(--color-text-secondary)] group-hover:text-[var(--color-text-main)] transition-transform duration-200 opacity-80 group-hover:opacity-100", isDatePickerOpen && datePickerMode === 'whatsapp' && "rotate-180")} />
                   </button>
 
                   {/* Minimal Calendar Popover (Shared seamlessly between both actions with month navigation) */}
@@ -1955,7 +1955,7 @@ export function DashboardContent({ month, isArchive = false }) {
                       <div className="flex flex-col gap-1.5 pb-2 mb-2 border-b border-[var(--color-border)]/60">
                         <div className="flex items-center justify-between">
                           <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-text-muted)]">
-                            {datePickerMode === 'whatsapp' ? 'Copy WhatsApp Report' : 'Download PDF Report'}
+                            {datePickerMode === 'whatsapp' ? '1 Click Copy Report' : 'Print Daily Report'}
                           </span>
                           <button
                             type="button"
