@@ -43,7 +43,11 @@ const BENGALI_LINE_LABELS = {
 
 /**
  * Generates a clean, smart, structured plain-text daily report formatted for WhatsApp & social media.
- * Uses WhatsApp markdown (*bold*, _italic_, bullets, dividers, and key metrics matching the PDF report).
+ * Matches the user's exact specification:
+ * - Line-wise breakdown with ✅ *লাইন এ (A)*, machine count, daily production, CM, total cost, total income, difference
+ * - Selected date summary: 📌 *[Day] [Month] | মোট সারসংক্ষেপ:*
+ * - Month-to-date cumulative status: *[Month] ১ থেকে [Day], [Year] ([Days] দিন) সার্বিক অবস্থা:*
+ * - Direct portal URL footer
  */
 export function generateWhatsAppDailyReport({
   targetDate = null,
@@ -56,13 +60,13 @@ export function generateWhatsAppDailyReport({
 }) {
   // ── 1. Target Date & Bengali Month Calculation ──
   const latestTrend = dailyTrends && dailyTrends.length > 0 ? dailyTrends[dailyTrends.length - 1] : null;
-  const effectiveDateStr = targetDate || latestTrend?.date || `${activeMonthYear}-11-23`;
+  const effectiveDateStr = targetDate || latestTrend?.date || `${activeMonthYear}-11-24`;
 
   let dateObj;
   try {
     dateObj = parseISO(effectiveDateStr);
   } catch (e) {
-    dateObj = new Date(2026, 10, 23);
+    dateObj = new Date(2026, 10, 24);
   }
 
   const selectedDayNum = dateObj.getDate();
@@ -122,8 +126,8 @@ export function generateWhatsAppDailyReport({
         const dayCost = entry.total_cost || 0;
         const dayIncome = entry.total_income || 0;
         const dayProfit = entry.net_profit !== undefined ? entry.net_profit : (dayIncome - dayCost);
-        const style = entry.style || entry.item || '—';
-        const workers = entry.worker_count || 0;
+        const style = entry.style?.trim?.() || entry.item?.trim?.() || '—';
+        const workers = entry.worker_count || entry.machines || entry.machine_count || entry.workers || 0;
         const cmPerDzn = entry.cm_per_dzn || 0;
 
         return {
@@ -147,7 +151,7 @@ export function generateWhatsAppDailyReport({
       const dayProfit = l.lastDayProfit || (dayIncome - dayCost);
       const workers = l.lastDayWorkers || l.lastDay?.worker_count || l.averageWorkers || 0;
       const cmPerDzn = l.lastDayCmPerDzn || l.lastDay?.cm_per_dzn || 0;
-      const style = l.style || l.item || '—';
+      const style = l.style?.trim?.() || l.item?.trim?.() || '—';
 
       return {
         id: l.id,
@@ -180,10 +184,11 @@ export function generateWhatsAppDailyReport({
     const diffSign = l.dayProfit < 0 ? '-' : (l.dayProfit > 0 ? '+' : '');
     const diffVal = `${diffSign}${formatBnNum(Math.abs(l.dayProfit))} টাকা`;
     const label = BENGALI_LINE_LABELS[l.id] || l.id;
+    const styleDisplay = l.style && l.style !== '—' ? toBn(l.style) : '—';
 
     return [
-      `🔹 *লাইন ${label}*`,
-      `• স্টাইল: ${l.style !== '—' ? toBn(l.style) : '—'}`,
+      `✅ *লাইন ${label}*`,
+      `• স্টাইল: ${styleDisplay}`,
       `• মেশিনের সংখ্যা: ${formatBnNum(l.workers)}`,
       `• দৈনিক উৎপাদন: ${formatBnNum(l.dayProd)} পিস`,
       `• সিএম (CM): ${formatBnNum(l.cmPerDzn)} টাকা`,
@@ -193,39 +198,40 @@ export function generateWhatsAppDailyReport({
     ].join('\n');
   }).join('\n\n');
 
+  // Profit/Loss labels and values
   const todayDiffSign = selectedDayProfit < 0 ? '-' : (selectedDayProfit > 0 ? '+' : '');
-  const todayProfitStr = `${todayDiffSign}${formatBnNum(Math.abs(selectedDayProfit))} টাকা`;
+  const todayProfitStr = `*${todayDiffSign}${formatBnNum(Math.abs(selectedDayProfit))} টাকা*`;
+  const todayProfitLabel = selectedDayProfit < 0 ? 'মোট ক্ষতি:' : (selectedDayProfit > 0 ? 'মোট লাভ:' : 'মোট লাভ/ক্ষতি:');
 
   const cumDiffSign = netProfit < 0 ? '-' : (netProfit > 0 ? '+' : '');
-  const cumProfitStr = `${cumDiffSign}${formatBnNum(Math.abs(netProfit))} টাকা`;
+  const cumProfitStr = `*${cumDiffSign}${formatBnNum(Math.abs(netProfit))} টাকা*`;
+  const cumProfitLabel = netProfit < 0 ? 'মোট ক্ষতি:' : (netProfit > 0 ? 'মোট লাভ:' : 'মোট লাভ/ক্ষতি:');
 
   const reportText = [
     `*বায়েজিদ অ্যাপারেলস (প্রা.) লিমিটেড*`,
     `_দৈনিক কারখানার খরচের বিবরণ_`,
     `📅 *তারিখ:* ${toBn(selectedDayNum)} ${banglaMonth} ${toBn(activeMonthYear)}`,
-    ``,
     `━━━━━━━━━━━━━━━━━━━━━`,
-    `📊 *লাইনভিত্তিক উৎপাদন ও খরচের বিবরণ:*`,
-    `━━━━━━━━━━━━━━━━━━━━━`,
+    ` *লাইনভিত্তিক উৎপাদন ও খরচের বিবরণ:*`,
     ``,
     linesFormatted || `_(এই তারিখে কোনো লাইন উৎপাদন সক্রিয় ছিল না)_`,
     ``,
     `━━━━━━━━━━━━━━━━━━━━━`,
-    `📌 *আজকের মোট সারসংক্ষেপ:*`,
+    `📌 *${toBn(selectedDayNum)} ${banglaMonth} | মোট সারসংক্ষেপ:*`,
     `━━━━━━━━━━━━━━━━━━━━━`,
-    `• মোট দৈনিক উৎপাদন: *${formatBnNum(totalActiveProdQty)} পিস*`,
+    `• মোট উৎপাদন: *${formatBnNum(totalActiveProdQty)} পিস*`,
     `• মোট খরচ: *${formatBnNum(selectedDayCost)} টাকা*`,
     `• মোট আয়: *${formatBnNum(selectedDayIncome)} টাকা*`,
-    `• মোট লাভ/ক্ষতি: *${todayProfitStr}*`,
+    `• ${todayProfitLabel} ${todayProfitStr}`,
     ``,
     `━━━━━━━━━━━━━━━━━━━━━`,
-    `📈 *${banglaMonth} ১ থেকে ${toBn(selectedDayNum)}, ${toBn(activeMonthYear)} (${toBn(passedWorkingDays)} দিন) সার্বিক অবস্থা:*`,
+    `*${banglaMonth} ১ থেকে ${toBn(selectedDayNum)}, ${toBn(activeMonthYear)} (${toBn(passedWorkingDays)} দিন) সার্বিক অবস্থা:*`,
     `━━━━━━━━━━━━━━━━━━━━━`,
-    `• তারিখ পর্যন্ত মোট খরচ: *${formatBnNum(totalCost)} টাকা*`,
-    `• তারিখ পর্যন্ত মোট আয়: *${formatBnNum(totalIncome)} টাকা*`,
-    `• মোট পুঞ্জীভূত লাভ/ক্ষতি: *${cumProfitStr}*`,
+    `• মোট খরচ: *${formatBnNum(totalCost)} টাকা*`,
+    `• মোট আয়: *${formatBnNum(totalIncome)} টাকা*`,
+    `• ${cumProfitLabel} ${cumProfitStr}`,
     ``,
-    `_রিপোর্ট প্রস্তুতকারক: বায়েজিদ অ্যাপারেলস সিস্টেম_`
+    `_আরো বিস্তারিত জানতে ভিজিট: https://bapldata.vercel.app_`
   ].join('\n');
 
   return reportText;
