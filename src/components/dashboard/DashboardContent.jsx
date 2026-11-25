@@ -1358,10 +1358,10 @@ export function DashboardContent({ month, isArchive = false }) {
                 </div>
 
                 {/* ── DESKTOP/PC VIEW: Wireframe-matched Responsive 3-Column Layout ── */}
-                <div className="hidden md:grid md:grid-cols-12 gap-3.5 lg:gap-4 xl:gap-5 relative z-10 px-0 items-stretch">
+                <div className="hidden md:grid md:grid-cols-12 gap-4 xl:gap-5 relative z-10 px-0 items-stretch">
                   
                   {/* COLUMN 1 (LEFT): Net Loss Card (Top) + Stacked Income & Cost Cards (Bottom) */}
-                  <div className="md:col-span-12 lg:col-span-4 xl:col-span-4 flex flex-col gap-3 xl:gap-3.5 justify-between">
+                  <div className="md:col-span-12 lg:col-span-4 xl:col-span-4 flex flex-col gap-4 xl:gap-5">
                     
                     {/* Top Combined Card: Net Loss & Average Daily Loss */}
                     <Card 
@@ -1477,7 +1477,7 @@ export function DashboardContent({ month, isArchive = false }) {
                     </Card>
 
                     {/* Bottom Row: 2 Separate Cards (Total Income & Total Cost) */}
-                    <div className="grid grid-cols-2 gap-2 xl:gap-3 flex-1">
+                    <div className="grid grid-cols-2 gap-4 xl:gap-5 flex-1">
                       {/* Total Income Card */}
                       <Card
                         hover
@@ -2232,7 +2232,7 @@ export function DashboardContent({ month, isArchive = false }) {
                 return (
                   <div>
                     {/* Desktop View (2-Column Grid) */}
-                    <div className="hidden md:grid md:grid-cols-2 gap-4 sm:gap-4 md:gap-5">
+                    <div className="hidden md:grid md:grid-cols-2 gap-4 xl:gap-5">
                       {sortedActiveLines.map(line => (
                         <div key={line.id} className="w-full flex flex-col">
                           {renderCardInner(line, false)}
