@@ -17,6 +17,12 @@
   --color-primary: #60A5FA;
   --color-on-primary: #0B0F19;
   --color-on-secondary: #FFFFFF;
+  --color-cta-daily-bg: #2563EB;
+  --color-cta-daily-text: #FFFFFF;
+  --color-cta-daily-glow: rgba(37, 99, 235, 0.25);
+  --color-cta-wa-bg: #0D9488;
+  --color-cta-wa-text: #FFFFFF;
+  --color-cta-wa-glow: rgba(13, 148, 136, 0.25);
   --color-success: #34D399;
   --color-on-success: #0B0F19;
   --color-danger: #F87171;
@@ -228,6 +234,12 @@ html[data-mode="light"] .shimmer {
   --shadow-color: rgba(0, 0, 0, 0.45);
 
   /* Default theme primary — Royal */
+  --color-cta-daily-bg: #2563EB;
+  --color-cta-daily-text: #FFFFFF;
+  --color-cta-daily-glow: rgba(37, 99, 235, 0.25);
+  --color-cta-wa-bg: #0D9488;
+  --color-cta-wa-text: #FFFFFF;
+  --color-cta-wa-glow: rgba(13, 148, 136, 0.25);
   --color-primary: #A4D4EE;
   --color-on-primary: #0B0F19;
   --color-primary-glow: rgba(164, 212, 238, 0.24);
@@ -265,6 +277,15 @@ body, aside, nav, header, main, section, footer,
    - Card Dark:             #131B2B (Matte Slate Glass)
 ═══════════════════════════════════════════ */
 html[data-theme="nordic-slate"] {
+  /* CTA Action Buttons (Optimized Contrast for Day & Night Modes) */
+  --color-cta-daily-bg: #60A5FA;
+  --color-cta-daily-text: #0B0F19;
+  --color-cta-daily-glow: rgba(96, 165, 250, 0.35);
+  --color-cta-wa-bg: #A78BFA;
+  --color-cta-wa-text: #0B0F19;
+  --color-cta-wa-glow: rgba(167, 139, 250, 0.35);
+  --color-on-primary: #0B0F19;
+  --color-on-secondary: #0B0F19;
   --color-primary: #60A5FA;
   --color-on-primary: #0B0F19;
   --color-primary-bright: #93C5FD;
@@ -293,6 +314,15 @@ html[data-theme="nordic-slate"] {
 }
 
 html[data-theme="nordic-slate"][data-mode="dark"] {
+  /* CTA Action Buttons (Optimized Contrast for Day & Night Modes) */
+  --color-cta-daily-bg: #60A5FA;
+  --color-cta-daily-text: #0B0F19;
+  --color-cta-daily-glow: rgba(96, 165, 250, 0.35);
+  --color-cta-wa-bg: #A78BFA;
+  --color-cta-wa-text: #0B0F19;
+  --color-cta-wa-glow: rgba(167, 139, 250, 0.35);
+  --color-on-primary: #0B0F19;
+  --color-on-secondary: #0B0F19;
   --color-bg-main: #0B0F19;
   --color-bg-card: #131B2B;
   --color-bg-card-hover: #192338;
@@ -335,6 +365,15 @@ html[data-theme="nordic-slate"][data-mode="dark"] {
 }
 
 html[data-theme="nordic-slate"][data-mode="light"] {
+  /* CTA Action Buttons (Optimized Contrast for Day & Night Modes) */
+  --color-cta-daily-bg: #1D4ED8;
+  --color-cta-daily-text: #FFFFFF;
+  --color-cta-daily-glow: rgba(29, 78, 216, 0.25);
+  --color-cta-wa-bg: #6D28D9;
+  --color-cta-wa-text: #FFFFFF;
+  --color-cta-wa-glow: rgba(109, 40, 217, 0.25);
+  --color-on-primary: #FFFFFF;
+  --color-on-secondary: #FFFFFF;
   --color-bg-main: #F1F5F9;
   --color-bg-card: #FFFFFF;
   --color-bg-card-hover: #F8FAFC;
@@ -387,6 +426,15 @@ html[data-theme="nordic-slate"][data-mode="light"] {
    Light:     #F0F7FF (Arctic Frost White)
 ═══════════════════════════════════════════ */
 html[data-theme="ember-tide"] {
+  /* CTA Action Buttons (Optimized Contrast for Day & Night Modes) */
+  --color-cta-daily-bg: #F97316;
+  --color-cta-daily-text: #060A14;
+  --color-cta-daily-glow: rgba(249, 115, 22, 0.35);
+  --color-cta-wa-bg: #38BDF8;
+  --color-cta-wa-text: #051828;
+  --color-cta-wa-glow: rgba(56, 189, 248, 0.35);
+  --color-on-primary: #060A14;
+  --color-on-secondary: #051828;
   --color-primary: #F97316;
   --color-primary-bright: #FB923C;
   --color-primary-soft: #1C0C03;
@@ -414,6 +462,15 @@ html[data-theme="ember-tide"] {
 }
 
 html[data-theme="ember-tide"][data-mode="dark"] {
+  /* CTA Action Buttons (Optimized Contrast for Day & Night Modes) */
+  --color-cta-daily-bg: #F97316;
+  --color-cta-daily-text: #060A14;
+  --color-cta-daily-glow: rgba(249, 115, 22, 0.35);
+  --color-cta-wa-bg: #38BDF8;
+  --color-cta-wa-text: #051828;
+  --color-cta-wa-glow: rgba(56, 189, 248, 0.35);
+  --color-on-primary: #060A14;
+  --color-on-secondary: #051828;
   --color-bg-main: #070C16;
   --color-bg-card: #0D1525;
   --color-bg-card-hover: #141E34;
@@ -466,6 +523,15 @@ html[data-theme="ember-tide"][data-mode="dark"] {
 }
 
 html[data-theme="ember-tide"][data-mode="light"] {
+  /* CTA Action Buttons (Optimized Contrast for Day & Night Modes) */
+  --color-cta-daily-bg: #C2410C;
+  --color-cta-daily-text: #FFFFFF;
+  --color-cta-daily-glow: rgba(194, 65, 12, 0.25);
+  --color-cta-wa-bg: #0369A1;
+  --color-cta-wa-text: #FFFFFF;
+  --color-cta-wa-glow: rgba(3, 105, 161, 0.25);
+  --color-on-primary: #FFFFFF;
+  --color-on-secondary: #FFFFFF;
   --color-bg-main: #F0F7FF;
   --color-bg-card: #FFFFFF;
   --color-bg-card-hover: #E8F3FD;
@@ -526,6 +592,15 @@ html[data-theme="ember-tide"][data-mode="light"] {
    Bg Dark:   #0e0b1c (Deep Space Indigo)
 ═══════════════════════════════════════════ */
 html[data-theme="jungle-nebula"] {
+  /* CTA Action Buttons (Optimized Contrast for Day & Night Modes) */
+  --color-cta-daily-bg: #57C27A;
+  --color-cta-daily-text: #041E0E;
+  --color-cta-daily-glow: rgba(87, 194, 122, 0.35);
+  --color-cta-wa-bg: #7C3AED;
+  --color-cta-wa-text: #FFFFFF;
+  --color-cta-wa-glow: rgba(124, 58, 237, 0.35);
+  --color-on-primary: #041E0E;
+  --color-on-secondary: #FFFFFF;
   --color-primary: #57c27a;
   --color-primary-bright: #7ae69b;
   --color-primary-soft: #142d1e;
@@ -552,6 +627,15 @@ html[data-theme="jungle-nebula"] {
 }
 
 html[data-theme="jungle-nebula"][data-mode="dark"] {
+  /* CTA Action Buttons (Optimized Contrast for Day & Night Modes) */
+  --color-cta-daily-bg: #57C27A;
+  --color-cta-daily-text: #041E0E;
+  --color-cta-daily-glow: rgba(87, 194, 122, 0.35);
+  --color-cta-wa-bg: #7C3AED;
+  --color-cta-wa-text: #FFFFFF;
+  --color-cta-wa-glow: rgba(124, 58, 237, 0.35);
+  --color-on-primary: #041E0E;
+  --color-on-secondary: #FFFFFF;
   --color-bg-main: #0e0b1c;
   --color-bg-card: #171328;
   --color-bg-card-hover: #221c38;
@@ -593,6 +677,15 @@ html[data-theme="jungle-nebula"][data-mode="dark"] {
 }
 
 html[data-theme="jungle-nebula"][data-mode="light"] {
+  /* CTA Action Buttons (Optimized Contrast for Day & Night Modes) */
+  --color-cta-daily-bg: #15803D;
+  --color-cta-daily-text: #FFFFFF;
+  --color-cta-daily-glow: rgba(21, 128, 61, 0.25);
+  --color-cta-wa-bg: #6D28D9;
+  --color-cta-wa-text: #FFFFFF;
+  --color-cta-wa-glow: rgba(109, 40, 217, 0.25);
+  --color-on-primary: #FFFFFF;
+  --color-on-secondary: #FFFFFF;
   --color-bg-main: #f4f3f8;
   --color-bg-card: #ffffff;
   --color-bg-card-hover: #eceaf0;
@@ -643,6 +736,15 @@ html[data-theme="jungle-nebula"][data-mode="light"] {
    - Card Dark:                #0D1124 (Cyber Grid Card)
 ═══════════════════════════════════════════ */
 html[data-theme="arcade-overdrive"] {
+  /* CTA Action Buttons (Optimized Contrast for Day & Night Modes) */
+  --color-cta-daily-bg: #00F0FF;
+  --color-cta-daily-text: #04101A;
+  --color-cta-daily-glow: rgba(0, 240, 255, 0.4);
+  --color-cta-wa-bg: #FF007F;
+  --color-cta-wa-text: #14000B;
+  --color-cta-wa-glow: rgba(255, 0, 127, 0.4);
+  --color-on-primary: #04101A;
+  --color-on-secondary: #14000B;
   --color-primary: #00F0FF;
   --color-primary-bright: #70F6FF;
   --color-primary-soft: #052633;
@@ -669,6 +771,15 @@ html[data-theme="arcade-overdrive"] {
 }
 
 html[data-theme="arcade-overdrive"][data-mode="dark"] {
+  /* CTA Action Buttons (Optimized Contrast for Day & Night Modes) */
+  --color-cta-daily-bg: #00F0FF;
+  --color-cta-daily-text: #04101A;
+  --color-cta-daily-glow: rgba(0, 240, 255, 0.4);
+  --color-cta-wa-bg: #FF007F;
+  --color-cta-wa-text: #14000B;
+  --color-cta-wa-glow: rgba(255, 0, 127, 0.4);
+  --color-on-primary: #04101A;
+  --color-on-secondary: #14000B;
   --color-bg-main: #060814;
   --color-bg-card: #0D1124;
   --color-bg-card-hover: #141A34;
@@ -713,6 +824,15 @@ html[data-theme="arcade-overdrive"][data-mode="dark"] {
 }
 
 html[data-theme="arcade-overdrive"][data-mode="light"] {
+  /* CTA Action Buttons (Optimized Contrast for Day & Night Modes) */
+  --color-cta-daily-bg: #007A8A;
+  --color-cta-daily-text: #FFFFFF;
+  --color-cta-daily-glow: rgba(0, 122, 138, 0.25);
+  --color-cta-wa-bg: #A00050;
+  --color-cta-wa-text: #FFFFFF;
+  --color-cta-wa-glow: rgba(160, 0, 80, 0.25);
+  --color-on-primary: #FFFFFF;
+  --color-on-secondary: #FFFFFF;
   --color-bg-main: #F0F5FA;
   --color-bg-card: #FFFFFF;
   --color-bg-card-hover: #EBF2F9;
@@ -762,6 +882,15 @@ html[data-theme="arcade-overdrive"][data-mode="light"] {
    Bg Dark:   #08000f
 ═══════════════════════════════════════════ */
 html[data-theme="gen-z"] {
+  /* CTA Action Buttons (Optimized Contrast for Day & Night Modes) */
+  --color-cta-daily-bg: #FF007F;
+  --color-cta-daily-text: #16000C;
+  --color-cta-daily-glow: rgba(255, 0, 127, 0.4);
+  --color-cta-wa-bg: #00FFCC;
+  --color-cta-wa-text: #002820;
+  --color-cta-wa-glow: rgba(0, 255, 204, 0.4);
+  --color-on-primary: #16000C;
+  --color-on-secondary: #002820;
   --color-primary: #ff007f;
   --color-primary-bright: #ff3399;
   --color-primary-soft: #300018;
@@ -788,6 +917,15 @@ html[data-theme="gen-z"] {
 }
 
 html[data-theme="gen-z"][data-mode="dark"] {
+  /* CTA Action Buttons (Optimized Contrast for Day & Night Modes) */
+  --color-cta-daily-bg: #FF007F;
+  --color-cta-daily-text: #16000C;
+  --color-cta-daily-glow: rgba(255, 0, 127, 0.4);
+  --color-cta-wa-bg: #00FFCC;
+  --color-cta-wa-text: #002820;
+  --color-cta-wa-glow: rgba(0, 255, 204, 0.4);
+  --color-on-primary: #16000C;
+  --color-on-secondary: #002820;
   --color-bg-main: #08000f;
   --color-bg-card: #130122;
   --color-bg-card-hover: #1e0235;
@@ -828,6 +966,15 @@ html[data-theme="gen-z"][data-mode="dark"] {
 }
 
 html[data-theme="gen-z"][data-mode="light"] {
+  /* CTA Action Buttons (Optimized Contrast for Day & Night Modes) */
+  --color-cta-daily-bg: #BE185D;
+  --color-cta-daily-text: #FFFFFF;
+  --color-cta-daily-glow: rgba(190, 24, 93, 0.25);
+  --color-cta-wa-bg: #047857;
+  --color-cta-wa-text: #FFFFFF;
+  --color-cta-wa-glow: rgba(4, 120, 87, 0.25);
+  --color-on-primary: #FFFFFF;
+  --color-on-secondary: #FFFFFF;
   --color-bg-main: #fff0fa;
   --color-bg-card: #ffffff;
   --color-bg-card-hover: #ffe3f5;
@@ -876,6 +1023,15 @@ html[data-theme="gen-z"][data-mode="light"] {
    Bg Dark:  #0B0F17  (Deep Blue-Charcoal)
 ═══════════════════════════════════════════ */
 html[data-theme="ocean-dark"] {
+  /* CTA Action Buttons (Optimized Contrast for Day & Night Modes) */
+  --color-cta-daily-bg: #2563EB;
+  --color-cta-daily-text: #FFFFFF;
+  --color-cta-daily-glow: rgba(37, 99, 235, 0.35);
+  --color-cta-wa-bg: #38BDF8;
+  --color-cta-wa-text: #041624;
+  --color-cta-wa-glow: rgba(56, 189, 248, 0.35);
+  --color-on-primary: #FFFFFF;
+  --color-on-secondary: #041624;
   --color-primary: #4F8CFF;
   --color-primary-glow: rgba(79, 140, 255, 0.4);
   --color-primary-glow-hover: rgba(79, 140, 255, 0.6);
@@ -889,6 +1045,15 @@ html[data-theme="ocean-dark"] {
   --color-warning-glow: rgba(245, 166, 35, 0.4);
 }
 html[data-theme="ocean-dark"][data-mode="dark"] {
+  /* CTA Action Buttons (Optimized Contrast for Day & Night Modes) */
+  --color-cta-daily-bg: #2563EB;
+  --color-cta-daily-text: #FFFFFF;
+  --color-cta-daily-glow: rgba(37, 99, 235, 0.35);
+  --color-cta-wa-bg: #38BDF8;
+  --color-cta-wa-text: #041624;
+  --color-cta-wa-glow: rgba(56, 189, 248, 0.35);
+  --color-on-primary: #FFFFFF;
+  --color-on-secondary: #041624;
   --color-bg-main: #0B0F17;
   --color-bg-card: #131A24;
   --color-bg-card-hover: #18212E;
@@ -901,6 +1066,15 @@ html[data-theme="ocean-dark"][data-mode="dark"] {
   --shadow-color: rgba(0, 0, 0, 0.5);
 }
 html[data-theme="ocean-dark"][data-mode="light"] {
+  /* CTA Action Buttons (Optimized Contrast for Day & Night Modes) */
+  --color-cta-daily-bg: #1D4ED8;
+  --color-cta-daily-text: #FFFFFF;
+  --color-cta-daily-glow: rgba(29, 78, 216, 0.25);
+  --color-cta-wa-bg: #0F766E;
+  --color-cta-wa-text: #FFFFFF;
+  --color-cta-wa-glow: rgba(15, 118, 110, 0.25);
+  --color-on-primary: #FFFFFF;
+  --color-on-secondary: #FFFFFF;
   --color-bg-main: #F1F5F9;
   --color-bg-card: #FFFFFF;
   --color-bg-card-hover: #F8FAFC;
@@ -936,6 +1110,15 @@ html[data-theme="ocean-dark"][data-mode="light"] {
    - Card Dark:              #0A110B (Terminal Shell Card)
 ═══════════════════════════════════════════ */
 html[data-theme="terminal"] {
+  /* CTA Action Buttons (Optimized Contrast for Day & Night Modes) */
+  --color-cta-daily-bg: #22C55E;
+  --color-cta-daily-text: #021406;
+  --color-cta-daily-glow: rgba(34, 197, 94, 0.35);
+  --color-cta-wa-bg: #F59E0B;
+  --color-cta-wa-text: #170E00;
+  --color-cta-wa-glow: rgba(245, 158, 11, 0.35);
+  --color-on-primary: #021406;
+  --color-on-secondary: #170E00;
   --color-primary: #22C55E;
   --color-on-primary: #050805;
   --color-primary-bright: #4ADE80;
@@ -992,6 +1175,15 @@ html[data-theme="terminal"] td {
 }
 
 html[data-theme="terminal"][data-mode="dark"] {
+  /* CTA Action Buttons (Optimized Contrast for Day & Night Modes) */
+  --color-cta-daily-bg: #22C55E;
+  --color-cta-daily-text: #021406;
+  --color-cta-daily-glow: rgba(34, 197, 94, 0.35);
+  --color-cta-wa-bg: #F59E0B;
+  --color-cta-wa-text: #170E00;
+  --color-cta-wa-glow: rgba(245, 158, 11, 0.35);
+  --color-on-primary: #021406;
+  --color-on-secondary: #170E00;
   --color-bg-main: #050805;
   --color-bg-card: #0A110B;
   --color-bg-card-hover: #101C13;
@@ -1008,6 +1200,15 @@ html[data-theme="terminal"][data-mode="dark"] {
 }
 
 html[data-theme="terminal"][data-mode="light"] {
+  /* CTA Action Buttons (Optimized Contrast for Day & Night Modes) */
+  --color-cta-daily-bg: #15803D;
+  --color-cta-daily-text: #FFFFFF;
+  --color-cta-daily-glow: rgba(21, 128, 61, 0.25);
+  --color-cta-wa-bg: #B45309;
+  --color-cta-wa-text: #FFFFFF;
+  --color-cta-wa-glow: rgba(180, 83, 9, 0.25);
+  --color-on-primary: #FFFFFF;
+  --color-on-secondary: #FFFFFF;
   --color-bg-main: #F0FDF4;
   --color-bg-card: #FFFFFF;
   --color-bg-card-hover: #F7FEE7;
@@ -1040,6 +1241,15 @@ html[data-theme="terminal"][data-mode="light"] {
    Bg Dark:  #071412
 ═══════════════════════════════════════════ */
 html[data-theme="verdant"] {
+  /* CTA Action Buttons (Optimized Contrast for Day & Night Modes) */
+  --color-cta-daily-bg: #84CC16;
+  --color-cta-daily-text: #0D1C03;
+  --color-cta-daily-glow: rgba(132, 204, 22, 0.35);
+  --color-cta-wa-bg: #047857;
+  --color-cta-wa-text: #FFFFFF;
+  --color-cta-wa-glow: rgba(4, 120, 87, 0.35);
+  --color-on-primary: #0D1C03;
+  --color-on-secondary: #FFFFFF;
   --color-primary: #80B918;
   --color-primary-bright: #AACC00;
   --color-primary-soft: #243707;
@@ -1072,6 +1282,15 @@ html[data-theme="verdant"] {
 }
 
 html[data-theme="verdant"][data-mode="dark"] {
+  /* CTA Action Buttons (Optimized Contrast for Day & Night Modes) */
+  --color-cta-daily-bg: #84CC16;
+  --color-cta-daily-text: #0D1C03;
+  --color-cta-daily-glow: rgba(132, 204, 22, 0.35);
+  --color-cta-wa-bg: #047857;
+  --color-cta-wa-text: #FFFFFF;
+  --color-cta-wa-glow: rgba(4, 120, 87, 0.35);
+  --color-on-primary: #0D1C03;
+  --color-on-secondary: #FFFFFF;
   --color-bg-main: #071412;
   --color-bg-card: #0D211B;
   --color-bg-card-hover: #143026;
@@ -1118,6 +1337,15 @@ html[data-theme="verdant"][data-mode="dark"] {
 }
 
 html[data-theme="verdant"][data-mode="light"] {
+  /* CTA Action Buttons (Optimized Contrast for Day & Night Modes) */
+  --color-cta-daily-bg: #36680A;
+  --color-cta-daily-text: #FFFFFF;
+  --color-cta-daily-glow: rgba(54, 104, 10, 0.25);
+  --color-cta-wa-bg: #047857;
+  --color-cta-wa-text: #FFFFFF;
+  --color-cta-wa-glow: rgba(4, 120, 87, 0.25);
+  --color-on-primary: #FFFFFF;
+  --color-on-secondary: #FFFFFF;
   --color-bg-main: #F3F6EE;
   --color-bg-card: #FFFFFF;
   --color-bg-card-hover: #F7FAF1;
@@ -1169,6 +1397,15 @@ html[data-theme="verdant"][data-mode="light"] {
    Bg Dark:  #07101E
 =========================================== */
 html[data-theme="royal"] {
+  /* CTA Action Buttons (Optimized Contrast for Day & Night Modes) */
+  --color-cta-daily-bg: #2563EB;
+  --color-cta-daily-text: #FFFFFF;
+  --color-cta-daily-glow: rgba(37, 99, 235, 0.35);
+  --color-cta-wa-bg: #38BDF8;
+  --color-cta-wa-text: #041624;
+  --color-cta-wa-glow: rgba(56, 189, 248, 0.35);
+  --color-on-primary: #FFFFFF;
+  --color-on-secondary: #041624;
   --color-primary: #2563EB;
   --color-primary-bright: #3B82F6;
   --color-primary-soft: #0E1D3B;
@@ -1201,6 +1438,15 @@ html[data-theme="royal"] {
 }
 
 html[data-theme="royal"][data-mode="dark"] {
+  /* CTA Action Buttons (Optimized Contrast for Day & Night Modes) */
+  --color-cta-daily-bg: #2563EB;
+  --color-cta-daily-text: #FFFFFF;
+  --color-cta-daily-glow: rgba(37, 99, 235, 0.35);
+  --color-cta-wa-bg: #38BDF8;
+  --color-cta-wa-text: #041624;
+  --color-cta-wa-glow: rgba(56, 189, 248, 0.35);
+  --color-on-primary: #FFFFFF;
+  --color-on-secondary: #041624;
   --color-bg-main: #07101E;
   --color-bg-card: #0D1B33;
   --color-bg-card-hover: #142747;
@@ -1247,6 +1493,15 @@ html[data-theme="royal"][data-mode="dark"] {
 }
 
 html[data-theme="royal"][data-mode="light"] {
+  /* CTA Action Buttons (Optimized Contrast for Day & Night Modes) */
+  --color-cta-daily-bg: #1D4ED8;
+  --color-cta-daily-text: #FFFFFF;
+  --color-cta-daily-glow: rgba(29, 78, 216, 0.25);
+  --color-cta-wa-bg: #0369A1;
+  --color-cta-wa-text: #FFFFFF;
+  --color-cta-wa-glow: rgba(3, 105, 161, 0.25);
+  --color-on-primary: #FFFFFF;
+  --color-on-secondary: #FFFFFF;
   --color-bg-main: #EEF3FA;
   --color-bg-card: #FFFFFF;
   --color-bg-card-hover: #F6F9FD;
@@ -1299,6 +1554,15 @@ html[data-theme="royal"][data-mode="light"] {
    Light & Dark custom palettes
 ═══════════════════════════════════════════ */
 html[data-theme="lime-ivory"] {
+  /* CTA Action Buttons (Optimized Contrast for Day & Night Modes) */
+  --color-cta-daily-bg: #9BE52C;
+  --color-cta-daily-text: #101B03;
+  --color-cta-daily-glow: rgba(155, 229, 44, 0.35);
+  --color-cta-wa-bg: #D2D6CA;
+  --color-cta-wa-text: #141712;
+  --color-cta-wa-glow: rgba(210, 214, 202, 0.35);
+  --color-on-primary: #101B03;
+  --color-on-secondary: #141712;
   --color-primary: #9BE52C;
   --color-primary-bright: #B4F54A;
   --color-primary-soft: #182608;
@@ -1324,6 +1588,15 @@ html[data-theme="lime-ivory"] {
 }
 
 html[data-theme="lime-ivory"][data-mode="dark"] {
+  /* CTA Action Buttons (Optimized Contrast for Day & Night Modes) */
+  --color-cta-daily-bg: #9BE52C;
+  --color-cta-daily-text: #101B03;
+  --color-cta-daily-glow: rgba(155, 229, 44, 0.35);
+  --color-cta-wa-bg: #D2D6CA;
+  --color-cta-wa-text: #141712;
+  --color-cta-wa-glow: rgba(210, 214, 202, 0.35);
+  --color-on-primary: #101B03;
+  --color-on-secondary: #141712;
   --color-bg-main: #171817;
   --color-bg-card: #090A09;
   --color-bg-card-hover: #111311;
@@ -1366,6 +1639,15 @@ html[data-theme="lime-ivory"][data-mode="dark"] {
 }
 
 html[data-theme="lime-ivory"][data-mode="light"] {
+  /* CTA Action Buttons (Optimized Contrast for Day & Night Modes) */
+  --color-cta-daily-bg: #4D7C0F;
+  --color-cta-daily-text: #FFFFFF;
+  --color-cta-daily-glow: rgba(77, 124, 15, 0.25);
+  --color-cta-wa-bg: #293026;
+  --color-cta-wa-text: #FFFFFF;
+  --color-cta-wa-glow: rgba(41, 48, 38, 0.25);
+  --color-on-primary: #FFFFFF;
+  --color-on-secondary: #FFFFFF;
   --color-bg-main: #F3F4EF;
   --color-bg-card: #FFFFFF;
   --color-bg-card-hover: #F8F9F4;
@@ -1418,6 +1700,15 @@ html[data-theme="lime-ivory"][data-mode="light"] {
 
 /* Shared base tokens */
 html[data-theme="abstract"] {
+  /* CTA Action Buttons (Optimized Contrast for Day & Night Modes) */
+  --color-cta-daily-bg: #F4F4F5;
+  --color-cta-daily-text: #09090B;
+  --color-cta-daily-glow: rgba(255, 255, 255, 0.25);
+  --color-cta-wa-bg: #27272A;
+  --color-cta-wa-text: #F4F4F5;
+  --color-cta-wa-glow: rgba(0, 0, 0, 0.35);
+  --color-on-primary: #09090B;
+  --color-on-secondary: #F4F4F5;
   /* SUCCESS / Profit → Emerald Green */
   --color-success: #34D399;
   --color-success-text: #34D399;
@@ -1440,6 +1731,15 @@ html[data-theme="abstract"] {
 }
 
 html[data-theme="abstract"][data-mode="dark"] {
+  /* CTA Action Buttons (Optimized Contrast for Day & Night Modes) */
+  --color-cta-daily-bg: #F4F4F5;
+  --color-cta-daily-text: #09090B;
+  --color-cta-daily-glow: rgba(255, 255, 255, 0.25);
+  --color-cta-wa-bg: #27272A;
+  --color-cta-wa-text: #F4F4F5;
+  --color-cta-wa-glow: rgba(0, 0, 0, 0.35);
+  --color-on-primary: #09090B;
+  --color-on-secondary: #F4F4F5;
   /* Surfaces */
   --color-bg-main: #0A0A0A;
   --color-bg-card: #111111;
@@ -1503,6 +1803,15 @@ html[data-theme="abstract"] [data-metric-title] {
 }
 
 html[data-theme="abstract"][data-mode="light"] {
+  /* CTA Action Buttons (Optimized Contrast for Day & Night Modes) */
+  --color-cta-daily-bg: #18181B;
+  --color-cta-daily-text: #FFFFFF;
+  --color-cta-daily-glow: rgba(24, 24, 27, 0.25);
+  --color-cta-wa-bg: #E4E4E7;
+  --color-cta-wa-text: #18181B;
+  --color-cta-wa-glow: rgba(0, 0, 0, 0.08);
+  --color-on-primary: #FFFFFF;
+  --color-on-secondary: #18181B;
   /* Surfaces */
   --color-bg-main: #F0F0F0;
   --color-bg-card: #FFFFFF;

@@ -1811,10 +1811,10 @@ export function DashboardContent({ month, isArchive = false }) {
                     }}
                     className={cn(
                       "group inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl",
-                      "bg-[var(--color-primary)] text-[var(--color-on-primary,white)]",
+                      "bg-[var(--color-cta-daily-bg,var(--color-primary))] text-[var(--color-cta-daily-text,var(--color-on-primary,white))]",
                       "hover:opacity-90 active:scale-[0.98]",
                       "text-xs font-semibold tracking-wide whitespace-nowrap",
-                      "shadow-md shadow-[var(--color-primary-glow,rgba(0,0,0,0.15))]",
+                      "shadow-md shadow-[var(--color-cta-daily-glow,var(--color-primary-glow,rgba(0,0,0,0.15)))]",
                       "transition-all duration-200 cursor-pointer select-none",
                       "border-0 ring-0 outline-none"
                     )}
@@ -1838,10 +1838,10 @@ export function DashboardContent({ month, isArchive = false }) {
                     }}
                     className={cn(
                       "group inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl",
-                      "bg-[var(--color-secondary)] text-[var(--color-on-secondary,white)]",
+                      "bg-[var(--color-cta-wa-bg,var(--color-secondary))] text-[var(--color-cta-wa-text,var(--color-on-secondary,white))]",
                       "hover:opacity-90 active:scale-[0.98]",
                       "text-xs font-semibold tracking-wide whitespace-nowrap",
-                      "shadow-md shadow-black/20",
+                      "shadow-md shadow-[var(--color-cta-wa-glow,rgba(0,0,0,0.2))]",
                       "transition-all duration-200 cursor-pointer select-none",
                       "border-0 ring-0 outline-none"
                     )}
