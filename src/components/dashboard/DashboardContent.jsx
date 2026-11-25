@@ -1883,7 +1883,7 @@ export function DashboardContent({ month, isArchive = false }) {
               <div className="flex flex-col items-center justify-center mb-5 sm:mb-6 text-center">
                 {/* Download Daily Report & Copy WhatsApp Report CTA Buttons with Minimal Calendar Popover */}
                 <div className="relative inline-flex items-center justify-center gap-2 sm:gap-3 flex-nowrap mb-3" ref={datePickerRef}>
-                  {/* Button 1: Daily Report (PDF) - Primary Theme Fill */}
+                  {/* Button 1: Daily Report (PDF) - Neutral Theme-Matched Fill */}
                   <button
                     type="button"
                     onClick={() => {
@@ -1897,21 +1897,23 @@ export function DashboardContent({ month, isArchive = false }) {
                     }}
                     className={cn(
                       "group inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl",
-                      "bg-[var(--color-cta-daily-bg,var(--color-primary))] text-[var(--color-cta-daily-text,var(--color-on-primary,white))]",
-                      "hover:opacity-90 active:scale-[0.98]",
+                      "bg-[var(--color-bg-card)] hover:bg-[var(--color-bg-card-hover)]",
+                      "text-[var(--color-text-main)]",
+                      "border border-[var(--color-border)] hover:border-[var(--color-border)]/80",
+                      "hover:opacity-95 active:scale-[0.98]",
                       "text-xs font-semibold tracking-wide whitespace-nowrap",
-                      "shadow-md shadow-[var(--color-cta-daily-glow,var(--color-primary-glow,rgba(0,0,0,0.15)))]",
+                      "shadow-sm md:shadow-[0_2px_8px_rgba(0,0,0,0.18)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.25)]",
                       "transition-all duration-200 cursor-pointer select-none",
-                      "border-0 ring-0 outline-none"
+                      "outline-none ring-0 focus-visible:ring-1 focus-visible:ring-[var(--color-primary)]"
                     )}
                     title="Download Daily Report PDF"
                     aria-expanded={isDatePickerOpen && datePickerMode === 'download'}
                   >
                     <span className="leading-none">Daily Report</span>
-                    <ChevronDown className={cn("w-3.5 h-3.5 shrink-0 transition-transform duration-200 opacity-85 group-hover:opacity-100", isDatePickerOpen && datePickerMode === 'download' && "rotate-180")} />
+                    <ChevronDown className={cn("w-3.5 h-3.5 shrink-0 text-[var(--color-text-secondary)] group-hover:text-[var(--color-text-main)] transition-transform duration-200 opacity-80 group-hover:opacity-100", isDatePickerOpen && datePickerMode === 'download' && "rotate-180")} />
                   </button>
 
-                  {/* Button 2: WhatsApp Report - Secondary Theme Fill */}
+                  {/* Button 2: WhatsApp Report - Neutral Theme-Matched Fill */}
                   <button
                     type="button"
                     onClick={() => {
@@ -1925,18 +1927,20 @@ export function DashboardContent({ month, isArchive = false }) {
                     }}
                     className={cn(
                       "group inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl",
-                      "bg-[var(--color-cta-wa-bg,var(--color-secondary))] text-[var(--color-cta-wa-text,var(--color-on-secondary,white))]",
-                      "hover:opacity-90 active:scale-[0.98]",
+                      "bg-[var(--color-bg-card)] hover:bg-[var(--color-bg-card-hover)]",
+                      "text-[var(--color-text-main)]",
+                      "border border-[var(--color-border)] hover:border-[var(--color-border)]/80",
+                      "hover:opacity-95 active:scale-[0.98]",
                       "text-xs font-semibold tracking-wide whitespace-nowrap",
-                      "shadow-md shadow-[var(--color-cta-wa-glow,rgba(0,0,0,0.2))]",
+                      "shadow-sm md:shadow-[0_2px_8px_rgba(0,0,0,0.18)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.25)]",
                       "transition-all duration-200 cursor-pointer select-none",
-                      "border-0 ring-0 outline-none"
+                      "outline-none ring-0 focus-visible:ring-1 focus-visible:ring-[var(--color-primary)]"
                     )}
                     title="Copy Text Report for WhatsApp / Social Media"
                     aria-expanded={isDatePickerOpen && datePickerMode === 'whatsapp'}
                   >
                     <span className="leading-none">{isCopied ? "Copied!" : "WhatsApp Report"}</span>
-                    <ChevronDown className={cn("w-3.5 h-3.5 shrink-0 transition-transform duration-200 opacity-85 group-hover:opacity-100", isDatePickerOpen && datePickerMode === 'whatsapp' && "rotate-180")} />
+                    <ChevronDown className={cn("w-3.5 h-3.5 shrink-0 text-[var(--color-text-secondary)] group-hover:text-[var(--color-text-main)] transition-transform duration-200 opacity-80 group-hover:opacity-100", isDatePickerOpen && datePickerMode === 'whatsapp' && "rotate-180")} />
                   </button>
 
                   {/* Minimal Calendar Popover (Shared seamlessly between both actions with month navigation) */}
