@@ -3,11 +3,12 @@ import { format, parseISO, subMonths } from 'date-fns';
 import { useKpiData } from '@/utils/useKpiData';
 import { MetricCard, Card } from '@/components/ui/Card';
 import { TitanicAnimation } from '@/components/ui/TitanicAnimation';
-import { Sparkles, ArrowRight, Download, FileText, Printer, Ship, Siren, ChevronDown, ChevronLeft, ChevronRight, TrendingDown, TrendingUp, Check, Calendar, X } from 'lucide-react';
+import { Sparkles, ArrowRight, Download, FileText, Printer, Ship, Siren, ChevronDown, ChevronLeft, ChevronRight, TrendingDown, TrendingUp, Check, Calendar, X, MessageSquare, Share2 } from 'lucide-react';
 import Link from 'next/link';
 import { RealTimeClock } from '@/components/ui/RealTimeClock';
 import { PrintableArchiveReport } from '@/components/report/PrintableArchiveReport';
 import { PrintableBanglaDailyReport } from '@/components/report/PrintableBanglaDailyReport';
+import { generateWhatsAppDailyReport, copyToClipboard } from '@/utils/whatsappReportGenerator';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { DashboardSkeleton } from '@/components/ui/Skeletons';
 import { cn } from '@/components/layout/Sidebar';
@@ -546,7 +547,10 @@ export function DashboardContent({ month, isArchive = false }) {
   const [showAnimation, setShowAnimation] = useState(false);
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
+  const [datePickerMode, setDatePickerMode] = useState('download'); // 'download' | 'whatsapp'
   const [selectedReportDate, setSelectedReportDate] = useState(null);
+  const [isCopied, setIsCopied] = useState(false);
+  const [toastMessage, setToastMessage] = useState(null);
   const { isIdle } = useIdle();
   const pdfRef = useRef(null);
   const datePickerRef = useRef(null);
@@ -587,6 +591,36 @@ export function DashboardContent({ month, isArchive = false }) {
     setTimeout(() => {
       window.print();
     }, 150);
+  };
+
+  // Handle copying WhatsApp report for selected date
+  const handleSelectWhatsAppReportDate = async (targetDate) => {
+    setSelectedReportDate(targetDate);
+    setIsDatePickerOpen(false);
+    try {
+      const reportText = generateWhatsAppDailyReport({
+        targetDate,
+        dailyTrends,
+        rawDailyProduction: rawEngine?.kpiData?.dailyProduction || [],
+        lines,
+        stats,
+        activeMonthName: dateComponents?.month || 'November',
+        activeMonthYear: dateComponents?.year || '2026'
+      });
+      const ok = await copyToClipboard(reportText);
+      if (ok) {
+        setIsCopied(true);
+        let dayFormatted = 'Daily Report';
+        try {
+          if (targetDate) dayFormatted = format(parseISO(targetDate), 'dd MMMM');
+        } catch (e) {}
+        setToastMessage(`✓ WhatsApp Report Copied! (${dayFormatted})`);
+        setTimeout(() => setIsCopied(false), 2200);
+        setTimeout(() => setToastMessage(null), 3200);
+      }
+    } catch (e) {
+      console.error('Failed to copy WhatsApp report:', e);
+    }
   };
 
   // Build calendar month data dynamically for the date picker popover
@@ -1762,11 +1796,19 @@ export function DashboardContent({ month, isArchive = false }) {
             <div className="mt-8 md:mt-12 mb-0 md:mb-8 relative z-10">
               {/* Header Title & Date Subtitle */}
               <div className="flex flex-col items-center justify-center mb-5 sm:mb-6 text-center">
-                {/* Download Daily Report CTA Button with Minimal Calendar Popover */}
-                <div className="relative inline-block mb-3" ref={datePickerRef}>
+                {/* Download Daily Report & Copy WhatsApp Report CTA Buttons with Minimal Calendar Popover */}
+                <div className="relative inline-flex flex-wrap items-center justify-center gap-2.5 mb-3" ref={datePickerRef}>
+                  {/* Button 1: Download Daily Report */}
                   <button
                     type="button"
-                    onClick={() => setIsDatePickerOpen(prev => !prev)}
+                    onClick={() => {
+                      if (isDatePickerOpen && datePickerMode === 'download') {
+                        setIsDatePickerOpen(false);
+                      } else {
+                        setDatePickerMode('download');
+                        setIsDatePickerOpen(true);
+                      }
+                    }}
                     className={cn(
                       "group inline-flex items-center gap-2 px-5 py-2.5 rounded-full",
                       "bg-slate-900 hover:bg-slate-800 text-white",
@@ -1776,17 +1818,51 @@ export function DashboardContent({ month, isArchive = false }) {
                       "transition-all duration-200 cursor-pointer select-none active:scale-[0.98]",
                       "border-0 ring-0 outline-none"
                     )}
-                    title="Download Daily Report"
-                    aria-expanded={isDatePickerOpen}
+                    title="Download Daily Report PDF"
+                    aria-expanded={isDatePickerOpen && datePickerMode === 'download'}
                   >
                     <span className="leading-none">Download Daily Report</span>
                     <div className="flex items-center gap-1.5 text-slate-300 dark:text-slate-300 group-hover:text-white transition-colors">
                       <FileText className="w-3.5 h-3.5 shrink-0" />
-                      <ChevronDown className={cn("w-3.5 h-3.5 shrink-0 transition-transform duration-200", isDatePickerOpen && "rotate-180")} />
+                      <ChevronDown className={cn("w-3.5 h-3.5 shrink-0 transition-transform duration-200", isDatePickerOpen && datePickerMode === 'download' && "rotate-180")} />
                     </div>
                   </button>
 
-                  {/* Minimal Calendar Popover */}
+                  {/* Button 2: Copy WhatsApp Report */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (isDatePickerOpen && datePickerMode === 'whatsapp') {
+                        setIsDatePickerOpen(false);
+                      } else {
+                        setDatePickerMode('whatsapp');
+                        setIsDatePickerOpen(true);
+                      }
+                    }}
+                    className={cn(
+                      "group inline-flex items-center gap-2 px-5 py-2.5 rounded-full",
+                      "bg-slate-900 hover:bg-slate-800 text-white",
+                      "dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-white",
+                      "text-xs font-semibold tracking-wide",
+                      "shadow-md shadow-slate-900/10 dark:shadow-black/30",
+                      "transition-all duration-200 cursor-pointer select-none active:scale-[0.98]",
+                      "border-0 ring-0 outline-none"
+                    )}
+                    title="Copy Text Report for WhatsApp / Social Media"
+                    aria-expanded={isDatePickerOpen && datePickerMode === 'whatsapp'}
+                  >
+                    <span className="leading-none">{isCopied ? "Copied Report!" : "Copy WhatsApp Report"}</span>
+                    <div className="flex items-center gap-1.5 text-slate-300 dark:text-slate-300 group-hover:text-white transition-colors">
+                      {isCopied ? (
+                        <Check className="w-3.5 h-3.5 shrink-0 text-emerald-400" />
+                      ) : (
+                        <MessageSquare className="w-3.5 h-3.5 shrink-0" />
+                      )}
+                      <ChevronDown className={cn("w-3.5 h-3.5 shrink-0 transition-transform duration-200", isDatePickerOpen && datePickerMode === 'whatsapp' && "rotate-180")} />
+                    </div>
+                  </button>
+
+                  {/* Minimal Calendar Popover (Shared seamlessly between both actions) */}
                   {isDatePickerOpen && (
                     <div 
                       className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-72 max-w-[94vw] bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-xl shadow-2xl p-3 z-50 text-left"
@@ -1794,15 +1870,20 @@ export function DashboardContent({ month, isArchive = false }) {
                       {/* Solid backdrop shield */}
                       <div className="absolute inset-0 bg-[var(--color-bg-card)] rounded-xl -z-10" />
 
-                      {/* Minimal Month Header */}
+                      {/* Minimal Month Header with Action Mode Label */}
                       <div className="flex items-center justify-between pb-2 mb-2 border-b border-[var(--color-border)]/60">
-                        <span className="text-xs font-bold text-[var(--color-text-main)]">
-                          {calendarMonthInfo.monthName} {calendarMonthInfo.year}
-                        </span>
+                        <div className="flex flex-col">
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-text-muted)]">
+                            {datePickerMode === 'whatsapp' ? 'Copy WhatsApp Report' : 'Download PDF Report'}
+                          </span>
+                          <span className="text-xs font-bold text-[var(--color-text-main)]">
+                            {calendarMonthInfo.monthName} {calendarMonthInfo.year}
+                          </span>
+                        </div>
                         <button
                           type="button"
                           onClick={() => setIsDatePickerOpen(false)}
-                          className="text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] px-1 cursor-pointer leading-none"
+                          className="text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] p-1 cursor-pointer leading-none"
                           title="Close"
                         >
                           ✕
@@ -1840,7 +1921,14 @@ export function DashboardContent({ month, isArchive = false }) {
                               key={item.dateStr}
                               type="button"
                               disabled={isHoliday}
-                              onClick={() => !isHoliday && handleSelectReportDate(item.dateStr)}
+                              onClick={() => {
+                                if (isHoliday) return;
+                                if (datePickerMode === 'whatsapp') {
+                                  handleSelectWhatsAppReportDate(item.dateStr);
+                                } else {
+                                  handleSelectReportDate(item.dateStr);
+                                }
+                              }}
                               className={cn(
                                 "h-7 rounded text-xs font-medium flex items-center justify-center transition-all select-none",
                                 isHoliday
@@ -1852,7 +1940,7 @@ export function DashboardContent({ month, isArchive = false }) {
                               title={
                                 isHoliday
                                   ? (item.isFriday ? 'Friday (Holiday)' : 'Missing Data (Holiday)')
-                                  : `${item.dayNum} ${calendarMonthInfo.monthName}`
+                                  : `${item.dayNum} ${calendarMonthInfo.monthName} — ${datePickerMode === 'whatsapp' ? 'Click to copy WhatsApp text' : 'Click to print PDF'}`
                               }
                             >
                               {item.dayNum}
@@ -2284,6 +2372,13 @@ export function DashboardContent({ month, isArchive = false }) {
           activeMonthName={dateComponents?.month || 'November'}
           activeMonthYear={dateComponents?.year || '2026'}
         />
+      )}
+      {/* Toast Notification for WhatsApp Report Copied */}
+      {toastMessage && (
+        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[100] px-4 py-2.5 rounded-full bg-slate-900/95 dark:bg-slate-800/95 text-white text-xs font-bold shadow-2xl backdrop-blur-md flex items-center gap-2 border border-slate-700/50 animate-[fade-up_0.2s_ease-out_both] pointer-events-none select-none">
+          <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+          <span>{toastMessage}</span>
+        </div>
       )}
     </>
   );
