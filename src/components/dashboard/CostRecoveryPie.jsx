@@ -265,17 +265,20 @@ export function CostRecoveryPie({
             {/* The Glass Canister / Flask Container */}
             <div className="relative w-full max-w-[70px] min-[360px]:max-w-[78px] min-[390px]:max-w-[84px] sm:max-w-[92px] md:max-w-[114px] lg:max-w-[124px] xl:max-w-[134px] flex flex-col items-center">
               
-              {/* Bottle Neck / Mouth Lip */}
-              <div className="w-6 min-[360px]:w-7 sm:w-8 md:w-9 lg:w-10 xl:w-11 h-2 sm:h-2.5 xl:h-3 rounded-full border border-slate-300/80 dark:border-white/20 bg-slate-200/70 dark:bg-white/10 mx-auto -mb-1 z-10 shadow-xs shrink-0" />
+              {/* Bottle Neck / Mouth Lip (Round on mobile, beveled square on PC) */}
+              <div className="w-6 min-[360px]:w-7 sm:w-8 md:w-9 lg:w-10 xl:w-11 h-2 sm:h-2.5 xl:h-3 rounded-full md:rounded-md border border-slate-300/80 dark:border-white/20 bg-slate-200/70 dark:bg-white/10 mx-auto -mb-1 z-10 shadow-xs shrink-0" />
 
-              {/* Round Glass Jar Main Sphere */}
-              <div className="relative w-full aspect-square rounded-full border border-slate-300/90 dark:border-white/20 bg-slate-100/60 dark:bg-black/35 backdrop-blur-xs overflow-hidden shadow-[inset_0_3px_8px_rgba(255,255,255,0.4),inset_0_-4px_10px_rgba(0,0,0,0.1),0_4px_12px_rgba(0,0,0,0.06)] dark:shadow-[inset_0_3px_10px_rgba(255,255,255,0.18),inset_0_-6px_14px_rgba(0,0,0,0.5),0_6px_20px_rgba(0,0,0,0.35)]">
+              {/* Glass Jar Canister (Round sphere on mobile, square flask on PC) */}
+              <div className="relative w-full aspect-square rounded-full md:rounded-2xl border border-slate-300/90 dark:border-white/20 bg-slate-100/60 dark:bg-black/35 backdrop-blur-xs overflow-hidden shadow-[inset_0_3px_8px_rgba(255,255,255,0.4),inset_0_-4px_10px_rgba(0,0,0,0.1),0_4px_12px_rgba(0,0,0,0.06)] dark:shadow-[inset_0_3px_10px_rgba(255,255,255,0.18),inset_0_-6px_14px_rgba(0,0,0,0.5),0_6px_20px_rgba(0,0,0,0.35)]">
                 
-                {/* Spherical Specular Glass Curved Sheen (Top-Left Arc) */}
-                <div className="absolute top-2 left-2.5 w-[36%] h-[24%] rounded-full -rotate-45 bg-gradient-to-b from-white/70 via-white/20 to-transparent dark:from-white/35 dark:via-white/10 dark:to-transparent pointer-events-none z-20" />
+                {/* Specular Glass Sheen (Arc on mobile, vertical refraction on PC) */}
+                <div className="absolute top-2 left-2.5 w-[36%] h-[24%] md:w-[12%] md:h-[68%] rounded-full md:rounded-sm -rotate-45 md:rotate-0 bg-gradient-to-b from-white/70 via-white/20 to-transparent dark:from-white/35 dark:via-white/10 dark:to-transparent pointer-events-none z-20" />
                 
-                {/* Secondary Subtle Rim Glow (Bottom-Right Reflection) */}
-                <div className="absolute bottom-2 right-2.5 w-[25%] h-[18%] rounded-full -rotate-45 bg-gradient-to-t from-white/30 to-transparent dark:from-white/15 dark:to-transparent pointer-events-none z-20" />
+                {/* Secondary Subtle Rim Glow */}
+                <div className="absolute bottom-2 right-2.5 w-[25%] h-[18%] md:w-[10%] md:h-[55%] rounded-full md:rounded-sm -rotate-45 md:rotate-0 bg-gradient-to-t from-white/30 to-transparent dark:from-white/15 dark:to-transparent pointer-events-none z-20" />
+
+                {/* Top Glass Bevel Reflection (PC View Only) */}
+                <div className="hidden md:block absolute top-1.5 inset-x-3 h-[2px] rounded-full bg-gradient-to-r from-transparent via-white/35 dark:via-white/20 to-transparent pointer-events-none z-20" />
 
                 {/* Living Physics Liquid (Tilt & slosh driven by gyroscope and inertia) */}
                 <div 

@@ -1787,7 +1787,7 @@ export function DashboardContent({ month, isArchive = false }) {
                           }
                         }}
                         className={cn(
-                          "group relative flex items-center justify-between p-3 xl:p-3.5 2xl:p-4 rounded-2xl text-left transition-all duration-300 cursor-pointer select-none",
+                          "group relative flex items-center justify-between p-2.5 xl:p-3 2xl:p-3.5 rounded-2xl text-left transition-all duration-300 cursor-pointer select-none",
                           "bg-[var(--color-bg-card)] hover:bg-[var(--color-bg-card-hover)] active:scale-[0.98] hover:-translate-y-0.5",
                           "shadow-sm md:shadow-[0_3px_10px_rgba(0,0,0,0.2),0_1px_3px_rgba(0,0,0,0.12)] md:hover:shadow-[0_6px_16px_rgba(0,0,0,0.25)]",
                           "border-0 outline-none ring-0 focus-visible:ring-1 focus-visible:ring-[var(--color-primary)]"
@@ -1801,10 +1801,10 @@ export function DashboardContent({ month, isArchive = false }) {
                             <Printer className="w-4 h-4 xl:w-4.5 xl:h-4.5" />
                           </div>
                           <div className="min-w-0 flex-1">
-                            <h4 className="text-[12px] xl:text-[13px] font-bold tracking-tight text-[var(--color-text-main)] group-hover:text-[var(--color-text-main)] leading-tight truncate">
+                            <h4 className="text-[11.5px] xl:text-[13px] font-bold tracking-tight text-[var(--color-text-main)] group-hover:text-[var(--color-text-main)] leading-tight">
                               Print Daily Report
                             </h4>
-                            <p className="text-[9.5px] xl:text-[10.5px] font-medium text-[var(--color-text-muted)] mt-0.5 leading-none truncate">
+                            <p className="text-[9.5px] xl:text-[10.5px] font-medium text-[var(--color-text-muted)] mt-0.5 leading-none">
                               PDF Download
                             </p>
                           </div>
@@ -1825,7 +1825,7 @@ export function DashboardContent({ month, isArchive = false }) {
                           }
                         }}
                         className={cn(
-                          "group relative flex items-center justify-between p-3 xl:p-3.5 2xl:p-4 rounded-2xl text-left transition-all duration-300 cursor-pointer select-none",
+                          "group relative flex items-center justify-between p-2.5 xl:p-3 2xl:p-3.5 rounded-2xl text-left transition-all duration-300 cursor-pointer select-none",
                           "bg-[var(--color-bg-card)] hover:bg-[var(--color-bg-card-hover)] active:scale-[0.98] hover:-translate-y-0.5",
                           "shadow-sm md:shadow-[0_3px_10px_rgba(0,0,0,0.2),0_1px_3px_rgba(0,0,0,0.12)] md:hover:shadow-[0_6px_16px_rgba(0,0,0,0.25)]",
                           "border-0 outline-none ring-0 focus-visible:ring-1 focus-visible:ring-[var(--color-primary)]"
@@ -1839,10 +1839,10 @@ export function DashboardContent({ month, isArchive = false }) {
                             {isCopied ? <Check className="w-4 h-4 xl:w-4.5 xl:h-4.5 text-[var(--color-success)]" /> : <Copy className="w-4 h-4 xl:w-4.5 xl:h-4.5" />}
                           </div>
                           <div className="min-w-0 flex-1">
-                            <h4 className="text-[12px] xl:text-[13px] font-bold tracking-tight text-[var(--color-text-main)] group-hover:text-[var(--color-text-main)] leading-tight truncate">
+                            <h4 className="text-[11.5px] xl:text-[13px] font-bold tracking-tight text-[var(--color-text-main)] group-hover:text-[var(--color-text-main)] leading-tight">
                               {isCopied ? "Copied!" : "1 Click Copy Report"}
                             </h4>
-                            <p className="text-[9.5px] xl:text-[10.5px] font-medium text-[var(--color-text-muted)] mt-0.5 leading-none truncate">
+                            <p className="text-[9.5px] xl:text-[10.5px] font-medium text-[var(--color-text-muted)] mt-0.5 leading-none">
                               WhatsApp / Social
                             </p>
                           </div>
