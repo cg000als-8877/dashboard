@@ -358,7 +358,7 @@ export function CostRecoveryPie({
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-30">
                   <div className="flex items-center justify-center select-none bg-transparent p-0 border-0 shadow-none">
                     <span className={cn(
-                      "text-[15px] min-[360px]:text-[16px] sm:text-[19px] md:text-[23px] lg:text-[25px] xl:text-[27px] font-black tracking-tight leading-none",
+                      "text-[15px] min-[360px]:text-[16px] sm:text-[18px] md:text-[18px] lg:text-[19.5px] xl:text-[21px] font-black tracking-tight leading-none",
                       item.pct > 0 
                         ? "text-white [filter:drop-shadow(0_1px_2px_rgba(0,0,0,0.5))]" 
                         : "text-slate-600 dark:text-slate-300"
@@ -371,7 +371,7 @@ export function CostRecoveryPie({
                 {/* Empty State Text Indicator (When 0% Liquid) */}
                 {item.pct === 0 && (
                   <div className="absolute bottom-2.5 inset-x-0 flex items-center justify-center pointer-events-none z-20">
-                    <span className="text-[7.5px] md:text-[9px] xl:text-[9.5px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400/80 select-none">
+                    <span className="text-[7.5px] md:text-[8px] xl:text-[8.5px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400/80 select-none">
                       Dry
                     </span>
                   </div>
