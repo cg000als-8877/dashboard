@@ -3,7 +3,7 @@ import { format, parseISO, subMonths } from 'date-fns';
 import { useKpiData } from '@/utils/useKpiData';
 import { MetricCard, Card } from '@/components/ui/Card';
 import { TitanicAnimation } from '@/components/ui/TitanicAnimation';
-import { Sparkles, ArrowRight, Download, FileText, Printer, Ship, Siren, ChevronDown, ChevronLeft, ChevronRight, TrendingDown, TrendingUp, Check, Calendar, X } from 'lucide-react';
+import { Sparkles, ArrowRight, Download, FileText, Printer, Copy, Ship, Siren, ChevronDown, ChevronLeft, ChevronRight, TrendingDown, TrendingUp, Check, Calendar, X } from 'lucide-react';
 import Link from 'next/link';
 import { RealTimeClock } from '@/components/ui/RealTimeClock';
 import { PrintableArchiveReport } from '@/components/report/PrintableArchiveReport';
@@ -1577,7 +1577,7 @@ export function DashboardContent({ month, isArchive = false }) {
                 </div>
 
                 {/* ── DESKTOP/PC VIEW: Wireframe-matched Responsive 3-Column Layout ── */}
-                <div className="hidden md:grid md:grid-cols-12 gap-4 xl:gap-5 relative z-10 px-0 items-stretch">
+                <div className="hidden md:grid md:grid-cols-12 gap-4 xl:gap-5 relative z-30 px-0 items-stretch">
                   
                   {/* COLUMN 1 (LEFT): Net Loss Card (Top) + Stacked Income & Cost Cards (Bottom) */}
                   <div className="md:col-span-12 lg:col-span-4 xl:col-span-4 flex flex-col gap-4 xl:gap-5">
@@ -1772,77 +1772,87 @@ export function DashboardContent({ month, isArchive = false }) {
                       </div>
                     </Card>
 
-                    {/* Bottom: Reports CTA Card with Print Daily Report & 1 Click Copy Report side by side (PC View Only) */}
-                    <Card
-                      hover
-                      className="p-3 xl:p-3.5 rounded-2xl flex items-center justify-center shadow-sm md:shadow-[0_3px_10px_rgba(0,0,0,0.2),0_1px_3px_rgba(0,0,0,0.12)] md:hover:shadow-[0_6px_16px_rgba(0,0,0,0.25)] border-0 md:border-0 relative transition-all"
-                      style={{ backgroundColor: 'var(--color-bg-card)' }}
-                    >
-                      <div className="relative flex items-center justify-between gap-2.5 sm:gap-3 w-full" ref={pcDatePickerRef}>
-                        {/* Button 1: Print Daily Report */}
-                        <button
-                          type="button"
-                          onClick={() => {
-                            if (isDatePickerOpen && datePickerMode === 'download') {
-                              setIsDatePickerOpen(false);
-                            } else {
-                              setDatePickerMode('download');
-                              setPopoverMonth(month && month !== 'live' ? month : '2026-11');
-                              setIsDatePickerOpen(true);
-                            }
-                          }}
-                          className={cn(
-                            "group flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl",
-                            "bg-[var(--color-surface)] hover:bg-[var(--color-bg-card-hover)]",
-                            "text-[var(--color-text-main)]",
-                            "border border-[var(--color-border)] hover:border-[var(--color-border)]/80",
-                            "hover:opacity-95 active:scale-[0.98]",
-                            "text-xs font-semibold tracking-wide whitespace-nowrap",
-                            "shadow-sm md:shadow-[0_2px_6px_rgba(0,0,0,0.14)] hover:shadow-[0_4px_10px_rgba(0,0,0,0.22)]",
-                            "transition-all duration-200 cursor-pointer select-none",
-                            "outline-none ring-0 focus-visible:ring-1 focus-visible:ring-[var(--color-primary)]"
-                          )}
-                          title="Print Daily Report PDF"
-                          aria-expanded={isDatePickerOpen && datePickerMode === 'download'}
-                        >
-                          <span className="leading-none">Print Daily Report</span>
-                          <ChevronDown className={cn("w-3.5 h-3.5 shrink-0 text-[var(--color-text-secondary)] group-hover:text-[var(--color-text-main)] transition-transform duration-200 opacity-80 group-hover:opacity-100", isDatePickerOpen && datePickerMode === 'download' && "rotate-180")} />
-                        </button>
+                    {/* Bottom Row: 2 Separate Action Cards (Print Daily Report & 1 Click Copy Report) side by side (PC View Only) */}
+                    <div className="grid grid-cols-2 gap-4 xl:gap-5 relative" ref={pcDatePickerRef}>
+                      {/* Card 1: Print Daily Report */}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (isDatePickerOpen && datePickerMode === 'download') {
+                            setIsDatePickerOpen(false);
+                          } else {
+                            setDatePickerMode('download');
+                            setPopoverMonth(month && month !== 'live' ? month : '2026-11');
+                            setIsDatePickerOpen(true);
+                          }
+                        }}
+                        className={cn(
+                          "group relative flex items-center justify-between p-3 xl:p-3.5 2xl:p-4 rounded-2xl text-left transition-all duration-300 cursor-pointer select-none",
+                          "bg-[var(--color-bg-card)] hover:bg-[var(--color-bg-card-hover)] active:scale-[0.98] hover:-translate-y-0.5",
+                          "shadow-sm md:shadow-[0_3px_10px_rgba(0,0,0,0.2),0_1px_3px_rgba(0,0,0,0.12)] md:hover:shadow-[0_6px_16px_rgba(0,0,0,0.25)]",
+                          "border-0 outline-none ring-0 focus-visible:ring-1 focus-visible:ring-[var(--color-primary)]"
+                        )}
+                        style={{ backgroundColor: 'var(--color-bg-card)' }}
+                        title="Print Daily Report PDF"
+                        aria-expanded={isDatePickerOpen && datePickerMode === 'download'}
+                      >
+                        <div className="flex items-center gap-2 xl:gap-2.5 min-w-0 flex-1">
+                          <div className="p-1.5 xl:p-2 rounded-xl bg-[var(--color-surface)] border border-[var(--color-border)]/40 text-[var(--color-text-secondary)] group-hover:text-[var(--color-primary)] group-hover:border-[var(--color-primary)]/40 transition-colors shrink-0">
+                            <Printer className="w-4 h-4 xl:w-4.5 xl:h-4.5" />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <h4 className="text-[12px] xl:text-[13px] font-bold tracking-tight text-[var(--color-text-main)] group-hover:text-[var(--color-text-main)] leading-tight truncate">
+                              Print Daily Report
+                            </h4>
+                            <p className="text-[9.5px] xl:text-[10.5px] font-medium text-[var(--color-text-muted)] mt-0.5 leading-none truncate">
+                              PDF Download
+                            </p>
+                          </div>
+                        </div>
+                        <ChevronDown className={cn("w-3.5 h-3.5 xl:w-4 xl:h-4 shrink-0 text-[var(--color-text-muted)] group-hover:text-[var(--color-text-main)] transition-transform duration-200 ml-1", isDatePickerOpen && datePickerMode === 'download' && "rotate-180")} />
+                      </button>
 
-                        {/* Button 2: 1 Click Copy Report */}
-                        <button
-                          type="button"
-                          onClick={() => {
-                            if (isDatePickerOpen && datePickerMode === 'whatsapp') {
-                              setIsDatePickerOpen(false);
-                            } else {
-                              setDatePickerMode('whatsapp');
-                              setPopoverMonth(month && month !== 'live' ? month : '2026-11');
-                              setIsDatePickerOpen(true);
-                            }
-                          }}
-                          className={cn(
-                            "group flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl",
-                            "bg-[var(--color-surface)] hover:bg-[var(--color-bg-card-hover)]",
-                            "text-[var(--color-text-main)]",
-                            "border border-[var(--color-border)] hover:border-[var(--color-border)]/80",
-                            "hover:opacity-95 active:scale-[0.98]",
-                            "text-xs font-semibold tracking-wide whitespace-nowrap",
-                            "shadow-sm md:shadow-[0_2px_6px_rgba(0,0,0,0.14)] hover:shadow-[0_4px_10px_rgba(0,0,0,0.22)]",
-                            "transition-all duration-200 cursor-pointer select-none",
-                            "outline-none ring-0 focus-visible:ring-1 focus-visible:ring-[var(--color-primary)]"
-                          )}
-                          title="1 Click Copy Report for WhatsApp / Social Media"
-                          aria-expanded={isDatePickerOpen && datePickerMode === 'whatsapp'}
-                        >
-                          <span className="leading-none">{isCopied ? "Copied!" : "1 Click Copy Report"}</span>
-                          <ChevronDown className={cn("w-3.5 h-3.5 shrink-0 text-[var(--color-text-secondary)] group-hover:text-[var(--color-text-main)] transition-transform duration-200 opacity-80 group-hover:opacity-100", isDatePickerOpen && datePickerMode === 'whatsapp' && "rotate-180")} />
-                        </button>
+                      {/* Card 2: 1 Click Copy Report */}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (isDatePickerOpen && datePickerMode === 'whatsapp') {
+                            setIsDatePickerOpen(false);
+                          } else {
+                            setDatePickerMode('whatsapp');
+                            setPopoverMonth(month && month !== 'live' ? month : '2026-11');
+                            setIsDatePickerOpen(true);
+                          }
+                        }}
+                        className={cn(
+                          "group relative flex items-center justify-between p-3 xl:p-3.5 2xl:p-4 rounded-2xl text-left transition-all duration-300 cursor-pointer select-none",
+                          "bg-[var(--color-bg-card)] hover:bg-[var(--color-bg-card-hover)] active:scale-[0.98] hover:-translate-y-0.5",
+                          "shadow-sm md:shadow-[0_3px_10px_rgba(0,0,0,0.2),0_1px_3px_rgba(0,0,0,0.12)] md:hover:shadow-[0_6px_16px_rgba(0,0,0,0.25)]",
+                          "border-0 outline-none ring-0 focus-visible:ring-1 focus-visible:ring-[var(--color-primary)]"
+                        )}
+                        style={{ backgroundColor: 'var(--color-bg-card)' }}
+                        title="1 Click Copy Report for WhatsApp / Social Media"
+                        aria-expanded={isDatePickerOpen && datePickerMode === 'whatsapp'}
+                      >
+                        <div className="flex items-center gap-2 xl:gap-2.5 min-w-0 flex-1">
+                          <div className="p-1.5 xl:p-2 rounded-xl bg-[var(--color-surface)] border border-[var(--color-border)]/40 text-[var(--color-text-secondary)] group-hover:text-[var(--color-success)] group-hover:border-[var(--color-success)]/40 transition-colors shrink-0">
+                            {isCopied ? <Check className="w-4 h-4 xl:w-4.5 xl:h-4.5 text-[var(--color-success)]" /> : <Copy className="w-4 h-4 xl:w-4.5 xl:h-4.5" />}
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <h4 className="text-[12px] xl:text-[13px] font-bold tracking-tight text-[var(--color-text-main)] group-hover:text-[var(--color-text-main)] leading-tight truncate">
+                              {isCopied ? "Copied!" : "1 Click Copy Report"}
+                            </h4>
+                            <p className="text-[9.5px] xl:text-[10.5px] font-medium text-[var(--color-text-muted)] mt-0.5 leading-none truncate">
+                              WhatsApp / Social
+                            </p>
+                          </div>
+                        </div>
+                        <ChevronDown className={cn("w-3.5 h-3.5 xl:w-4 xl:h-4 shrink-0 text-[var(--color-text-muted)] group-hover:text-[var(--color-text-main)] transition-transform duration-200 ml-1", isDatePickerOpen && datePickerMode === 'whatsapp' && "rotate-180")} />
+                      </button>
 
-                        {/* Popover anchored to PC card */}
-                        {isDatePickerOpen && renderDatePickerPopover()}
-                      </div>
-                    </Card>
+                      {/* Popover anchored directly to the 2-card row (no overflow-hidden, completely visible and unclipped!) */}
+                      {isDatePickerOpen && renderDatePickerPopover()}
+                    </div>
                   </div>
 
                   {/* COLUMN 3 (RIGHT): Production Lines Card */}
