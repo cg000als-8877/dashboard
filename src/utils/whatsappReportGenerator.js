@@ -185,41 +185,42 @@ export function generateWhatsAppDailyReport({
     const diffVal = `${diffSign}${formatBnNum(Math.abs(l.dayProfit))} টাকা`;
     const label = BENGALI_LINE_LABELS[l.id] || l.id;
     const styleDisplay = l.style && l.style !== '—' ? toBn(l.style) : '—';
+    const lineProfitLabel = l.dayProfit < 0 ? 'লোকসান:' : (l.dayProfit > 0 ? 'লাভ:' : 'লাভ/লোকসান:');
 
     return [
       `✅ *লাইন ${label}*`,
       `• স্টাইল: ${styleDisplay}`,
       `• মেশিনের সংখ্যা: ${formatBnNum(l.workers)}`,
-      `• দৈনিক উৎপাদন: ${formatBnNum(l.dayProd)} পিস`,
+      `• প্রোডাকশন: ${formatBnNum(l.dayProd)} পিস`,
       `• সিএম (CM): ${formatBnNum(l.cmPerDzn)} টাকা`,
       `• মোট খরচ: ${formatBnNum(l.dayCost)} টাকা`,
       `• মোট আয়: ${formatBnNum(l.dayIncome)} টাকা`,
-      `• পার্থক্য: *${diffVal}*`
+      `• ${lineProfitLabel} *${diffVal}*`
     ].join('\n');
   }).join('\n\n');
 
   // Profit/Loss labels and values
   const todayDiffSign = selectedDayProfit < 0 ? '-' : (selectedDayProfit > 0 ? '+' : '');
   const todayProfitStr = `*${todayDiffSign}${formatBnNum(Math.abs(selectedDayProfit))} টাকা*`;
-  const todayProfitLabel = selectedDayProfit < 0 ? 'মোট ক্ষতি:' : (selectedDayProfit > 0 ? 'মোট লাভ:' : 'মোট লাভ/ক্ষতি:');
+  const todayProfitLabel = selectedDayProfit < 0 ? 'মোট লোকসান:' : (selectedDayProfit > 0 ? 'মোট লাভ:' : 'মোট লাভ/লোকসান:');
 
   const cumDiffSign = netProfit < 0 ? '-' : (netProfit > 0 ? '+' : '');
   const cumProfitStr = `*${cumDiffSign}${formatBnNum(Math.abs(netProfit))} টাকা*`;
-  const cumProfitLabel = netProfit < 0 ? 'মোট ক্ষতি:' : (netProfit > 0 ? 'মোট লাভ:' : 'মোট লাভ/ক্ষতি:');
+  const cumProfitLabel = netProfit < 0 ? 'মোট লোকসান:' : (netProfit > 0 ? 'মোট লাভ:' : 'মোট লাভ/লোকসান:');
 
   const reportText = [
     `*বায়েজিদ অ্যাপারেলস (প্রা.) লিমিটেড*`,
     `_দৈনিক কারখানার খরচের বিবরণ_`,
     `📅 *তারিখ:* ${toBn(selectedDayNum)} ${banglaMonth} ${toBn(activeMonthYear)}`,
     `━━━━━━━━━━━━━━━━━━━━━`,
-    ` *লাইনভিত্তিক উৎপাদন ও খরচের বিবরণ:*`,
+    ` *লাইনভিত্তিক প্রোডাকশন ও খরচের বিবরণ:*`,
     ``,
-    linesFormatted || `_(এই তারিখে কোনো লাইন উৎপাদন সক্রিয় ছিল না)_`,
+    linesFormatted || `_(এই তারিখে কোনো লাইন প্রোডাকশন সক্রিয় ছিল না)_`,
     ``,
     `━━━━━━━━━━━━━━━━━━━━━`,
     `📌 *${toBn(selectedDayNum)} ${banglaMonth} | মোট সারসংক্ষেপ:*`,
     `━━━━━━━━━━━━━━━━━━━━━`,
-    `• মোট উৎপাদন: *${formatBnNum(totalActiveProdQty)} পিস*`,
+    `• মোট প্রোডাকশন: *${formatBnNum(totalActiveProdQty)} পিস*`,
     `• মোট খরচ: *${formatBnNum(selectedDayCost)} টাকা*`,
     `• মোট আয়: *${formatBnNum(selectedDayIncome)} টাকা*`,
     `• ${todayProfitLabel} ${todayProfitStr}`,
