@@ -541,6 +541,7 @@ export function DashboardContent({ month, isArchive = false }) {
   const { stats: septemberStats, dailyTrends: septemberDailyTrends, lines: septemberLines, rawEngine: septemberEngine } = useKpiData('2026-09');
   const { stats: augustStats, dailyTrends: augustDailyTrends, lines: augustLines, rawEngine: augustEngine } = useKpiData('2026-08');
   const { stats: julyStats, dailyTrends: julyDailyTrends, lines: julyLines, rawEngine: julyEngine } = useKpiData('2026-07');
+  const { stats: liveStats, dailyTrends: liveDailyTrends, lines: liveLines, rawEngine: liveEngine } = useKpiData('live');
   const [selectedCardMonth, setSelectedCardMonth] = useState('current'); // 'current' | 'october' | 'september' | 'august' | 'july'
   const [selectedMobileLine, setSelectedMobileLine] = useState('A');
   const [interactiveDay, setInteractiveDay] = useState(null);
@@ -548,7 +549,9 @@ export function DashboardContent({ month, isArchive = false }) {
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const [datePickerMode, setDatePickerMode] = useState('download'); // 'download' | 'whatsapp'
+  const [popoverMonth, setPopoverMonth] = useState(() => (month && month !== 'live' ? month : '2026-11'));
   const [selectedReportDate, setSelectedReportDate] = useState(null);
+  const [selectedReportMonth, setSelectedReportMonth] = useState(null);
   const [isCopied, setIsCopied] = useState(false);
   const [toastMessage, setToastMessage] = useState(null);
   const { isIdle } = useIdle();
@@ -556,6 +559,87 @@ export function DashboardContent({ month, isArchive = false }) {
   const datePickerRef = useRef(null);
   const touchStartXRef = useRef(null);
   const touchStartYRef = useRef(null);
+
+  // Available chronological months for reports (July -> November 2026)
+  const REPORT_MONTHS = useMemo(() => ['2026-07', '2026-08', '2026-09', '2026-10', '2026-11'], []);
+
+  // Multi-month dataset dictionary for instant seamless switching between live and archive reports
+  const monthDataMap = useMemo(() => {
+    const liveData = (month === 'live' || month === '2026-11')
+      ? { stats, dailyTrends, lines, rawEngine }
+      : { stats: liveStats, dailyTrends: liveDailyTrends, lines: liveLines, rawEngine: liveEngine };
+
+    return {
+      '2026-07': {
+        monthKey: '2026-07',
+        monthName: 'July',
+        year: '2026',
+        stats: julyStats,
+        dailyTrends: julyDailyTrends,
+        lines: julyLines,
+        rawEngine: julyEngine
+      },
+      '2026-08': {
+        monthKey: '2026-08',
+        monthName: 'August',
+        year: '2026',
+        stats: augustStats,
+        dailyTrends: augustDailyTrends,
+        lines: augustLines,
+        rawEngine: augustEngine
+      },
+      '2026-09': {
+        monthKey: '2026-09',
+        monthName: 'September',
+        year: '2026',
+        stats: septemberStats,
+        dailyTrends: septemberDailyTrends,
+        lines: septemberLines,
+        rawEngine: septemberEngine
+      },
+      '2026-10': {
+        monthKey: '2026-10',
+        monthName: 'October',
+        year: '2026',
+        stats: octoberStats,
+        dailyTrends: octoberDailyTrends,
+        lines: octoberLines,
+        rawEngine: octoberEngine
+      },
+      '2026-11': {
+        monthKey: '2026-11',
+        monthName: 'November',
+        year: '2026',
+        stats: liveData.stats,
+        dailyTrends: liveData.dailyTrends,
+        lines: liveData.lines,
+        rawEngine: liveData.rawEngine
+      }
+    };
+  }, [
+    month, stats, dailyTrends, lines, rawEngine,
+    liveStats, liveDailyTrends, liveLines, liveEngine,
+    octoberStats, octoberDailyTrends, octoberLines, octoberEngine,
+    septemberStats, septemberDailyTrends, septemberLines, septemberEngine,
+    augustStats, augustDailyTrends, augustLines, augustEngine,
+    julyStats, julyDailyTrends, julyLines, julyEngine
+  ]);
+
+  const currentMonthIdx = REPORT_MONTHS.indexOf(popoverMonth || '2026-11');
+  const hasPrevMonth = currentMonthIdx > 0;
+  const hasNextMonth = currentMonthIdx >= 0 && currentMonthIdx < REPORT_MONTHS.length - 1;
+
+  const handlePrevMonth = () => {
+    if (hasPrevMonth) {
+      setPopoverMonth(REPORT_MONTHS[currentMonthIdx - 1]);
+    }
+  };
+
+  const handleNextMonth = () => {
+    if (hasNextMonth) {
+      setPopoverMonth(REPORT_MONTHS[currentMonthIdx + 1]);
+    }
+  };
 
   // Close date picker popover on click outside
   useEffect(() => {
@@ -577,6 +661,7 @@ export function DashboardContent({ month, isArchive = false }) {
   // Handle selecting a date: updates state, preloads Noto Serif Bengali, and triggers window.print()
   const handleSelectReportDate = async (targetDate) => {
     setSelectedReportDate(targetDate);
+    setSelectedReportMonth(popoverMonth || '2026-11');
     setIsDatePickerOpen(false);
     try {
       if (typeof document !== 'undefined' && document.fonts) {
@@ -596,28 +681,28 @@ export function DashboardContent({ month, isArchive = false }) {
   // Handle copying WhatsApp report for selected date
   const handleSelectWhatsAppReportDate = async (targetDate) => {
     setSelectedReportDate(targetDate);
+    setSelectedReportMonth(popoverMonth || '2026-11');
     setIsDatePickerOpen(false);
     try {
+      const activeData = monthDataMap[popoverMonth || '2026-11'] || monthDataMap['2026-11'];
       const reportText = generateWhatsAppDailyReport({
         targetDate,
-        dailyTrends,
-        rawDailyProduction: rawEngine?.kpiData?.dailyProduction || [],
-        lines,
-        stats,
-        activeMonthName: dateComponents?.month || 'November',
-        activeMonthYear: dateComponents?.year || '2026'
+        dailyTrends: activeData?.dailyTrends || [],
+        rawDailyProduction: activeData?.rawEngine?.kpiData?.dailyProduction || [],
+        lines: activeData?.lines || [],
+        stats: activeData?.stats || null,
+        activeMonthName: activeData?.monthName || 'November',
+        activeMonthYear: String(activeData?.year || '2026')
       });
       const ok = await copyToClipboard(reportText);
-      if (ok) {
-        setIsCopied(true);
-        let dayFormatted = 'Daily Report';
-        try {
-          if (targetDate) dayFormatted = format(parseISO(targetDate), 'dd MMMM');
-        } catch (e) {}
-        setToastMessage(`✓ WhatsApp Report Copied! (${dayFormatted})`);
-        setTimeout(() => setIsCopied(false), 2200);
-        setTimeout(() => setToastMessage(null), 3200);
-      }
+      setIsCopied(true);
+      let dayFormatted = 'Daily Report';
+      try {
+        if (targetDate) dayFormatted = format(parseISO(targetDate), 'dd MMMM');
+      } catch (e) {}
+      setToastMessage(ok !== false ? `✓ WhatsApp Report Copied! (${dayFormatted})` : `✓ WhatsApp Report Ready! (${dayFormatted})`);
+      setTimeout(() => setIsCopied(false), 2200);
+      setTimeout(() => setToastMessage(null), 3200);
     } catch (e) {
       console.error('Failed to copy WhatsApp report:', e);
     }
@@ -625,19 +710,19 @@ export function DashboardContent({ month, isArchive = false }) {
 
   // Build calendar month data dynamically for the date picker popover
   const calendarMonthInfo = useMemo(() => {
-    const latestDateStr = dailyTrends && dailyTrends.length > 0 ? dailyTrends[dailyTrends.length - 1]?.date : '2026-11-23';
-    let baseDate = new Date(2026, 10, 23);
-    try {
-      if (latestDateStr) baseDate = parseISO(latestDateStr);
-    } catch (e) {}
+    const activeData = monthDataMap[popoverMonth || '2026-11'] || monthDataMap['2026-11'];
+    const activeTrends = activeData?.dailyTrends || [];
 
-    const year = baseDate.getFullYear();
-    const monthIndex = baseDate.getMonth();
+    const [yearStr, monthStr] = (popoverMonth || '2026-11').split('-');
+    const year = parseInt(yearStr, 10) || 2026;
+    const monthIndex = (parseInt(monthStr, 10) || 11) - 1;
+
+    const baseDate = new Date(year, monthIndex, 1);
     const monthName = format(baseDate, 'MMMM');
     const totalDays = new Date(year, monthIndex + 1, 0).getDate();
     const firstDayOfWeek = new Date(year, monthIndex, 1).getDay();
 
-    const availableSet = new Set((dailyTrends || []).map(t => t.date).filter(Boolean));
+    const availableSet = new Set((activeTrends || []).map(t => t.date).filter(Boolean));
 
     const days = [];
     for (let i = 0; i < firstDayOfWeek; i++) {
@@ -657,8 +742,8 @@ export function DashboardContent({ month, isArchive = false }) {
       });
     }
 
-    const latestDate = dailyTrends && dailyTrends.length > 0 ? dailyTrends[dailyTrends.length - 1]?.date : null;
-    const yesterdayDate = dailyTrends && dailyTrends.length > 1 ? dailyTrends[dailyTrends.length - 2]?.date : null;
+    const latestDate = activeTrends && activeTrends.length > 0 ? activeTrends[activeTrends.length - 1]?.date : null;
+    const yesterdayDate = activeTrends && activeTrends.length > 1 ? activeTrends[activeTrends.length - 2]?.date : null;
 
     return {
       year,
@@ -667,7 +752,7 @@ export function DashboardContent({ month, isArchive = false }) {
       latestDate,
       yesterdayDate
     };
-  }, [dailyTrends]);
+  }, [monthDataMap, popoverMonth]);
 
   const handleTouchStart = (e) => {
     touchStartXRef.current = e.touches[0].clientX;
@@ -1806,6 +1891,7 @@ export function DashboardContent({ month, isArchive = false }) {
                         setIsDatePickerOpen(false);
                       } else {
                         setDatePickerMode('download');
+                        setPopoverMonth(month && month !== 'live' ? month : '2026-11');
                         setIsDatePickerOpen(true);
                       }
                     }}
@@ -1833,6 +1919,7 @@ export function DashboardContent({ month, isArchive = false }) {
                         setIsDatePickerOpen(false);
                       } else {
                         setDatePickerMode('whatsapp');
+                        setPopoverMonth(month && month !== 'live' ? month : '2026-11');
                         setIsDatePickerOpen(true);
                       }
                     }}
@@ -1852,7 +1939,7 @@ export function DashboardContent({ month, isArchive = false }) {
                     <ChevronDown className={cn("w-3.5 h-3.5 shrink-0 transition-transform duration-200 opacity-85 group-hover:opacity-100", isDatePickerOpen && datePickerMode === 'whatsapp' && "rotate-180")} />
                   </button>
 
-                  {/* Minimal Calendar Popover (Shared seamlessly between both actions) */}
+                  {/* Minimal Calendar Popover (Shared seamlessly between both actions with month navigation) */}
                   {isDatePickerOpen && (
                     <div 
                       className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-72 max-w-[94vw] bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-xl shadow-2xl p-3 z-50 text-left"
@@ -1860,24 +1947,64 @@ export function DashboardContent({ month, isArchive = false }) {
                       {/* Solid backdrop shield */}
                       <div className="absolute inset-0 bg-[var(--color-bg-card)] rounded-xl -z-10" />
 
-                      {/* Minimal Month Header with Action Mode Label */}
-                      <div className="flex items-center justify-between pb-2 mb-2 border-b border-[var(--color-border)]/60">
-                        <div className="flex flex-col">
+                      {/* Minimal Month Header with Action Mode Label & Navigation Arrows */}
+                      <div className="flex flex-col gap-1.5 pb-2 mb-2 border-b border-[var(--color-border)]/60">
+                        <div className="flex items-center justify-between">
                           <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-text-muted)]">
                             {datePickerMode === 'whatsapp' ? 'Copy WhatsApp Report' : 'Download PDF Report'}
                           </span>
-                          <span className="text-xs font-bold text-[var(--color-text-main)]">
+                          <button
+                            type="button"
+                            onClick={() => setIsDatePickerOpen(false)}
+                            className="text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] p-0.5 rounded hover:bg-[var(--color-border)]/30 cursor-pointer leading-none"
+                            title="Close"
+                          >
+                            ✕
+                          </button>
+                        </div>
+
+                        {/* Minimal Month Switcher with Chevron Left / Right */}
+                        <div className="flex items-center justify-between px-0.5">
+                          <button
+                            type="button"
+                            disabled={!hasPrevMonth}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handlePrevMonth();
+                            }}
+                            className={cn(
+                              "p-1 rounded-md transition-all flex items-center justify-center",
+                              hasPrevMonth
+                                ? "hover:bg-[var(--color-border)]/40 text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)] active:scale-95 cursor-pointer"
+                                : "opacity-25 text-[var(--color-text-muted)] cursor-not-allowed pointer-events-none"
+                            )}
+                            title={hasPrevMonth ? "Previous Month" : "No earlier records"}
+                          >
+                            <ChevronLeft className="w-3.5 h-3.5" />
+                          </button>
+
+                          <span className="text-xs font-bold text-[var(--color-text-main)] tracking-wide select-none">
                             {calendarMonthInfo.monthName} {calendarMonthInfo.year}
                           </span>
+
+                          <button
+                            type="button"
+                            disabled={!hasNextMonth}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleNextMonth();
+                            }}
+                            className={cn(
+                              "p-1 rounded-md transition-all flex items-center justify-center",
+                              hasNextMonth
+                                ? "hover:bg-[var(--color-border)]/40 text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)] active:scale-95 cursor-pointer"
+                                : "opacity-25 text-[var(--color-text-muted)] cursor-not-allowed pointer-events-none"
+                            )}
+                            title={hasNextMonth ? "Next Month" : "No later records"}
+                          >
+                            <ChevronRight className="w-3.5 h-3.5" />
+                          </button>
                         </div>
-                        <button
-                          type="button"
-                          onClick={() => setIsDatePickerOpen(false)}
-                          className="text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] p-1 cursor-pointer leading-none"
-                          title="Close"
-                        >
-                          ✕
-                        </button>
                       </div>
 
                       {/* Days of Week Header */}
@@ -1902,7 +2029,9 @@ export function DashboardContent({ month, isArchive = false }) {
                             return <div key={`empty-${idx}`} className="h-7" />;
                           }
 
-                          const isSelected = (selectedReportDate || calendarMonthInfo.latestDate) === item.dateStr;
+                          const isSelected = (selectedReportDate && selectedReportDate.startsWith(popoverMonth)
+                            ? selectedReportDate
+                            : calendarMonthInfo.latestDate) === item.dateStr;
                           // If Friday OR data is missing, consider that day as holiday (orange and disabled)
                           const isHoliday = item.isFriday || !item.hasData;
 
@@ -2351,18 +2480,22 @@ export function DashboardContent({ month, isArchive = false }) {
         <PrintableArchiveReport month={month} />
       )}
 
-      {/* Hidden Printable Bangla Daily Report (Home / Live Only - Direct Print) */}
-      {!isArchive && (
-        <PrintableBanglaDailyReport
-          stats={stats}
-          dailyTrends={dailyTrends}
-          lines={lines}
-          targetDate={selectedReportDate}
-          rawDailyProduction={rawEngine?.kpiData?.dailyProduction || []}
-          activeMonthName={dateComponents?.month || 'November'}
-          activeMonthYear={dateComponents?.year || '2026'}
-        />
-      )}
+      {/* Hidden Printable Bangla Daily Report (Direct Print for any selected date/month) */}
+      {(() => {
+        const reportMonthKey = selectedReportMonth || popoverMonth || (month === 'live' ? '2026-11' : (month || '2026-11'));
+        const activeReportData = monthDataMap[reportMonthKey] || monthDataMap['2026-11'];
+        return (
+          <PrintableBanglaDailyReport
+            stats={activeReportData?.stats}
+            dailyTrends={activeReportData?.dailyTrends || []}
+            lines={activeReportData?.lines || []}
+            targetDate={selectedReportDate}
+            rawDailyProduction={activeReportData?.rawEngine?.kpiData?.dailyProduction || []}
+            activeMonthName={activeReportData?.monthName || 'November'}
+            activeMonthYear={String(activeReportData?.year || '2026')}
+          />
+        );
+      })()}
       {/* Toast Notification for WhatsApp Report Copied */}
       {toastMessage && (
         <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[100] px-4 py-2.5 rounded-full bg-slate-900/95 dark:bg-slate-800/95 text-white text-xs font-bold shadow-2xl backdrop-blur-md flex items-center gap-2 border border-slate-700/50 animate-[fade-up_0.2s_ease-out_both] pointer-events-none select-none">
