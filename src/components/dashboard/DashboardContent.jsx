@@ -1755,11 +1755,11 @@ export function DashboardContent({ month, isArchive = false }) {
                     <Card
                       hover
                       data-color={displayStats.totalIncome >= displayStats.totalCost ? "success" : "primary"}
-                      className="p-4 sm:p-5 xl:p-6 rounded-2xl flex flex-col justify-center items-center shadow-sm md:shadow-[0_3px_10px_rgba(0,0,0,0.2),0_1px_3px_rgba(0,0,0,0.12)] md:hover:shadow-[0_6px_16px_rgba(0,0,0,0.25)] border-0 md:border-0 relative overflow-hidden transition-all flex-1"
+                      className="p-3.5 sm:p-4 md:p-4 lg:p-4.5 xl:p-5 rounded-2xl flex flex-col justify-center items-center shadow-sm md:shadow-[0_3px_10px_rgba(0,0,0,0.2),0_1px_3px_rgba(0,0,0,0.12)] md:hover:shadow-[0_6px_16px_rgba(0,0,0,0.25)] border-0 md:border-0 relative overflow-hidden transition-all flex-1"
                       style={{ backgroundColor: 'var(--color-bg-card)' }}
                     >
                       {/* 3 Large Donuts Fulfilling the Center of the Card */}
-                      <div className="w-full flex-1 flex flex-col justify-center items-center py-1 xl:py-2 my-auto">
+                      <div className="w-full flex-1 flex flex-col justify-center items-center py-2 xl:py-2.5 my-auto">
                         <CostRecoveryPie
                           percentage={recoveryPercent}
                           isProfitable={displayStats.totalIncome >= displayStats.totalCost}

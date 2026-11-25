@@ -256,17 +256,17 @@ export function CostRecoveryPie({
       `}} />
 
       {/* 3 Animated Glass Liquid Jars Grid */}
-      <div className="grid grid-cols-3 gap-2 min-[360px]:gap-3 sm:gap-4 w-full items-end justify-center">
+      <div className="grid grid-cols-3 gap-2 min-[360px]:gap-3 sm:gap-4 md:gap-4 lg:gap-5 xl:gap-7 w-full items-end justify-center">
         {jars.map((item) => (
           <div 
             key={item.id} 
             className="flex flex-col items-center justify-end text-center min-w-0 px-0.5 w-full group"
           >
             {/* The Glass Canister / Flask Container */}
-            <div className="relative w-full max-w-[70px] min-[360px]:max-w-[78px] min-[390px]:max-w-[84px] sm:max-w-[92px] md:max-w-[102px] flex flex-col items-center">
+            <div className="relative w-full max-w-[70px] min-[360px]:max-w-[78px] min-[390px]:max-w-[84px] sm:max-w-[92px] md:max-w-[114px] lg:max-w-[124px] xl:max-w-[134px] flex flex-col items-center">
               
               {/* Bottle Neck / Mouth Lip */}
-              <div className="w-6 min-[360px]:w-7 sm:w-8 h-2 rounded-full border border-slate-300/80 dark:border-white/20 bg-slate-200/70 dark:bg-white/10 mx-auto -mb-1 z-10 shadow-xs shrink-0" />
+              <div className="w-6 min-[360px]:w-7 sm:w-8 md:w-9 lg:w-10 xl:w-11 h-2 sm:h-2.5 xl:h-3 rounded-full border border-slate-300/80 dark:border-white/20 bg-slate-200/70 dark:bg-white/10 mx-auto -mb-1 z-10 shadow-xs shrink-0" />
 
               {/* Round Glass Jar Main Sphere */}
               <div className="relative w-full aspect-square rounded-full border border-slate-300/90 dark:border-white/20 bg-slate-100/60 dark:bg-black/35 backdrop-blur-xs overflow-hidden shadow-[inset_0_3px_8px_rgba(255,255,255,0.4),inset_0_-4px_10px_rgba(0,0,0,0.1),0_4px_12px_rgba(0,0,0,0.06)] dark:shadow-[inset_0_3px_10px_rgba(255,255,255,0.18),inset_0_-6px_14px_rgba(0,0,0,0.5),0_6px_20px_rgba(0,0,0,0.35)]">
@@ -358,7 +358,7 @@ export function CostRecoveryPie({
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-30">
                   <div className="flex items-center justify-center select-none bg-transparent p-0 border-0 shadow-none">
                     <span className={cn(
-                      "text-[15px] min-[360px]:text-[16px] sm:text-[19px] md:text-[22px] font-black tracking-tight leading-none",
+                      "text-[15px] min-[360px]:text-[16px] sm:text-[19px] md:text-[23px] lg:text-[25px] xl:text-[27px] font-black tracking-tight leading-none",
                       item.pct > 0 
                         ? "text-white [filter:drop-shadow(0_1px_2px_rgba(0,0,0,0.5))]" 
                         : "text-slate-600 dark:text-slate-300"
@@ -371,7 +371,7 @@ export function CostRecoveryPie({
                 {/* Empty State Text Indicator (When 0% Liquid) */}
                 {item.pct === 0 && (
                   <div className="absolute bottom-2.5 inset-x-0 flex items-center justify-center pointer-events-none z-20">
-                    <span className="text-[7.5px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400/80 select-none">
+                    <span className="text-[7.5px] md:text-[9px] xl:text-[9.5px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400/80 select-none">
                       Dry
                     </span>
                   </div>
@@ -380,17 +380,17 @@ export function CostRecoveryPie({
             </div>
 
             {/* Label, Value, and Sublabel Underneath */}
-            <div className="flex flex-col items-center w-full mt-1.5 sm:mt-2">
-              <span className="text-[9.5px] min-[360px]:text-[10px] sm:text-xs md:text-[10.5px] lg:text-[11.5px] xl:text-xs font-bold uppercase tracking-wider text-[var(--color-text-main)] whitespace-nowrap leading-tight text-center">
+            <div className="flex flex-col items-center w-full mt-2 sm:mt-2.5 md:mt-3 xl:mt-3.5">
+              <span className="text-[9.5px] min-[360px]:text-[10px] sm:text-xs md:text-[11.5px] lg:text-[12.5px] xl:text-[13px] font-bold uppercase tracking-wider text-[var(--color-text-main)] whitespace-nowrap leading-tight text-center">
                 {item.title}
               </span>
               <span className={cn(
-                "text-[11.5px] min-[360px]:text-[12px] sm:text-[13px] md:text-[11px] lg:text-xs xl:text-[13px] font-bold whitespace-nowrap leading-tight mt-0.5 md:mt-1 text-center", 
+                "text-[11.5px] min-[360px]:text-[12px] sm:text-[13px] md:text-[13px] lg:text-[14px] xl:text-[15px] font-extrabold whitespace-nowrap leading-tight mt-0.5 md:mt-1 text-center", 
                 item.valueColor || item.textColor
               )}>
                 {item.valueStr}
               </span>
-              <span className="text-[8.5px] min-[360px]:text-[9px] sm:text-[9.5px] md:text-[8.5px] lg:text-[9.5px] xl:text-[10.5px] uppercase tracking-wider font-semibold text-[var(--color-text-muted)] whitespace-nowrap leading-tight mt-0.5 text-center">
+              <span className="text-[8.5px] min-[360px]:text-[9px] sm:text-[9.5px] md:text-[9.5px] lg:text-[10.5px] xl:text-[11px] uppercase tracking-wider font-semibold text-[var(--color-text-muted)] whitespace-nowrap leading-tight mt-0.5 text-center">
                 {item.sublabel}
               </span>
             </div>
