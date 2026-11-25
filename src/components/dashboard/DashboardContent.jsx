@@ -557,6 +557,7 @@ export function DashboardContent({ month, isArchive = false }) {
   const { isIdle } = useIdle();
   const pdfRef = useRef(null);
   const datePickerRef = useRef(null);
+  const pcDatePickerRef = useRef(null);
   const touchStartXRef = useRef(null);
   const touchStartYRef = useRef(null);
 
@@ -644,7 +645,9 @@ export function DashboardContent({ month, isArchive = false }) {
   // Close date picker popover on click outside
   useEffect(() => {
     function handleClickOutside(event) {
-      if (datePickerRef.current && !datePickerRef.current.contains(event.target)) {
+      const clickedMobile = datePickerRef.current && datePickerRef.current.contains(event.target);
+      const clickedPc = pcDatePickerRef.current && pcDatePickerRef.current.contains(event.target);
+      if (!clickedMobile && !clickedPc) {
         setIsDatePickerOpen(false);
       }
     }
@@ -753,6 +756,137 @@ export function DashboardContent({ month, isArchive = false }) {
       yesterdayDate
     };
   }, [monthDataMap, popoverMonth]);
+
+  // Render Date Picker Calendar Popover (reused seamlessly for both PC card and mobile button locations)
+  const renderDatePickerPopover = () => (
+    <div 
+      className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-72 max-w-[94vw] bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-xl shadow-2xl p-3 z-50 text-left"
+    >
+      {/* Solid backdrop shield */}
+      <div className="absolute inset-0 bg-[var(--color-bg-card)] rounded-xl -z-10" />
+
+      {/* Minimal Month Header with Action Mode Label & Navigation Arrows */}
+      <div className="flex flex-col gap-1.5 pb-2 mb-2 border-b border-[var(--color-border)]/60">
+        <div className="flex items-center justify-between">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-text-muted)]">
+            {datePickerMode === 'whatsapp' ? '1 Click Copy Report' : 'Print Daily Report'}
+          </span>
+          <button
+            type="button"
+            onClick={() => setIsDatePickerOpen(false)}
+            className="text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] p-0.5 rounded hover:bg-[var(--color-border)]/30 cursor-pointer leading-none"
+            title="Close"
+          >
+            ✕
+          </button>
+        </div>
+
+        {/* Minimal Month Switcher with Chevron Left / Right */}
+        <div className="flex items-center justify-between px-0.5">
+          <button
+            type="button"
+            disabled={!hasPrevMonth}
+            onClick={(e) => {
+              e.stopPropagation();
+              handlePrevMonth();
+            }}
+            className={cn(
+              "p-1 rounded-md transition-all flex items-center justify-center",
+              hasPrevMonth
+                ? "hover:bg-[var(--color-border)]/40 text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)] active:scale-95 cursor-pointer"
+                : "opacity-25 text-[var(--color-text-muted)] cursor-not-allowed pointer-events-none"
+            )}
+            title={hasPrevMonth ? "Previous Month" : "No earlier records"}
+          >
+            <ChevronLeft className="w-3.5 h-3.5" />
+          </button>
+
+          <span className="text-xs font-bold text-[var(--color-text-main)] tracking-wide select-none">
+            {calendarMonthInfo.monthName} {calendarMonthInfo.year}
+          </span>
+
+          <button
+            type="button"
+            disabled={!hasNextMonth}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleNextMonth();
+            }}
+            className={cn(
+              "p-1 rounded-md transition-all flex items-center justify-center",
+              hasNextMonth
+                ? "hover:bg-[var(--color-border)]/40 text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)] active:scale-95 cursor-pointer"
+                : "opacity-25 text-[var(--color-text-muted)] cursor-not-allowed pointer-events-none"
+            )}
+            title={hasNextMonth ? "Next Month" : "No later records"}
+          >
+            <ChevronRight className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      </div>
+
+      {/* Days of Week Header */}
+      <div className="grid grid-cols-7 gap-1 text-center mb-1.5">
+        {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map((day, idx) => (
+          <div
+            key={day}
+            className={cn(
+              "text-[10px] font-semibold py-0.5",
+              idx === 5 ? "text-amber-500" : "text-[var(--color-text-muted)]"
+            )}
+          >
+            {day}
+          </div>
+        ))}
+      </div>
+
+      {/* Days Grid */}
+      <div className="grid grid-cols-7 gap-1 text-center">
+        {calendarMonthInfo.days.map((item, idx) => {
+          if (!item.dayNum) {
+            return <div key={`empty-${idx}`} className="h-7" />;
+          }
+
+          const isSelected = (selectedReportDate && selectedReportDate.startsWith(popoverMonth)
+            ? selectedReportDate
+            : calendarMonthInfo.latestDate) === item.dateStr;
+          // If Friday OR data is missing, consider that day as holiday (orange and disabled)
+          const isHoliday = item.isFriday || !item.hasData;
+
+          return (
+            <button
+              key={item.dateStr}
+              type="button"
+              disabled={isHoliday}
+              onClick={() => {
+                if (isHoliday) return;
+                if (datePickerMode === 'whatsapp') {
+                  handleSelectWhatsAppReportDate(item.dateStr);
+                } else {
+                  handleSelectReportDate(item.dateStr);
+                }
+              }}
+              className={cn(
+                "h-7 rounded text-xs font-medium flex items-center justify-center transition-all select-none",
+                isHoliday
+                  ? "text-amber-500/70 bg-amber-500/10 cursor-not-allowed"
+                  : isSelected
+                    ? "bg-rose-500 text-white font-bold"
+                    : "text-[var(--color-text-main)] hover:bg-rose-500/20 hover:text-rose-400 cursor-pointer"
+              )}
+              title={
+                isHoliday
+                  ? (item.isFriday ? 'Friday (Holiday)' : 'Missing Data (Holiday)')
+                  : `${item.dayNum} ${calendarMonthInfo.monthName} — ${datePickerMode === 'whatsapp' ? 'Click to copy WhatsApp text' : 'Click to print PDF'}`
+              }
+            >
+              {item.dayNum}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
 
   const handleTouchStart = (e) => {
     touchStartXRef.current = e.touches[0].clientX;
@@ -1615,16 +1749,17 @@ export function DashboardContent({ month, isArchive = false }) {
 
                   </div>
 
-                  {/* COLUMN 2 (MIDDLE): Cost Recovery 3-Donut Card */}
-                  <div className="md:col-span-6 lg:col-span-4 xl:col-span-4 flex flex-col">
+                  {/* COLUMN 2 (MIDDLE): Cost Recovery 3-Donut Card + Reports CTA Card (PC View) */}
+                  <div className="md:col-span-6 lg:col-span-4 xl:col-span-4 flex flex-col gap-4 xl:gap-5">
+                    {/* Top: Shortened Jar Card */}
                     <Card
                       hover
                       data-color={displayStats.totalIncome >= displayStats.totalCost ? "success" : "primary"}
-                      className="p-4 sm:p-5 xl:p-6 rounded-2xl flex flex-col justify-between shadow-sm md:shadow-[0_3px_10px_rgba(0,0,0,0.2),0_1px_3px_rgba(0,0,0,0.12)] md:hover:shadow-[0_6px_16px_rgba(0,0,0,0.25)] border-0 md:border-0 relative overflow-hidden transition-all h-full"
+                      className="p-4 sm:p-5 xl:p-6 rounded-2xl flex flex-col justify-center items-center shadow-sm md:shadow-[0_3px_10px_rgba(0,0,0,0.2),0_1px_3px_rgba(0,0,0,0.12)] md:hover:shadow-[0_6px_16px_rgba(0,0,0,0.25)] border-0 md:border-0 relative overflow-hidden transition-all flex-1"
                       style={{ backgroundColor: 'var(--color-bg-card)' }}
                     >
                       {/* 3 Large Donuts Fulfilling the Center of the Card */}
-                      <div className="w-full flex-1 flex flex-col justify-center items-center py-2 xl:py-3 my-auto">
+                      <div className="w-full flex-1 flex flex-col justify-center items-center py-1 xl:py-2 my-auto">
                         <CostRecoveryPie
                           percentage={recoveryPercent}
                           isProfitable={displayStats.totalIncome >= displayStats.totalCost}
@@ -1635,23 +1770,77 @@ export function DashboardContent({ month, isArchive = false }) {
                           className="w-full my-auto"
                         />
                       </div>
+                    </Card>
 
-                      {/* 1 Title & 1 Subtitle placed under the 3 Donuts (PC View Only) */}
-                      <div className="w-full text-center pt-2 sm:pt-2.5 mt-auto px-1">
-                        <h4 className="text-xs xl:text-[13px] font-bold uppercase tracking-widest text-[var(--color-text-secondary)] leading-none text-center">
-                          Cost Recovery & Margin
-                        </h4>
-                        <p className="text-[10px] min-[1150px]:text-[10.5px] xl:text-[11px] text-[var(--color-text-muted)] font-medium text-center mt-1 leading-tight">
-                          {displayStats.totalIncome >= displayStats.totalCost ? (
-                            <span className="text-[var(--color-success-text)] font-semibold">Target Met • Production costs fully recovered</span>
-                          ) : (
-                            <>
-                              <span className="text-[var(--color-primary)] font-bold">Recovered {Math.round(recoveryPercent)}%</span>
-                              <span className="mx-1.5 opacity-40">•</span>
-                              <span>BDT {Math.max(0, Math.round(displayStats.totalCost - displayStats.totalIncome)).toLocaleString()} needed to break-even</span>
-                            </>
+                    {/* Bottom: Reports CTA Card with Print Daily Report & 1 Click Copy Report side by side (PC View Only) */}
+                    <Card
+                      hover
+                      className="p-3 xl:p-3.5 rounded-2xl flex items-center justify-center shadow-sm md:shadow-[0_3px_10px_rgba(0,0,0,0.2),0_1px_3px_rgba(0,0,0,0.12)] md:hover:shadow-[0_6px_16px_rgba(0,0,0,0.25)] border-0 md:border-0 relative transition-all"
+                      style={{ backgroundColor: 'var(--color-bg-card)' }}
+                    >
+                      <div className="relative flex items-center justify-between gap-2.5 sm:gap-3 w-full" ref={pcDatePickerRef}>
+                        {/* Button 1: Print Daily Report */}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (isDatePickerOpen && datePickerMode === 'download') {
+                              setIsDatePickerOpen(false);
+                            } else {
+                              setDatePickerMode('download');
+                              setPopoverMonth(month && month !== 'live' ? month : '2026-11');
+                              setIsDatePickerOpen(true);
+                            }
+                          }}
+                          className={cn(
+                            "group flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl",
+                            "bg-[var(--color-surface)] hover:bg-[var(--color-bg-card-hover)]",
+                            "text-[var(--color-text-main)]",
+                            "border border-[var(--color-border)] hover:border-[var(--color-border)]/80",
+                            "hover:opacity-95 active:scale-[0.98]",
+                            "text-xs font-semibold tracking-wide whitespace-nowrap",
+                            "shadow-sm md:shadow-[0_2px_6px_rgba(0,0,0,0.14)] hover:shadow-[0_4px_10px_rgba(0,0,0,0.22)]",
+                            "transition-all duration-200 cursor-pointer select-none",
+                            "outline-none ring-0 focus-visible:ring-1 focus-visible:ring-[var(--color-primary)]"
                           )}
-                        </p>
+                          title="Print Daily Report PDF"
+                          aria-expanded={isDatePickerOpen && datePickerMode === 'download'}
+                        >
+                          <span className="leading-none">Print Daily Report</span>
+                          <ChevronDown className={cn("w-3.5 h-3.5 shrink-0 text-[var(--color-text-secondary)] group-hover:text-[var(--color-text-main)] transition-transform duration-200 opacity-80 group-hover:opacity-100", isDatePickerOpen && datePickerMode === 'download' && "rotate-180")} />
+                        </button>
+
+                        {/* Button 2: 1 Click Copy Report */}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (isDatePickerOpen && datePickerMode === 'whatsapp') {
+                              setIsDatePickerOpen(false);
+                            } else {
+                              setDatePickerMode('whatsapp');
+                              setPopoverMonth(month && month !== 'live' ? month : '2026-11');
+                              setIsDatePickerOpen(true);
+                            }
+                          }}
+                          className={cn(
+                            "group flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl",
+                            "bg-[var(--color-surface)] hover:bg-[var(--color-bg-card-hover)]",
+                            "text-[var(--color-text-main)]",
+                            "border border-[var(--color-border)] hover:border-[var(--color-border)]/80",
+                            "hover:opacity-95 active:scale-[0.98]",
+                            "text-xs font-semibold tracking-wide whitespace-nowrap",
+                            "shadow-sm md:shadow-[0_2px_6px_rgba(0,0,0,0.14)] hover:shadow-[0_4px_10px_rgba(0,0,0,0.22)]",
+                            "transition-all duration-200 cursor-pointer select-none",
+                            "outline-none ring-0 focus-visible:ring-1 focus-visible:ring-[var(--color-primary)]"
+                          )}
+                          title="1 Click Copy Report for WhatsApp / Social Media"
+                          aria-expanded={isDatePickerOpen && datePickerMode === 'whatsapp'}
+                        >
+                          <span className="leading-none">{isCopied ? "Copied!" : "1 Click Copy Report"}</span>
+                          <ChevronDown className={cn("w-3.5 h-3.5 shrink-0 text-[var(--color-text-secondary)] group-hover:text-[var(--color-text-main)] transition-transform duration-200 opacity-80 group-hover:opacity-100", isDatePickerOpen && datePickerMode === 'whatsapp' && "rotate-180")} />
+                        </button>
+
+                        {/* Popover anchored to PC card */}
+                        {isDatePickerOpen && renderDatePickerPopover()}
                       </div>
                     </Card>
                   </div>
@@ -1881,8 +2070,8 @@ export function DashboardContent({ month, isArchive = false }) {
             <div className="mt-8 md:mt-12 mb-0 md:mb-8 relative z-10">
               {/* Header Title & Date Subtitle */}
               <div className="flex flex-col items-center justify-center mb-5 sm:mb-6 text-center">
-                {/* Download Daily Report & Copy WhatsApp Report CTA Buttons with Minimal Calendar Popover */}
-                <div className="relative inline-flex items-center justify-center gap-1.5 xs:gap-2 sm:gap-3 flex-nowrap mb-3 max-w-full" ref={datePickerRef}>
+                {/* Download Daily Report & Copy WhatsApp Report CTA Buttons with Minimal Calendar Popover (Mobile View Only) */}
+                <div className="relative inline-flex items-center justify-center gap-1.5 xs:gap-2 sm:gap-3 flex-nowrap mb-3 max-w-full md:hidden" ref={datePickerRef}>
                   {/* Button 1: Print Daily Report (PDF) - Neutral Theme-Matched Fill */}
                   <button
                     type="button"
@@ -1944,135 +2133,7 @@ export function DashboardContent({ month, isArchive = false }) {
                   </button>
 
                   {/* Minimal Calendar Popover (Shared seamlessly between both actions with month navigation) */}
-                  {isDatePickerOpen && (
-                    <div 
-                      className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-72 max-w-[94vw] bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-xl shadow-2xl p-3 z-50 text-left"
-                    >
-                      {/* Solid backdrop shield */}
-                      <div className="absolute inset-0 bg-[var(--color-bg-card)] rounded-xl -z-10" />
-
-                      {/* Minimal Month Header with Action Mode Label & Navigation Arrows */}
-                      <div className="flex flex-col gap-1.5 pb-2 mb-2 border-b border-[var(--color-border)]/60">
-                        <div className="flex items-center justify-between">
-                          <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-text-muted)]">
-                            {datePickerMode === 'whatsapp' ? '1 Click Copy Report' : 'Print Daily Report'}
-                          </span>
-                          <button
-                            type="button"
-                            onClick={() => setIsDatePickerOpen(false)}
-                            className="text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] p-0.5 rounded hover:bg-[var(--color-border)]/30 cursor-pointer leading-none"
-                            title="Close"
-                          >
-                            ✕
-                          </button>
-                        </div>
-
-                        {/* Minimal Month Switcher with Chevron Left / Right */}
-                        <div className="flex items-center justify-between px-0.5">
-                          <button
-                            type="button"
-                            disabled={!hasPrevMonth}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handlePrevMonth();
-                            }}
-                            className={cn(
-                              "p-1 rounded-md transition-all flex items-center justify-center",
-                              hasPrevMonth
-                                ? "hover:bg-[var(--color-border)]/40 text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)] active:scale-95 cursor-pointer"
-                                : "opacity-25 text-[var(--color-text-muted)] cursor-not-allowed pointer-events-none"
-                            )}
-                            title={hasPrevMonth ? "Previous Month" : "No earlier records"}
-                          >
-                            <ChevronLeft className="w-3.5 h-3.5" />
-                          </button>
-
-                          <span className="text-xs font-bold text-[var(--color-text-main)] tracking-wide select-none">
-                            {calendarMonthInfo.monthName} {calendarMonthInfo.year}
-                          </span>
-
-                          <button
-                            type="button"
-                            disabled={!hasNextMonth}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleNextMonth();
-                            }}
-                            className={cn(
-                              "p-1 rounded-md transition-all flex items-center justify-center",
-                              hasNextMonth
-                                ? "hover:bg-[var(--color-border)]/40 text-[var(--color-text-secondary)] hover:text-[var(--color-text-main)] active:scale-95 cursor-pointer"
-                                : "opacity-25 text-[var(--color-text-muted)] cursor-not-allowed pointer-events-none"
-                            )}
-                            title={hasNextMonth ? "Next Month" : "No later records"}
-                          >
-                            <ChevronRight className="w-3.5 h-3.5" />
-                          </button>
-                        </div>
-                      </div>
-
-                      {/* Days of Week Header */}
-                      <div className="grid grid-cols-7 gap-1 text-center mb-1.5">
-                        {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map((day, idx) => (
-                          <div
-                            key={day}
-                            className={cn(
-                              "text-[10px] font-semibold py-0.5",
-                              idx === 5 ? "text-amber-500" : "text-[var(--color-text-muted)]"
-                            )}
-                          >
-                            {day}
-                          </div>
-                        ))}
-                      </div>
-
-                      {/* Days Grid */}
-                      <div className="grid grid-cols-7 gap-1 text-center">
-                        {calendarMonthInfo.days.map((item, idx) => {
-                          if (!item.dayNum) {
-                            return <div key={`empty-${idx}`} className="h-7" />;
-                          }
-
-                          const isSelected = (selectedReportDate && selectedReportDate.startsWith(popoverMonth)
-                            ? selectedReportDate
-                            : calendarMonthInfo.latestDate) === item.dateStr;
-                          // If Friday OR data is missing, consider that day as holiday (orange and disabled)
-                          const isHoliday = item.isFriday || !item.hasData;
-
-                          return (
-                            <button
-                              key={item.dateStr}
-                              type="button"
-                              disabled={isHoliday}
-                              onClick={() => {
-                                if (isHoliday) return;
-                                if (datePickerMode === 'whatsapp') {
-                                  handleSelectWhatsAppReportDate(item.dateStr);
-                                } else {
-                                  handleSelectReportDate(item.dateStr);
-                                }
-                              }}
-                              className={cn(
-                                "h-7 rounded text-xs font-medium flex items-center justify-center transition-all select-none",
-                                isHoliday
-                                  ? "text-amber-500/70 bg-amber-500/10 cursor-not-allowed"
-                                  : isSelected
-                                    ? "bg-rose-500 text-white font-bold"
-                                    : "text-[var(--color-text-main)] hover:bg-rose-500/20 hover:text-rose-400 cursor-pointer"
-                              )}
-                              title={
-                                isHoliday
-                                  ? (item.isFriday ? 'Friday (Holiday)' : 'Missing Data (Holiday)')
-                                  : `${item.dayNum} ${calendarMonthInfo.monthName} — ${datePickerMode === 'whatsapp' ? 'Click to copy WhatsApp text' : 'Click to print PDF'}`
-                              }
-                            >
-                              {item.dayNum}
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  )}
+                  {isDatePickerOpen && renderDatePickerPopover()}
                 </div>
 
                 <h2 className="text-[20px] sm:text-[23px] md:text-[27px] font-bold tracking-normal uppercase bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-main)] via-[var(--color-text-secondary)] to-[var(--color-text-muted)] text-center leading-tight">
