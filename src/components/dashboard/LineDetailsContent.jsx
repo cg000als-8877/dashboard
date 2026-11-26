@@ -151,8 +151,8 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false, hideEm
   const summaryGap = density === 'compact' ? 'gap-2 md:gap-3' : density === 'detailed' ? 'gap-2 md:gap-4' : 'gap-2 md:gap-3';
   const summaryCellPadding = density === 'compact' ? 'p-2 md:p-2.5' : density === 'detailed' ? 'p-3 md:p-4' : 'p-2.5 md:p-3';
   const summaryValSize = density === 'compact' ? 'text-xs md:text-sm' : density === 'detailed' ? 'text-base md:text-xl' : 'text-sm md:text-base';
-  const tableThPadding = density === 'compact' ? 'px-2.5 py-1.5 text-[9px]' : density === 'detailed' ? 'px-4 py-3 text-xs' : 'px-3 py-2 text-[10px]';
-  const tableTdPadding = density === 'compact' ? 'px-2.5 py-1.5 text-xs' : density === 'detailed' ? 'px-4 py-3 text-sm' : 'px-3 py-2 text-xs';
+  const tableThPadding = density === 'compact' ? 'px-2.5 py-2 text-[10px] md:text-xs' : density === 'detailed' ? 'px-4 py-3 text-xs md:text-sm' : 'px-3 py-2.5 text-[10px] md:text-xs';
+  const tableTdPadding = density === 'compact' ? 'px-2.5 py-2 text-xs md:text-[13px]' : density === 'detailed' ? 'px-4 py-3 text-sm md:text-[15px]' : 'px-3 py-2.5 text-xs md:text-sm';
   const tableTotalPadding = density === 'compact' ? 'px-2.5 py-2.5 text-xs md:text-sm' : density === 'detailed' ? 'px-4 py-4 text-sm md:text-base' : 'px-3 py-3 text-xs md:text-sm';
 
   return (
@@ -571,7 +571,7 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false, hideEm
                 const isFriday = dateObj.getDay() === 5;
                 return (
                   <tr key={rowIndex} className="h-8 bg-[var(--color-surface)]">
-                    <td colSpan={totalColSpan} className="px-5 py-2 text-center text-[10px] tracking-widest uppercase text-[var(--color-text-muted)] font-medium">
+                    <td colSpan={totalColSpan} className="px-5 py-2.5 text-center text-xs md:text-[13px] tracking-widest uppercase text-[var(--color-text-muted)] font-medium">
                       {row.date} - {isFriday ? 'FRIDAY / HOLIDAY' : 'NO PRODUCTION / HOLIDAY'}
                     </td>
                   </tr>
@@ -612,11 +612,11 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false, hideEm
                         key={cellIndex} 
                         title={cellIndex === 4 && row.contact_op ? `Factory Manpower: ${row.factory_workers}, Contact OP: ${row.contact_op}, Total: ${row.worker_count}` : undefined}
                         className={`
-                          ${tableTdPadding} text-[var(--color-text-main)] font-light
+                          ${tableTdPadding} text-[var(--color-text-main)] font-normal
                           ${isTightCol ? 'w-[1%] whitespace-nowrap' : 'whitespace-nowrap md:whitespace-normal break-words'}
                           ${isNumber || isContactOpCell ? "text-center font-mono tracking-wide" : ""}
                           ${isNegative ? "!text-[var(--color-danger-text)] font-medium" : ""} 
-                          ${isDate ? "text-[var(--color-primary)] font-medium tracking-widest text-left uppercase text-[10px]" : ""}
+                          ${isDate ? "text-[var(--color-primary)] font-medium tracking-wider text-left uppercase" : ""}
                         `}
                       >
                         {isNumber && cellIndex > 3 ? Math.round(cell).toLocaleString() : cell || '-'}
