@@ -249,11 +249,18 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false, hideEm
             </div>
 
             {/* 2. Net Profit / Net Loss (Mobile: Row 1 Left, Desktop: Order 6) */}
-            <div className={`order-1 md:order-6 col-span-1 min-h-[72px] md:min-h-[76px] bg-[var(--color-bg-card)]/80 backdrop-blur-md md:bg-[var(--color-surface)]/80 ${summaryCellPadding} rounded-xl md:rounded-2xl border shadow-sm md:shadow-inner transition-transform hover:-translate-y-0.5 duration-200 flex flex-col justify-between ${
-              parseFloat(totalNetProfitLoss) >= 0 
-                ? 'border-emerald-500/30 md:border-emerald-500/20 bg-gradient-to-b from-emerald-500/10 via-[var(--color-bg-card)]/80 to-transparent' 
-                : 'border-rose-500/30 md:border-rose-500/20 bg-gradient-to-b from-rose-500/10 via-[var(--color-bg-card)]/80 to-transparent'
-            }`}>
+            <div 
+              style={{
+                backgroundImage: parseFloat(totalNetProfitLoss) >= 0
+                  ? 'radial-gradient(ellipse 90% 90% at top right, rgba(16, 185, 129, 0.22) 0%, rgba(16, 185, 129, 0.05) 45%, transparent 75%)'
+                  : 'radial-gradient(ellipse 90% 90% at top right, rgba(244, 63, 94, 0.25) 0%, rgba(244, 63, 94, 0.05) 45%, transparent 75%)'
+              }}
+              className={`order-1 md:order-6 col-span-1 min-h-[72px] md:min-h-[76px] bg-[var(--color-bg-card)]/80 backdrop-blur-md md:bg-[var(--color-surface)]/80 ${summaryCellPadding} rounded-xl md:rounded-2xl border shadow-sm md:shadow-inner transition-transform hover:-translate-y-0.5 duration-200 flex flex-col justify-between overflow-hidden relative ${
+                parseFloat(totalNetProfitLoss) >= 0 
+                  ? 'border-emerald-500/30 md:border-emerald-500/20' 
+                  : 'border-rose-500/30 md:border-rose-500/20'
+              }`}
+            >
               <div className="flex items-center gap-1.5 mb-0.5 md:mb-1">
                 {parseFloat(totalNetProfitLoss) >= 0 ? (
                   <TrendingUp className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
