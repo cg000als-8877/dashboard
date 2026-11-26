@@ -392,7 +392,9 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false, hideEm
                   <div className="grid grid-cols-2 gap-1.5 text-[10.5px]">
                     <div className="flex items-center justify-between p-1.5 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)]/30">
                       <span className="text-[9px] text-[var(--color-text-muted)] uppercase tracking-wider font-medium">Workers</span>
-                      <span className="font-mono font-bold text-[var(--color-text-main)]">{row.worker_count || '-'}</span>
+                      <span className="font-mono font-bold text-[var(--color-text-main)]">
+                        {row.contact_op ? `${row.worker_count} (${row.factory_workers}+${row.contact_op})` : (row.worker_count || '-')}
+                      </span>
                     </div>
                     <div className="flex items-center justify-between p-1.5 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)]/30">
                       <span className="text-[9px] text-[var(--color-text-muted)] uppercase tracking-wider font-medium">Per Head</span>
@@ -547,6 +549,7 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false, hideEm
                     return (
                       <td 
                         key={cellIndex} 
+                        title={cellIndex === 4 && row.contact_op ? `Factory Manpower: ${row.factory_workers}, Contact OP: ${row.contact_op}` : undefined}
                         className={`
                           ${tableTdPadding} text-[var(--color-text-main)] font-light
                           ${isTightCol ? 'w-[1%] whitespace-nowrap' : 'whitespace-nowrap md:whitespace-normal break-words'}
@@ -556,6 +559,11 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false, hideEm
                         `}
                       >
                         {isNumber && cellIndex > 3 ? Math.round(cell).toLocaleString() : cell || '-'}
+                        {cellIndex === 4 && row.contact_op ? (
+                          <span className="text-[9px] text-[var(--color-primary)] ml-1 font-bold inline-block" title={`Factory: ${row.factory_workers}, Contact OP: ${row.contact_op}`}>
+                            (+{row.contact_op})
+                          </span>
+                        ) : null}
                       </td>
                     );
                   })}
