@@ -16,14 +16,14 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false, hideEm
   const { dailyTrends, lines, rawEngine, loading, error } = useKpiData(month);
   const { density: globalDensity } = useDensity();
   const [expandedRows, setExpandedRows] = useState({});
-  const [density, setDensityState] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem('telemetry_density');
-      if (stored && ['compact', 'normal', 'detailed'].includes(stored)) return stored;
-      if (window.innerWidth < 768) return 'compact';
-    }
-    return 'compact';
-  });
+  // Always keep LIST view ('compact') ON by default for all telemetry pages
+  const [density, setDensityState] = useState('compact');
+
+  React.useEffect(() => {
+    try {
+      localStorage.removeItem('telemetry_density');
+    } catch (e) {}
+  }, []);
 
   const toggleRow = (idx) => {
     setExpandedRows(prev => ({
@@ -34,9 +34,6 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false, hideEm
 
   const setDensity = (newDensity) => {
     setDensityState(newDensity);
-    try {
-      localStorage.setItem('telemetry_density', newDensity);
-    } catch (e) {}
   };
 
   const lineIdStr = String(id || 'A').toLowerCase();
