@@ -5,6 +5,7 @@ import { createKpiEngine } from './kpiEngine';
 import { useMonth } from '@/components/providers/MonthProvider';
 
 const dataCache = {};
+const dataCacheTimestamps = {};
 const fetchPromises = {};
 
 export function useKpiData(monthOverride) {
@@ -19,15 +20,20 @@ export function useKpiData(monthOverride) {
   useEffect(() => {
     let isMounted = true;
 
-
     async function fetchData(retries = 2) {
+      const now = Date.now();
+      const lastFetch = dataCacheTimestamps[targetMonth] || 0;
+      const isLiveMonth = targetMonth === 'live' || targetMonth === '2026-11';
+      // Invalidate live data if older than 10 seconds; archive data if older than 60 seconds
+      const isFresh = (now - lastFetch) < (isLiveMonth ? 10000 : 60000);
+
       if (dataCache[targetMonth]) {
         if (isMounted) {
           setData(dataCache[targetMonth]);
           setLoading(false);
           setError(null);
         }
-        return;
+        if (isFresh) return;
       }
 
       setLoading(true);
@@ -36,7 +42,10 @@ export function useKpiData(monthOverride) {
           const controller = new AbortController();
           const timeoutId = setTimeout(() => controller.abort(), 30000); // 30s timeout
 
-          fetchPromises[targetMonth] = fetch(`/api/data?month=${targetMonth}`, { signal: controller.signal })
+          fetchPromises[targetMonth] = fetch(`/api/data?month=${targetMonth}&_t=${Date.now()}`, { 
+            signal: controller.signal,
+            cache: 'no-store'
+          })
             .then(async res => {
               clearTimeout(timeoutId);
               if (!res.ok) {
@@ -53,6 +62,7 @@ export function useKpiData(monthOverride) {
         }
         
         const rawData = await fetchPromises[targetMonth];
+        delete fetchPromises[targetMonth];
         
         if (!rawData.dailyProduction || !rawData.lines) {
           throw new Error('Invalid data format received from API');
@@ -68,6 +78,7 @@ export function useKpiData(monthOverride) {
         };
 
         dataCache[targetMonth] = processedData;
+        dataCacheTimestamps[targetMonth] = Date.now();
 
         if (isMounted) {
           setData(processedData);

@@ -127,6 +127,7 @@ export async function getLiveProductionData(forceRefresh = false) {
     };
 
     const colDate = findCol(h => h.includes('DATE'), 0);
+    const colLine = findCol(h => h === 'LINE' || h.includes('LINE'), 1);
     const colStyle = findCol(h => h.includes('STYLE'), 2);
     const colItem = findCol(h => h.includes('ITEM'), 3);
     const colManpower = findCol(h => h.includes('MAN POWER') || h.includes('MANPOWER'), 4);
@@ -138,6 +139,19 @@ export async function getLiveProductionData(forceRefresh = false) {
     const colCmPerDzn = findCol(h => h.includes('CM') && h.includes('DOZEN'), colContactOp !== -1 ? 10 : 9);
     const colTotalIncome = findCol(h => h.includes('TOTAL INCOME') || (h.includes('TOTAL') && h.includes('INCOME')), colContactOp !== -1 ? 11 : 10);
     const colNetProfit = findCol(h => h.includes('LOSS/PROFIT') || h.includes('PROFIT') || h.includes('LOSS'), colContactOp !== -1 ? 12 : 11);
+
+    // Identify any extra custom columns added to the sheet now or in the future
+    const knownColIndices = new Set([
+      colDate, colLine, colStyle, colItem, colManpower, colContactOp,
+      colPerHeadCost, colTotalCost, colProd, colProdDzn, colCmPerDzn,
+      colTotalIncome, colNetProfit
+    ]);
+    const customCols = [];
+    headerRow.forEach((h, idx) => {
+      if (h && !knownColIndices.has(idx) && idx > 0) {
+        customCols.push({ name: String(data[3][idx] || h).trim(), index: idx });
+      }
+    });
 
     for (let i = 4; i < data.length; i++) {
       const row = data[i];
@@ -177,6 +191,11 @@ export async function getLiveProductionData(forceRefresh = false) {
         continue;
       }
 
+      const extraFields = {};
+      customCols.forEach(cc => {
+        extraFields[cc.name] = row[cc.index] !== undefined && row[cc.index] !== null ? row[cc.index] : '';
+      });
+
       dailyProduction.push({
         date: dateStr,
         line_id: lineId,
@@ -185,6 +204,7 @@ export async function getLiveProductionData(forceRefresh = false) {
         worker_count: totalWorkers > 0 ? totalWorkers : rawManpower,
         factory_workers: rawManpower,
         contact_op: rawContactOp,
+        extra_columns: extraFields,
         per_head_cost: Number(row[colPerHeadCost]) || 0,
         total_cost: Number(row[colTotalCost]) || 0,
         production_qty: Number(row[colProd]) || 0,

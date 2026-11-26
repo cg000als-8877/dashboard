@@ -136,6 +136,17 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false, hideEm
         lineIdStr === 'd' ? "Men's Tshirt" : 'N/A'
       ));
 
+  // Contact OP & dynamic custom columns support
+  const hasContactOp = filteredLineData.some(d => d.contact_op !== undefined && d.contact_op !== null && Number(d.contact_op) > 0) || (lineIdStr === 'a' || lineIdStr === 'b');
+  const totalContactOp = activeRows.reduce((sum, d) => sum + (Number(d.contact_op) || 0), 0);
+  const avgFactoryWorkers = activeRows.length > 0 
+    ? Math.round(activeRows.reduce((sum, d) => sum + (d.factory_workers !== undefined ? d.factory_workers : (d.worker_count || 0)), 0) / activeRows.length) 
+    : 0;
+
+  const extraColNames = Array.from(new Set(
+    filteredLineData.flatMap(r => Object.keys(r.extra_columns || {}))
+  )).filter(Boolean);
+
   const summaryPadding = density === 'compact' ? 'p-3 md:p-4' : density === 'detailed' ? 'p-6 md:p-8' : 'p-4 md:p-6';
   const summaryGap = density === 'compact' ? 'gap-2 md:gap-3' : density === 'detailed' ? 'gap-2 md:gap-4' : 'gap-2 md:gap-3';
   const summaryCellPadding = density === 'compact' ? 'p-2 md:p-2.5' : density === 'detailed' ? 'p-3 md:p-4' : 'p-2.5 md:p-3';
@@ -340,6 +351,11 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false, hideEm
                   <span className="px-1.5 py-0.5 rounded-md bg-[var(--color-surface)] border border-[var(--color-border)] text-[9px] font-bold uppercase tracking-wider text-[var(--color-primary)] whitespace-nowrap">
                     {row.date}
                   </span>
+                  {row.contact_op !== undefined && Number(row.contact_op) > 0 ? (
+                    <span className="px-1.5 py-0.5 rounded-md bg-[var(--color-primary)]/15 border border-[var(--color-primary)]/30 text-[8.5px] font-bold text-[var(--color-primary)] whitespace-nowrap" title={`Contact OP: ${row.contact_op}`}>
+                      +{row.contact_op} OP
+                    </span>
+                  ) : null}
                   <span className="text-[11px] font-bold text-[var(--color-text-main)] truncate">
                     {row.style || row.item || `Line ${safeId}`}
                   </span>
@@ -389,25 +405,53 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false, hideEm
               {/* Collapsible Accordion Drawer */}
               {isExpanded && (
                 <div className="mt-2.5 pt-2.5 border-t border-[var(--color-border)]/50 space-y-1.5 animate-[fade-up_0.2s_ease-out]">
-                  <div className="grid grid-cols-2 gap-1.5 text-[10.5px]">
+                  <div className={`grid ${hasContactOp ? 'grid-cols-2 sm:grid-cols-3' : 'grid-cols-2'} gap-1.5 text-[10.5px]`}>
                     <div className="flex items-center justify-between p-1.5 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)]/30">
                       <span className="text-[9px] text-[var(--color-text-muted)] uppercase tracking-wider font-medium">Workers</span>
                       <span className="font-mono font-bold text-[var(--color-text-main)]">
-                        {row.contact_op ? `${row.worker_count} (${row.factory_workers}+${row.contact_op})` : (row.worker_count || '-')}
+                        {row.factory_workers !== undefined ? row.factory_workers : (row.worker_count || '-')}
                       </span>
                     </div>
+
+                    {hasContactOp && (
+                      <div className="flex items-center justify-between p-1.5 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)]/30">
+                        <span className="text-[9px] text-[var(--color-primary)] uppercase tracking-wider font-bold">Contact OP</span>
+                        <span className="font-mono font-bold text-[var(--color-primary)]">
+                          {row.contact_op !== undefined && Number(row.contact_op) > 0 ? row.contact_op : '-'}
+                        </span>
+                      </div>
+                    )}
+
+                    {hasContactOp && (
+                      <div className="flex items-center justify-between p-1.5 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)]/30">
+                        <span className="text-[9px] text-[var(--color-text-muted)] uppercase tracking-wider font-medium">Total Men</span>
+                        <span className="font-mono font-bold text-[var(--color-text-main)]">
+                          {row.worker_count || '-'}
+                        </span>
+                      </div>
+                    )}
+
                     <div className="flex items-center justify-between p-1.5 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)]/30">
                       <span className="text-[9px] text-[var(--color-text-muted)] uppercase tracking-wider font-medium">Per Head</span>
-                      <span className="font-mono font-bold text-[var(--color-text-main)]">{row.per_head_cost ? `${Math.round(row.per_head_cost).toLocaleString()}` : '-'}</span>
+                      <span className="font-mono font-bold text-[var(--color-text-main)]">{row.per_head_cost ? Math.round(row.per_head_cost).toLocaleString() : '-'}</span>
                     </div>
+
                     <div className="flex items-center justify-between p-1.5 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)]/30">
                       <span className="text-[9px] text-[var(--color-text-muted)] uppercase tracking-wider font-medium">Prod (DZN)</span>
                       <span className="font-mono font-bold text-[var(--color-text-main)]">{row.production_dzn ? Number(row.production_dzn).toFixed(1) : '-'}</span>
                     </div>
+
                     <div className="flex items-center justify-between p-1.5 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)]/30">
                       <span className="text-[9px] text-[var(--color-text-muted)] uppercase tracking-wider font-medium">CM / DZN</span>
-                      <span className="font-mono font-bold text-[var(--color-primary)]">{row.cm_per_dzn ? `${Math.round(row.cm_per_dzn).toLocaleString()}` : '-'}</span>
+                      <span className="font-mono font-bold text-[var(--color-primary)]">{row.cm_per_dzn ? Math.round(row.cm_per_dzn).toLocaleString() : '-'}</span>
                     </div>
+
+                    {extraColNames.map(colName => (
+                      <div key={colName} className="flex items-center justify-between p-1.5 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)]/30">
+                        <span className="text-[9px] text-[var(--color-text-muted)] uppercase tracking-wider font-medium truncate max-w-[80px]">{colName}</span>
+                        <span className="font-mono font-bold text-[var(--color-text-main)] truncate max-w-[80px]">{row.extra_columns?.[colName] ?? '-'}</span>
+                      </div>
+                    ))}
                   </div>
 
                   {(row.item || row.style) && (
@@ -490,13 +534,18 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false, hideEm
       </div>
 
       {/* ========================================================================= */}
-      {/* DESKTOP VIEW: Standard 12-Column Table (>= 768px)                         */}
+      {/* DESKTOP VIEW: Standard Table (>= 768px)                                   */}
       {/* ========================================================================= */}
       <div className="hidden md:block w-full max-h-[75vh] overflow-auto bg-[var(--color-bg-card)]/80 backdrop-blur-md rounded-3xl shadow-sm border border-[var(--color-border)] hide-scrollbar relative">
         <table className="w-full text-left border-collapse table-auto relative">
           <thead className="sticky top-0 z-20">
             <tr className="bg-[var(--color-bg-card)]/90 backdrop-blur-md shadow-sm border-b border-[var(--color-border)]">
-              {['Date', 'Line', 'Style', 'Item', 'Workers', 'Per Head Cost', 'Total Cost', 'Prod Qty', 'Prod DZN', 'CM/DZN', 'Total Income', 'Net Profit'].map((headerText, colIndex) => {
+              {[
+                'Date', 'Line', 'Style', 'Item', 'Workers',
+                ...(hasContactOp ? ['Contact OP'] : []),
+                ...extraColNames,
+                'Per Head Cost', 'Total Cost', 'Prod Qty', 'Prod DZN', 'CM/DZN', 'Total Income', 'Net Profit'
+              ].map((headerText, colIndex) => {
                 const isNumericCol = colIndex > 3;
                 const isTightCol = colIndex <= 3;
                 return (
@@ -516,12 +565,13 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false, hideEm
           </thead>
           <tbody className="divide-y divide-[var(--color-border)]">
             {filteredLineData.map((row, rowIndex) => {
+              const totalColSpan = 12 + (hasContactOp ? 1 : 0) + extraColNames.length;
               if (row.status === 'HOLIDAY') {
                 const dateObj = new Date(row.date);
                 const isFriday = dateObj.getDay() === 5;
                 return (
                   <tr key={rowIndex} className="h-8 bg-[var(--color-surface)]">
-                    <td colSpan={12} className="px-5 py-2 text-center text-[10px] tracking-widest uppercase text-[var(--color-text-muted)] font-medium">
+                    <td colSpan={totalColSpan} className="px-5 py-2 text-center text-[10px] tracking-widest uppercase text-[var(--color-text-muted)] font-medium">
                       {row.date} - {isFriday ? 'FRIDAY / HOLIDAY' : 'NO PRODUCTION / HOLIDAY'}
                     </td>
                   </tr>
@@ -529,10 +579,20 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false, hideEm
               }
 
               const cells = [
-                row.date, row.line_id, row.style, row.item,
-                row.worker_count, row.per_head_cost, row.total_cost,
-                row.production_qty, row.production_dzn, row.cm_per_dzn,
-                row.total_income, row.net_profit
+                row.date,
+                row.line_id,
+                row.style,
+                row.item,
+                row.factory_workers !== undefined ? row.factory_workers : row.worker_count,
+                ...(hasContactOp ? [row.contact_op !== undefined && Number(row.contact_op) > 0 ? row.contact_op : '-'] : []),
+                ...extraColNames.map(col => row.extra_columns?.[col] ?? '-'),
+                row.per_head_cost,
+                row.total_cost,
+                row.production_qty,
+                row.production_dzn,
+                row.cm_per_dzn,
+                row.total_income,
+                row.net_profit
               ];
 
               return (
@@ -545,25 +605,22 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false, hideEm
                     const isNumber = typeof cell === 'number';
                     const isDate = cellIndex === 0;
                     const isTightCol = cellIndex <= 3;
+                    const isContactOpCell = hasContactOp && cellIndex === 5;
                     
                     return (
                       <td 
                         key={cellIndex} 
-                        title={cellIndex === 4 && row.contact_op ? `Factory Manpower: ${row.factory_workers}, Contact OP: ${row.contact_op}` : undefined}
+                        title={cellIndex === 4 && row.contact_op ? `Factory Manpower: ${row.factory_workers}, Contact OP: ${row.contact_op}, Total: ${row.worker_count}` : undefined}
                         className={`
                           ${tableTdPadding} text-[var(--color-text-main)] font-light
                           ${isTightCol ? 'w-[1%] whitespace-nowrap' : 'whitespace-nowrap md:whitespace-normal break-words'}
-                          ${isNumber ? "text-center font-mono tracking-wide" : ""}
+                          ${isNumber || isContactOpCell ? "text-center font-mono tracking-wide" : ""}
+                          ${isContactOpCell && cell !== '-' ? "!text-[var(--color-primary)] font-bold" : ""}
                           ${isNegative ? "!text-[var(--color-danger-text)] font-medium" : ""} 
                           ${isDate ? "text-[var(--color-primary)] font-medium tracking-widest text-left uppercase text-[10px]" : ""}
                         `}
                       >
                         {isNumber && cellIndex > 3 ? Math.round(cell).toLocaleString() : cell || '-'}
-                        {cellIndex === 4 && row.contact_op ? (
-                          <span className="text-[9px] text-[var(--color-primary)] ml-1 font-bold inline-block" title={`Factory: ${row.factory_workers}, Contact OP: ${row.contact_op}`}>
-                            (+{row.contact_op})
-                          </span>
-                        ) : null}
                       </td>
                     );
                   })}
@@ -573,7 +630,19 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false, hideEm
             
             {/* Total Row */}
             <tr className="bg-[var(--color-surface)] font-bold">
-              <td colSpan={6} className={`${tableTotalPadding} text-right text-[var(--color-text-main)] tracking-wide`}>TOTAL</td>
+              <td colSpan={4} className={`${tableTotalPadding} text-right text-[var(--color-text-main)] tracking-wide`}>TOTAL</td>
+              <td className={`${tableTotalPadding} text-center font-mono text-[var(--color-text-main)] tracking-wide`} title="Average factory workers per day">
+                {avgFactoryWorkers || '-'}
+              </td>
+              {hasContactOp && (
+                <td className={`${tableTotalPadding} text-center font-mono text-[var(--color-primary)] font-bold tracking-wide`} title="Total Contact OP hired">
+                  {totalContactOp > 0 ? totalContactOp : '-'}
+                </td>
+              )}
+              {extraColNames.map((_, i) => (
+                <td key={i} className={`${tableTotalPadding} text-center font-mono`}>-</td>
+              ))}
+              <td className={`${tableTotalPadding} text-center font-mono text-[var(--color-text-muted)] tracking-wide`}>-</td>
               <td className={`${tableTotalPadding} text-center font-mono text-[var(--color-text-main)] tracking-wide`}>{Math.round(totalCost).toLocaleString()}</td>
               <td className={`${tableTotalPadding} text-center font-mono text-[var(--color-text-main)] tracking-wide`}>{Math.round(totalProduction).toLocaleString()}</td>
               <td colSpan={2}></td>
