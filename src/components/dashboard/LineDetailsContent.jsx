@@ -153,7 +153,7 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false, hideEm
   const summaryValSize = density === 'compact' ? 'text-xs md:text-sm' : density === 'detailed' ? 'text-base md:text-xl' : 'text-sm md:text-base';
   const tableThPadding = density === 'compact' ? 'px-2.5 py-1.5 text-[9px]' : density === 'detailed' ? 'px-4 py-3 text-xs' : 'px-3 py-2 text-[10px]';
   const tableTdPadding = density === 'compact' ? 'px-2.5 py-1.5 text-xs' : density === 'detailed' ? 'px-4 py-3 text-sm' : 'px-3 py-2 text-xs';
-  const tableTotalPadding = density === 'compact' ? 'px-2.5 py-2 text-xs' : density === 'detailed' ? 'px-4 py-3.5 text-sm' : 'px-3 py-2.5 text-xs';
+  const tableTotalPadding = density === 'compact' ? 'px-2.5 py-2.5 text-xs md:text-sm' : density === 'detailed' ? 'px-4 py-4 text-sm md:text-base' : 'px-3 py-3 text-xs md:text-sm';
 
   return (
     <div 
@@ -615,7 +615,6 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false, hideEm
                           ${tableTdPadding} text-[var(--color-text-main)] font-light
                           ${isTightCol ? 'w-[1%] whitespace-nowrap' : 'whitespace-nowrap md:whitespace-normal break-words'}
                           ${isNumber || isContactOpCell ? "text-center font-mono tracking-wide" : ""}
-                          ${isContactOpCell && cell !== '-' ? "!text-[var(--color-primary)] font-bold" : ""}
                           ${isNegative ? "!text-[var(--color-danger-text)] font-medium" : ""} 
                           ${isDate ? "text-[var(--color-primary)] font-medium tracking-widest text-left uppercase text-[10px]" : ""}
                         `}
@@ -628,27 +627,41 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false, hideEm
               )
             })}
             
-            {/* Total Row */}
-            <tr className="bg-[var(--color-surface)] font-bold">
-              <td colSpan={4} className={`${tableTotalPadding} text-right text-[var(--color-text-main)] tracking-wide`}>TOTAL</td>
-              <td className={`${tableTotalPadding} text-center font-mono text-[var(--color-text-main)] tracking-wide`} title="Average factory workers per day">
+            {/* Total Row - Elevated and highlighted for all lines with prominent typography */}
+            <tr className="bg-[var(--color-surface)]/95 border-t-2 border-[var(--color-primary)]/40 shadow-lg font-bold relative z-10 backdrop-blur-md">
+              <td colSpan={4} className={`${tableTotalPadding} text-right tracking-wide`}>
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[var(--color-primary)]/15 border border-[var(--color-primary)]/30 text-[var(--color-primary)] text-xs md:text-sm font-black tracking-widest uppercase shadow-xs">
+                  TOTAL
+                </span>
+              </td>
+              <td className={`${tableTotalPadding} text-center font-mono text-xs md:text-sm font-bold text-[var(--color-text-main)] tracking-wide`} title="Average factory workers per day">
                 {avgFactoryWorkers || '-'}
               </td>
               {hasContactOp && (
-                <td className={`${tableTotalPadding} text-center font-mono text-[var(--color-primary)] font-bold tracking-wide`} title="Total Contact OP hired">
+                <td className={`${tableTotalPadding} text-center font-mono text-xs md:text-sm font-bold text-[var(--color-text-main)] tracking-wide`} title="Total Contact OP hired">
                   {totalContactOp > 0 ? totalContactOp : '-'}
                 </td>
               )}
               {extraColNames.map((_, i) => (
-                <td key={i} className={`${tableTotalPadding} text-center font-mono`}>-</td>
+                <td key={i} className={`${tableTotalPadding} text-center font-mono text-xs md:text-sm text-[var(--color-text-muted)]`}>-</td>
               ))}
-              <td className={`${tableTotalPadding} text-center font-mono text-[var(--color-text-muted)] tracking-wide`}>-</td>
-              <td className={`${tableTotalPadding} text-center font-mono text-[var(--color-text-main)] tracking-wide`}>{Math.round(totalCost).toLocaleString()}</td>
-              <td className={`${tableTotalPadding} text-center font-mono text-[var(--color-text-main)] tracking-wide`}>{Math.round(totalProduction).toLocaleString()}</td>
+              <td className={`${tableTotalPadding} text-center font-mono text-xs md:text-sm text-[var(--color-text-muted)] tracking-wide`}>-</td>
+              <td className={`${tableTotalPadding} text-center font-mono text-xs md:text-sm lg:text-[15px] font-extrabold text-[var(--color-text-main)] tracking-wide`}>
+                {Math.round(totalCost).toLocaleString()}
+              </td>
+              <td className={`${tableTotalPadding} text-center font-mono text-xs md:text-sm lg:text-[15px] font-extrabold text-[var(--color-text-main)] tracking-wide`}>
+                {Math.round(totalProduction).toLocaleString()}
+              </td>
               <td colSpan={2}></td>
-              <td className={`${tableTotalPadding} text-center font-mono text-[var(--color-text-main)] tracking-wide`}>{Math.round(totalIncome).toLocaleString()}</td>
-              <td className={`${tableTotalPadding} text-center font-mono tracking-wide ${totalNetProfitLoss >= 0 ? "text-[var(--color-success-text)] bg-[var(--color-success-glow)] [box-shadow:inset_0_0_10px_var(--color-success-glow)]" : "text-[var(--color-danger-text)] bg-[var(--color-danger-glow)] [box-shadow:inset_0_0_10px_var(--color-danger-glow)]"}`}>
-                {Math.round(totalNetProfitLoss).toLocaleString()}
+              <td className={`${tableTotalPadding} text-center font-mono text-xs md:text-sm lg:text-[15px] font-black text-[var(--color-primary)] tracking-wide drop-shadow-xs`}>
+                {Math.round(totalIncome).toLocaleString()}
+              </td>
+              <td className={`${tableTotalPadding} text-center font-mono text-xs md:text-sm lg:text-[15px] font-black tracking-tight ${
+                totalNetProfitLoss >= 0 
+                  ? "text-[var(--color-success-text)] bg-[var(--color-success-glow)] [box-shadow:inset_0_0_12px_var(--color-success-glow)]" 
+                  : "text-[var(--color-danger-text)] bg-[var(--color-danger-glow)] [box-shadow:inset_0_0_12px_var(--color-danger-glow)]"
+              }`}>
+                {totalNetProfitLoss >= 0 ? '+' : ''}{Math.round(totalNetProfitLoss).toLocaleString()}
               </td>
             </tr>
           </tbody>
