@@ -11,7 +11,7 @@ export const VISUAL_THEMES = [
   { id: 'verdant', name: 'Verdant', color: '#80B918' },
   { id: 'lime-ivory', name: 'Lime Ivory', color: '#9BE52C' },
   { id: 'jungle-nebula', name: 'Jungle Nebula', color: '#57C27A' },
-  { id: 'ocean-dark', name: 'Ocean Dark', color: '#4F8CFF' },
+  { id: 'bw', name: 'B&W', color: '#FFFFFF' },
   { id: 'terminal', name: 'Terminal (Night Shift)', color: '#22C55E' },
   { id: 'gen-z', name: 'Gen-Z Pink', color: '#FF007F' },
 ];
@@ -74,11 +74,15 @@ export function ThemeProvider({ children }) {
     }
 
     // Persisted preferences (if user explicitly chooses something else later)
-    const storedVisualTheme = localStorage.getItem('app-visual-theme');
+    let storedVisualTheme = localStorage.getItem('app-visual-theme');
+    if (storedVisualTheme === 'ocean-dark') {
+      storedVisualTheme = 'bw';
+      localStorage.setItem('app-visual-theme', 'bw');
+    }
     const storedMode = localStorage.getItem('app-mode');
     const storedBgEffect = localStorage.getItem('app-bg-effect');
 
-    if (storedVisualTheme && VISUAL_THEMES.some(t => t.id === storedVisualTheme)) {
+    if (storedVisualTheme && (VISUAL_THEMES.some(t => t.id === storedVisualTheme) || storedVisualTheme === 'bw')) {
       setVisualThemeState(storedVisualTheme);
     } else {
       setVisualThemeState('jungle-nebula');

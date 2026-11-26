@@ -67,6 +67,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   var migrated = localStorage.getItem('app-jungle-starlight-dark-v1');
                   var m = localStorage.getItem('app-mode');
                   var t = localStorage.getItem('app-visual-theme');
+                  if (t === 'ocean-dark') {
+                    t = 'bw';
+                    localStorage.setItem('app-visual-theme', 'bw');
+                  }
                   var b = localStorage.getItem('app-bg-effect');
                   if (!migrated) {
                     localStorage.setItem('app-jungle-starlight-dark-v1', 'true');

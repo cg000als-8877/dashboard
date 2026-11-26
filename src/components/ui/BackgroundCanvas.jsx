@@ -7,6 +7,7 @@ export const BackgroundCanvas = memo(function BackgroundCanvas() {
   const { bgEffect, mode, visualTheme } = useTheme();
   const containerRef = useRef(null);
   const isAbstract = visualTheme === 'abstract';
+  const isBW = visualTheme === 'bw' || visualTheme === 'ocean-dark';
 
   useEffect(() => {
     const isEmberAurora = visualTheme === 'ember-tide' && (bgEffect === 'aurora' || bgEffect === 'ember-tide-aurora');
@@ -72,7 +73,7 @@ export const BackgroundCanvas = memo(function BackgroundCanvas() {
       style={{
         '--spotlight-x': '50vw',
         '--spotlight-y': '30vh',
-        filter: isAbstract ? 'saturate(0)' : undefined,
+        filter: (isAbstract || isBW) ? 'saturate(0)' : undefined,
       }}
     >
       {/* 0. Ember Tide Aurora — Coral Fire × Arctic Cyan Layer */}
@@ -667,9 +668,13 @@ export const BackgroundCanvas = memo(function BackgroundCanvas() {
           <div
             className="absolute inset-0 pointer-events-none"
             style={{
-              background: isDark
-                ? `radial-gradient(ellipse at 50% 30%, color-mix(in srgb, var(--color-primary) 18%, #1E1B4B) 0%, transparent 75%)`
-                : `radial-gradient(ellipse at 50% 30%, color-mix(in srgb, var(--color-primary) 12%, #E0E7FF) 0%, transparent 75%)`,
+              background: isBW
+                ? (isDark
+                    ? `radial-gradient(ellipse at 50% 30%, rgba(255, 255, 255, 0.05) 0%, transparent 75%)`
+                    : `radial-gradient(ellipse at 50% 30%, rgba(0, 0, 0, 0.03) 0%, transparent 75%)`)
+                : (isDark
+                    ? `radial-gradient(ellipse at 50% 30%, color-mix(in srgb, var(--color-primary) 18%, #1E1B4B) 0%, transparent 75%)`
+                    : `radial-gradient(ellipse at 50% 30%, color-mix(in srgb, var(--color-primary) 12%, #E0E7FF) 0%, transparent 75%)`),
               opacity: 0.8,
             }}
           />
@@ -686,9 +691,13 @@ export const BackgroundCanvas = memo(function BackgroundCanvas() {
           <div
             className="absolute inset-0 pointer-events-none"
             style={{
-              background: isDark
-                ? `radial-gradient(ellipse at 50% 30%, color-mix(in srgb, var(--color-primary) 22%, #1E1B4B) 0%, transparent 75%)`
-                : `radial-gradient(ellipse at 50% 30%, color-mix(in srgb, var(--color-primary) 15%, #E0E7FF) 0%, transparent 75%)`,
+              background: isBW
+                ? (isDark
+                    ? `radial-gradient(ellipse at 50% 30%, rgba(255, 255, 255, 0.07) 0%, transparent 75%)`
+                    : `radial-gradient(ellipse at 50% 30%, rgba(0, 0, 0, 0.04) 0%, transparent 75%)`)
+                : (isDark
+                    ? `radial-gradient(ellipse at 50% 30%, color-mix(in srgb, var(--color-primary) 22%, #1E1B4B) 0%, transparent 75%)`
+                    : `radial-gradient(ellipse at 50% 30%, color-mix(in srgb, var(--color-primary) 15%, #E0E7FF) 0%, transparent 75%)`),
               opacity: 0.85,
             }}
           />

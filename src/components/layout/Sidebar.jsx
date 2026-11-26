@@ -60,7 +60,7 @@ const THEME_OPTIONS = [
   { id: 'verdant', label: 'Verdant', full: 'Verdant' },
   { id: 'lime-ivory', label: 'Lime', full: 'Lime Ivory' },
   { id: 'jungle-nebula', label: 'Jungle', full: 'Jungle Nebula' },
-  { id: 'ocean-dark', label: 'Ocean', full: 'Ocean Dark' },
+  { id: 'bw', label: 'B&W', full: 'B&W (Monochrome)' },
   { id: 'terminal', label: 'Terminal', full: 'Terminal (Night Shift)' },
   { id: 'gen-z', label: 'Gen-Z', full: 'Gen-Z Pink' },
 ];

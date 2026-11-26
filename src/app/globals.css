@@ -1015,85 +1015,205 @@ html[data-theme="gen-z"][data-mode="light"] {
 }
 
 /* ═══════════════════════════════════════════
-   OCEAN DARK — Original Classic Blue (Default)
-   Primary:  #4F8CFF  (Electric Blue)
-   Cost:     #F5A623  (Amber Gold)
-   Profit:   #2ECC71  (Emerald Green)
-   Danger:   #FF5A5F  (Coral Red)
-   Bg Dark:  #0B0F17  (Deep Blue-Charcoal)
+   B&W (BLACK & WHITE / MONOCHROME) — Deep Contrast Minimalist
+   - Replaces Ocean Dark
+   - Pure black & white / grayscale in Day and Night modes
+   - Strictly two semantic colors:
+     • Loss: Deeper Blood Red
+     • Profit: Deeper Green
+     • Zero other colors (no blues, ambers, purples, cyans)
+   - Default Background: Starlight
 ═══════════════════════════════════════════ */
+html[data-theme="bw"],
 html[data-theme="ocean-dark"] {
-  /* CTA Action Buttons (Optimized Contrast for Day & Night Modes) */
-  --color-cta-daily-bg: #2563EB;
-  --color-cta-daily-text: #FFFFFF;
-  --color-cta-daily-glow: rgba(37, 99, 235, 0.35);
-  --color-cta-wa-bg: #38BDF8;
-  --color-cta-wa-text: #041624;
-  --color-cta-wa-glow: rgba(56, 189, 248, 0.35);
-  --color-on-primary: #FFFFFF;
-  --color-on-secondary: #041624;
-  --color-primary: #4F8CFF;
-  --color-primary-glow: rgba(79, 140, 255, 0.4);
-  --color-primary-glow-hover: rgba(79, 140, 255, 0.6);
-  --color-success: #2ECC71;
-  --color-success-text: #34D399;
-  --color-success-glow: rgba(46, 204, 113, 0.4);
-  --color-danger: #FF5A5F;
-  --color-danger-text: #F87171;
-  --color-danger-glow: rgba(231, 76, 60, 0.4);
-  --color-warning: #F5A623;
-  --color-warning-glow: rgba(245, 166, 35, 0.4);
-}
-html[data-theme="ocean-dark"][data-mode="dark"] {
-  /* CTA Action Buttons (Optimized Contrast for Day & Night Modes) */
-  --color-cta-daily-bg: #2563EB;
-  --color-cta-daily-text: #FFFFFF;
-  --color-cta-daily-glow: rgba(37, 99, 235, 0.35);
-  --color-cta-wa-bg: #38BDF8;
-  --color-cta-wa-text: #041624;
-  --color-cta-wa-glow: rgba(56, 189, 248, 0.35);
-  --color-on-primary: #FFFFFF;
-  --color-on-secondary: #041624;
-  --color-bg-main: #0B0F17;
-  --color-bg-card: #131A24;
-  --color-bg-card-hover: #18212E;
-  --color-border: rgba(255, 255, 255, 0.08);
-  --color-text-main: #ECEEF2;
-  --color-text-secondary: #9BA7B4;
-  --color-text-muted: #6D7684;
-  --color-surface: rgba(0, 0, 0, 0.25);
-  --color-surface-hover: rgba(0, 0, 0, 0.4);
-  --shadow-color: rgba(0, 0, 0, 0.5);
-}
-html[data-theme="ocean-dark"][data-mode="light"] {
-  /* CTA Action Buttons (Optimized Contrast for Day & Night Modes) */
-  --color-cta-daily-bg: #1D4ED8;
-  --color-cta-daily-text: #FFFFFF;
-  --color-cta-daily-glow: rgba(29, 78, 216, 0.25);
-  --color-cta-wa-bg: #0F766E;
+  /* CTA Action Buttons (Crisp high-contrast monochrome) */
+  --color-cta-daily-bg: #FFFFFF;
+  --color-cta-daily-text: #000000;
+  --color-cta-daily-glow: rgba(255, 255, 255, 0.20);
+  --color-cta-wa-bg: #27272A;
   --color-cta-wa-text: #FFFFFF;
-  --color-cta-wa-glow: rgba(15, 118, 110, 0.25);
-  --color-on-primary: #FFFFFF;
+  --color-cta-wa-glow: rgba(255, 255, 255, 0.08);
+
+  --color-on-primary: #000000;
   --color-on-secondary: #FFFFFF;
-  --color-bg-main: #F1F5F9;
+
+  --color-primary: #FFFFFF;
+  --color-primary-bright: #F4F4F5;
+  --color-primary-soft: #18181B;
+  --color-primary-glow: rgba(255, 255, 255, 0.16);
+  --color-primary-glow-hover: rgba(255, 255, 255, 0.26);
+
+  --color-secondary: #A1A1AA;
+  --color-secondary-bright: #D4D4D8;
+  --color-secondary-soft: #27272A;
+
+  /* PROFIT: Deep Emerald / Forest Green */
+  --color-success: #16A34A;
+  --color-success-text: #22C55E;
+  --color-success-glow: rgba(22, 163, 74, 0.26);
+  --color-on-success: #000000;
+
+  /* LOSS: Deep Blood Red */
+  --color-danger: #DC2626;
+  --color-danger-text: #EF4444;
+  --color-danger-glow: rgba(220, 38, 38, 0.28);
+  --color-on-danger: #FFFFFF;
+
+  /* Neutral warning/info - strictly monochrome silver/slate */
+  --color-warning: #A1A1AA;
+  --color-warning-text: #D4D4D8;
+  --color-warning-glow: rgba(161, 161, 170, 0.15);
+  --color-on-warning: #000000;
+
+  --color-info: #A1A1AA;
+  --color-info-text: #D4D4D8;
+  --color-on-info: #000000;
+}
+
+html[data-theme="bw"][data-mode="dark"],
+html[data-theme="ocean-dark"][data-mode="dark"] {
+  --color-cta-daily-bg: #FFFFFF;
+  --color-cta-daily-text: #000000;
+  --color-cta-daily-glow: rgba(255, 255, 255, 0.22);
+  --color-cta-wa-bg: #27272A;
+  --color-cta-wa-text: #FFFFFF;
+  --color-cta-wa-glow: rgba(255, 255, 255, 0.08);
+
+  --color-on-primary: #000000;
+  --color-on-secondary: #FFFFFF;
+
+  /* Surfaces: Pure deep obsidian and charcoal */
+  --color-bg-main: #050505;
+  --color-bg-card: #0F0F11;
+  --color-bg-card-hover: #17171A;
+  --color-bg-elevated: #1F1F23;
+
+  --color-surface: rgba(255, 255, 255, 0.035);
+  --color-surface-hover: rgba(255, 255, 255, 0.07);
+
+  --color-border: rgba(255, 255, 255, 0.09);
+  --color-border-strong: rgba(255, 255, 255, 0.18);
+
+  /* Text: High contrast clean monochrome */
+  --color-text-main: #FFFFFF;
+  --color-text-secondary: #D4D4D8;
+  --color-text-muted: #8E8E93;
+  --color-text-subtle: #52525B;
+
+  --color-primary: #FFFFFF;
+  --color-primary-bright: #F4F4F5;
+  --color-primary-soft: #18181B;
+  --color-primary-glow: rgba(255, 255, 255, 0.18);
+  --color-primary-glow-hover: rgba(255, 255, 255, 0.28);
+
+  --color-secondary: #A1A1AA;
+  --color-secondary-bright: #D4D4D8;
+  --color-secondary-soft: #27272A;
+
+  /* PROFIT: Deep Rich Green */
+  --color-success: #16A34A;
+  --color-success-text: #22C55E;
+  --color-success-glow: rgba(22, 163, 74, 0.26);
+  --color-on-success: #000000;
+
+  /* LOSS: Deep Blood Red */
+  --color-danger: #DC2626;
+  --color-danger-text: #EF4444;
+  --color-danger-glow: rgba(220, 38, 38, 0.28);
+  --color-on-danger: #FFFFFF;
+
+  --color-warning: #A1A1AA;
+  --color-warning-text: #D4D4D8;
+  --color-warning-glow: rgba(161, 161, 170, 0.15);
+
+  --color-info: #A1A1AA;
+  --color-info-text: #D4D4D8;
+
+  --shadow-color: rgba(0, 0, 0, 0.85);
+}
+
+html[data-theme="bw"][data-mode="light"],
+html[data-theme="ocean-dark"][data-mode="light"] {
+  --color-cta-daily-bg: #000000;
+  --color-cta-daily-text: #FFFFFF;
+  --color-cta-daily-glow: rgba(0, 0, 0, 0.22);
+  --color-cta-wa-bg: #E4E4E7;
+  --color-cta-wa-text: #09090B;
+  --color-cta-wa-glow: rgba(0, 0, 0, 0.08);
+
+  --color-on-primary: #FFFFFF;
+  --color-on-secondary: #09090B;
+
+  /* Surfaces: Crisp stark light paper & white cards */
+  --color-bg-main: #F6F7F9;
   --color-bg-card: #FFFFFF;
-  --color-bg-card-hover: #F8FAFC;
-  --color-border: rgba(29, 78, 216, 0.16);
-  --color-text-main: #0B1120;
-  --color-text-secondary: #1E293B;
-  --color-text-muted: #334155;
-  --color-text-subtle: #475569;
-  --color-surface: rgba(29, 78, 216, 0.04);
-  --color-surface-hover: rgba(29, 78, 216, 0.08);
-  --shadow-color: rgba(29, 78, 216, 0.12);
-  --color-primary: #1D4ED8;
-  --color-primary-glow: rgba(29, 78, 216, 0.16);
+  --color-bg-card-hover: #ECEEF2;
+  --color-bg-elevated: #F4F4F6;
+
+  --color-surface: rgba(0, 0, 0, 0.035);
+  --color-surface-hover: rgba(0, 0, 0, 0.07);
+
+  --color-border: rgba(0, 0, 0, 0.11);
+  --color-border-strong: rgba(0, 0, 0, 0.24);
+
+  /* Text: Deep crisp black and slate */
+  --color-text-main: #000000;
+  --color-text-secondary: #27272A;
+  --color-text-muted: #52525B;
+  --color-text-subtle: #71717A;
+
+  --color-primary: #000000;
+  --color-primary-bright: #18181B;
+  --color-primary-soft: #E4E4E7;
+  --color-primary-glow: rgba(0, 0, 0, 0.14);
+  --color-primary-glow-hover: rgba(0, 0, 0, 0.22);
+
+  --color-secondary: #52525B;
+  --color-secondary-bright: #27272A;
+  --color-secondary-soft: #F4F4F5;
+
+  /* PROFIT: Deep Rich Green (Day Mode: deeper emerald/forest for crisp contrast on light bg) */
   --color-success: #047857;
   --color-success-text: #065F46;
-  --color-danger: #B91C1C;
-  --color-danger-text: #991B1B;
-  --color-warning: #B45309;
-  --color-warning-text: #92400E;
+  --color-success-glow: rgba(4, 120, 87, 0.18);
+  --color-on-success: #FFFFFF;
+
+  /* LOSS: Deep Blood Red (Day Mode: deeper blood crimson for crisp contrast on light bg) */
+  --color-danger: #991B1B;
+  --color-danger-text: #7F1D1D;
+  --color-danger-glow: rgba(153, 27, 27, 0.20);
+  --color-on-danger: #FFFFFF;
+
+  --color-warning: #52525B;
+  --color-warning-text: #27272A;
+  --color-warning-glow: rgba(82, 82, 91, 0.12);
+
+  --color-info: #52525B;
+  --color-info-text: #27272A;
+
+  --shadow-color: rgba(0, 0, 0, 0.10);
+}
+
+/* B&W Theme: Enforce strict monochrome purity - neutralize unwanted colors */
+html[data-theme="bw"],
+html[data-theme="ocean-dark"] {
+  /* Neutralize colored badges and text that might otherwise show amber, blue, cyan, etc. */
+  .text-amber-400,
+  .text-amber-500,
+  .text-amber-600,
+  .text-yellow-400,
+  .text-yellow-500,
+  .text-blue-400,
+  .text-blue-500,
+  .text-blue-600,
+  .text-sky-400,
+  .text-sky-500,
+  .text-cyan-400,
+  .text-cyan-500,
+  .text-purple-400,
+  .text-purple-500 {
+    color: var(--color-text-secondary) !important;
+  }
 }
 
 
