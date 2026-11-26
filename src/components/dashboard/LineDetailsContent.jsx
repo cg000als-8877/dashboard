@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, ChevronRight, ChevronDown, ChevronUp, TrendingUp, TrendingDown, Layers, Clock } from 'lucide-react';
+import { ArrowLeft, ChevronRight, ChevronDown, ChevronUp, TrendingUp, TrendingDown, Layers, Clock, Users, Calendar } from 'lucide-react';
 import { useKpiData } from '@/utils/useKpiData';
 import { useDensity } from '@/components/providers/DensityProvider';
 import { DensitySwitcher } from '@/components/ui/DensitySwitcher';
@@ -541,139 +541,402 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false, hideEm
       </div>
 
       {/* ========================================================================= */}
-      {/* DESKTOP VIEW: Standard Table (>= 768px)                                   */}
+      {/* DESKTOP VIEW: Toggle between Table (List) and Daily Cards (Cards) (>= 768px) */}
       {/* ========================================================================= */}
-      <div className="hidden md:block w-full max-h-[75vh] overflow-auto bg-[var(--color-bg-card)]/80 backdrop-blur-md rounded-3xl shadow-sm border border-[var(--color-border)] hide-scrollbar relative">
-        <table className="w-full text-left border-collapse table-auto relative">
-          <thead className="sticky top-0 z-20">
-            <tr className="bg-[var(--color-bg-card)]/90 backdrop-blur-md shadow-sm border-b border-[var(--color-border)]">
-              {[
-                'Date', 'Line', 'Style', 'Item', 'Workers',
-                ...(hasContactOp ? ['Contact OP'] : []),
-                ...extraColNames,
-                'Per Head Cost', 'Total Cost', 'Prod Qty', 'Prod DZN', 'CM/DZN', 'Total Income', 'Net Profit'
-              ].map((headerText, colIndex) => {
-                const isNumericCol = colIndex > 3;
-                const isTightCol = colIndex <= 3;
-                return (
-                  <th 
-                    key={colIndex} 
-                    className={`
-                      ${tableThPadding} uppercase tracking-widest font-semibold md:font-bold text-[var(--color-primary)] leading-tight
-                      ${isNumericCol ? 'text-center' : 'text-left'}
-                      ${isTightCol ? 'w-[1%] whitespace-nowrap' : 'whitespace-nowrap md:whitespace-normal break-words'}
-                    `}
-                  >
-                    {headerText}
-                  </th>
-                );
-              })}
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-[var(--color-border)]">
+      {density === 'normal' ? (
+        /* PC CARDS VIEW (When user selects "CARDS" in switcher) */
+        <div className="hidden md:block space-y-6 animate-[fade-up_0.3s_ease-out]">
+          <div className="flex items-center justify-between px-1 text-xs text-[var(--color-text-muted)] font-medium">
+            <span className="font-bold uppercase tracking-wider text-[var(--color-text-secondary)]">
+              Daily Telemetry Cards ({filteredLineData.length} Days)
+            </span>
+            <span className="text-[11px] text-[var(--color-text-muted)]">
+              Showing detailed single-day telemetry cards for Line {safeId}
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {filteredLineData.map((row, rowIndex) => {
-              const totalColSpan = 12 + (hasContactOp ? 1 : 0) + extraColNames.length;
               if (row.status === 'HOLIDAY') {
-                const dateObj = new Date(row.date);
-                const isFriday = dateObj.getDay() === 5;
+                const dateObj = new Date(row.date + 'T00:00:00');
+                const dayName = isNaN(dateObj.getTime()) ? '' : dateObj.toLocaleDateString('en-US', { weekday: 'short' });
+                const isFriday = !isNaN(dateObj.getTime()) && dateObj.getDay() === 5;
                 return (
-                  <tr key={rowIndex} className="h-8 bg-[var(--color-surface)]">
-                    <td colSpan={totalColSpan} className="px-5 py-2.5 text-center text-xs md:text-[13px] tracking-widest uppercase text-[var(--color-text-muted)] font-medium">
-                      {row.date} - {isFriday ? 'FRIDAY / HOLIDAY' : 'NO PRODUCTION / HOLIDAY'}
-                    </td>
-                  </tr>
+                  <div 
+                    key={rowIndex} 
+                    className="rounded-2xl bg-[var(--color-surface)]/40 border border-dashed border-[var(--color-border)]/70 p-4 flex flex-col justify-between min-h-[240px] text-center"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="px-2 py-0.5 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)] text-xs font-bold font-mono text-[var(--color-text-muted)]">
+                        {row.date}
+                      </span>
+                      <span className="text-[11px] font-bold font-mono text-[var(--color-text-muted)]">
+                        {dayName}
+                      </span>
+                    </div>
+                    <div className="my-auto py-4">
+                      <Clock className="w-7 h-7 text-[var(--color-text-muted)]/40 mx-auto mb-2" />
+                      <p className="text-xs font-bold uppercase tracking-wider text-[var(--color-text-muted)]">
+                        {isFriday ? 'Friday / Factory Holiday' : 'No Production / Holiday'}
+                      </p>
+                      <p className="text-[11px] text-[var(--color-text-muted)]/70 mt-1">
+                        Factory closed • 0 output & expense
+                      </p>
+                    </div>
+                    <div className="pt-2 border-t border-[var(--color-border)]/30 text-[10px] uppercase tracking-wider font-bold text-[var(--color-text-muted)]">
+                      Off Day
+                    </div>
+                  </div>
                 );
               }
 
-              const cells = [
-                row.date,
-                row.line_id,
-                row.style,
-                row.item,
-                row.factory_workers !== undefined ? row.factory_workers : row.worker_count,
-                ...(hasContactOp ? [row.contact_op !== undefined && Number(row.contact_op) > 0 ? row.contact_op : '-'] : []),
-                ...extraColNames.map(col => row.extra_columns?.[col] ?? '-'),
-                row.per_head_cost,
-                row.total_cost,
-                row.production_qty,
-                row.production_dzn,
-                row.cm_per_dzn,
-                row.total_income,
-                row.net_profit
-              ];
+              const netProfit = row.net_profit || 0;
+              const isProfit = netProfit >= 0;
+              const dateObj = new Date(row.date + 'T00:00:00');
+              const dayName = isNaN(dateObj.getTime()) ? '' : dateObj.toLocaleDateString('en-US', { weekday: 'short' });
+              const hasContactInRow = row.contact_op !== undefined && Number(row.contact_op) > 0;
 
               return (
-                <tr 
-                  key={rowIndex} 
-                  className={`hover:bg-[var(--color-surface-hover)] transition-colors group`}
+                <div 
+                  key={rowIndex}
+                  style={{
+                    backgroundImage: isProfit
+                      ? 'radial-gradient(ellipse 90% 90% at top right, rgba(16, 185, 129, 0.14) 0%, rgba(16, 185, 129, 0.03) 45%, transparent 75%)'
+                      : 'radial-gradient(ellipse 90% 90% at top right, rgba(244, 63, 94, 0.16) 0%, rgba(244, 63, 94, 0.03) 45%, transparent 75%)'
+                  }}
+                  className={`bg-[var(--color-bg-card)]/85 backdrop-blur-md rounded-2xl border p-4 shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-0.5 flex flex-col justify-between relative overflow-hidden group min-h-[250px] ${
+                    isProfit 
+                      ? 'border-[var(--color-border)] hover:border-emerald-500/40' 
+                      : 'border-[var(--color-border)] hover:border-rose-500/40'
+                  }`}
                 >
-                  {cells.map((cell, cellIndex) => {
-                    const isNegative = String(cell).startsWith('-');
-                    const isNumber = typeof cell === 'number';
-                    const isDate = cellIndex === 0;
-                    const isTightCol = cellIndex <= 3;
-                    const isContactOpCell = hasContactOp && cellIndex === 5;
-                    
-                    return (
-                      <td 
-                        key={cellIndex} 
-                        title={cellIndex === 4 && row.contact_op ? `Factory Manpower: ${row.factory_workers}, Contact OP: ${row.contact_op}, Total: ${row.worker_count}` : undefined}
-                        className={`
-                          ${tableTdPadding} text-[var(--color-text-main)] font-normal
-                          ${isTightCol ? 'w-[1%] whitespace-nowrap' : 'whitespace-nowrap md:whitespace-normal break-words'}
-                          ${isNumber || isContactOpCell ? "text-center font-mono tracking-wide" : ""}
-                          ${isNegative ? "!text-[var(--color-danger-text)] font-medium" : ""} 
-                          ${isDate ? "text-[var(--color-primary)] font-medium tracking-wider text-left uppercase" : ""}
-                        `}
-                      >
-                        {isNumber && cellIndex > 3 ? Math.round(cell).toLocaleString() : cell || '-'}
-                      </td>
-                    );
-                  })}
-                </tr>
-              )
+                  {/* 1. Header: Date & Profit/Loss Badge */}
+                  <div className="flex items-center justify-between gap-2 pb-2.5 border-b border-[var(--color-border)]/60">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span className="px-2 py-0.5 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)] text-xs font-bold font-mono text-[var(--color-primary)]">
+                        {row.date}
+                      </span>
+                      <span className="text-xs font-semibold text-[var(--color-text-muted)]">
+                        {dayName}
+                      </span>
+                    </div>
+
+                    <span className={`px-2.5 py-1 rounded-lg text-xs font-black font-mono tracking-tight flex items-center gap-1 shadow-2xs ${
+                      isProfit 
+                        ? 'bg-[var(--color-success-glow)] text-[var(--color-success-text)] border border-emerald-500/25' 
+                        : 'bg-[var(--color-danger-glow)] text-[var(--color-danger-text)] border border-rose-500/25'
+                    }`}>
+                      {isProfit ? <TrendingUp size={13} className="shrink-0" /> : <TrendingDown size={13} className="shrink-0" />}
+                      {isProfit ? '+' : ''}{Math.round(netProfit).toLocaleString()}
+                    </span>
+                  </div>
+
+                  {/* 2. Item & Style Subtitle */}
+                  <div className="flex items-center justify-between gap-2 py-2">
+                    <div className="min-w-0 flex-1">
+                      <p className="text-[10px] uppercase font-bold text-[var(--color-text-muted)] tracking-wider">Item & Style</p>
+                      <p className="text-xs font-bold text-[var(--color-text-main)] truncate" title={row.item || row.style || `Line ${safeId}`}>
+                        {row.item || `Line ${safeId}`}
+                        {row.style && row.style !== '-' && (
+                          <span className="text-[var(--color-text-muted)] font-normal ml-1">({row.style})</span>
+                        )}
+                      </p>
+                    </div>
+                    {hasContactInRow && (
+                      <span className="px-2 py-0.5 rounded-md bg-[var(--color-primary)]/15 border border-[var(--color-primary)]/30 text-[10px] font-bold text-[var(--color-primary)] font-mono shrink-0" title={`Contact OP: ${row.contact_op}`}>
+                        +{row.contact_op} Contact OP
+                      </span>
+                    )}
+                  </div>
+
+                  {/* 3. Daily Telemetry Grid (2x2 Matrix) */}
+                  <div className="grid grid-cols-2 gap-2 py-1">
+                    {/* Production Output */}
+                    <div className="p-2 rounded-xl bg-[var(--color-surface)]/80 border border-[var(--color-border)]/50">
+                      <span className="text-[9px] uppercase tracking-wider font-semibold text-[var(--color-text-muted)] block">Production</span>
+                      <span className="text-sm font-bold font-mono text-[var(--color-text-main)] leading-tight block">
+                        {Math.round(row.production_qty || 0).toLocaleString()}
+                        <span className="text-[10px] font-normal text-[var(--color-text-muted)] ml-1">pcs</span>
+                      </span>
+                      <span className="text-[10px] font-mono text-[var(--color-text-muted)] block mt-0.5">
+                        {row.production_dzn ? `${Number(row.production_dzn).toFixed(1)} dzn` : '-'}
+                      </span>
+                    </div>
+
+                    {/* CM / DZN */}
+                    <div className="p-2 rounded-xl bg-[var(--color-surface)]/80 border border-[var(--color-border)]/50">
+                      <span className="text-[9px] uppercase tracking-wider font-semibold text-[var(--color-text-muted)] block">CM / DZN</span>
+                      <span className="text-sm font-bold font-mono text-[var(--color-primary)] leading-tight block">
+                        {row.cm_per_dzn ? Math.round(row.cm_per_dzn).toLocaleString() : '-'}
+                      </span>
+                      <span className="text-[10px] font-mono text-[var(--color-text-muted)] block mt-0.5">
+                        per dozen
+                      </span>
+                    </div>
+
+                    {/* Manpower Breakdown */}
+                    <div className="p-2 rounded-xl bg-[var(--color-surface)]/80 border border-[var(--color-border)]/50">
+                      <span className="text-[9px] uppercase tracking-wider font-semibold text-[var(--color-text-muted)] block">Manpower</span>
+                      <span className="text-sm font-bold font-mono text-[var(--color-text-main)] leading-tight block">
+                        {row.factory_workers !== undefined ? row.factory_workers : (row.worker_count || '-')}
+                        <span className="text-[10px] font-normal text-[var(--color-text-muted)] ml-1">men</span>
+                      </span>
+                      <span className="text-[10px] font-mono text-[var(--color-text-muted)] block mt-0.5 truncate">
+                        {hasContactInRow ? `+${row.contact_op} contact` : 'factory only'}
+                      </span>
+                    </div>
+
+                    {/* Per Head Cost */}
+                    <div className="p-2 rounded-xl bg-[var(--color-surface)]/80 border border-[var(--color-border)]/50">
+                      <span className="text-[9px] uppercase tracking-wider font-semibold text-[var(--color-text-muted)] block">Per Head Cost</span>
+                      <span className="text-sm font-bold font-mono text-[var(--color-text-main)] leading-tight block">
+                        {row.per_head_cost ? Math.round(row.per_head_cost).toLocaleString() : '-'}
+                      </span>
+                      <span className="text-[10px] font-mono text-[var(--color-text-muted)] block mt-0.5">
+                        daily rate
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* 4. Extra Columns (if present) */}
+                  {extraColNames.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5 py-1">
+                      {extraColNames.map(col => (
+                        <span key={col} className="px-2 py-0.5 rounded-md bg-[var(--color-surface)] border border-[var(--color-border)]/40 text-[9.5px] font-mono text-[var(--color-text-muted)]">
+                          {col}: <strong className="text-[var(--color-text-main)]">{row.extra_columns?.[col] ?? '-'}</strong>
+                        </span>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* 5. Financial Footer (Cost vs Income) */}
+                  <div className="pt-2.5 mt-2 border-t border-[var(--color-border)]/60 flex items-center justify-between text-xs font-mono">
+                    <div>
+                      <span className="text-[9px] uppercase tracking-wider text-[var(--color-text-muted)] font-sans block">Total Cost</span>
+                      <span className="font-bold text-[var(--color-text-main)]">
+                        {Math.round(row.total_cost || 0).toLocaleString()}
+                      </span>
+                    </div>
+                    <div className="text-right">
+                      <span className="text-[9px] uppercase tracking-wider text-[var(--color-primary)] font-sans block">Total Income</span>
+                      <span className="font-bold text-[var(--color-primary)]">
+                        {Math.round(row.total_income || 0).toLocaleString()}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              );
             })}
-            
-            {/* Total Row - Elevated and highlighted for all lines with prominent typography */}
-            <tr className="bg-[var(--color-surface)]/95 border-t-2 border-[var(--color-primary)]/40 shadow-lg font-bold relative z-10 backdrop-blur-md">
-              <td colSpan={4} className={`${tableTotalPadding} text-right tracking-wide`}>
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[var(--color-primary)]/15 border border-[var(--color-primary)]/30 text-[var(--color-primary)] text-xs md:text-sm font-black tracking-widest uppercase shadow-xs">
-                  TOTAL
+          </div>
+
+          {/* PC Cards View: Grand Total Cumulative Card */}
+          <div 
+            style={{
+              backgroundImage: totalNetProfitLoss >= 0
+                ? 'radial-gradient(ellipse 90% 90% at top right, rgba(16, 185, 129, 0.22) 0%, rgba(16, 185, 129, 0.05) 45%, transparent 75%)'
+                : 'radial-gradient(ellipse 90% 90% at top right, rgba(244, 63, 94, 0.25) 0%, rgba(244, 63, 94, 0.05) 45%, transparent 75%)'
+            }}
+            className="rounded-3xl p-6 bg-[var(--color-bg-card)]/90 backdrop-blur-md border-2 border-[var(--color-primary)]/40 shadow-xl relative overflow-hidden"
+          >
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-[var(--color-border)] relative z-10">
+              <div className="flex items-center gap-2.5">
+                <div className="p-2 rounded-xl bg-[var(--color-primary)]/15 text-[var(--color-primary)]">
+                  <Layers size={18} className="stroke-[2.5]" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-black uppercase tracking-widest text-[var(--color-primary)]">
+                    Total Cumulative Performance
+                  </h3>
+                  <p className="text-xs text-[var(--color-text-muted)]">
+                    Aggregated production, expense, and revenue summary for Line {safeId}
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-[var(--color-surface)] border border-[var(--color-border)] text-[var(--color-text-main)] font-mono">
+                  {filteredLineData.filter(d => d.status !== 'HOLIDAY').length} Active Days
                 </span>
-              </td>
-              <td className={`${tableTotalPadding} text-center font-mono text-xs md:text-sm font-bold text-[var(--color-text-main)] tracking-wide`} title="Average factory workers per day">
-                {avgFactoryWorkers || '-'}
-              </td>
-              {hasContactOp && (
-                <td className={`${tableTotalPadding} text-center font-mono text-xs md:text-sm font-bold text-[var(--color-text-main)] tracking-wide`} title="Total Contact OP hired">
-                  {totalContactOp > 0 ? totalContactOp : '-'}
+                <span className={`text-sm font-black font-mono px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 shadow-sm ${
+                  totalNetProfitLoss >= 0 
+                    ? 'bg-[var(--color-success-glow)] text-[var(--color-success-text)] border border-emerald-500/30' 
+                    : 'bg-[var(--color-danger-glow)] text-[var(--color-danger-text)] border border-rose-500/30'
+                }`}>
+                  {totalNetProfitLoss >= 0 ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
+                  {totalNetProfitLoss >= 0 ? '+' : ''}{Math.round(totalNetProfitLoss).toLocaleString()} BDT
+                </span>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 pt-4 relative z-10">
+              <div className="p-3.5 rounded-2xl bg-[var(--color-surface)]/70 border border-[var(--color-border)]/50">
+                <p className="text-[10px] uppercase font-bold text-[var(--color-text-muted)] tracking-wider mb-1">Total Production</p>
+                <p className="text-lg font-black font-mono text-[var(--color-text-main)] leading-none">
+                  {Math.round(totalProduction).toLocaleString()} <span className="text-xs font-normal text-[var(--color-text-muted)]">pcs</span>
+                </p>
+              </div>
+
+              <div className="p-3.5 rounded-2xl bg-[var(--color-surface)]/70 border border-[var(--color-border)]/50">
+                <p className="text-[10px] uppercase font-bold text-[var(--color-text-muted)] tracking-wider mb-1">Total Expenses</p>
+                <p className="text-lg font-black font-mono text-[var(--color-text-main)] leading-none">
+                  {Math.round(totalCost).toLocaleString()} <span className="text-xs font-normal text-[var(--color-text-muted)]">BDT</span>
+                </p>
+              </div>
+
+              <div className="p-3.5 rounded-2xl bg-[var(--color-surface)]/70 border border-[var(--color-border)]/50">
+                <p className="text-[10px] uppercase font-bold text-[var(--color-primary)] tracking-wider mb-1">Total Revenue</p>
+                <p className="text-lg font-black font-mono text-[var(--color-primary)] leading-none">
+                  {Math.round(totalIncome).toLocaleString()} <span className="text-xs font-normal text-[var(--color-primary)]/70">BDT</span>
+                </p>
+              </div>
+
+              <div className="p-3.5 rounded-2xl bg-[var(--color-surface)]/70 border border-[var(--color-border)]/50">
+                <p className="text-[10px] uppercase font-bold text-[var(--color-text-muted)] tracking-wider mb-1">Manpower Overview</p>
+                <p className="text-base font-bold font-mono text-[var(--color-text-main)] leading-none">
+                  {avgFactoryWorkers} <span className="text-xs font-normal text-[var(--color-text-muted)]">avg factory</span>
+                  {hasContactOp && totalContactOp > 0 && (
+                    <span className="text-xs text-[var(--color-primary)] font-semibold block mt-1">
+                      +{totalContactOp} Contact OP hired
+                    </span>
+                  )}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : (
+        /* PC TABLE (LIST) VIEW (When user selects "LIST" in switcher) */
+        <div className="hidden md:block w-full max-h-[75vh] overflow-auto bg-[var(--color-bg-card)]/80 backdrop-blur-md rounded-3xl shadow-sm border border-[var(--color-border)] hide-scrollbar relative animate-[fade-up_0.3s_ease-out]">
+          <table className="w-full text-left border-collapse table-auto relative">
+            <thead className="sticky top-0 z-20">
+              <tr className="bg-[var(--color-bg-card)]/90 backdrop-blur-md shadow-sm border-b border-[var(--color-border)]">
+                {[
+                  'Date', 'Line', 'Style', 'Item', 'Workers',
+                  ...(hasContactOp ? ['Contact OP'] : []),
+                  ...extraColNames,
+                  'Per Head Cost', 'Total Cost', 'Prod Qty', 'Prod DZN', 'CM/DZN', 'Total Income', 'Net Profit'
+                ].map((headerText, colIndex) => {
+                  const isNumericCol = colIndex > 3;
+                  const isTightCol = colIndex <= 3;
+                  return (
+                    <th 
+                      key={colIndex} 
+                      className={`
+                        ${tableThPadding} uppercase tracking-widest font-semibold md:font-bold text-[var(--color-primary)] leading-tight
+                        ${isNumericCol ? 'text-center' : 'text-left'}
+                        ${isTightCol ? 'w-[1%] whitespace-nowrap' : 'whitespace-nowrap md:whitespace-normal break-words'}
+                      `}
+                    >
+                      {headerText}
+                    </th>
+                  );
+                })}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-[var(--color-border)]">
+              {filteredLineData.map((row, rowIndex) => {
+                const totalColSpan = 12 + (hasContactOp ? 1 : 0) + extraColNames.length;
+                if (row.status === 'HOLIDAY') {
+                  const dateObj = new Date(row.date);
+                  const isFriday = dateObj.getDay() === 5;
+                  return (
+                    <tr key={rowIndex} className="h-8 bg-[var(--color-surface)]">
+                      <td colSpan={totalColSpan} className="px-5 py-2.5 text-center text-xs md:text-[13px] tracking-widest uppercase text-[var(--color-text-muted)] font-medium">
+                        {row.date} - {isFriday ? 'FRIDAY / HOLIDAY' : 'NO PRODUCTION / HOLIDAY'}
+                      </td>
+                    </tr>
+                  );
+                }
+
+                const cells = [
+                  row.date,
+                  row.line_id,
+                  row.style,
+                  row.item,
+                  row.factory_workers !== undefined ? row.factory_workers : row.worker_count,
+                  ...(hasContactOp ? [row.contact_op !== undefined && Number(row.contact_op) > 0 ? row.contact_op : '-'] : []),
+                  ...extraColNames.map(col => row.extra_columns?.[col] ?? '-'),
+                  row.per_head_cost,
+                  row.total_cost,
+                  row.production_qty,
+                  row.production_dzn,
+                  row.cm_per_dzn,
+                  row.total_income,
+                  row.net_profit
+                ];
+
+                return (
+                  <tr 
+                    key={rowIndex} 
+                    className={`hover:bg-[var(--color-surface-hover)] transition-colors group`}
+                  >
+                    {cells.map((cell, cellIndex) => {
+                      const isNegative = String(cell).startsWith('-');
+                      const isNumber = typeof cell === 'number';
+                      const isDate = cellIndex === 0;
+                      const isTightCol = cellIndex <= 3;
+                      const isContactOpCell = hasContactOp && cellIndex === 5;
+                      
+                      return (
+                        <td 
+                          key={cellIndex} 
+                          title={cellIndex === 4 && row.contact_op ? `Factory Manpower: ${row.factory_workers}, Contact OP: ${row.contact_op}, Total: ${row.worker_count}` : undefined}
+                          className={`
+                            ${tableTdPadding} text-[var(--color-text-main)] font-normal
+                            ${isTightCol ? 'w-[1%] whitespace-nowrap' : 'whitespace-nowrap md:whitespace-normal break-words'}
+                            ${isNumber || isContactOpCell ? "text-center font-mono tracking-wide" : ""}
+                            ${isNegative ? "!text-[var(--color-danger-text)] font-medium" : ""} 
+                            ${isDate ? "text-[var(--color-primary)] font-medium tracking-wider text-left uppercase" : ""}
+                          `}
+                        >
+                          {isNumber && cellIndex > 3 ? Math.round(cell).toLocaleString() : cell || '-'}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                )
+              })}
+              
+              {/* Total Row - Elevated and highlighted for all lines with prominent typography */}
+              <tr className="bg-[var(--color-surface)]/95 border-t-2 border-[var(--color-primary)]/40 shadow-lg font-bold relative z-10 backdrop-blur-md">
+                <td colSpan={4} className={`${tableTotalPadding} text-right tracking-wide`}>
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[var(--color-primary)]/15 border border-[var(--color-primary)]/30 text-[var(--color-primary)] text-xs md:text-sm font-black tracking-widest uppercase shadow-xs">
+                    TOTAL
+                  </span>
                 </td>
-              )}
-              {extraColNames.map((_, i) => (
-                <td key={i} className={`${tableTotalPadding} text-center font-mono text-xs md:text-sm text-[var(--color-text-muted)]`}>-</td>
-              ))}
-              <td className={`${tableTotalPadding} text-center font-mono text-xs md:text-sm text-[var(--color-text-muted)] tracking-wide`}>-</td>
-              <td className={`${tableTotalPadding} text-center font-mono text-xs md:text-sm lg:text-[15px] font-extrabold text-[var(--color-text-main)] tracking-wide`}>
-                {Math.round(totalCost).toLocaleString()}
-              </td>
-              <td className={`${tableTotalPadding} text-center font-mono text-xs md:text-sm lg:text-[15px] font-extrabold text-[var(--color-text-main)] tracking-wide`}>
-                {Math.round(totalProduction).toLocaleString()}
-              </td>
-              <td colSpan={2}></td>
-              <td className={`${tableTotalPadding} text-center font-mono text-xs md:text-sm lg:text-[15px] font-black text-[var(--color-primary)] tracking-wide drop-shadow-xs`}>
-                {Math.round(totalIncome).toLocaleString()}
-              </td>
-              <td className={`${tableTotalPadding} text-center font-mono text-xs md:text-sm lg:text-[15px] font-black tracking-tight ${
-                totalNetProfitLoss >= 0 
-                  ? "text-[var(--color-success-text)] bg-[var(--color-success-glow)] [box-shadow:inset_0_0_12px_var(--color-success-glow)]" 
-                  : "text-[var(--color-danger-text)] bg-[var(--color-danger-glow)] [box-shadow:inset_0_0_12px_var(--color-danger-glow)]"
-              }`}>
-                {totalNetProfitLoss >= 0 ? '+' : ''}{Math.round(totalNetProfitLoss).toLocaleString()}
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+                <td className={`${tableTotalPadding} text-center font-mono text-xs md:text-sm font-bold text-[var(--color-text-main)] tracking-wide`} title="Average factory workers per day">
+                  {avgFactoryWorkers || '-'}
+                </td>
+                {hasContactOp && (
+                  <td className={`${tableTotalPadding} text-center font-mono text-xs md:text-sm font-bold text-[var(--color-text-main)] tracking-wide`} title="Total Contact OP hired">
+                    {totalContactOp > 0 ? totalContactOp : '-'}
+                  </td>
+                )}
+                {extraColNames.map((_, i) => (
+                  <td key={i} className={`${tableTotalPadding} text-center font-mono text-xs md:text-sm text-[var(--color-text-muted)]`}>-</td>
+                ))}
+                <td className={`${tableTotalPadding} text-center font-mono text-xs md:text-sm text-[var(--color-text-muted)] tracking-wide`}>-</td>
+                <td className={`${tableTotalPadding} text-center font-mono text-xs md:text-sm lg:text-[15px] font-extrabold text-[var(--color-text-main)] tracking-wide`}>
+                  {Math.round(totalCost).toLocaleString()}
+                </td>
+                <td className={`${tableTotalPadding} text-center font-mono text-xs md:text-sm lg:text-[15px] font-extrabold text-[var(--color-text-main)] tracking-wide`}>
+                  {Math.round(totalProduction).toLocaleString()}
+                </td>
+                <td colSpan={2}></td>
+                <td className={`${tableTotalPadding} text-center font-mono text-xs md:text-sm lg:text-[15px] font-black text-[var(--color-primary)] tracking-wide drop-shadow-xs`}>
+                  {Math.round(totalIncome).toLocaleString()}
+                </td>
+                <td className={`${tableTotalPadding} text-center font-mono text-xs md:text-sm lg:text-[15px] font-black tracking-tight ${
+                  totalNetProfitLoss >= 0 
+                    ? "text-[var(--color-success-text)] bg-[var(--color-success-glow)] [box-shadow:inset_0_0_12px_var(--color-success-glow)]" 
+                    : "text-[var(--color-danger-text)] bg-[var(--color-danger-glow)] [box-shadow:inset_0_0_12px_var(--color-danger-glow)]"
+                }`}>
+                  {totalNetProfitLoss >= 0 ? '+' : ''}{Math.round(totalNetProfitLoss).toLocaleString()}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      )}
 
     </div>
   );
