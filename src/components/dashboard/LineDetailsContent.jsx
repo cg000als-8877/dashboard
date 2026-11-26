@@ -252,13 +252,13 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false, hideEm
                   ? 'radial-gradient(ellipse 90% 90% at top right, rgba(16, 185, 129, 0.22) 0%, rgba(16, 185, 129, 0.05) 45%, transparent 75%)'
                   : 'radial-gradient(ellipse 90% 90% at top right, rgba(244, 63, 94, 0.25) 0%, rgba(244, 63, 94, 0.05) 45%, transparent 75%)'
               }}
-              className={`order-1 md:order-6 col-span-1 min-h-[72px] md:min-h-[76px] bg-[var(--color-bg-card)]/80 backdrop-blur-md md:bg-[var(--color-surface)]/80 ${summaryCellPadding} rounded-xl md:rounded-2xl border shadow-sm md:shadow-inner transition-transform hover:-translate-y-0.5 duration-200 flex flex-col justify-between overflow-hidden relative ${
+              className={`order-1 md:order-6 col-span-1 min-h-0 md:min-h-[76px] bg-[var(--color-bg-card)]/80 backdrop-blur-md md:bg-[var(--color-surface)]/80 ${summaryCellPadding} rounded-xl md:rounded-2xl border shadow-sm md:shadow-inner transition-transform hover:-translate-y-0.5 duration-200 flex flex-col justify-center md:justify-between gap-1 md:gap-0 overflow-hidden relative ${
                 parseFloat(totalNetProfitLoss) >= 0 
                   ? 'border-emerald-500/30 md:border-emerald-500/20' 
                   : 'border-rose-500/30 md:border-rose-500/20'
               }`}
             >
-              <div className="flex items-center gap-1.5 mb-0.5 md:mb-1">
+              <div className="flex items-center gap-1.5">
                 {parseFloat(totalNetProfitLoss) >= 0 ? (
                   <TrendingUp className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                 ) : (
@@ -276,26 +276,26 @@ export function LineDetailsContent({ id, month, backUrl, isEmbed = false, hideEm
             </div>
 
             {/* 3. Production (Mobile: Row 1 Right, Desktop: Order 3) */}
-            <div className={`order-2 md:order-3 col-span-1 min-h-[72px] md:min-h-[76px] bg-[var(--color-bg-card)]/80 backdrop-blur-md md:bg-[var(--color-surface)]/80 ${summaryCellPadding} rounded-xl md:rounded-2xl border border-[var(--color-border)] shadow-sm md:shadow-inner transition-transform hover:-translate-y-0.5 duration-200 flex flex-col justify-between`}>
-              <p className="text-[9px] md:text-[10px] xl:text-[10.5px] text-[var(--color-text-muted)] font-bold uppercase tracking-wider mb-0.5 md:mb-1">Production</p>
+            <div className={`order-2 md:order-3 col-span-1 min-h-0 md:min-h-[76px] bg-[var(--color-bg-card)]/80 backdrop-blur-md md:bg-[var(--color-surface)]/80 ${summaryCellPadding} rounded-xl md:rounded-2xl border border-[var(--color-border)] shadow-sm md:shadow-inner transition-transform hover:-translate-y-0.5 duration-200 flex flex-col justify-center md:justify-between gap-1 md:gap-0`}>
+              <p className="text-[9px] md:text-[10px] xl:text-[10.5px] text-[var(--color-text-muted)] font-bold uppercase tracking-wider">Production</p>
               <p className="text-sm md:text-[15px] xl:text-base font-semibold md:font-bold text-[var(--color-text-main)] leading-tight">{Math.round(parseFloat(totalProduction)).toLocaleString()}</p>
             </div>
 
             {/* 4. Total Cost (Mobile: Row 2 Left, Desktop: Order 4) */}
-            <div className={`order-3 md:order-4 col-span-1 min-h-[72px] md:min-h-[76px] bg-[var(--color-bg-card)]/80 backdrop-blur-md md:bg-[var(--color-surface)]/80 ${summaryCellPadding} rounded-xl md:rounded-2xl border border-[var(--color-border)] shadow-sm md:shadow-inner transition-transform hover:-translate-y-0.5 duration-200 flex flex-col justify-between`}>
-              <p className="text-[9px] md:text-[10px] xl:text-[10.5px] text-[var(--color-text-muted)] font-bold uppercase tracking-wider mb-0.5 md:mb-1">Total Cost</p>
+            <div className={`order-3 md:order-4 col-span-1 min-h-0 md:min-h-[76px] bg-[var(--color-bg-card)]/80 backdrop-blur-md md:bg-[var(--color-surface)]/80 ${summaryCellPadding} rounded-xl md:rounded-2xl border border-[var(--color-border)] shadow-sm md:shadow-inner transition-transform hover:-translate-y-0.5 duration-200 flex flex-col justify-center md:justify-between gap-1 md:gap-0`}>
+              <p className="text-[9px] md:text-[10px] xl:text-[10.5px] text-[var(--color-text-muted)] font-bold uppercase tracking-wider">Total Cost</p>
               <p className="text-sm md:text-[15px] xl:text-base font-semibold md:font-bold text-[var(--color-text-main)] leading-tight">{Math.round(parseFloat(totalCost)).toLocaleString()}</p>
             </div>
 
             {/* 5. Total Income (Mobile: Row 2 Right, Desktop: Order 5) */}
-            <div className={`order-4 md:order-5 col-span-1 min-h-[72px] md:min-h-[76px] bg-[var(--color-bg-card)]/80 backdrop-blur-md md:bg-[var(--color-surface)]/80 ${summaryCellPadding} rounded-xl md:rounded-2xl border border-[var(--color-border)] shadow-sm md:shadow-inner transition-transform hover:-translate-y-0.5 duration-200 flex flex-col justify-between`}>
-              <p className="text-[9px] md:text-[10px] xl:text-[10.5px] text-[var(--color-text-muted)] font-bold uppercase tracking-wider mb-0.5 md:mb-1">Total Income</p>
+            <div className={`order-4 md:order-5 col-span-1 min-h-0 md:min-h-[76px] bg-[var(--color-bg-card)]/80 backdrop-blur-md md:bg-[var(--color-surface)]/80 ${summaryCellPadding} rounded-xl md:rounded-2xl border border-[var(--color-border)] shadow-sm md:shadow-inner transition-transform hover:-translate-y-0.5 duration-200 flex flex-col justify-center md:justify-between gap-1 md:gap-0`}>
+              <p className="text-[9px] md:text-[10px] xl:text-[10.5px] text-[var(--color-text-muted)] font-bold uppercase tracking-wider">Total Income</p>
               <p className="text-sm md:text-[15px] xl:text-base font-semibold md:font-bold text-[var(--color-primary)] leading-tight">{Math.round(parseFloat(totalIncome)).toLocaleString()}</p>
             </div>
 
             {/* 6. Item / Items (Mobile: Row 3 Single Column Full Width, Desktop: Order 2) */}
-            <div className={`order-5 md:order-2 col-span-2 md:col-span-1 min-h-[72px] md:min-h-[76px] bg-[var(--color-bg-card)]/80 backdrop-blur-md md:bg-[var(--color-surface)]/80 ${summaryCellPadding} rounded-xl md:rounded-2xl border border-[var(--color-border)] shadow-sm md:shadow-inner transition-transform hover:-translate-y-0.5 duration-200 flex flex-col justify-between`}>
-              <p className="text-[9px] md:text-[10px] xl:text-[10.5px] text-[var(--color-text-muted)] font-bold uppercase tracking-wider mb-0.5 md:mb-1">
+            <div className={`order-5 md:order-2 col-span-2 md:col-span-1 min-h-0 md:min-h-[76px] bg-[var(--color-bg-card)]/80 backdrop-blur-md md:bg-[var(--color-surface)]/80 ${summaryCellPadding} rounded-xl md:rounded-2xl border border-[var(--color-border)] shadow-sm md:shadow-inner transition-transform hover:-translate-y-0.5 duration-200 flex flex-col justify-center md:justify-between gap-1 md:gap-0`}>
+              <p className="text-[9px] md:text-[10px] xl:text-[10.5px] text-[var(--color-text-muted)] font-bold uppercase tracking-wider">
                 {uniqueItems.length > 1 ? 'Items' : 'Item'}
               </p>
               <p 
