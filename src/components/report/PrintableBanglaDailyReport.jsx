@@ -140,6 +140,12 @@ export function PrintableBanglaDailyReport({
   let activeLines = [];
   const targetEntries = (rawDailyProduction || []).filter(d => d.date === effectiveDateStr && d.status === 'ACTIVE');
 
+  // Check if Contract OP exists for this date/month (November or whenever contract op is hired)
+  const hasContactOp = (
+    activeMonthName?.toLowerCase() === 'november' ||
+    targetEntries.some(e => e.contact_op && Number(e.contact_op) > 0)
+  );
+
   if (targetEntries.length > 0) {
     if (!selectedDayTrend || (selectedDayCost === 0 && targetEntries.length > 0)) {
       selectedDayCost = Math.round(targetEntries.reduce((acc, d) => acc + (d.total_cost || 0), 0));
@@ -161,14 +167,17 @@ export function PrintableBanglaDailyReport({
         // Style Number: Use style if available, otherwise item name
         const style = entry.style || entry.item || '—';
         
-        // Man Power used directly as "মেশিনের সংখ্যা" per user instruction
-        const workers = entry.worker_count || 0;
+        // Factory regular manpower vs contract operators
+        const contactOp = entry.contact_op !== undefined && entry.contact_op !== null ? Number(entry.contact_op) : 0;
+        const factoryWorkers = entry.factory_workers !== undefined ? entry.factory_workers : (entry.worker_count || 0);
+        const workers = hasContactOp && factoryWorkers > 0 ? factoryWorkers : (entry.worker_count || 0);
         const cmPerDzn = entry.cm_per_dzn || 0;
 
         return {
           id,
           style,
           workers,
+          contactOp,
           cmPerDzn,
           dayProd,
           dayCost,
@@ -185,6 +194,7 @@ export function PrintableBanglaDailyReport({
       const dayIncome = l.lastDayIncome || 0;
       const dayProfit = l.lastDayProfit || (dayIncome - dayCost);
       const workers = l.lastDayWorkers || l.lastDay?.worker_count || l.averageWorkers || 0;
+      const contactOp = l.contact_op || l.lastDay?.contact_op || 0;
       const cmPerDzn = l.lastDayCmPerDzn || l.lastDay?.cm_per_dzn || 0;
       const style = l.style || l.item || '—';
 
@@ -192,6 +202,7 @@ export function PrintableBanglaDailyReport({
         id: l.id,
         style,
         workers,
+        contactOp,
         cmPerDzn,
         dayProd,
         dayCost,
@@ -214,6 +225,7 @@ export function PrintableBanglaDailyReport({
 
   // Totals for table summary row
   const totalActiveProdQty = activeLines.reduce((acc, l) => acc + (l.dayProd || 0), 0);
+  const totalContactOp = activeLines.reduce((acc, l) => acc + (l.contactOp || 0), 0);
 
   return createPortal(
     <div id="bangla-daily-printable-portal">
@@ -345,15 +357,18 @@ export function PrintableBanglaDailyReport({
             </div>
           </div>
 
-          {/* ── 2. MAIN LINE-BY-LINE SPREADSHEET TABLE (8 COLUMNS: মোট খরচ IN COL 4, সিএম IN COL 6) ── */}
+          {/* ── 2. MAIN LINE-BY-LINE SPREADSHEET TABLE ── */}
           <table className="w-full border-collapse border border-black text-xs text-black mb-3">
             <thead>
               <tr className="border-b border-black">
                 <th className="border border-black px-2 py-1.5 text-center font-bold">লাইন</th>
                 <th className="border border-black px-2 py-1.5 text-center font-bold">স্টাইল</th>
                 <th className="border border-black px-2 py-1.5 text-center font-bold">মেশিনের সংখ্যা</th>
+                {hasContactOp && (
+                  <th className="border border-black px-2 py-1.5 text-center font-bold">কন্ট্রাক্ট অপারেটর</th>
+                )}
                 <th className="border border-black px-2 py-1.5 text-center font-bold">মোট খরচ</th>
-                <th className="border border-black px-2 py-1.5 text-center font-bold">দৈনিক উৎপাদন</th>
+                <th className="border border-black px-2 py-1.5 text-center font-bold">প্রোডাকশন</th>
                 <th className="border border-black px-2 py-1.5 text-center font-bold">সিএম (CM)</th>
                 <th className="border border-black px-2 py-1.5 text-center font-bold">মোট আয়</th>
                 <th className="border border-black px-2 py-1.5 text-center font-bold">পার্থক্য</th>
@@ -371,6 +386,11 @@ export function PrintableBanglaDailyReport({
                   <td className="border border-black px-2 py-1 text-center font-bold">
                     {toBn(line.workers)}
                   </td>
+                  {hasContactOp && (
+                    <td className="border border-black px-2 py-1 text-center font-bold">
+                      {line.contactOp > 0 ? `${toBn(line.contactOp)} জন` : ''}
+                    </td>
+                  )}
                   <td className="border border-black px-2 py-1 text-center font-bold">
                     {formatBnNum(line.dayCost)} টাকা
                   </td>
@@ -394,6 +414,11 @@ export function PrintableBanglaDailyReport({
                 <td className="border border-black px-2 py-1 text-center font-bold">মোট</td>
                 <td className="border border-black px-2 py-1"></td>
                 <td className="border border-black px-2 py-1"></td>
+                {hasContactOp && (
+                  <td className="border border-black px-2 py-1 text-center font-bold">
+                    {totalContactOp > 0 ? `${toBn(totalContactOp)} জন` : ''}
+                  </td>
+                )}
                 <td className="border border-black px-2 py-1 text-center font-bold">
                   {formatBnNum(selectedDayCost)} টাকা
                 </td>
@@ -414,6 +439,13 @@ export function PrintableBanglaDailyReport({
           {/* ── 3. DAY SUMMARY BOX (RIGHT ALIGNED, EXACT SPREADSHEET MINI TABLE) ── */}
           <div className="flex justify-end mb-4">
             <table className="border-collapse border border-black text-xs text-black w-80">
+              <thead>
+                <tr className="border-b border-black">
+                  <th colSpan={2} className="border border-black px-3 py-1 font-bold text-center">
+                    {toBn(selectedDayNum)} {banglaMonth} | মোট সারসংক্ষেপ
+                  </th>
+                </tr>
+              </thead>
               <tbody>
                 <tr className="border-b border-black">
                   <td className="border border-black px-3 py-1 font-bold text-center w-1/2">মোট খরচ</td>
@@ -428,7 +460,9 @@ export function PrintableBanglaDailyReport({
                   </td>
                 </tr>
                 <tr>
-                  <td className="border border-black px-3 py-1 font-bold text-center w-1/2">মোট লাভ/ক্ষতি</td>
+                  <td className={`border border-black px-3 py-1 font-bold text-center w-1/2 ${selectedDayProfit < 0 ? 'text-red-600 font-bold' : ''}`}>
+                    {selectedDayProfit < 0 ? 'মোট লোকসান' : 'মোট লাভ'}
+                  </td>
                   <td className="border border-black px-3 py-1 font-bold text-center w-1/2">
                     {renderDifference(selectedDayProfit)}
                   </td>
@@ -437,10 +471,10 @@ export function PrintableBanglaDailyReport({
             </table>
           </div>
 
-          {/* ── 4. CUMULATIVE PERIOD SUMMARY (CENTERED MINI TABLE WITH (২০ দিন) WORKING DAYS COUNT) ── */}
+          {/* ── 4. CUMULATIVE PERIOD SUMMARY (CENTERED MINI TABLE WITH (২২ দিন) WORKING DAYS COUNT) ── */}
           <div className="flex flex-col items-center mb-4">
             <h3 className="text-sm font-black text-black mb-1">
-              {banglaMonth} ১ থেকে {toBn(selectedDayNum)}, {toBn(activeMonthYear)} ({toBn(passedWorkingDays)} দিন)
+              {banglaMonth} ১ থেকে {toBn(selectedDayNum)}, {toBn(activeMonthYear)} ({toBn(passedWorkingDays)} দিন) সার্বিক অবস্থা:
             </h3>
             <table className="border-collapse border border-black text-xs text-black w-80">
               <tbody>
@@ -457,7 +491,9 @@ export function PrintableBanglaDailyReport({
                   </td>
                 </tr>
                 <tr>
-                  <td className="border border-black px-3 py-1 font-bold text-center w-1/2">মোট লাভ/ক্ষতি</td>
+                  <td className={`border border-black px-3 py-1 font-bold text-center w-1/2 ${netProfit < 0 ? 'text-red-600 font-bold' : ''}`}>
+                    {netProfit < 0 ? 'মোট লোকসান' : 'মোট লাভ'}
+                  </td>
                   <td className="border border-black px-3 py-1 font-bold text-center w-1/2">
                     {renderDifference(netProfit)}
                   </td>

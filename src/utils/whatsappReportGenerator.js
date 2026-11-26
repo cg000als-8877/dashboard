@@ -127,13 +127,16 @@ export function generateWhatsAppDailyReport({
         const dayIncome = entry.total_income || 0;
         const dayProfit = entry.net_profit !== undefined ? entry.net_profit : (dayIncome - dayCost);
         const style = entry.style?.trim?.() || entry.item?.trim?.() || '—';
-        const workers = entry.worker_count || entry.machines || entry.machine_count || entry.workers || 0;
+        const contactOp = entry.contact_op !== undefined && entry.contact_op !== null ? Number(entry.contact_op) : 0;
+        const factoryWorkers = entry.factory_workers !== undefined ? entry.factory_workers : (entry.worker_count || 0);
+        const workers = (contactOp > 0 && factoryWorkers > 0) ? factoryWorkers : (entry.worker_count || entry.machines || entry.machine_count || entry.workers || 0);
         const cmPerDzn = entry.cm_per_dzn || 0;
 
         return {
           id,
           style,
           workers,
+          contactOp,
           cmPerDzn,
           dayProd,
           dayCost,
@@ -178,6 +181,7 @@ export function generateWhatsAppDailyReport({
   }
 
   const totalActiveProdQty = activeLines.reduce((acc, l) => acc + (l.dayProd || 0), 0);
+  const totalContactOp = activeLines.reduce((acc, l) => acc + (l.contactOp || 0), 0);
 
   // ── 4. Build Structured WhatsApp Text ──
   const linesFormatted = activeLines.map(l => {
@@ -187,16 +191,25 @@ export function generateWhatsAppDailyReport({
     const styleDisplay = l.style && l.style !== '—' ? toBn(l.style) : '—';
     const lineProfitLabel = l.dayProfit < 0 ? 'লোকসান:' : (l.dayProfit > 0 ? 'লাভ:' : 'লাভ/লোকসান:');
 
-    return [
+    const fields = [
       `✅ *লাইন ${label}*`,
       `• স্টাইল: ${styleDisplay}`,
-      `• মেশিনের সংখ্যা: ${formatBnNum(l.workers)}`,
+      `• মেশিনের সংখ্যা: ${formatBnNum(l.workers)}`
+    ];
+
+    if (l.contactOp > 0) {
+      fields.push(`• কন্ট্রাক্ট অপারেটর: ${formatBnNum(l.contactOp)} জন`);
+    }
+
+    fields.push(
       `• প্রোডাকশন: ${formatBnNum(l.dayProd)} পিস`,
       `• সিএম (CM): ${formatBnNum(l.cmPerDzn)} টাকা`,
       `• মোট খরচ: ${formatBnNum(l.dayCost)} টাকা`,
       `• মোট আয়: ${formatBnNum(l.dayIncome)} টাকা`,
       `• ${lineProfitLabel} *${diffVal}*`
-    ].join('\n');
+    );
+
+    return fields.join('\n');
   }).join('\n\n');
 
   // Profit/Loss labels and values
@@ -221,6 +234,7 @@ export function generateWhatsAppDailyReport({
     `📌 *${toBn(selectedDayNum)} ${banglaMonth} | মোট সারসংক্ষেপ:*`,
     `━━━━━━━━━━━━━━━━━━━━━`,
     `• মোট প্রোডাকশন: *${formatBnNum(totalActiveProdQty)} পিস*`,
+    ...(totalContactOp > 0 ? [`• মোট কন্ট্রাক্ট অপারেটর: *${formatBnNum(totalContactOp)} জন*`] : []),
     `• মোট খরচ: *${formatBnNum(selectedDayCost)} টাকা*`,
     `• মোট আয়: *${formatBnNum(selectedDayIncome)} টাকা*`,
     `• ${todayProfitLabel} ${todayProfitStr}`,
