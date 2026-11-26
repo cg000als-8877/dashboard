@@ -119,29 +119,54 @@ export async function getLiveProductionData(forceRefresh = false) {
     const sheet = workbook.Sheets[sheetName];
     const data = XLSX.utils.sheet_to_json(sheet, { header: 1 });
 
+    // Dynamic header resolution from Row 4 (index 3) to gracefully handle added/shifted columns (e.g. CONTACT OP)
+    const headerRow = (data[3] || []).map(h => String(h || '').trim().toUpperCase());
+    const findCol = (predicate, fallback) => {
+      const idx = headerRow.findIndex(predicate);
+      return idx !== -1 ? idx : fallback;
+    };
+
+    const colDate = findCol(h => h.includes('DATE'), 0);
+    const colStyle = findCol(h => h.includes('STYLE'), 2);
+    const colItem = findCol(h => h.includes('ITEM'), 3);
+    const colManpower = findCol(h => h.includes('MAN POWER') || h.includes('MANPOWER'), 4);
+    const colContactOp = findCol(h => h.includes('CONTACT') && h.includes('OP'), -1);
+    const colPerHeadCost = findCol(h => h.includes('PER HEAD') || h.includes('PER_HEAD'), colContactOp !== -1 ? 6 : 5);
+    const colTotalCost = findCol(h => h === 'TOTAL COST' || (h.includes('TOTAL') && h.includes('COST')), colContactOp !== -1 ? 7 : 6);
+    const colProd = findCol(h => h === 'PRODUCTION' || (h.startsWith('PRODUCTION') && !h.includes('DOZEN')), colContactOp !== -1 ? 8 : 7);
+    const colProdDzn = findCol(h => h.includes('PRODUCTION') && h.includes('DOZEN'), colContactOp !== -1 ? 9 : 8);
+    const colCmPerDzn = findCol(h => h.includes('CM') && h.includes('DOZEN'), colContactOp !== -1 ? 10 : 9);
+    const colTotalIncome = findCol(h => h.includes('TOTAL INCOME') || (h.includes('TOTAL') && h.includes('INCOME')), colContactOp !== -1 ? 11 : 10);
+    const colNetProfit = findCol(h => h.includes('LOSS/PROFIT') || h.includes('PROFIT') || h.includes('LOSS'), colContactOp !== -1 ? 12 : 11);
+
     for (let i = 4; i < data.length; i++) {
       const row = data[i];
       if (!row || row.length === 0) continue;
 
-      const dateSerial = row[0];
+      const dateSerial = row[colDate];
       if (!dateSerial || isNaN(dateSerial)) continue;
 
       const parsedDate = parseExcelDate(dateSerial);
       const dateStr = `${parsedDate.y}-${String(parsedDate.m).padStart(2, '0')}-${String(parsedDate.d).padStart(2, '0')}`;
 
       const isExplicitHoliday = 
-        String(row[2] || '').toUpperCase().includes('FRIDAY') || 
-        String(row[3] || '').toUpperCase().includes('FRIDAY') ||
-        String(row[2] || '').toUpperCase().includes('HOLIDAY') ||
-        String(row[3] || '').toUpperCase().includes('HOLIDAY');
+        String(row[colStyle] || '').toUpperCase().includes('FRIDAY') || 
+        String(row[colItem] || '').toUpperCase().includes('FRIDAY') ||
+        String(row[colStyle] || '').toUpperCase().includes('HOLIDAY') ||
+        String(row[colItem] || '').toUpperCase().includes('HOLIDAY');
+
+      const rawManpower = Number(row[colManpower]) || 0;
+      const rawContactOp = colContactOp !== -1 ? (Number(row[colContactOp]) || 0) : 0;
+      const totalWorkers = rawManpower + rawContactOp;
 
       const hasProductionData = 
-        (row[4] !== undefined && row[4] !== null && String(row[4]).trim() !== '') ||
-        (row[6] !== undefined && Number(row[6]) > 0) ||
-        (row[7] !== undefined && Number(row[7]) > 0) ||
-        (row[10] !== undefined && Number(row[10]) > 0) ||
-        (row[2] && String(row[2]).trim() !== '') ||
-        (row[3] && String(row[3]).trim() !== '');
+        (row[colManpower] !== undefined && row[colManpower] !== null && String(row[colManpower]).trim() !== '') ||
+        (colContactOp !== -1 && row[colContactOp] !== undefined && Number(row[colContactOp]) > 0) ||
+        (row[colTotalCost] !== undefined && Number(row[colTotalCost]) > 0) ||
+        (row[colProd] !== undefined && Number(row[colProd]) > 0) ||
+        (row[colTotalIncome] !== undefined && Number(row[colTotalIncome]) > 0) ||
+        (row[colStyle] && String(row[colStyle]).trim() !== '') ||
+        (row[colItem] && String(row[colItem]).trim() !== '');
 
       if (isExplicitHoliday || !hasProductionData) {
         dailyProduction.push({
@@ -155,16 +180,18 @@ export async function getLiveProductionData(forceRefresh = false) {
       dailyProduction.push({
         date: dateStr,
         line_id: lineId,
-        style: row[2] || '',
-        item: row[3] || '',
-        worker_count: row[4] || 0,
-        per_head_cost: row[5] || 0,
-        total_cost: row[6] || 0,
-        production_qty: row[7] || 0,
-        production_dzn: row[8] || 0,
-        cm_per_dzn: row[9] || 0,
-        total_income: row[10] || 0,
-        net_profit: row[11] || 0,
+        style: row[colStyle] || '',
+        item: row[colItem] || '',
+        worker_count: totalWorkers > 0 ? totalWorkers : rawManpower,
+        factory_workers: rawManpower,
+        contact_op: rawContactOp,
+        per_head_cost: Number(row[colPerHeadCost]) || 0,
+        total_cost: Number(row[colTotalCost]) || 0,
+        production_qty: Number(row[colProd]) || 0,
+        production_dzn: Number(row[colProdDzn]) || 0,
+        cm_per_dzn: Number(row[colCmPerDzn]) || 0,
+        total_income: Number(row[colTotalIncome]) || 0,
+        net_profit: Number(row[colNetProfit]) || 0,
         status: 'ACTIVE',
       });
     }
