@@ -1602,7 +1602,7 @@ export function DashboardContent({ month, isArchive = false }) {
                           </h3>
 
                           <p className={cn(
-                            "font-black tracking-tight text-2xl sm:text-3xl lg:text-[34px] xl:text-[38px] 2xl:text-[42px] leading-tight mt-1.5 mb-0.5 [filter:var(--shadow-text)] truncate",
+                            "font-black tracking-tight text-xl sm:text-2xl xl:text-[28px] leading-tight mt-1.5 mb-0.5 [filter:var(--shadow-text)] truncate",
                             isNetProfit ? "text-[var(--color-success)]" : "text-[var(--color-danger)]"
                           )} style={{ fontSize: 'var(--font-pc-hero-metric)' }}>
                             <AnimatedNumber 
@@ -1614,7 +1614,7 @@ export function DashboardContent({ month, isArchive = false }) {
 
                         {/* Right Side Trend Curve */}
                         <div className="shrink-0 flex items-center justify-center pl-1.5">
-                          <AnimatedTrendCurve isProfit={isNetProfit} className="w-14 sm:w-16 xl:w-20 h-10 sm:h-11 xl:h-13" />
+                          <AnimatedTrendCurve isProfit={isNetProfit} className="w-11 sm:w-12 xl:w-14 h-8 sm:h-9 xl:h-10" />
                         </div>
                       </div>
 
