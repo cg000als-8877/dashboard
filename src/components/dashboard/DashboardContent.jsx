@@ -1315,7 +1315,7 @@ export function DashboardContent({ month, isArchive = false }) {
                         <p className={cn(
                           "font-black tracking-tight text-[28px] leading-tight mt-1 mb-0.5 [filter:var(--shadow-text)] truncate",
                           isNetProfit ? "text-[var(--color-success)]" : "text-[var(--color-danger)]"
-                          )} style={{ fontSize: 'var(--font-pc-hero-metric)' }}>
+                        )}>
                           <AnimatedNumber 
                             value={Math.abs(Math.round(displayStats.netProfit))} 
                             prefix={isNetProfit ? "+BDT " : "BDT -"} 
@@ -1602,11 +1602,13 @@ export function DashboardContent({ month, isArchive = false }) {
                           </h3>
 
                           <p className={cn(
-                            "font-black tracking-tight leading-tight mt-1.5 mb-0.5 [filter:var(--shadow-text)] truncate",
+                            "font-black tracking-tight text-2xl sm:text-3xl lg:text-[34px] xl:text-[38px] 2xl:text-[42px] leading-tight mt-1.5 mb-0.5 [filter:var(--shadow-text)] truncate",
                             isNetProfit ? "text-[var(--color-success)]" : "text-[var(--color-danger)]"
-                          )}>
-                            <span className="text-sm sm:text-base lg:text-lg font-bold opacity-80 mr-0.5">{isNetProfit ? "+BDT " : "BDT -"}</span>
-                            <AnimatedNumber value={Math.abs(Math.round(displayStats.netProfit))} />
+                          )} style={{ fontSize: 'var(--font-pc-hero-metric)' }}>
+                            <AnimatedNumber 
+                              value={Math.abs(Math.round(displayStats.netProfit))} 
+                              prefix={isNetProfit ? "+BDT " : "BDT -"} 
+                            />
                           </p>
                         </div>
 
