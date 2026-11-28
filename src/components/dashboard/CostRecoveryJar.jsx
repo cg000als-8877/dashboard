@@ -39,14 +39,14 @@ export function CostRecoveryJar({ percentage = 0, isProfitable = false, classNam
 
             {/* Fluid Front Gradient linked to dynamic Theme variables */}
             <linearGradient id="jar-liquid-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor={isProfitable ? "var(--color-success)" : "var(--color-primary)"} stopOpacity="0.95" />
-              <stop offset="100%" stopColor={isProfitable ? "var(--color-success-text)" : "var(--color-primary)"} stopOpacity="0.75" />
+              <stop offset="0%" stopColor={isProfitable ? "var(--color-success)" : "var(--color-recovered-liquid, var(--color-primary))"} stopOpacity="0.95" />
+              <stop offset="100%" stopColor={isProfitable ? "var(--color-success-text)" : "var(--color-recovered-liquid, var(--color-primary))"} stopOpacity="0.75" />
             </linearGradient>
 
             {/* Back Wave Gradient for 3D depth linked to dynamic Theme variables */}
             <linearGradient id="jar-liquid-back" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor={isProfitable ? "var(--color-success)" : "var(--color-primary)"} stopOpacity="0.45" />
-              <stop offset="100%" stopColor={isProfitable ? "var(--color-success)" : "var(--color-primary)"} stopOpacity="0.65" />
+              <stop offset="0%" stopColor={isProfitable ? "var(--color-success)" : "var(--color-recovered-liquid, var(--color-primary))"} stopOpacity="0.45" />
+              <stop offset="100%" stopColor={isProfitable ? "var(--color-success)" : "var(--color-recovered-liquid, var(--color-primary))"} stopOpacity="0.65" />
             </linearGradient>
 
             {/* Glass Highlight Gradient */}

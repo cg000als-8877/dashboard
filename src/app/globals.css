@@ -223,6 +223,7 @@ html[data-mode="light"] .shimmer {
 }
 
 :root {
+  --color-recovered-liquid: var(--color-primary);
   background-color: var(--color-bg-main);
   color: var(--color-text-main);
   --color-surface: rgba(255, 255, 255, 0.03);
@@ -1068,6 +1069,7 @@ html[data-theme="ocean-dark"] {
   --color-info: #A1A1AA;
   --color-info-text: #D4D4D8;
   --color-on-info: #000000;
+  --color-recovered-liquid: #3B82F6;
 }
 
 html[data-theme="bw"][data-mode="dark"],
@@ -1128,6 +1130,7 @@ html[data-theme="ocean-dark"][data-mode="dark"] {
 
   --color-info: #A1A1AA;
   --color-info-text: #D4D4D8;
+  --color-recovered-liquid: #3B82F6;
 
   --shadow-color: rgba(0, 0, 0, 0.85);
 }
@@ -1190,6 +1193,7 @@ html[data-theme="ocean-dark"][data-mode="light"] {
 
   --color-info: #52525B;
   --color-info-text: #27272A;
+  --color-recovered-liquid: #1D4ED8;
 
   --shadow-color: rgba(0, 0, 0, 0.10);
 }
