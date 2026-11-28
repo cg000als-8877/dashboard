@@ -1315,7 +1315,7 @@ export function DashboardContent({ month, isArchive = false }) {
                         <p className={cn(
                           "font-black tracking-tight text-[28px] leading-tight mt-1 mb-0.5 [filter:var(--shadow-text)] truncate",
                           isNetProfit ? "text-[var(--color-success)]" : "text-[var(--color-danger)]"
-                        )}>
+                          )} style={{ fontSize: 'var(--font-pc-hero-metric)' }}>
                           <AnimatedNumber 
                             value={Math.abs(Math.round(displayStats.netProfit))} 
                             prefix={isNetProfit ? "+BDT " : "BDT -"} 
@@ -1597,12 +1597,12 @@ export function DashboardContent({ month, isArchive = false }) {
                       {/* Top Row: Net Loss Title & Value + Animated Trend Curve */}
                       <div className="flex items-center justify-between gap-2.5">
                         <div className="min-w-0 flex-1">
-                          <h3 className="text-xs xl:text-sm font-bold uppercase tracking-widest text-[var(--color-text-secondary)] leading-none">
+                          <h3 className="font-bold uppercase tracking-widest text-[var(--color-text-secondary)] leading-none" style={{ fontSize: 'var(--font-pc-card-title)' }}>
                             {isNetProfit ? "Net Profit" : "Net Loss"}
                           </h3>
 
                           <p className={cn(
-                            "font-black tracking-tight text-2xl sm:text-3xl lg:text-[32px] xl:text-[34px] leading-tight mt-1.5 mb-0.5 [filter:var(--shadow-text)] truncate",
+                            "font-black tracking-tight leading-tight mt-1.5 mb-0.5 [filter:var(--shadow-text)] truncate",
                             isNetProfit ? "text-[var(--color-success)]" : "text-[var(--color-danger)]"
                           )}>
                             <span className="text-sm sm:text-base lg:text-lg font-bold opacity-80 mr-0.5">{isNetProfit ? "+BDT " : "BDT -"}</span>
@@ -1621,7 +1621,7 @@ export function DashboardContent({ month, isArchive = false }) {
 
                       {/* Bottom Row: Comparing Context (PC View Only - Average Daily Loss moved to Card below) */}
                       {netComp && (
-                        <div className="flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5 text-[11px] xl:text-xs leading-snug italic pt-0.5">
+                        <div className="flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5 leading-snug italic pt-0.5" style={{ fontSize: 'var(--font-pc-card-sub)' }}>
                           <span className={cn(
                             "font-bold inline-flex items-center gap-0.5 shrink-0 whitespace-nowrap leading-normal",
                             netComp.trend === 'neutral'
@@ -1658,14 +1658,14 @@ export function DashboardContent({ month, isArchive = false }) {
                         {/* Row 1: Last day loss with date & value */}
                         {lastDayEntry && (
                           <div className="flex items-center justify-between w-full gap-1.5">
-                            <span className="text-[11px] xl:text-xs font-semibold text-[var(--color-text-secondary)] whitespace-nowrap">
+                            <span className="font-semibold text-[var(--color-text-secondary)] whitespace-nowrap" style={{ fontSize: 'var(--font-pc-card-sub)' }}>
                               {isLastDayProfit ? 'Last day profit' : 'Last day loss'}{' '}
                               <span className="text-[var(--color-text-main)] font-bold">({lastDayDateFormatted})</span>
                             </span>
                             <p className={cn(
-                              "font-black tracking-tight text-xs xl:text-sm leading-none [filter:var(--shadow-text)] whitespace-nowrap",
+                              "font-black tracking-tight leading-none [filter:var(--shadow-text)] whitespace-nowrap shrink-0",
                               isLastDayProfit ? "text-[var(--color-success)]" : "text-[var(--color-danger)]"
-                            )}>
+                            )} style={{ fontSize: 'var(--font-pc-card-sub)' }}>
                               <AnimatedNumber 
                                 value={Math.abs(Math.round(lastDayProfit))} 
                                 prefix={isLastDayProfit ? "+BDT " : "BDT -"} 
@@ -1678,13 +1678,13 @@ export function DashboardContent({ month, isArchive = false }) {
 
                         {/* Row 2: Average daily loss with average amount */}
                         <div className="flex items-center justify-between w-full gap-1.5">
-                          <span className="text-[11px] xl:text-xs font-semibold text-[var(--color-text-secondary)] whitespace-nowrap">
+                          <span className="font-semibold text-[var(--color-text-secondary)] whitespace-nowrap" style={{ fontSize: 'var(--font-pc-card-sub)' }}>
                             {isAvgDailyProfit ? "Avg daily profit" : "Average daily loss"}
                           </span>
                           <p className={cn(
-                            "font-black tracking-tight text-xs xl:text-sm leading-none [filter:var(--shadow-text)] whitespace-nowrap",
+                            "font-black tracking-tight leading-none [filter:var(--shadow-text)] whitespace-nowrap shrink-0",
                             isAvgDailyProfit ? "text-[var(--color-success)]" : "text-[var(--color-danger)]"
-                          )}>
+                          )} style={{ fontSize: 'var(--font-pc-card-sub)' }}>
                             <AnimatedNumber 
                               value={Math.abs(Math.round(displayStats.averageDailyProfit))} 
                               prefix={isAvgDailyProfit ? "+BDT " : "BDT -"} 
@@ -1705,15 +1705,15 @@ export function DashboardContent({ month, isArchive = false }) {
                         style={{ backgroundColor: 'var(--color-bg-card)' }}
                       >
                         <div>
-                          <h4 className="text-[11px] xl:text-xs font-bold uppercase tracking-wider text-[var(--color-text-muted)] leading-tight truncate">
+                          <h4 className="font-bold uppercase tracking-wider text-[var(--color-text-muted)] leading-tight truncate" style={{ fontSize: 'var(--font-pc-card-title)' }}>
                             Total Income
                           </h4>
-                          <p className="font-black text-[13.5px] xl:text-base 2xl:text-lg tracking-tight text-[var(--color-primary)] mt-1 mb-0.5 leading-tight [filter:var(--shadow-text)] truncate">
+                          <p className="font-black tracking-tight text-[var(--color-primary)] mt-1 mb-0.5 leading-tight [filter:var(--shadow-text)] truncate" style={{ fontSize: 'var(--font-pc-sub-metric)' }}>
                             <AnimatedNumber value={Math.round(displayStats.totalIncome)} prefix="BDT " />
                           </p>
                         </div>
                         {incomeComp && (
-                          <div className="flex flex-col items-start gap-y-0.5 text-[10px] xl:text-[11px] leading-snug italic pt-1 mt-1">
+                          <div className="flex flex-col items-start gap-y-0.5 leading-snug italic pt-1 mt-1" style={{ fontSize: 'var(--font-pc-card-sub)' }}>
                             <span className={cn("font-bold shrink-0 leading-normal", incomeComp.isPositive ? "text-[var(--color-success-text)]" : "text-[var(--color-danger-text)]")}>
                               {incomeComp.highlight}
                             </span>
@@ -1729,15 +1729,15 @@ export function DashboardContent({ month, isArchive = false }) {
                         style={{ backgroundColor: 'var(--color-bg-card)' }}
                       >
                         <div>
-                          <h4 className="text-[11px] xl:text-xs font-bold uppercase tracking-wider text-[var(--color-text-muted)] leading-tight truncate">
+                          <h4 className="font-bold uppercase tracking-wider text-[var(--color-text-muted)] leading-tight truncate" style={{ fontSize: 'var(--font-pc-card-title)' }}>
                             Total Cost
                           </h4>
-                          <p className="font-black text-[13.5px] xl:text-base 2xl:text-lg tracking-tight text-[var(--color-text-main)] mt-1 mb-0.5 leading-tight [filter:var(--shadow-text)] truncate">
+                          <p className="font-black tracking-tight text-[var(--color-text-main)] mt-1 mb-0.5 leading-tight [filter:var(--shadow-text)] truncate" style={{ fontSize: 'var(--font-pc-sub-metric)' }}>
                             <AnimatedNumber value={Math.round(displayStats.totalCost)} prefix="BDT " />
                           </p>
                         </div>
                         {costComp && (
-                          <div className="flex flex-col items-start gap-y-0.5 text-[10px] xl:text-[11px] leading-snug italic pt-1 mt-1">
+                          <div className="flex flex-col items-start gap-y-0.5 leading-snug italic pt-1 mt-1" style={{ fontSize: 'var(--font-pc-card-sub)' }}>
                             <span className={cn("font-bold shrink-0 leading-normal", costComp.isPositive ? "text-[var(--color-success-text)]" : "text-[var(--color-danger-text)]")}>
                               {costComp.highlight}
                             </span>
@@ -1796,20 +1796,20 @@ export function DashboardContent({ month, isArchive = false }) {
                         title="Print Daily Report PDF"
                         aria-expanded={isDatePickerOpen && datePickerMode === 'download'}
                       >
-                        <div className="flex items-center gap-2 xl:gap-2.5 min-w-0 flex-1">
-                          <div className="p-1.5 xl:p-2 rounded-xl bg-[var(--color-surface)] border border-[var(--color-border)]/40 text-[var(--color-text-secondary)] group-hover:text-[var(--color-primary)] group-hover:border-[var(--color-primary)]/40 transition-colors shrink-0">
-                            <Printer className="w-4 h-4 xl:w-4.5 xl:h-4.5" />
+                        <div className="flex items-center gap-1.5 sm:gap-2 xl:gap-2.5 min-w-0 flex-1 overflow-hidden">
+                          <div className="p-1 sm:p-1.5 xl:p-2 rounded-xl bg-[var(--color-surface)] border border-[var(--color-border)]/40 text-[var(--color-text-secondary)] group-hover:text-[var(--color-primary)] group-hover:border-[var(--color-primary)]/40 transition-colors shrink-0">
+                            <Printer className="w-3.5 h-3.5 sm:w-4 sm:h-4 xl:w-4.5 xl:h-4.5" />
                           </div>
-                          <div className="min-w-0 flex-1">
-                            <h4 className="text-[11.5px] xl:text-[13px] font-bold tracking-tight text-[var(--color-text-main)] group-hover:text-[var(--color-text-main)] leading-tight">
-                              Print Daily Report
+                          <div className="min-w-0 flex-1 overflow-hidden">
+                            <h4 className="font-bold tracking-tight text-[var(--color-text-main)] group-hover:text-[var(--color-text-main)] leading-tight whitespace-nowrap truncate" style={{ fontSize: 'var(--font-pc-btn-title)' }}>
+                              Print <span className="hidden 2xl:inline">Daily </span>Report
                             </h4>
-                            <p className="text-[9.5px] xl:text-[10.5px] font-medium text-[var(--color-text-muted)] mt-0.5 leading-none">
+                            <p className="font-medium text-[var(--color-text-muted)] mt-0.5 leading-none whitespace-nowrap truncate" style={{ fontSize: 'var(--font-pc-btn-sub)' }}>
                               PDF Download
                             </p>
                           </div>
                         </div>
-                        <ChevronDown className={cn("w-3.5 h-3.5 xl:w-4 xl:h-4 shrink-0 text-[var(--color-text-muted)] group-hover:text-[var(--color-text-main)] transition-transform duration-200 ml-1", isDatePickerOpen && datePickerMode === 'download' && "rotate-180")} />
+                        <ChevronDown className={cn("w-3 h-3 sm:w-3.5 sm:h-3.5 xl:w-4 xl:h-4 shrink-0 text-[var(--color-text-muted)] group-hover:text-[var(--color-text-main)] transition-transform duration-200 ml-0.5 sm:ml-1", isDatePickerOpen && datePickerMode === 'download' && "rotate-180")} />
                       </button>
 
                       {/* Card 2: 1 Click Copy Report */}
@@ -1834,20 +1834,20 @@ export function DashboardContent({ month, isArchive = false }) {
                         title="1 Click Copy Report for WhatsApp / Social Media"
                         aria-expanded={isDatePickerOpen && datePickerMode === 'whatsapp'}
                       >
-                        <div className="flex items-center gap-2 xl:gap-2.5 min-w-0 flex-1">
-                          <div className="p-1.5 xl:p-2 rounded-xl bg-[var(--color-surface)] border border-[var(--color-border)]/40 text-[var(--color-text-secondary)] group-hover:text-[var(--color-success)] group-hover:border-[var(--color-success)]/40 transition-colors shrink-0">
-                            {isCopied ? <Check className="w-4 h-4 xl:w-4.5 xl:h-4.5 text-[var(--color-success)]" /> : <Copy className="w-4 h-4 xl:w-4.5 xl:h-4.5" />}
+                        <div className="flex items-center gap-1.5 sm:gap-2 xl:gap-2.5 min-w-0 flex-1 overflow-hidden">
+                          <div className="p-1 sm:p-1.5 xl:p-2 rounded-xl bg-[var(--color-surface)] border border-[var(--color-border)]/40 text-[var(--color-text-secondary)] group-hover:text-[var(--color-success)] group-hover:border-[var(--color-success)]/40 transition-colors shrink-0">
+                            {isCopied ? <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 xl:w-4.5 xl:h-4.5 text-[var(--color-success)]" /> : <Copy className="w-3.5 h-3.5 sm:w-4 sm:h-4 xl:w-4.5 xl:h-4.5" />}
                           </div>
-                          <div className="min-w-0 flex-1">
-                            <h4 className="text-[11.5px] xl:text-[13px] font-bold tracking-tight text-[var(--color-text-main)] group-hover:text-[var(--color-text-main)] leading-tight">
-                              {isCopied ? "Copied!" : "1 Click Copy Report"}
+                          <div className="min-w-0 flex-1 overflow-hidden">
+                            <h4 className="font-bold tracking-tight text-[var(--color-text-main)] group-hover:text-[var(--color-text-main)] leading-tight whitespace-nowrap truncate" style={{ fontSize: 'var(--font-pc-btn-title)' }}>
+                              {isCopied ? "Copied!" : <>1-Click Copy<span className="hidden 2xl:inline"> Report</span></>}
                             </h4>
-                            <p className="text-[9.5px] xl:text-[10.5px] font-medium text-[var(--color-text-muted)] mt-0.5 leading-none">
+                            <p className="font-medium text-[var(--color-text-muted)] mt-0.5 leading-none whitespace-nowrap truncate" style={{ fontSize: 'var(--font-pc-btn-sub)' }}>
                               WhatsApp / Social
                             </p>
                           </div>
                         </div>
-                        <ChevronDown className={cn("w-3.5 h-3.5 xl:w-4 xl:h-4 shrink-0 text-[var(--color-text-muted)] group-hover:text-[var(--color-text-main)] transition-transform duration-200 ml-1", isDatePickerOpen && datePickerMode === 'whatsapp' && "rotate-180")} />
+                        <ChevronDown className={cn("w-3 h-3 sm:w-3.5 sm:h-3.5 xl:w-4 xl:h-4 shrink-0 text-[var(--color-text-muted)] group-hover:text-[var(--color-text-main)] transition-transform duration-200 ml-0.5 sm:ml-1", isDatePickerOpen && datePickerMode === 'whatsapp' && "rotate-180")} />
                       </button>
 
                       {/* Popover anchored directly to the 2-card row (no overflow-hidden, completely visible and unclipped!) */}
@@ -1864,13 +1864,13 @@ export function DashboardContent({ month, isArchive = false }) {
                     >
                       {/* Header Row: Title & Active Lines Counter */}
                       <div className="w-full text-left">
-                        <h4 className="text-xs sm:text-sm font-bold uppercase tracking-widest text-[var(--color-text-secondary)] leading-none">
+                        <h4 className="font-bold uppercase tracking-widest text-[var(--color-text-secondary)] leading-none" style={{ fontSize: 'var(--font-pc-card-title)' }}>
                           Production Lines
                         </h4>
-                        <p className="font-black text-2xl sm:text-3xl xl:text-[34px] text-[var(--color-text-main)] tracking-tight mt-1.5 leading-none [filter:var(--shadow-text)]">
+                        <p className="font-black text-[var(--color-text-main)] tracking-tight mt-1.5 leading-none [filter:var(--shadow-text)]" style={{ fontSize: 'var(--font-pc-hero-metric)' }}>
                           <AnimatedNumber value={actLinesCount} /> of <AnimatedNumber value={totLinesCount} /> <span className="text-sm sm:text-base xl:text-lg font-bold text-[var(--color-primary)] uppercase ml-0.5">Active</span>
                         </p>
-                        <p className="text-[11px] sm:text-xs xl:text-[13px] text-[var(--color-text-muted)] font-medium mt-1 truncate">
+                        <p className="text-[var(--color-text-muted)] font-medium mt-1 truncate" style={{ fontSize: 'var(--font-pc-card-sub)' }}>
                           Details lines and items
                         </p>
                       </div>
@@ -1920,10 +1920,10 @@ export function DashboardContent({ month, isArchive = false }) {
 
                                 {/* Line Info */}
                                 <div className="min-w-0 flex-1">
-                                  <span className="text-xs xl:text-[13.5px] font-bold text-[var(--color-text-main)] truncate block leading-tight">
+                                  <span className="font-bold text-[var(--color-text-main)] truncate block leading-tight" style={{ fontSize: 'var(--font-pc-line-title)' }}>
                                     Line {lineId}
                                   </span>
-                                  <p className="text-[10px] xl:text-[11px] font-medium text-[var(--color-text-muted)] truncate leading-tight mt-0.5">
+                                  <p className="font-medium text-[var(--color-text-muted)] truncate leading-tight mt-0.5" style={{ fontSize: 'var(--font-pc-line-items)' }}>
                                     {hasMultipleItems ? (
                                       activeBreakdown.map((ib, idx) => (
                                         <span key={ib.name}>
@@ -1941,7 +1941,8 @@ export function DashboardContent({ month, isArchive = false }) {
 
                               <div className="text-right shrink-0 pl-1.5">
                                 <span 
-                                  className="text-xs xl:text-[14px] font-black text-[var(--color-text-main)] block leading-tight whitespace-nowrap"
+                                  className="font-black text-[var(--color-text-main)] block leading-tight whitespace-nowrap"
+                                  style={{ fontSize: 'var(--font-pc-line-pcs)' }}
                                   title={hasMultipleItems ? activeBreakdown.map(ib => `${ib.qty.toLocaleString()} ${toTitleCase(ib.name)}`).join(', ') + ` (Total: ${output.toLocaleString()} pcs)` : undefined}
                                 >
                                   {output > 0 ? (

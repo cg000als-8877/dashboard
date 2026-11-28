@@ -223,6 +223,21 @@ html[data-mode="light"] .shimmer {
 }
 
 :root {
+  /* ═══════════════════════════════════════════
+     PC VIEW FLUID TYPOGRAPHY SCALE (1024px+)
+     Auto-adjusts between 14" laptop (1024px-1366px)
+     and 26" desktop monitors (1920px-2560px)
+  ═══════════════════════════════════════════ */
+  --font-pc-hero-metric: clamp(1.45rem, 1.15rem + 1.15vw, 2.25rem);
+  --font-pc-sub-metric: clamp(1.08rem, 0.90rem + 0.68vw, 1.48rem);
+  --font-pc-card-title: clamp(0.6875rem, 0.625rem + 0.28vw, 0.8125rem);
+  --font-pc-card-sub: clamp(0.625rem, 0.58rem + 0.22vw, 0.75rem);
+  --font-pc-btn-title: clamp(0.6875rem, 0.62rem + 0.32vw, 0.825rem);
+  --font-pc-btn-sub: clamp(0.58rem, 0.53rem + 0.2vw, 0.6875rem);
+  --font-pc-line-title: clamp(0.75rem, 0.68rem + 0.3vw, 0.91rem);
+  --font-pc-line-items: clamp(0.625rem, 0.57rem + 0.24vw, 0.75rem);
+  --font-pc-line-pcs: clamp(0.8125rem, 0.74rem + 0.35vw, 1.05rem);
+
   --color-recovered-liquid: var(--color-primary);
   background-color: var(--color-bg-main);
   color: var(--color-text-main);

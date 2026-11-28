@@ -436,7 +436,20 @@
     {
       "date": "2026-11-26",
       "line_id": "A",
-      "status": "HOLIDAY"
+      "style": "",
+      "item": "DENIM SHORT",
+      "worker_count": 50,
+      "factory_workers": 46,
+      "contact_op": 4,
+      "extra_columns": {},
+      "per_head_cost": 1780,
+      "total_cost": 89000,
+      "production_qty": 1300,
+      "production_dzn": 108.3333333,
+      "cm_per_dzn": 738,
+      "total_income": 79950,
+      "net_profit": -9050,
+      "status": "ACTIVE"
     },
     {
       "date": "2026-11-27",
@@ -872,7 +885,20 @@
     {
       "date": "2026-11-26",
       "line_id": "B",
-      "status": "HOLIDAY"
+      "style": "",
+      "item": "DENIM SHORT",
+      "worker_count": 50,
+      "factory_workers": 46,
+      "contact_op": 4,
+      "extra_columns": {},
+      "per_head_cost": 1780,
+      "total_cost": 89000,
+      "production_qty": 1270,
+      "production_dzn": 105.8333333,
+      "cm_per_dzn": 738,
+      "total_income": 78105,
+      "net_profit": -10895,
+      "status": "ACTIVE"
     },
     {
       "date": "2026-11-27",
@@ -1308,7 +1334,20 @@
     {
       "date": "2026-11-26",
       "line_id": "C",
-      "status": "HOLIDAY"
+      "style": "",
+      "item": "LADIES PAJAMA",
+      "worker_count": 15,
+      "factory_workers": 15,
+      "contact_op": 0,
+      "extra_columns": {},
+      "per_head_cost": 1780,
+      "total_cost": 26700,
+      "production_qty": 930,
+      "production_dzn": 77.5,
+      "cm_per_dzn": 258,
+      "total_income": 19995,
+      "net_profit": -6705,
+      "status": "ACTIVE"
     },
     {
       "date": "2026-11-27",
