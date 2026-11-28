@@ -54,7 +54,7 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" data-theme="jungle-nebula" data-mode="dark" data-bg-effect="starlight" suppressHydrationWarning>
+    <html lang="en" data-theme="bw" data-mode="dark" data-bg-effect="starlight" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -64,7 +64,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             __html: `
               (function() {
                 try {
-                  var migrated = localStorage.getItem('app-jungle-starlight-dark-v1');
+                  var migrated = localStorage.getItem('app-bw-starlight-dark-v1');
                   var m = localStorage.getItem('app-mode');
                   var t = localStorage.getItem('app-visual-theme');
                   if (t === 'ocean-dark') {
@@ -73,13 +73,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   }
                   var b = localStorage.getItem('app-bg-effect');
                   if (!migrated) {
-                    localStorage.setItem('app-jungle-starlight-dark-v1', 'true');
-                    localStorage.setItem('app-visual-theme', 'jungle-nebula');
+                    localStorage.setItem('app-bw-starlight-dark-v1', 'true');
+                    localStorage.setItem('app-visual-theme', 'bw');
                     localStorage.setItem('app-mode', 'dark');
                     localStorage.setItem('theme', 'dark');
                     localStorage.setItem('app-bg-effect', 'starlight');
                     m = 'dark';
-                    t = 'jungle-nebula';
+                    t = 'bw';
                     b = 'starlight';
                   }
                   if (m) {
@@ -96,7 +96,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   if (t) {
                     document.documentElement.setAttribute('data-theme', t);
                   } else {
-                    document.documentElement.setAttribute('data-theme', 'jungle-nebula');
+                    document.documentElement.setAttribute('data-theme', 'bw');
                   }
                   if (b && b !== 'ember-tide-aurora') {
                     document.documentElement.setAttribute('data-bg-effect', b);

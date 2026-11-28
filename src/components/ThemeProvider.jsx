@@ -40,7 +40,7 @@ export const BG_EFFECTS = [
 
 // Jungle Nebula is the default theme
 export function getScheduledDefaultTheme() {
-  return 'jungle-nebula';
+  return 'bw';
 }
 
 export function getDefaultBgEffect() {
@@ -50,7 +50,7 @@ export function getDefaultBgEffect() {
 const ThemeContext = createContext();
 
 export function ThemeProvider({ children }) {
-  const [visualTheme, setVisualThemeState] = useState('jungle-nebula');
+  const [visualTheme, setVisualThemeState] = useState('bw');
   const [mode, setModeState] = useState('dark');
   const [bgEffect, setBgEffectState] = useState('starlight');
   const [mounted, setMounted] = useState(false);
@@ -58,16 +58,16 @@ export function ThemeProvider({ children }) {
   useEffect(() => {
     setMounted(true);
 
-    // Apply Jungle Nebula + Dark Mode + Starlight Background as default for any device
-    const isDefaultApplied = localStorage.getItem('app-jungle-starlight-dark-v1');
+    // Apply B&W + Dark Mode + Starlight Background as default for any device
+    const isDefaultApplied = localStorage.getItem('app-bw-starlight-dark-v1');
 
     if (!isDefaultApplied) {
-      localStorage.setItem('app-jungle-starlight-dark-v1', 'true');
-      localStorage.setItem('app-visual-theme', 'jungle-nebula');
+      localStorage.setItem('app-bw-starlight-dark-v1', 'true');
+      localStorage.setItem('app-visual-theme', 'bw');
       localStorage.setItem('app-mode', 'dark');
       localStorage.setItem('theme', 'dark');
       localStorage.setItem('app-bg-effect', 'starlight');
-      setVisualThemeState('jungle-nebula');
+      setVisualThemeState('bw');
       setModeState('dark');
       setBgEffectState('starlight');
       return;
@@ -85,7 +85,7 @@ export function ThemeProvider({ children }) {
     if (storedVisualTheme && (VISUAL_THEMES.some(t => t.id === storedVisualTheme) || storedVisualTheme === 'bw')) {
       setVisualThemeState(storedVisualTheme);
     } else {
-      setVisualThemeState('jungle-nebula');
+      setVisualThemeState('bw');
     }
 
     if (storedMode) {
