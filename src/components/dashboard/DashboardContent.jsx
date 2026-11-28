@@ -1842,7 +1842,7 @@ export function DashboardContent({ month, isArchive = false }) {
                           </div>
                           <div className="min-w-0 flex-1 overflow-hidden">
                             <h4 className="font-bold tracking-tight text-[var(--color-text-main)] group-hover:text-[var(--color-text-main)] leading-tight whitespace-nowrap truncate" style={{ fontSize: 'var(--font-pc-btn-title)' }}>
-                              {isCopied ? "Copied!" : <>1-Click Copy<span className="hidden 2xl:inline"> Report</span></>}
+                              {isCopied ? "Copied!" : "1 Click Copy"}
                             </h4>
                             <p className="font-medium text-[var(--color-text-muted)] mt-0.5 leading-none whitespace-nowrap truncate" style={{ fontSize: 'var(--font-pc-btn-sub)' }}>
                               WhatsApp / Social
