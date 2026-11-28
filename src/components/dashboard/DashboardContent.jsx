@@ -1665,9 +1665,9 @@ export function DashboardContent({ month, isArchive = false }) {
                               <span className="text-[var(--color-text-main)] font-bold">({lastDayDateFormatted})</span>
                             </span>
                             <p className={cn(
-                              "font-black tracking-tight leading-none [filter:var(--shadow-text)] whitespace-nowrap shrink-0",
+                              "font-black tracking-tight text-sm sm:text-base xl:text-lg 2xl:text-xl leading-none [filter:var(--shadow-text)] whitespace-nowrap shrink-0",
                               isLastDayProfit ? "text-[var(--color-success)]" : "text-[var(--color-danger)]"
-                            )} style={{ fontSize: 'var(--font-pc-card-sub)' }}>
+                            )} style={{ fontSize: 'var(--font-pc-amount-metric)' }}>
                               <AnimatedNumber 
                                 value={Math.abs(Math.round(lastDayProfit))} 
                                 prefix={isLastDayProfit ? "+BDT " : "BDT -"} 
@@ -1684,9 +1684,9 @@ export function DashboardContent({ month, isArchive = false }) {
                             {isAvgDailyProfit ? "Avg daily profit" : "Average daily loss"}
                           </span>
                           <p className={cn(
-                            "font-black tracking-tight leading-none [filter:var(--shadow-text)] whitespace-nowrap shrink-0",
+                            "font-black tracking-tight text-sm sm:text-base xl:text-lg 2xl:text-xl leading-none [filter:var(--shadow-text)] whitespace-nowrap shrink-0",
                             isAvgDailyProfit ? "text-[var(--color-success)]" : "text-[var(--color-danger)]"
-                          )} style={{ fontSize: 'var(--font-pc-card-sub)' }}>
+                          )} style={{ fontSize: 'var(--font-pc-amount-metric)' }}>
                             <AnimatedNumber 
                               value={Math.abs(Math.round(displayStats.averageDailyProfit))} 
                               prefix={isAvgDailyProfit ? "+BDT " : "BDT -"} 
