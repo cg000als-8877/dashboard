@@ -1676,7 +1676,14 @@ export function DashboardContent({ month, isArchive = false }) {
                           </div>
                         )}
 
-                        {lastDayEntry && <div className="w-full h-px bg-[var(--color-border)]/20" />}
+                        {lastDayEntry && (
+                          <div 
+                            className="w-full h-[1px] my-0.5" 
+                            style={{ 
+                              background: 'linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.45) 50%, transparent 100%)' 
+                            }} 
+                          />
+                        )}
 
                         {/* Row 2: Average daily loss with average amount */}
                         <div className="flex items-center justify-between w-full gap-1.5">
